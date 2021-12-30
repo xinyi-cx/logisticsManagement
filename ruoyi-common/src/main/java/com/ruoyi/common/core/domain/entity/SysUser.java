@@ -47,6 +47,10 @@ public class SysUser extends BaseEntity
     @Excel(name = "手机号码")
     private String phonenumber;
 
+    /** 手机号码 */
+    @Excel(name = "国家")
+    private String country;
+
     /** 用户性别 */
     @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
     private String sex;
@@ -314,6 +318,14 @@ public class SysUser extends BaseEntity
         this.roleId = roleId;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -337,6 +349,7 @@ public class SysUser extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .append("dept", getDept())
+            .append("country", getCountry())
             .toString();
     }
 }
