@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PackagesGenerationResponseMapper">
+    
+    <resultMap type="PackagesGenerationResponse" id="PackagesGenerationResponseResult">
+        <result property="id"    column="id"    />
+        <result property="sessionId"    column="session_id"    />
+        <result property="packageId"    column="package_id"    />
+        <result property="status"    column="status"    />
+        <result property="pkgReference"    column="pkg_reference"    />
+        <result property="pkgStatus"    column="pkg_status"    />
+        <result property="packId"    column="pack_id"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+    </resultMap>
+
+    <sql id="selectPackagesGenerationResponseVo">
+        select id, session_id, package_id, status, pkg_reference, pkg_status, pack_id, create_user, update_user, created_time, updated_time from packages_generation_response
+    </sql>
+
+    <select id="selectPackagesGenerationResponseList" parameterType="PackagesGenerationResponse" resultMap="PackagesGenerationResponseResult">
+        <include refid="selectPackagesGenerationResponseVo"/>
+        <where>  
+            <if test="sessionId != null "> and session_id = #{sessionId}</if>
+            <if test="packageId != null "> and package_id = #{packageId}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="pkgReference != null  and pkgReference != ''"> and pkg_reference = #{pkgReference}</if>
+            <if test="pkgStatus != null  and pkgStatus != ''"> and pkg_status = #{pkgStatus}</if>
+            <if test="packId != null "> and pack_id = #{packId}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectPackagesGenerationResponseById" parameterType="Long" resultMap="PackagesGenerationResponseResult">
+        <include refid="selectPackagesGenerationResponseVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPackagesGenerationResponse" parameterType="PackagesGenerationResponse" useGeneratedKeys="true" keyProperty="id">
+        insert into packages_generation_response
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">session_id,</if>
+            <if test="packageId != null">package_id,</if>
+            <if test="status != null">status,</if>
+            <if test="pkgReference != null">pkg_reference,</if>
+            <if test="pkgStatus != null">pkg_status,</if>
+            <if test="packId != null">pack_id,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updatedTime != null">updated_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">#{sessionId},</if>
+            <if test="packageId != null">#{packageId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="pkgReference != null">#{pkgReference},</if>
+            <if test="pkgStatus != null">#{pkgStatus},</if>
+            <if test="packId != null">#{packId},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePackagesGenerationResponse" parameterType="PackagesGenerationResponse">
+        update packages_generation_response
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sessionId != null">session_id = #{sessionId},</if>
+            <if test="packageId != null">package_id = #{packageId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="pkgReference != null">pkg_reference = #{pkgReference},</if>
+            <if test="pkgStatus != null">pkg_status = #{pkgStatus},</if>
+            <if test="packId != null">pack_id = #{packId},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePackagesGenerationResponseById" parameterType="Long">
+        delete from packages_generation_response where id = #{id}
+    </delete>
+
+    <delete id="deletePackagesGenerationResponseByIds" parameterType="String">
+        delete from packages_generation_response where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.AddressReceiverMapper">
+    
+    <resultMap type="AddressReceiver" id="AddressReceiverResult">
+        <result property="id"    column="id"    />
+        <result property="address"    column="address"    />
+        <result property="city"    column="city"    />
+        <result property="company"    column="company"    />
+        <result property="countryCode"    column="country_code"    />
+        <result property="email"    column="email"    />
+        <result property="name"    column="name"    />
+        <result property="phone"    column="phone"    />
+        <result property="postalCode"    column="postal_code"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+    </resultMap>
+
+    <sql id="selectAddressReceiverVo">
+        select id, address, city, company, country_code, email, name, phone, postal_code, create_user, update_user, created_time, updated_time from address_receiver
+    </sql>
+
+    <select id="selectAddressReceiverList" parameterType="AddressReceiver" resultMap="AddressReceiverResult">
+        <include refid="selectAddressReceiverVo"/>
+        <where>  
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+            <if test="company != null  and company != ''"> and company = #{company}</if>
+            <if test="countryCode != null  and countryCode != ''"> and country_code = #{countryCode}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="postalCode != null  and postalCode != ''"> and postal_code = #{postalCode}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectAddressReceiverById" parameterType="Long" resultMap="AddressReceiverResult">
+        <include refid="selectAddressReceiverVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAddressReceiver" parameterType="AddressReceiver" useGeneratedKeys="true" keyProperty="id">
+        insert into address_receiver
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="address != null">address,</if>
+            <if test="city != null">city,</if>
+            <if test="company != null">company,</if>
+            <if test="countryCode != null">country_code,</if>
+            <if test="email != null">email,</if>
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="postalCode != null">postal_code,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updatedTime != null">updated_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="address != null">#{address},</if>
+            <if test="city != null">#{city},</if>
+            <if test="company != null">#{company},</if>
+            <if test="countryCode != null">#{countryCode},</if>
+            <if test="email != null">#{email},</if>
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="postalCode != null">#{postalCode},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAddressReceiver" parameterType="AddressReceiver">
+        update address_receiver
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="address != null">address = #{address},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="company != null">company = #{company},</if>
+            <if test="countryCode != null">country_code = #{countryCode},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="postalCode != null">postal_code = #{postalCode},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAddressReceiverById" parameterType="Long">
+        delete from address_receiver where id = #{id}
+    </delete>
+
+    <delete id="deleteAddressReceiverByIds" parameterType="String">
+        delete from address_receiver where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

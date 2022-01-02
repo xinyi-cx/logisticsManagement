@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ParcelMapper">
+    
+    <resultMap type="Parcel" id="ParcelResult">
+        <result property="id"    column="id"    />
+        <result property="sizeX"    column="size_x"    />
+        <result property="sizeY"    column="size_y"    />
+        <result property="sizeZ"    column="size_z"    />
+        <result property="content"    column="content"    />
+        <result property="customerData1"    column="customer_data1"    />
+        <result property="reference"    column="reference"    />
+        <result property="weight"    column="weight"    />
+        <result property="packId"    column="pack_id"    />
+        <result property="waybill"    column="waybill"    />
+        <result property="status"    column="status"    />
+        <result property="packageId"    column="package_id"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+    </resultMap>
+
+    <sql id="selectParcelVo">
+        select id, size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, create_user, update_user, created_time, updated_time from parcel
+    </sql>
+
+    <select id="selectParcelList" parameterType="Parcel" resultMap="ParcelResult">
+        <include refid="selectParcelVo"/>
+        <where>  
+            <if test="sizeX != null "> and size_x = #{sizeX}</if>
+            <if test="sizeY != null "> and size_y = #{sizeY}</if>
+            <if test="sizeZ != null "> and size_z = #{sizeZ}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="customerData1 != null  and customerData1 != ''"> and customer_data1 = #{customerData1}</if>
+            <if test="reference != null  and reference != ''"> and reference = #{reference}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="packId != null "> and pack_id = #{packId}</if>
+            <if test="waybill != null  and waybill != ''"> and waybill = #{waybill}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="packageId != null "> and package_id = #{packageId}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectParcelById" parameterType="Long" resultMap="ParcelResult">
+        <include refid="selectParcelVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertParcel" parameterType="Parcel" useGeneratedKeys="true" keyProperty="id">
+        insert into parcel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sizeX != null">size_x,</if>
+            <if test="sizeY != null">size_y,</if>
+            <if test="sizeZ != null">size_z,</if>
+            <if test="content != null">content,</if>
+            <if test="customerData1 != null">customer_data1,</if>
+            <if test="reference != null">reference,</if>
+            <if test="weight != null">weight,</if>
+            <if test="packId != null">pack_id,</if>
+            <if test="waybill != null">waybill,</if>
+            <if test="status != null">status,</if>
+            <if test="packageId != null">package_id,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updatedTime != null">updated_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sizeX != null">#{sizeX},</if>
+            <if test="sizeY != null">#{sizeY},</if>
+            <if test="sizeZ != null">#{sizeZ},</if>
+            <if test="content != null">#{content},</if>
+            <if test="customerData1 != null">#{customerData1},</if>
+            <if test="reference != null">#{reference},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="packId != null">#{packId},</if>
+            <if test="waybill != null">#{waybill},</if>
+            <if test="status != null">#{status},</if>
+            <if test="packageId != null">#{packageId},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateParcel" parameterType="Parcel">
+        update parcel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sizeX != null">size_x = #{sizeX},</if>
+            <if test="sizeY != null">size_y = #{sizeY},</if>
+            <if test="sizeZ != null">size_z = #{sizeZ},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="customerData1 != null">customer_data1 = #{customerData1},</if>
+            <if test="reference != null">reference = #{reference},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="packId != null">pack_id = #{packId},</if>
+            <if test="waybill != null">waybill = #{waybill},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="packageId != null">package_id = #{packageId},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteParcelById" parameterType="Long">
+        delete from parcel where id = #{id}
+    </delete>
+
+    <delete id="deleteParcelByIds" parameterType="String">
+        delete from parcel where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

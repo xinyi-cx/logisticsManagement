@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PackageMapper">
+    
+    <resultMap type="Package" id="PackageResult">
+        <result property="id"    column="id"    />
+        <result property="payerType"    column="payer_type"    />
+        <result property="senderId"    column="sender_id"    />
+        <result property="receiverId"    column="receiver_id"    />
+        <result property="ref1"    column="ref1"    />
+        <result property="ref2"    column="ref2"    />
+        <result property="servicesId"    column="services_id"    />
+        <result property="phone"    column="phone"    />
+        <result property="postalCode"    column="postal_code"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+    </resultMap>
+
+    <sql id="selectPackageVo">
+        select id, payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, create_user, update_user, created_time, updated_time from package
+    </sql>
+
+    <select id="selectPackageList" parameterType="Package" resultMap="PackageResult">
+        <include refid="selectPackageVo"/>
+        <where>  
+            <if test="payerType != null  and payerType != ''"> and payer_type = #{payerType}</if>
+            <if test="senderId != null "> and sender_id = #{senderId}</if>
+            <if test="receiverId != null "> and receiver_id = #{receiverId}</if>
+            <if test="ref1 != null  and ref1 != ''"> and ref1 = #{ref1}</if>
+            <if test="ref2 != null  and ref2 != ''"> and ref2 = #{ref2}</if>
+            <if test="servicesId != null "> and services_id = #{servicesId}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="postalCode != null  and postalCode != ''"> and postal_code = #{postalCode}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectPackageById" parameterType="Long" resultMap="PackageResult">
+        <include refid="selectPackageVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPackage" parameterType="Package" useGeneratedKeys="true" keyProperty="id">
+        insert into package
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="payerType != null">payer_type,</if>
+            <if test="senderId != null">sender_id,</if>
+            <if test="receiverId != null">receiver_id,</if>
+            <if test="ref1 != null">ref1,</if>
+            <if test="ref2 != null">ref2,</if>
+            <if test="servicesId != null">services_id,</if>
+            <if test="phone != null">phone,</if>
+            <if test="postalCode != null">postal_code,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updatedTime != null">updated_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="payerType != null">#{payerType},</if>
+            <if test="senderId != null">#{senderId},</if>
+            <if test="receiverId != null">#{receiverId},</if>
+            <if test="ref1 != null">#{ref1},</if>
+            <if test="ref2 != null">#{ref2},</if>
+            <if test="servicesId != null">#{servicesId},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="postalCode != null">#{postalCode},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePackage" parameterType="Package">
+        update package
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="payerType != null">payer_type = #{payerType},</if>
+            <if test="senderId != null">sender_id = #{senderId},</if>
+            <if test="receiverId != null">receiver_id = #{receiverId},</if>
+            <if test="ref1 != null">ref1 = #{ref1},</if>
+            <if test="ref2 != null">ref2 = #{ref2},</if>
+            <if test="servicesId != null">services_id = #{servicesId},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="postalCode != null">postal_code = #{postalCode},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePackageById" parameterType="Long">
+        delete from package where id = #{id}
+    </delete>
+
+    <delete id="deletePackageByIds" parameterType="String">
+        delete from package where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
