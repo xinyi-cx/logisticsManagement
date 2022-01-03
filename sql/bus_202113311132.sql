@@ -10,6 +10,7 @@ CREATE TABLE `package`
     `services_id`  bigint(20)   DEFAULT NULL comment '服务id',
     `phone`        varchar(100) DEFAULT NULL comment '手机号码',
     `postal_code`  varchar(100) DEFAULT NULL comment '邮政编码',
+    `batch_id`     bigint(20)   DEFAULT NULL comment '批量id',
     `create_user`  varchar(50)  DEFAULT NULL comment '创建人',
     `update_user`  varchar(50)  DEFAULT NULL comment '更新人',
     `created_time` datetime     DEFAULT NULL comment '创建时间',
@@ -120,3 +121,23 @@ CREATE TABLE `packages_generation_response`
 ) engine = innodb
   CHARSET = utf8
   auto_increment = 200 comment = '面单返回值';
+
+drop table if exists batch_task_history;
+CREATE TABLE `batch_task_history`
+(
+    `id`            bigint(20) unsigned NOT NULL AUTO_INCREMENT comment '主键',
+    `type`          varchar(100) DEFAULT NULL comment '类型',
+    `status`        varchar(100) DEFAULT NULL comment '状态',
+    `success_num`   int(10)      DEFAULT NULL comment '成功面单数',
+    `fail_num`      int(10)      DEFAULT NULL comment '失败面单数',
+    `download_num`  int(10)      DEFAULT NULL comment '下载次数',
+    `excel_url`     varchar(50)  DEFAULT NULL comment '原始excel路径',
+    `excel_content` text         DEFAULT NULL comment 'excel内容',
+    `create_user`   varchar(50)  DEFAULT NULL comment '创建人',
+    `update_user`   varchar(50)  DEFAULT NULL comment '更新人',
+    `created_time`  datetime     DEFAULT NULL comment '创建时间',
+    `updated_time`  datetime     DEFAULT NULL comment '更新时间',
+    PRIMARY KEY (`id`)
+) engine = innodb
+  CHARSET = utf8
+  auto_increment = 200 comment = '批量任务历史';

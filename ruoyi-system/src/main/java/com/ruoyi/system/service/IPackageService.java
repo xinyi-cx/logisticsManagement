@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.system.domain.Package;
+import com.ruoyi.system.domain.vo.PackageVo;
 
 /**
  * 面单Service接口
@@ -34,6 +35,14 @@ public interface IPackageService
      * @return 结果
      */
     public int insertPackage(Package pkg);
+
+    /**
+     * 新增面单
+     *
+     * @param pkg 面单
+     * @return 结果
+     */
+    public int insertPackage(PackageVo pkg);
 
     /**
      * 修改面单

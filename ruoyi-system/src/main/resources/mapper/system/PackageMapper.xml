@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="servicesId"    column="services_id"    />
         <result property="phone"    column="phone"    />
         <result property="postalCode"    column="postal_code"    />
+        <result property="batchId"    column="batch_id"    />
         <result property="createUser"    column="create_user"    />
         <result property="updateUser"    column="update_user"    />
         <result property="createdTime"    column="created_time"    />
@@ -21,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPackageVo">
-        select id, payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, create_user, update_user, created_time, updated_time from package
+        select id, payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, batch_id, create_user, update_user, created_time, updated_time from package
     </sql>
 
     <select id="selectPackageList" parameterType="Package" resultMap="PackageResult">
@@ -35,6 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="servicesId != null "> and services_id = #{servicesId}</if>
             <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
             <if test="postalCode != null  and postalCode != ''"> and postal_code = #{postalCode}</if>
+            <if test="batchId != null "> and batch_id = #{batchId}</if>
             <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
             <if test="createdTime != null "> and created_time = #{createdTime}</if>
@@ -58,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="servicesId != null">services_id,</if>
             <if test="phone != null">phone,</if>
             <if test="postalCode != null">postal_code,</if>
+            <if test="batchId != null">batch_id,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
             <if test="createdTime != null">created_time,</if>
@@ -72,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="servicesId != null">#{servicesId},</if>
             <if test="phone != null">#{phone},</if>
             <if test="postalCode != null">#{postalCode},</if>
+            <if test="batchId != null">#{batchId},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
             <if test="createdTime != null">#{createdTime},</if>
@@ -90,6 +94,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="servicesId != null">services_id = #{servicesId},</if>
             <if test="phone != null">phone = #{phone},</if>
             <if test="postalCode != null">postal_code = #{postalCode},</if>
+            <if test="batchId != null">batch_id = #{batchId},</if>
             <if test="createUser != null">create_user = #{createUser},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
             <if test="createdTime != null">created_time = #{createdTime},</if>

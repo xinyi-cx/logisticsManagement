@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 面单对象 package
  * 
  * @author ruoyi
- * @date 2022-01-02
+ * @date 2022-01-03
  */
 public class Package extends BaseEntity
 {
@@ -51,6 +51,10 @@ public class Package extends BaseEntity
     /** 邮政编码 */
     @Excel(name = "邮政编码")
     private String postalCode;
+
+    /** 批量id */
+    @Excel(name = "批量id")
+    private Long batchId;
 
     /** 创建人 */
     @Excel(name = "创建人")
@@ -151,6 +155,15 @@ public class Package extends BaseEntity
     {
         return postalCode;
     }
+    public void setBatchId(Long batchId) 
+    {
+        this.batchId = batchId;
+    }
+
+    public Long getBatchId() 
+    {
+        return batchId;
+    }
     public void setCreateUser(String createUser) 
     {
         this.createUser = createUser;
@@ -200,6 +213,7 @@ public class Package extends BaseEntity
             .append("servicesId", getServicesId())
             .append("phone", getPhone())
             .append("postalCode", getPostalCode())
+            .append("batchId", getBatchId())
             .append("createUser", getCreateUser())
             .append("updateUser", getUpdateUser())
             .append("createdTime", getCreatedTime())
