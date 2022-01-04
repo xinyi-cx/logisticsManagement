@@ -45,6 +45,14 @@ public interface IPackageService
     public int insertPackage(PackageVo pkg);
 
     /**
+     * 导入面单
+     *
+     * @param packageVos 面单
+     * @return 结果
+     */
+    public int importPackage(List<PackageVo> packageVos);
+
+    /**
      * 修改面单
      * 
      * @param pkg 面单

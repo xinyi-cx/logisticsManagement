@@ -48,7 +48,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPackageVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectMaxId"  resultType="long">
+        select max(id)
+            from package
+    </select>
+
     <insert id="insertPackage" parameterType="Package" useGeneratedKeys="true" keyProperty="id">
         insert into package
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -81,6 +86,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createdTime != null">#{createdTime},</if>
             <if test="updatedTime != null">#{updatedTime},</if>
          </trim>
+    </insert>
+
+    <insert id="batchInsert" useGeneratedKeys="true" keyProperty="id">
+        insert into package (payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, batch_id, create_user, update_user, created_time, updated_time)
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.payerType},
+            #{item.senderId},
+            #{item.receiverId},
+            #{item.ref1},
+            #{item.ref2},
+            #{item.servicesId},
+            #{item.phone},
+            #{item.postalCode},
+            #{item.batchId},
+            #{item.createUser},
+            #{item.updateUser},
+            #{item.createdTime},
+            #{item.updatedTime})
+        </foreach>
     </insert>
 
     <update id="updatePackage" parameterType="Package">

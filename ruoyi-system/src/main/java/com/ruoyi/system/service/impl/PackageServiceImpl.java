@@ -2,17 +2,16 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.AddressReceiver;
-import com.ruoyi.system.domain.AddressSender;
-import com.ruoyi.system.domain.Parcel;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.mapper.AddressReceiverMapper;
 import com.ruoyi.system.mapper.AddressSenderMapper;
+import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.PackageMapper;
-import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.service.IPackageService;
 
 /**
@@ -32,6 +31,9 @@ public class PackageServiceImpl implements IPackageService
 
     @Autowired
     private AddressReceiverMapper addressReceiverMapper;
+
+    @Autowired
+    private BatchTaskHistoryMapper batchTaskHistoryMapper;
 
     /**
      * 查询面单
@@ -87,6 +89,18 @@ public class PackageServiceImpl implements IPackageService
         return 0;
     }
 
+    @Override
+    public int importPackage(List<PackageVo> packageVos){
+        BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
+        batchTaskHistory.setStatus("上传成功");
+        /**
+         * 一系列处理
+         */
+        batchTaskHistoryMapper.insertBatchTaskHistory(batchTaskHistory);
+
+        return 0;
+    }
+
     private AddressSender getSender(PackageVo pkg){
         AddressSender addressSender = new AddressSender();
         addressSender.setAddress(pkg.getSenderAddress());
@@ -98,8 +112,7 @@ public class PackageServiceImpl implements IPackageService
         addressSender.setName(pkg.getSenderName());
         addressSender.setPhone(pkg.getSenderPhone());
         addressSender.setPostalCode(pkg.getSenderPostalCode());
-
-        addressSender.setId((long) addressSenderMapper.insertAddressSender(addressSender));
+        addressSenderMapper.insertAddressSender(addressSender);
         return addressSender;
     }
 
@@ -113,8 +126,7 @@ public class PackageServiceImpl implements IPackageService
         addressReceiver.setName(pkg.getReceiverName());
         addressReceiver.setPhone(pkg.getReceiverPhone());
         addressReceiver.setPostalCode(pkg.getReceiverPostalCode());
-
-        addressReceiver.setId((long) addressReceiverMapper.insertAddressReceiver(addressReceiver));
+        addressReceiverMapper.insertAddressReceiver(addressReceiver);
         return addressReceiver;
     }
 
