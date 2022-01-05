@@ -36,6 +36,21 @@ public interface AddressReceiverMapper
     public int insertAddressReceiver(AddressReceiver addressReceiver);
 
     /**
+     * 新增收货人信息
+     *
+     * @param addressReceiver 收货人信息
+     * @return 结果
+     */
+    public int insertAddressReceiverWithId(AddressReceiver addressReceiver);
+
+    /**
+     * 批量添加
+     * @param list
+     * @return
+     */
+    public int batchInsert(List<AddressReceiver> list);
+
+    /**
      * 修改收货人信息
      * 
      * @param addressReceiver 收货人信息

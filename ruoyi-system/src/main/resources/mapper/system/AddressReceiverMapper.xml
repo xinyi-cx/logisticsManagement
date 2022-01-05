@@ -79,6 +79,59 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
+    <insert id="insertAddressReceiverWithId" parameterType="AddressReceiver">
+        insert into address_receiver
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="address != null">address,</if>
+            <if test="city != null">city,</if>
+            <if test="company != null">company,</if>
+            <if test="countryCode != null">country_code,</if>
+            <if test="email != null">email,</if>
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="postalCode != null">postal_code,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updatedTime != null">updated_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="address != null">#{address},</if>
+            <if test="city != null">#{city},</if>
+            <if test="company != null">#{company},</if>
+            <if test="countryCode != null">#{countryCode},</if>
+            <if test="email != null">#{email},</if>
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="postalCode != null">#{postalCode},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsert">
+        insert into address_receiver (id, address, city, company, country_code, email, name, phone, postal_code, create_user, update_user, created_time, updated_time)
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},
+            #{item.address},
+            #{item.city},
+            #{item.company},
+            #{item.countryCode},
+            #{item.email},
+            #{item.name},
+            #{item.phone},
+            #{item.postalCode},
+            #{item.createUser},
+            #{item.updateUser},
+            #{item.createdTime},
+            #{item.updatedTime})
+        </foreach>
+    </insert>
+
     <update id="updateAddressReceiver" parameterType="AddressReceiver">
         update address_receiver
         <trim prefix="SET" suffixOverrides=",">

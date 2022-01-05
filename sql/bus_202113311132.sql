@@ -141,3 +141,49 @@ CREATE TABLE `batch_task_history`
 ) engine = innodb
   CHARSET = utf8
   auto_increment = 200 comment = '批量任务历史';
+
+CREATE TABLE `sequence` (
+  `seq_name` varchar(50) NOT NULL comment '序列名称',
+  `current_val` int(11) NOT NULL comment '当前值',
+  `increment_val` int(11) NOT NULL comment '跨度',
+  PRIMARY KEY (`seq_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE FUNCTION currval (v_seq_name VARCHAR(50)) RETURNS INTEGER
+BEGIN
+DECLARE current INTEGER;
+SET current = 0;
+SELECT
+    current_val INTO current
+FROM
+    sequence
+WHERE
+    seq_name = v_seq_name;
+RETURN current;
+END;
+
+CREATE FUNCTION nextval (v_seq_name VARCHAR(50)) RETURNS INTEGER
+BEGIN
+DECLARE current INTEGER;
+SET current = 0;
+SELECT
+    current_val + increment_val INTO current
+FROM
+    sequence
+WHERE
+    seq_name = v_seq_name FOR UPDATE;
+UPDATE sequence
+SET current_val = current
+WHERE
+    seq_name = v_seq_name;
+RETURN current;
+END;
+
+INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('send_seq', '1', '1');
+INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('receiver_seq', '1', '1');
+INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('receiver_seq', '1', '1');
+-- INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('test', '1000', '1');
+--
+-- SELECT nextval('test');
+
+-- select * from sequence;

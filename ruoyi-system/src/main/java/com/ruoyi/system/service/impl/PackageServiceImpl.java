@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ruoyi.system.domain.*;
@@ -8,11 +9,13 @@ import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.mapper.AddressReceiverMapper;
 import com.ruoyi.system.mapper.AddressSenderMapper;
 import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.PackageMapper;
 import com.ruoyi.system.service.IPackageService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 面单Service业务层处理
@@ -78,18 +81,25 @@ public class PackageServiceImpl implements IPackageService
      * @return 结果
      */
     @Override
+    @Transactional
     public int insertPackage(PackageVo pkg)
     {
         Package pac = new Package();
         BeanUtils.copyProperties(pkg,pac);
-        pac.setReceiverId(getReceiver(pkg).getId());
-        pac.setSenderId(getSender(pkg).getId());
+        //生成id
+        AddressReceiver addressReceiver = getReceiver(pkg, null);
+        AddressSender addressSender = getSender(pkg, null);
+        addressSenderMapper.insertAddressSenderWithId(addressSender);
+        addressReceiverMapper.insertAddressReceiverWithId(addressReceiver);
+        pac.setReceiverId(addressReceiver.getId());
+        pac.setSenderId(addressSender.getId());
         pac.setServicesId(1L);
         packageMapper.insertPackage(pac);
         return 0;
     }
 
     @Override
+    @Transactional
     public int importPackage(List<PackageVo> packageVos){
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setStatus("上传成功");
@@ -97,11 +107,33 @@ public class PackageServiceImpl implements IPackageService
          * 一系列处理
          */
         batchTaskHistoryMapper.insertBatchTaskHistory(batchTaskHistory);
+        List<AddressSender> addressSenders = new ArrayList<>();
+        List<AddressReceiver> addressReceivers = new ArrayList<>();
+        List<Package> packages = new ArrayList<>();
+        //生成id 并且更新
+        for (PackageVo packageVo : packageVos) {
+            AddressReceiver addressReceiver = getReceiver(packageVo, null);
+            AddressSender addressSender = getSender(packageVo, null);
 
-        return 0;
+            Package pac = new Package();
+            BeanUtils.copyProperties(packageVo,pac);
+            pac.setReceiverId(addressReceiver.getId());
+            pac.setSenderId(addressSender.getId());
+            pac.setServicesId(1L);
+            pac.setBatchId(batchTaskHistory.getId());
+
+            addressSenders.add(addressSender);
+            addressReceivers.add(addressReceiver);
+            packages.add(pac);
+        }
+
+        addressSenderMapper.batchInsert(addressSenders);
+        addressReceiverMapper.batchInsert(addressReceivers);
+        return packageMapper.batchInsert(packages);
+
     }
 
-    private AddressSender getSender(PackageVo pkg){
+    private AddressSender getSender(PackageVo pkg, Long id){
         AddressSender addressSender = new AddressSender();
         addressSender.setAddress(pkg.getSenderAddress());
         addressSender.setCity(pkg.getSenderCity());
@@ -112,11 +144,11 @@ public class PackageServiceImpl implements IPackageService
         addressSender.setName(pkg.getSenderName());
         addressSender.setPhone(pkg.getSenderPhone());
         addressSender.setPostalCode(pkg.getSenderPostalCode());
-        addressSenderMapper.insertAddressSender(addressSender);
+        addressSender.setId(id);
         return addressSender;
     }
 
-    private AddressReceiver getReceiver(PackageVo pkg){
+    private AddressReceiver getReceiver(PackageVo pkg, Long id){
         AddressReceiver addressReceiver = new AddressReceiver();
         addressReceiver.setAddress(pkg.getReceiverAddress());
         addressReceiver.setCity(pkg.getReceiverCity());
@@ -126,7 +158,7 @@ public class PackageServiceImpl implements IPackageService
         addressReceiver.setName(pkg.getReceiverName());
         addressReceiver.setPhone(pkg.getReceiverPhone());
         addressReceiver.setPostalCode(pkg.getReceiverPostalCode());
-        addressReceiverMapper.insertAddressReceiver(addressReceiver);
+        addressReceiver.setId(id);
         return addressReceiver;
     }
 

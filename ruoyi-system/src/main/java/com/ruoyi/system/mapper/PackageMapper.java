@@ -42,7 +42,12 @@ public interface PackageMapper {
      */
     public int insertPackage(Package pkg);
 
-    public int batchInsert(List<Package> packages);
+    /**
+     * 批量添加
+     * @param list 面单们
+     * @return
+     */
+    public int batchInsert(List<Package> list);
 
     /**
      * 修改面单

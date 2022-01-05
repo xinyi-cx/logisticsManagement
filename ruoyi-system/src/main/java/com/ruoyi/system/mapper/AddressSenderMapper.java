@@ -36,6 +36,21 @@ public interface AddressSenderMapper
     public int insertAddressSender(AddressSender addressSender);
 
     /**
+     * 新增发件人信息
+     *
+     * @param addressSender 发件人信息
+     * @return 结果
+     */
+    public int insertAddressSenderWithId(AddressSender addressSender);
+
+    /**
+     * 批量添加
+     * @param list
+     * @return
+     */
+    public int batchInsert(List<AddressSender> list);
+
+    /**
      * 修改发件人信息
      * 
      * @param addressSender 发件人信息
