@@ -28,6 +28,14 @@ public interface AddressSenderMapper
     public List<AddressSender> selectAddressSenderList(AddressSender addressSender);
 
     /**
+     * 查询发件人信息列表
+     *
+     * @param ids
+     * @return 发件人信息集合
+     */
+    public List<AddressSender> selectAddressSenderByIdIn(List<Long> ids);
+
+    /**
      * 新增发件人信息
      * 
      * @param addressSender 发件人信息

@@ -29,6 +29,14 @@ public interface IPackageService
     public List<Package> selectPackageList(Package pkg);
 
     /**
+     * 查询面单列表
+     *
+     * @param packageVo 面单
+     * @return 面单集合
+     */
+    public List<PackageVo> selectPackageVoList(PackageVo packageVo);
+
+    /**
      * 新增面单
      * 
      * @param pkg 面单

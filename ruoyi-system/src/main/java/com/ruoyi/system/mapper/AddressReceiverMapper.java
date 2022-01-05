@@ -28,6 +28,14 @@ public interface AddressReceiverMapper
     public List<AddressReceiver> selectAddressReceiverList(AddressReceiver addressReceiver);
 
     /**
+     * 查询收货人信息列表
+     *
+     * @param
+     * @return 收货人信息集合
+     */
+    public List<AddressReceiver> selectAddressReceiverByIdIn(List<Long> ids);
+
+    /**
      * 新增收货人信息
      * 
      * @param addressReceiver 收货人信息

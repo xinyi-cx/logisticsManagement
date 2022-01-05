@@ -2,6 +2,9 @@ package com.ruoyi.system.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.Package;
@@ -17,15 +20,16 @@ import com.ruoyi.system.mapper.PackageMapper;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.util.stream.Collectors.toMap;
+
 /**
  * 面单Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2022-01-02
  */
 @Service
-public class PackageServiceImpl implements IPackageService 
-{
+public class PackageServiceImpl implements IPackageService {
     @Autowired
     private PackageMapper packageMapper;
 
@@ -40,37 +44,77 @@ public class PackageServiceImpl implements IPackageService
 
     /**
      * 查询面单
-     * 
+     *
      * @param id 面单主键
      * @return 面单
      */
     @Override
-    public Package selectPackageById(Long id)
-    {
+    public Package selectPackageById(Long id) {
         return packageMapper.selectPackageById(id);
     }
 
     /**
      * 查询面单列表
-     * 
+     *
      * @param pkg 面单
      * @return 面单
      */
     @Override
-    public List<Package> selectPackageList(Package pkg)
-    {
+    public List<Package> selectPackageList(Package pkg) {
         return packageMapper.selectPackageList(pkg);
     }
 
     /**
+     * 查询面单列表
+     *
+     * @param packageVo 面单
+     * @return 面单
+     */
+    @Override
+    public List<PackageVo> selectPackageVoList(PackageVo packageVo) {
+        List<Package> packages = new ArrayList<>();
+        List<AddressSender> addressSenders = addressSenderMapper.selectAddressSenderByIdIn(packages.stream().map(Package::getSenderId).collect(Collectors.toList()));
+        Map<Long, AddressSender> addressSenderMap = addressSenders.stream().collect(toMap(AddressSender::getId, Function.identity()));
+        List<AddressReceiver> addressReceivers = addressReceiverMapper.selectAddressReceiverByIdIn(packages.stream().map(Package::getReceiverId).collect(Collectors.toList()));
+        Map<Long, AddressReceiver> addressReceiverMap = addressReceivers.stream().collect(toMap(AddressReceiver::getId, Function.identity()));
+
+        return packages.stream().map(item -> this.getPackageVo(item, addressSenderMap, addressReceiverMap)).collect(Collectors.toList());
+    }
+
+    private PackageVo getPackageVo(Package pac, Map<Long, AddressSender> addressSenderMap, Map<Long, AddressReceiver> addressReceiverMap) {
+        PackageVo packageVo = new PackageVo();
+        BeanUtils.copyProperties(pac, packageVo);
+        packageVo.setSenderAddress(addressSenderMap.get(pac.getSenderId()).getAddress());
+        packageVo.setSenderCity(addressSenderMap.get(pac.getSenderId()).getCity());
+        packageVo.setSenderCompany(addressSenderMap.get(pac.getSenderId()).getCompany());
+        packageVo.setSenderCountryCode(addressSenderMap.get(pac.getSenderId()).getCountryCode());
+        packageVo.setSenderEmail(addressSenderMap.get(pac.getSenderId()).getEmail());
+        packageVo.setSenderFid(addressSenderMap.get(pac.getSenderId()).getFid());
+        packageVo.setSenderName(addressSenderMap.get(pac.getSenderId()).getName());
+        packageVo.setSenderPhone(addressSenderMap.get(pac.getSenderId()).getPhone());
+        packageVo.setSenderPostalCode(addressSenderMap.get(pac.getSenderId()).getPostalCode());
+
+        packageVo.setReceiverAddress(addressReceiverMap.get(pac.getReceiverId()).getAddress());
+        packageVo.setReceiverCity(addressReceiverMap.get(pac.getReceiverId()).getCity());
+        packageVo.setReceiverCompany(addressReceiverMap.get(pac.getReceiverId()).getCompany());
+        packageVo.setReceiverCountryCode(addressReceiverMap.get(pac.getReceiverId()).getCountryCode());
+        packageVo.setReceiverEmail(addressReceiverMap.get(pac.getReceiverId()).getEmail());
+        packageVo.setReceiverName(addressReceiverMap.get(pac.getReceiverId()).getName());
+        packageVo.setReceiverPhone(addressReceiverMap.get(pac.getReceiverId()).getPhone());
+        packageVo.setReceiverPostalCode(addressReceiverMap.get(pac.getReceiverId()).getPostalCode());
+
+
+        return packageVo;
+    }
+
+    /**
      * 新增面单
-     * 
+     *
      * @param pkg 面单
      * @return 结果
      */
     @Override
-    public int insertPackage(Package pkg)
-    {
+    public int insertPackage(Package pkg) {
         return packageMapper.insertPackage(pkg);
     }
 
@@ -82,10 +126,9 @@ public class PackageServiceImpl implements IPackageService
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insertPackage(PackageVo pkg)
-    {
+    public int insertPackage(PackageVo pkg) {
         Package pac = new Package();
-        BeanUtils.copyProperties(pkg,pac);
+        BeanUtils.copyProperties(pkg, pac);
         //生成id
         AddressReceiver addressReceiver = getReceiver(pkg, null);
         AddressSender addressSender = getSender(pkg, null);
@@ -100,7 +143,7 @@ public class PackageServiceImpl implements IPackageService
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int importPackage(List<PackageVo> packageVos){
+    public int importPackage(List<PackageVo> packageVos) {
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setStatus("上传成功");
         /**
@@ -116,7 +159,7 @@ public class PackageServiceImpl implements IPackageService
             AddressSender addressSender = getSender(packageVo, null);
 
             Package pac = new Package();
-            BeanUtils.copyProperties(packageVo,pac);
+            BeanUtils.copyProperties(packageVo, pac);
             pac.setReceiverId(addressReceiver.getId());
             pac.setSenderId(addressSender.getId());
             pac.setServicesId(1L);
@@ -133,7 +176,7 @@ public class PackageServiceImpl implements IPackageService
 
     }
 
-    private AddressSender getSender(PackageVo pkg, Long id){
+    private AddressSender getSender(PackageVo pkg, Long id) {
         AddressSender addressSender = new AddressSender();
         addressSender.setAddress(pkg.getSenderAddress());
         addressSender.setCity(pkg.getSenderCity());
@@ -148,7 +191,7 @@ public class PackageServiceImpl implements IPackageService
         return addressSender;
     }
 
-    private AddressReceiver getReceiver(PackageVo pkg, Long id){
+    private AddressReceiver getReceiver(PackageVo pkg, Long id) {
         AddressReceiver addressReceiver = new AddressReceiver();
         addressReceiver.setAddress(pkg.getReceiverAddress());
         addressReceiver.setCity(pkg.getReceiverCity());
@@ -164,37 +207,34 @@ public class PackageServiceImpl implements IPackageService
 
     /**
      * 修改面单
-     * 
+     *
      * @param pkg 面单
      * @return 结果
      */
     @Override
-    public int updatePackage(Package pkg)
-    {
+    public int updatePackage(Package pkg) {
         return packageMapper.updatePackage(pkg);
     }
 
     /**
      * 批量删除面单
-     * 
+     *
      * @param ids 需要删除的面单主键
      * @return 结果
      */
     @Override
-    public int deletePackageByIds(Long[] ids)
-    {
+    public int deletePackageByIds(Long[] ids) {
         return packageMapper.deletePackageByIds(ids);
     }
 
     /**
      * 删除面单信息
-     * 
+     *
      * @param id 面单主键
      * @return 结果
      */
     @Override
-    public int deletePackageById(Long id)
-    {
+    public int deletePackageById(Long id) {
         return packageMapper.deletePackageById(id);
     }
 }

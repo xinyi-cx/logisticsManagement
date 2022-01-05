@@ -51,6 +51,17 @@ public class PackageController extends BaseController
     }
 
     /**
+     * 查询面单列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:package:list')")
+    @GetMapping("/listAll")
+    public TableDataInfo list(PackageVo pkg)
+    {
+        startPage();
+        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        return getDataTable(list);
+    }
+    /**
      * 导出面单列表
      */
     @PreAuthorize("@ss.hasPermi('system:package:export')")

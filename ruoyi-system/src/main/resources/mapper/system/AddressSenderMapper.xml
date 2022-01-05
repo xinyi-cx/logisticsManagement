@@ -48,7 +48,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectAddressSenderVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectAddressSenderByIdIn" resultMap="AddressSenderResult" parameterType="list">
+        <include refid="selectAddressSenderVo"/>
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <insert id="insertAddressSender" parameterType="AddressSender" useGeneratedKeys="true" keyProperty="id">
         insert into address_sender
         <trim prefix="(" suffix=")" suffixOverrides=",">
