@@ -81,7 +81,7 @@ public class PackageServiceImpl implements IPackageService
      * @return 结果
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int insertPackage(PackageVo pkg)
     {
         Package pac = new Package();
@@ -99,7 +99,7 @@ public class PackageServiceImpl implements IPackageService
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int importPackage(List<PackageVo> packageVos){
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setStatus("上传成功");
