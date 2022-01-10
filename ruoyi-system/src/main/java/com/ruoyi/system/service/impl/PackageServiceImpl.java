@@ -9,14 +9,11 @@ import java.util.stream.Collectors;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.PackageVo;
-import com.ruoyi.system.mapper.AddressReceiverMapper;
-import com.ruoyi.system.mapper.AddressSenderMapper;
-import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
+import com.ruoyi.system.mapper.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.PackageMapper;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +38,9 @@ public class PackageServiceImpl implements IPackageService {
 
     @Autowired
     private BatchTaskHistoryMapper batchTaskHistoryMapper;
+
+    @Autowired
+    private SequenceMapper sequenceMapper;
 
     /**
      * 查询面单
@@ -130,8 +130,8 @@ public class PackageServiceImpl implements IPackageService {
         Package pac = new Package();
         BeanUtils.copyProperties(pkg, pac);
         //生成id
-        AddressReceiver addressReceiver = getReceiver(pkg, null);
-        AddressSender addressSender = getSender(pkg, null);
+        AddressReceiver addressReceiver = getReceiver(pkg, sequenceMapper.selectNextvalByName("receiver_seq"));
+        AddressSender addressSender = getSender(pkg, sequenceMapper.selectNextvalByName("send_seq"));
         addressSenderMapper.insertAddressSenderWithId(addressSender);
         addressReceiverMapper.insertAddressReceiverWithId(addressReceiver);
         pac.setReceiverId(addressReceiver.getId());
@@ -154,9 +154,10 @@ public class PackageServiceImpl implements IPackageService {
         List<AddressReceiver> addressReceivers = new ArrayList<>();
         List<Package> packages = new ArrayList<>();
         //生成id 并且更新
+        Map<String, Sequence> nameMap = getSeqMap(packages.size());
         for (PackageVo packageVo : packageVos) {
-            AddressReceiver addressReceiver = getReceiver(packageVo, null);
-            AddressSender addressSender = getSender(packageVo, null);
+            AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
+            AddressSender addressSender = getSender(packageVo, getId(nameMap, "send_seq"));
 
             Package pac = new Package();
             BeanUtils.copyProperties(packageVo, pac);
@@ -173,8 +174,31 @@ public class PackageServiceImpl implements IPackageService {
         addressSenderMapper.batchInsert(addressSenders);
         addressReceiverMapper.batchInsert(addressReceivers);
         return packageMapper.batchInsert(packages);
-
     }
+
+    private Long getId(Map<String, Sequence> nameMap, String seqName) {
+        Sequence sequence = nameMap.get(seqName);
+        Long id = sequence.getCurrentVal() + sequence.getIncrementVal();
+        sequence.setCurrentVal(id);
+        return id;
+    }
+
+    private static String[] SEQ_NAMES = {"send_seq", "receiver_seq"};
+
+    private Map<String, Sequence> getSeqMap(int addNum) {
+        List<Sequence> sequences = sequenceMapper.selectSequenceList(new Sequence());
+        Map<String, Sequence> nameMap = sequences.stream().collect(toMap(Sequence::getSeqName, Function.identity()));
+        for (String seqName : SEQ_NAMES) {
+            if (nameMap.containsKey("")) {
+                Sequence sequence = nameMap.get("");
+                sequence.setCurrentVal(sequence.getCurrentVal() + addNum * sequence.getIncrementVal());
+                sequenceMapper.updateSequence(sequence);
+            }
+        }
+
+        return nameMap;
+    }
+
 
     private AddressSender getSender(PackageVo pkg, Long id) {
         AddressSender addressSender = new AddressSender();

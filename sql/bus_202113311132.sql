@@ -142,6 +142,7 @@ CREATE TABLE `batch_task_history`
   CHARSET = utf8
   auto_increment = 200 comment = '批量任务历史';
 
+drop table if exists sequence;
 CREATE TABLE `sequence` (
   `seq_name` varchar(50) NOT NULL comment '序列名称',
   `current_val` int(11) NOT NULL comment '当前值',
@@ -180,7 +181,6 @@ RETURN current;
 END;
 
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('send_seq', '1', '1');
-INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('receiver_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('receiver_seq', '1', '1');
 -- INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('test', '1000', '1');
 --
