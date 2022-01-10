@@ -269,7 +269,7 @@
 </template>
 
 <script>
-import { listParcel, getParcel, delParcel, addParcel, updateParcel } from "@/api/system/parcel";
+import { listParcel, getParcel, delParcel, addParcel, updateParcel } from "@/api/shippingOrder/parcel";
 
 export default {
   name: "Parcel",

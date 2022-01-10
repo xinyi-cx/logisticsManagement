@@ -119,12 +119,12 @@
         <el-button
           type="success"
           plain
-          icon="el-icon-upload2"
+          icon="el-icon-edit"
           size="mini"
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:package:edit']"
-        >批量导入</el-button>
+        >修改</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -149,46 +149,32 @@
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
-     <!-- 列表 -->
+
     <el-table v-loading="loading" :data="packageList" @selection-change="handleSelectionChange">
-      <!-- 多选 -->
       <el-table-column type="selection" width="55" align="center" />
-      <!-- 物流单号 -->
-      <el-table-column label="物流单号" align="center" prop="id" />
-      <!-- 创建时间 -->
-      <el-table-column label="创建时间" align="center" prop="id">
+      <el-table-column label="面单主键" align="center" prop="id" />
+      <el-table-column label="付款人类型" align="center" prop="payerType" />
+      <el-table-column label="发件人id" align="center" prop="senderId" />
+      <el-table-column label="收货人id" align="center" prop="receiverId" />
+      <el-table-column label="分类1" align="center" prop="ref1" />
+      <el-table-column label="分类2" align="center" prop="ref2" />
+      <el-table-column label="服务id" align="center" prop="servicesId" />
+      <el-table-column label="手机号码" align="center" prop="phone" />
+      <el-table-column label="邮政编码" align="center" prop="postalCode" />
+      <el-table-column label="创建人" align="center" prop="createUser" />
+      <el-table-column label="更新人" align="center" prop="updateUser" />
+      <el-table-column label="创建时间" align="center" prop="createdTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
         </template>
-        </el-table-column>
-      <!-- 收货人全名 -->
-      <el-table-column label="收货人全名" align="center" prop="id" />
-      <!-- 国家 -->
-      <el-table-column label="国家" align="center" prop="id" />
-      <!-- 城市 -->
-      <el-table-column label="城市" align="center" prop="id" />
-      <!-- 货物金额(pln) -->
-      <el-table-column label="货物金额(pln)" align="center" prop="id" width="180"/>
-      <!-- 重量(kg) -->
-      <el-table-column label="重量(kg)" align="center" prop="id" />
-      <!-- 邮码 -->
-      <el-table-column label="邮码" align="center" prop="id" />
-      <!-- 手机号码 -->
-      <el-table-column label="手机号码" align="center" prop="id" />
-      <!-- 内部引用号 -->
-      <el-table-column label="内部引用号" align="center" prop="id" />
-      <!-- 备注 -->
-      <el-table-column label="备注" align="center" prop="id" />
-      <!-- 下载次数 -->
-      <el-table-column label="下载次数" align="center" prop="id" />
-      <!-- 分类 -->
-      <el-table-column label="分类" align="center" prop="id" />
-      <!-- 分类2 -->
-      <el-table-column label="分类2" align="center" prop="id" />
-      <!-- 操作 -->
-      <el-table-column label="操作" align="center" prop="id">
-         <template slot-scope="scope">
-         <!-- 修改与删除按钮
+      </el-table-column>
+      <el-table-column label="更新时间" align="center" prop="updatedTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.updatedTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
@@ -203,60 +189,10 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:package:remove']"
           >删除</el-button>
-          -->
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:package:remove']"
-          >查看面单</el-button>
         </template>
       </el-table-column>
-
-      <!-- 原来的字段内容
-        <el-table-column label="面单主键" align="center" prop="id" />
-        <el-table-column label="付款人类型" align="center" prop="payerType" />
-        <el-table-column label="发件人id" align="center" prop="senderId" />
-        <el-table-column label="收货人id" align="center" prop="receiverId" />
-        <el-table-column label="分类1" align="center" prop="ref1" />
-        <el-table-column label="分类2" align="center" prop="ref2" />
-        <el-table-column label="服务id" align="center" prop="servicesId" />
-        <el-table-column label="手机号码" align="center" prop="phone" />
-        <el-table-column label="邮政编码" align="center" prop="postalCode" />
-        <el-table-column label="创建人" align="center" prop="createUser" />
-        <el-table-column label="更新人" align="center" prop="updateUser" />
-        <el-table-column label="创建时间" align="center" prop="createdTime" width="180">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="更新时间" align="center" prop="updatedTime" width="180">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.updatedTime, '{y}-{m}-{d}') }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-edit"
-              @click="handleUpdate(scope.row)"
-              v-hasPermi="['system:package:edit']"
-            >修改</el-button>
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
-              v-hasPermi="['system:package:remove']"
-            >删除</el-button>
-          </template>
-        </el-table-column>
-      -->
     </el-table>
-    <!-- 翻页 -->
+    
     <pagination
       v-show="total>0"
       :total="total"
@@ -266,93 +202,8 @@
     />
 
     <!-- 添加或修改面单对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="106px">
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="收货人全名" prop="senderId">
-            <el-input v-model="form.senderId" placeholder="请输入收获人全名" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-          <el-col :span="12">
-            <el-form-item label="国家" prop="country">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="城市" prop="city">
-              <el-input v-model="form.city" placeholder="请输入城市名" maxlength="30" />
-            </el-form-item>
-          </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="街道" prop="senderId">
-            <el-input v-model="form.senderId" placeholder="请输入街道信息" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="邮政编码" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入邮政编码" maxlength="30" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="手机号码" prop="phone">
-            <el-input v-model.number="form.phone" placeholder="请输入手机号码" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="邮件/联系方式" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入邮件/联系方式" maxlength="30" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="货物金额(PLN)" prop="phone">
-            <el-input v-model.number="form.phone" placeholder="max:6000" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <h3 class="headline">其他</h3>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="内部引用号" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入内部引用号" maxlength="30" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="重量(KG)" prop="country">
-            <el-input v-model="form.nickName" placeholder="max(National:31.5,International:40)" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="分类" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入分类" maxlength="30" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="分类2" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入分类2" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="备注" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入邮政备注" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <!--
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="发件人id" prop="senderId">
           <el-input v-model="form.senderId" placeholder="请输入发件人id" />
         </el-form-item>
@@ -396,7 +247,6 @@
             placeholder="选择更新时间">
           </el-date-picker>
         </el-form-item>
-        -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -563,11 +413,3 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-.headline {
-  font-weight: bold;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
-</style>
