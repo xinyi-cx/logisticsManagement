@@ -29,7 +29,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectParcelList" parameterType="Parcel" resultMap="ParcelResult">
         <include refid="selectParcelVo"/>
-        <where>  
+        <where>
+            is_delete = 0
             <if test="sizeX != null "> and size_x = #{sizeX}</if>
             <if test="sizeY != null "> and size_y = #{sizeY}</if>
             <if test="sizeZ != null "> and size_z = #{sizeZ}</if>
@@ -113,14 +114,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteParcelById" parameterType="Long">
-        delete from parcel where id = #{id}
-    </delete>
+    <update id="deleteParcelById" parameterType="Long">
+        update parcel set is_delete = 1  where id = #{id}
+    </update>
 
-    <delete id="deleteParcelByIds" parameterType="String">
-        delete from parcel where id in 
+    <update id="deleteParcelByIds" parameterType="String">
+        update parcel set is_delete = 1   where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
-    </delete>
+    </update>
 </mapper>

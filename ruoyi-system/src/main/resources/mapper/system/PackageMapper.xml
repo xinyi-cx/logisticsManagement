@@ -27,7 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectPackageList" parameterType="Package" resultMap="PackageResult">
         <include refid="selectPackageVo"/>
-        <where>  
+        <where>
+            is_delete = 0
             <if test="payerType != null  and payerType != ''"> and payer_type = #{payerType}</if>
             <if test="senderId != null "> and sender_id = #{senderId}</if>
             <if test="receiverId != null "> and receiver_id = #{receiverId}</if>
@@ -127,14 +128,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePackageById" parameterType="Long">
-        delete from package where id = #{id}
-    </delete>
+    <update id="deletePackageById" parameterType="Long">
+        update package set is_delete = 1 where id = #{id}
+    </update>
 
-    <delete id="deletePackageByIds" parameterType="String">
-        delete from package where id in 
+    <update id="deletePackageByIds" parameterType="String">
+        update package set is_delete = 1 where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
-    </delete>
+    </update>
 </mapper>

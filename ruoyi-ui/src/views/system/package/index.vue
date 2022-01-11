@@ -1,24 +1,6 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="发件人id" prop="senderId">
-        <el-input
-          v-model="queryParams.senderId"
-          placeholder="请输入发件人id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="收货人id" prop="receiverId">
-        <el-input
-          v-model="queryParams.receiverId"
-          placeholder="请输入收货人id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="分类1" prop="ref1">
         <el-input
           v-model="queryParams.ref1"
@@ -32,15 +14,6 @@
         <el-input
           v-model="queryParams.ref2"
           placeholder="请输入分类2"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="服务id" prop="servicesId">
-        <el-input
-          v-model="queryParams.servicesId"
-          placeholder="请输入服务id"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -278,7 +251,14 @@
       <el-row>
           <el-col :span="12">
             <el-form-item label="国家" prop="receiverCountryCode">
-              <el-input v-model="form.receiverCountryCode" placeholder="请输入用户昵称" maxlength="30" />
+              <el-select v-model="form.receiverCountryCode" placeholder="请选择">
+                <el-option
+                  v-for="dict in dict.type.sys_country"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -411,6 +391,7 @@ import { listPackageAll, getPackage, delPackage, updatePackage, addPackageAll } 
 
 export default {
   name: "Package",
+  dicts: ['sys_country'],
   data() {
     return {
       // 遮罩层
@@ -436,8 +417,6 @@ export default {
         pageNum: 1,
         pageSize: 10,
         payerType: null,
-        senderId: null,
-        receiverId: null,
         ref1: null,
         ref2: null,
         servicesId: null,
@@ -477,12 +456,16 @@ export default {
     reset() {
       this.form = {
         id: null,
-        payerType: null,
-        senderId: null,
-        receiverId: null,
+        receiverName: null,
+        receiverCountryCode: null,
+        receiverCity: null,
+        receiverAddress: null,
+        receiverPostalCode: null,
+        receiverPhone: null,
+        receiverEmail: null,
+        pln: null,
         ref1: null,
         ref2: null,
-        servicesId: null,
         phone: null,
         postalCode: null,
         createUser: null,

@@ -17,6 +17,14 @@ public class BatchTaskHistory extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    public BatchTaskHistory(){
+        this.downloadNum = 0;
+        this.failNum = 0;
+        this.successNum = 0;
+        this.createdTime = new Date();
+        this.updatedTime = new Date();
+    }
+
     /** 主键 */
     private Long id;
 

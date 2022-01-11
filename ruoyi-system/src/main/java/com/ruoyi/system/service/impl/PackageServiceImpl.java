@@ -1,6 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -10,6 +11,7 @@ import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.mapper.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +74,12 @@ public class PackageServiceImpl implements IPackageService {
      */
     @Override
     public List<PackageVo> selectPackageVoList(PackageVo packageVo) {
-        List<Package> packages = new ArrayList<>();
+        Package pkg = new Package();
+        BeanUtils.copyProperties(packageVo, pkg);
+        List<Package> packages = packageMapper.selectPackageList(pkg);
+        if (CollectionUtils.isEmpty(packages)){
+            return new ArrayList<>();
+        }
         List<AddressSender> addressSenders = addressSenderMapper.selectAddressSenderByIdIn(packages.stream().map(Package::getSenderId).collect(Collectors.toList()));
         Map<Long, AddressSender> addressSenderMap = addressSenders.stream().collect(toMap(AddressSender::getId, Function.identity()));
         List<AddressReceiver> addressReceivers = addressReceiverMapper.selectAddressReceiverByIdIn(packages.stream().map(Package::getReceiverId).collect(Collectors.toList()));
@@ -102,7 +109,7 @@ public class PackageServiceImpl implements IPackageService {
         packageVo.setReceiverName(addressReceiverMap.get(pac.getReceiverId()).getName());
         packageVo.setReceiverPhone(addressReceiverMap.get(pac.getReceiverId()).getPhone());
         packageVo.setReceiverPostalCode(addressReceiverMap.get(pac.getReceiverId()).getPostalCode());
-
+        packageVo.setPln(addressReceiverMap.get(pac.getReceiverId()).getPln());
 
         return packageVo;
     }
@@ -127,6 +134,8 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertPackage(PackageVo pkg) {
+        pkg.setCreatedTime(new Date());
+        pkg.setUpdatedTime(new Date());
         Package pac = new Package();
         BeanUtils.copyProperties(pkg, pac);
         //生成id
@@ -155,6 +164,8 @@ public class PackageServiceImpl implements IPackageService {
         //生成id 并且更新
         Map<String, Sequence> nameMap = getSeqMap(packages.size());
         for (PackageVo packageVo : packageVos) {
+            packageVo.setCreatedTime(new Date());
+            packageVo.setUpdatedTime(new Date());
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
             AddressSender addressSender = getSender(packageVo, getId(nameMap, "send_seq"));
 
@@ -211,6 +222,8 @@ public class PackageServiceImpl implements IPackageService {
         addressSender.setPhone(pkg.getSenderPhone());
         addressSender.setPostalCode(pkg.getSenderPostalCode());
         addressSender.setId(id);
+        addressSender.setCreatedTime(new Date());
+        addressSender.setUpdatedTime(new Date());
         return addressSender;
     }
 
@@ -226,6 +239,8 @@ public class PackageServiceImpl implements IPackageService {
         addressReceiver.setPostalCode(pkg.getReceiverPostalCode());
         addressReceiver.setId(id);
         addressReceiver.setPln(pkg.getPln());
+        addressReceiver.setCreatedTime(new Date());
+        addressReceiver.setUpdatedTime(new Date());
         return addressReceiver;
     }
 

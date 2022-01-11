@@ -27,7 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectAddressSenderList" parameterType="AddressSender" resultMap="AddressSenderResult">
         <include refid="selectAddressSenderVo"/>
-        <where>  
+        <where>
+             is_delete = 0
             <if test="address != null  and address != ''"> and address = #{address}</if>
             <if test="city != null  and city != ''"> and city = #{city}</if>
             <if test="company != null  and company != ''"> and company = #{company}</if>
@@ -167,14 +168,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteAddressSenderById" parameterType="Long">
-        delete from address_sender where id = #{id}
-    </delete>
+    <update id="deleteAddressSenderById" parameterType="Long">
+        update address_sender set is_delete = 1   where id = #{id}
+    </update>
 
-    <delete id="deleteAddressSenderByIds" parameterType="String">
-        delete from address_sender where id in 
+    <update id="deleteAddressSenderByIds" parameterType="String">
+        update address_sender set is_delete = 1  where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
-    </delete>
+    </update>
 </mapper>

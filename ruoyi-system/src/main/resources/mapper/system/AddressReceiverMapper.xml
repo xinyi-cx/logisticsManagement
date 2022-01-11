@@ -27,7 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectAddressReceiverList" parameterType="AddressReceiver" resultMap="AddressReceiverResult">
         <include refid="selectAddressReceiverVo"/>
-        <where>  
+        <where>
+            is_delete = 0
             <if test="address != null  and address != ''"> and address = #{address}</if>
             <if test="city != null  and city != ''"> and city = #{city}</if>
             <if test="company != null  and company != ''"> and company = #{company}</if>
@@ -103,16 +104,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteAddressReceiverById" parameterType="Long">
-        delete from address_receiver where id = #{id}
-    </delete>
+    <update id="deleteAddressReceiverById" parameterType="Long">
+        update address_receiver set is_delete = 1   where id = #{id}
+    </update>
 
-    <delete id="deleteAddressReceiverByIds" parameterType="String">
-        delete from address_receiver where id in
+    <update id="deleteAddressReceiverByIds" parameterType="String">
+        update address_receiver set is_delete = 1  where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
-    </delete>
+    </update>
 
     <select id="selectAddressReceiverByIdIn" resultMap="AddressReceiverResult" parameterType="list">
         <include refid="selectAddressReceiverVo"/>
