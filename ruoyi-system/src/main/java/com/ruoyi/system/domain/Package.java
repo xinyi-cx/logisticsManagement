@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 面单对象 package
  * 
  * @author ruoyi
- * @date 2022-01-03
+ * @date 2022-01-11
  */
 public class Package extends BaseEntity
 {
@@ -73,6 +73,10 @@ public class Package extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
+
+    /** 是否删除 */
+    @Excel(name = "是否删除")
+    private Integer isDelete;
 
     public void setId(Long id) 
     {
@@ -200,6 +204,15 @@ public class Package extends BaseEntity
     {
         return updatedTime;
     }
+    public void setIsDelete(Integer isDelete) 
+    {
+        this.isDelete = isDelete;
+    }
+
+    public Integer getIsDelete() 
+    {
+        return isDelete;
+    }
 
     @Override
     public String toString() {
@@ -218,6 +231,7 @@ public class Package extends BaseEntity
             .append("updateUser", getUpdateUser())
             .append("createdTime", getCreatedTime())
             .append("updatedTime", getUpdatedTime())
+            .append("isDelete", getIsDelete())
             .toString();
     }
 }

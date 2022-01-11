@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 【请填写功能名称】对象 services
  * 
  * @author ruoyi
- * @date 2022-01-02
+ * @date 2022-01-11
  */
 public class Services extends BaseEntity
 {

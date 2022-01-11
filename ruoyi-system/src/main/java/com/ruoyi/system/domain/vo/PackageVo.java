@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -32,6 +33,10 @@ public class PackageVo extends BaseEntity
     /** 收货人id */
     @Excel(name = "收货人id")
     private Long receiverId;
+
+    /** 货物金额 */
+    @Excel(name = "货物金额")
+    private BigDecimal pln;
 
     /** 分类1 */
     @Excel(name = "分类1")
@@ -183,7 +188,15 @@ public class PackageVo extends BaseEntity
     @Excel(name = "package_id")
     private Long packageId;
 
-    public void setId(Long id) 
+    public BigDecimal getPln() {
+        return pln;
+    }
+
+    public void setPln(BigDecimal pln) {
+        this.pln = pln;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

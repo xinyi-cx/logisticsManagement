@@ -11,19 +11,11 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 批量任务历史对象 batch_task_history
  * 
  * @author ruoyi
- * @date 2022-01-03
+ * @date 2022-01-11
  */
 public class BatchTaskHistory extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
-
-    public BatchTaskHistory(){
-        this.downloadNum = 0;
-        this.failNum = 0;
-        this.successNum = 0;
-        this.createdTime = new Date();
-        this.updatedTime = new Date();
-    }
 
     /** 主键 */
     private Long id;
@@ -73,6 +65,10 @@ public class BatchTaskHistory extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
+
+    /** 是否删除 */
+    @Excel(name = "是否删除")
+    private Integer isDelete;
 
     public void setId(Long id) 
     {
@@ -182,6 +178,15 @@ public class BatchTaskHistory extends BaseEntity
     {
         return updatedTime;
     }
+    public void setIsDelete(Integer isDelete) 
+    {
+        this.isDelete = isDelete;
+    }
+
+    public Integer getIsDelete() 
+    {
+        return isDelete;
+    }
 
     @Override
     public String toString() {
@@ -198,6 +203,7 @@ public class BatchTaskHistory extends BaseEntity
             .append("updateUser", getUpdateUser())
             .append("createdTime", getCreatedTime())
             .append("updatedTime", getUpdatedTime())
+            .append("isDelete", getIsDelete())
             .toString();
     }
 }

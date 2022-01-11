@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -11,7 +12,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 收货人信息对象 address_receiver
  * 
  * @author ruoyi
- * @date 2022-01-02
+ * @date 2022-01-11
  */
 public class AddressReceiver extends BaseEntity
 {
@@ -52,6 +53,10 @@ public class AddressReceiver extends BaseEntity
     @Excel(name = "收件人邮政编码")
     private String postalCode;
 
+    /** 货物金额 */
+    @Excel(name = "货物金额")
+    private BigDecimal pln;
+
     /** 收件人创建人 */
     @Excel(name = "收件人创建人")
     private String createUser;
@@ -69,6 +74,10 @@ public class AddressReceiver extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "收件人更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
+
+    /** 是否删除 */
+    @Excel(name = "是否删除")
+    private Integer isDelete;
 
     public void setId(Long id) 
     {
@@ -151,6 +160,15 @@ public class AddressReceiver extends BaseEntity
     {
         return postalCode;
     }
+    public void setPln(BigDecimal pln) 
+    {
+        this.pln = pln;
+    }
+
+    public BigDecimal getPln() 
+    {
+        return pln;
+    }
     public void setCreateUser(String createUser) 
     {
         this.createUser = createUser;
@@ -187,6 +205,15 @@ public class AddressReceiver extends BaseEntity
     {
         return updatedTime;
     }
+    public void setIsDelete(Integer isDelete) 
+    {
+        this.isDelete = isDelete;
+    }
+
+    public Integer getIsDelete() 
+    {
+        return isDelete;
+    }
 
     @Override
     public String toString() {
@@ -200,10 +227,12 @@ public class AddressReceiver extends BaseEntity
             .append("name", getName())
             .append("phone", getPhone())
             .append("postalCode", getPostalCode())
+            .append("pln", getPln())
             .append("createUser", getCreateUser())
             .append("updateUser", getUpdateUser())
             .append("createdTime", getCreatedTime())
             .append("updatedTime", getUpdatedTime())
+            .append("isDelete", getIsDelete())
             .toString();
     }
 }

@@ -15,6 +15,7 @@ CREATE TABLE `package`
     `update_user`  varchar(50)  DEFAULT NULL comment '更新人',
     `created_time` datetime     DEFAULT NULL comment '创建时间',
     `updated_time` datetime     DEFAULT NULL comment '更新时间',
+    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8
@@ -37,6 +38,7 @@ CREATE TABLE `address_sender`
     `update_user`  varchar(50)  DEFAULT NULL comment '发件人更新人',
     `created_time` datetime     DEFAULT NULL comment '发件人创建时间',
     `updated_time` datetime     DEFAULT NULL comment '发件人更新时间',
+    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8
@@ -46,18 +48,20 @@ drop table if exists address_receiver;
 CREATE TABLE `address_receiver`
 (
     `id`           bigint(20) unsigned NOT NULL AUTO_INCREMENT comment '收件人主键',
-    `address`      varchar(500) DEFAULT NULL comment '收件人地址',
-    `city`         varchar(100) DEFAULT NULL comment '收件人城市',
-    `company`      varchar(100) DEFAULT NULL comment '收件人公司',
-    `country_code` varchar(100) DEFAULT NULL comment '收件人国家编码',
-    `email`        varchar(100) DEFAULT NULL comment '收件人邮件',
-    `name`         varchar(200) DEFAULT NULL comment '收件人姓名',
-    `phone`        varchar(100) DEFAULT NULL comment '收件人手机号码',
-    `postal_code`  varchar(100) DEFAULT NULL comment '收件人邮政编码',
-    `create_user`  varchar(50)  DEFAULT NULL comment '收件人创建人',
-    `update_user`  varchar(50)  DEFAULT NULL comment '收件人更新人',
-    `created_time` datetime     DEFAULT NULL comment '收件人创建时间',
-    `updated_time` datetime     DEFAULT NULL comment '收件人更新时间',
+    `address`      varchar(500)   DEFAULT NULL comment '收件人地址',
+    `city`         varchar(100)   DEFAULT NULL comment '收件人城市',
+    `company`      varchar(100)   DEFAULT NULL comment '收件人公司',
+    `country_code` varchar(100)   DEFAULT NULL comment '收件人国家编码',
+    `email`        varchar(100)   DEFAULT NULL comment '收件人邮件',
+    `name`         varchar(200)   DEFAULT NULL comment '收件人姓名',
+    `phone`        varchar(100)   DEFAULT NULL comment '收件人手机号码',
+    `postal_code`  varchar(100)   DEFAULT NULL comment '收件人邮政编码',
+    `pln`          decimal(12, 4) DEFAULT NULL comment '货物金额',
+    `create_user`  varchar(50)    DEFAULT NULL comment '收件人创建人',
+    `update_user`  varchar(50)    DEFAULT NULL comment '收件人更新人',
+    `created_time` datetime       DEFAULT NULL comment '收件人创建时间',
+    `updated_time` datetime       DEFAULT NULL comment '收件人更新时间',
+    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8
@@ -97,6 +101,7 @@ CREATE TABLE `parcel`
     `update_user`    varchar(50)  DEFAULT NULL comment '更新人',
     `created_time`   datetime     DEFAULT NULL comment '创建时间',
     `updated_time`   datetime     DEFAULT NULL comment '更新时间',
+    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8
@@ -117,6 +122,7 @@ CREATE TABLE `packages_generation_response`
     `update_user`   varchar(50)  DEFAULT NULL,
     `created_time`  datetime     DEFAULT NULL,
     `updated_time`  datetime     DEFAULT NULL,
+    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8
@@ -137,6 +143,7 @@ CREATE TABLE `batch_task_history`
     `update_user`   varchar(50)  DEFAULT NULL comment '更新人',
     `created_time`  datetime     DEFAULT NULL comment '创建时间',
     `updated_time`  datetime     DEFAULT NULL comment '更新时间',
+    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8
@@ -150,6 +157,7 @@ CREATE TABLE `sequence` (
   PRIMARY KEY (`seq_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+drop FUNCTION if exists currval;
 CREATE FUNCTION currval (v_seq_name VARCHAR(50)) RETURNS INTEGER
 BEGIN
 DECLARE current INTEGER;
@@ -163,6 +171,7 @@ WHERE
 RETURN current;
 END;
 
+drop FUNCTION if exists nextval;
 CREATE FUNCTION nextval (v_seq_name VARCHAR(50)) RETURNS INTEGER
 BEGIN
 DECLARE current INTEGER;
@@ -182,12 +191,6 @@ END;
 
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('send_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('receiver_seq', '1', '1');
--- INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('test', '1000', '1');
---
--- SELECT nextval('test');
-
--- select * from sequence;
-
 
 CREATE TABLE `documents`
 (
@@ -203,6 +206,7 @@ CREATE TABLE `documents`
     `update_user`  varchar(50)      DEFAULT NULL comment '更新人',
     `created_time` datetime         DEFAULT NULL comment '创建时间',
     `updated_time` datetime         DEFAULT NULL comment '更新时间',
+    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8

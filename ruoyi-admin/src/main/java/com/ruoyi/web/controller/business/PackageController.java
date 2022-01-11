@@ -100,7 +100,7 @@ public class PackageController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:package:add')")
     @Log(title = "面单", businessType = BusinessType.INSERT)
-    @PostMapping(value = "addAll")
+    @PostMapping(value = "/addAll")
     public AjaxResult addAll(@RequestBody PackageVo pkg)
     {
         return toAjax(packageService.insertPackage(pkg));

@@ -9,6 +9,14 @@ export function listPackage(query) {
   })
 }
 
+export function listPackageAll(query) {
+  return request({
+    url: '/system/package/listAll',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询面单详细
 export function getPackage(id) {
   return request({
@@ -21,6 +29,15 @@ export function getPackage(id) {
 export function addPackage(data) {
   return request({
     url: '/system/package',
+    method: 'post',
+    data: data
+  })
+}
+
+// 新增面单 -所有
+export function addPackageAll(data) {
+  return request({
+    url: '/system/package/addAll',
     method: 'post',
     data: data
   })

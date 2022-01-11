@@ -137,8 +137,7 @@ public class PackageServiceImpl implements IPackageService {
         pac.setReceiverId(addressReceiver.getId());
         pac.setSenderId(addressSender.getId());
         pac.setServicesId(1L);
-        packageMapper.insertPackage(pac);
-        return 0;
+        return packageMapper.insertPackage(pac);
     }
 
     @Override
@@ -189,8 +188,8 @@ public class PackageServiceImpl implements IPackageService {
         List<Sequence> sequences = sequenceMapper.selectSequenceList(new Sequence());
         Map<String, Sequence> nameMap = sequences.stream().collect(toMap(Sequence::getSeqName, Function.identity()));
         for (String seqName : SEQ_NAMES) {
-            if (nameMap.containsKey("")) {
-                Sequence sequence = nameMap.get("");
+            if (nameMap.containsKey(seqName)) {
+                Sequence sequence = nameMap.get(seqName);
                 sequence.setCurrentVal(sequence.getCurrentVal() + addNum * sequence.getIncrementVal());
                 sequenceMapper.updateSequence(sequence);
             }
@@ -226,6 +225,7 @@ public class PackageServiceImpl implements IPackageService {
         addressReceiver.setPhone(pkg.getReceiverPhone());
         addressReceiver.setPostalCode(pkg.getReceiverPostalCode());
         addressReceiver.setId(id);
+        addressReceiver.setPln(pkg.getPln());
         return addressReceiver;
     }
 

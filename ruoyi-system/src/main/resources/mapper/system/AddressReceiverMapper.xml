@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="name"    column="name"    />
         <result property="phone"    column="phone"    />
         <result property="postalCode"    column="postal_code"    />
+        <result property="pln"    column="pln"    />
         <result property="createUser"    column="create_user"    />
         <result property="updateUser"    column="update_user"    />
         <result property="createdTime"    column="created_time"    />
@@ -21,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectAddressReceiverVo">
-        select id, address, city, company, country_code, email, name, phone, postal_code, create_user, update_user, created_time, updated_time from address_receiver
+        select id, address, city, company, country_code, email, name, phone, postal_code, pln, create_user, update_user, created_time, updated_time from address_receiver
     </sql>
 
     <select id="selectAddressReceiverList" parameterType="AddressReceiver" resultMap="AddressReceiverResult">
@@ -35,6 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
             <if test="postalCode != null  and postalCode != ''"> and postal_code = #{postalCode}</if>
+            <if test="pln != null "> and pln = #{pln}</if>
             <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
             <if test="createdTime != null "> and created_time = #{createdTime}</if>
@@ -42,19 +44,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <select id="selectAddressReceiverByIdIn" resultMap="AddressReceiverResult" parameterType="list">
-        <include refid="selectAddressReceiverVo"/>
-        where id in
-        <foreach item="id" collection="list" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </select>
-
     <select id="selectAddressReceiverById" parameterType="Long" resultMap="AddressReceiverResult">
         <include refid="selectAddressReceiverVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertAddressReceiver" parameterType="AddressReceiver" useGeneratedKeys="true" keyProperty="id">
         insert into address_receiver
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -66,11 +60,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="name != null">name,</if>
             <if test="phone != null">phone,</if>
             <if test="postalCode != null">postal_code,</if>
+            <if test="pln != null">pln,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
             <if test="createdTime != null">created_time,</if>
             <if test="updatedTime != null">updated_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="address != null">#{address},</if>
             <if test="city != null">#{city},</if>
@@ -80,12 +75,53 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="name != null">#{name},</if>
             <if test="phone != null">#{phone},</if>
             <if test="postalCode != null">#{postalCode},</if>
+            <if test="pln != null">#{pln},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
             <if test="createdTime != null">#{createdTime},</if>
             <if test="updatedTime != null">#{updatedTime},</if>
-         </trim>
+        </trim>
     </insert>
+
+    <update id="updateAddressReceiver" parameterType="AddressReceiver">
+        update address_receiver
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="address != null">address = #{address},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="company != null">company = #{company},</if>
+            <if test="countryCode != null">country_code = #{countryCode},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="postalCode != null">postal_code = #{postalCode},</if>
+            <if test="pln != null">pln = #{pln},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAddressReceiverById" parameterType="Long">
+        delete from address_receiver where id = #{id}
+    </delete>
+
+    <delete id="deleteAddressReceiverByIds" parameterType="String">
+        delete from address_receiver where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAddressReceiverByIdIn" resultMap="AddressReceiverResult" parameterType="list">
+        <include refid="selectAddressReceiverVo"/>
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
 
     <insert id="insertAddressReceiverWithId" parameterType="AddressReceiver">
         insert into address_receiver
@@ -98,6 +134,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="email != null">email,</if>
             <if test="name != null">name,</if>
             <if test="phone != null">phone,</if>
+            <if test="pln != null">pln,</if>
             <if test="postalCode != null">postal_code,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
@@ -113,6 +150,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="email != null">#{email},</if>
             <if test="name != null">#{name},</if>
             <if test="phone != null">#{phone},</if>
+            <if test="pln != null">#{pln},</if>
             <if test="postalCode != null">#{postalCode},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
@@ -122,7 +160,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <insert id="batchInsert">
-        insert into address_receiver (id, address, city, company, country_code, email, name, phone, postal_code, create_user, update_user, created_time, updated_time)
+        insert into address_receiver (id, address, city, company, country_code, email, name, phone, pln, postal_code, create_user, update_user, created_time, updated_time)
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.id},
             #{item.address},
@@ -132,6 +170,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.email},
             #{item.name},
             #{item.phone},
+            #{item.pln},
             #{item.postalCode},
             #{item.createUser},
             #{item.updateUser},
@@ -140,33 +179,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </insert>
 
-    <update id="updateAddressReceiver" parameterType="AddressReceiver">
-        update address_receiver
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="address != null">address = #{address},</if>
-            <if test="city != null">city = #{city},</if>
-            <if test="company != null">company = #{company},</if>
-            <if test="countryCode != null">country_code = #{countryCode},</if>
-            <if test="email != null">email = #{email},</if>
-            <if test="name != null">name = #{name},</if>
-            <if test="phone != null">phone = #{phone},</if>
-            <if test="postalCode != null">postal_code = #{postalCode},</if>
-            <if test="createUser != null">create_user = #{createUser},</if>
-            <if test="updateUser != null">update_user = #{updateUser},</if>
-            <if test="createdTime != null">created_time = #{createdTime},</if>
-            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
-        </trim>
-        where id = #{id}
-    </update>
-
-    <delete id="deleteAddressReceiverById" parameterType="Long">
-        delete from address_receiver where id = #{id}
-    </delete>
-
-    <delete id="deleteAddressReceiverByIds" parameterType="String">
-        delete from address_receiver where id in 
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </delete>
 </mapper>

@@ -162,29 +162,29 @@
         </template>
         </el-table-column>
       <!-- 收货人全名 -->
-      <el-table-column label="收货人全名" align="center" prop="id" />
+      <el-table-column label="收货人全名" align="center" prop="receiverName" />
       <!-- 国家 -->
-      <el-table-column label="国家" align="center" prop="id" />
+      <el-table-column label="国家" align="center" prop="receiverCountryCode" />
       <!-- 城市 -->
-      <el-table-column label="城市" align="center" prop="id" />
+      <el-table-column label="城市" align="center" prop="receiverCity" />
       <!-- 货物金额(pln) -->
-      <el-table-column label="货物金额(pln)" align="center" prop="id" width="180"/>
+      <el-table-column label="货物金额(pln)" align="center" prop="pln" width="180"/>
       <!-- 重量(kg) -->
-      <el-table-column label="重量(kg)" align="center" prop="id" />
+      <el-table-column label="重量(kg)" align="center" prop="weight" />
       <!-- 邮码 -->
-      <el-table-column label="邮码" align="center" prop="id" />
+      <el-table-column label="邮码" align="center" prop="receiverPostalCode" />
       <!-- 手机号码 -->
-      <el-table-column label="手机号码" align="center" prop="id" />
+      <el-table-column label="手机号码" align="center" prop="receiverPhone" />
       <!-- 内部引用号 -->
-      <el-table-column label="内部引用号" align="center" prop="id" />
+      <el-table-column label="内部引用号" align="center" prop="reference" />
       <!-- 备注 -->
-      <el-table-column label="备注" align="center" prop="id" />
+      <el-table-column label="备注" align="center" prop="content" />
       <!-- 下载次数 -->
       <el-table-column label="下载次数" align="center" prop="id" />
       <!-- 分类 -->
-      <el-table-column label="分类" align="center" prop="id" />
+      <el-table-column label="分类" align="center" prop="ref1" />
       <!-- 分类2 -->
-      <el-table-column label="分类2" align="center" prop="id" />
+      <el-table-column label="分类2" align="center" prop="ref2" />
       <!-- 操作 -->
       <el-table-column label="操作" align="center" prop="id">
          <template slot-scope="scope">
@@ -270,51 +270,51 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="106px">
       <el-row>
         <el-col :span="24">
-          <el-form-item label="收货人全名" prop="senderId">
-            <el-input v-model="form.senderId" placeholder="请输入收获人全名" />
+          <el-form-item label="收货人全名" prop="receiverName">
+            <el-input v-model="form.receiverName" placeholder="请输入收获人全名" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
           <el-col :span="12">
-            <el-form-item label="国家" prop="country">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30" />
+            <el-form-item label="国家" prop="receiverCountryCode">
+              <el-input v-model="form.receiverCountryCode" placeholder="请输入用户昵称" maxlength="30" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="城市" prop="city">
-              <el-input v-model="form.city" placeholder="请输入城市名" maxlength="30" />
+            <el-form-item label="城市" prop="receiverCity">
+              <el-input v-model="form.receiverCity" placeholder="请输入城市名" maxlength="30" />
             </el-form-item>
           </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="街道" prop="senderId">
-            <el-input v-model="form.senderId" placeholder="请输入街道信息" />
+          <el-form-item label="街道" prop="receiverAddress">
+            <el-input v-model="form.receiverAddress" placeholder="请输入街道信息" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="邮政编码" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入邮政编码" maxlength="30" />
+          <el-form-item label="邮政编码" prop="receiverPostalCode">
+            <el-input v-model="form.receiverPostalCode" placeholder="请输入邮政编码" maxlength="30" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="手机号码" prop="phone">
-            <el-input v-model.number="form.phone" placeholder="请输入手机号码" maxlength="30" />
+          <el-form-item label="手机号码" prop="receiverPhone">
+            <el-input v-model.number="form.receiverPhone" placeholder="请输入手机号码" maxlength="30" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="邮件/联系方式" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入邮件/联系方式" maxlength="30" />
+          <el-form-item label="邮件/联系方式" prop="receiverEmail">
+            <el-input v-model="form.receiverEmail" placeholder="请输入邮件/联系方式" maxlength="30" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="货物金额(PLN)" prop="phone">
-            <el-input v-model.number="form.phone" placeholder="max:6000" maxlength="30" />
+          <el-form-item label="货物金额(PLN)" prop="pln">
+            <el-input v-model.number="form.pln" placeholder="max:6000" maxlength="30" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -323,32 +323,32 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="内部引用号" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入内部引用号" maxlength="30" />
+          <el-form-item label="内部引用号" prop="reference">
+            <el-input v-model="form.reference" placeholder="请输入内部引用号" maxlength="30" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="重量(KG)" prop="country">
-            <el-input v-model="form.nickName" placeholder="max(National:31.5,International:40)" maxlength="30" />
+          <el-form-item label="重量(KG)" prop="weight">
+            <el-input v-model="form.weight" placeholder="max(National:31.5,International:40)" maxlength="30" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="分类" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入分类" maxlength="30" />
+          <el-form-item label="分类" prop="ref1">
+            <el-input v-model="form.ref1" placeholder="请输入分类" maxlength="30" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="分类2" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入分类2" maxlength="30" />
+          <el-form-item label="分类2" prop="ref2">
+            <el-input v-model="form.ref2" placeholder="请输入分类2" maxlength="30" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="备注" prop="country">
-            <el-input v-model="form.nickName" placeholder="请输入邮政备注" maxlength="30" />
+          <el-form-item label="备注" prop="content">
+            <el-input v-model="form.content" placeholder="请输入邮政备注" maxlength="30" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -407,7 +407,7 @@
 </template>
 
 <script>
-import { listPackage, getPackage, delPackage, addPackage, updatePackage } from "@/api/shippingOrder/package";
+import { listPackageAll, getPackage, delPackage, updatePackage, addPackageAll } from "@/api/shippingOrder/package";
 
 export default {
   name: "Package",
@@ -462,7 +462,7 @@ export default {
     /** 查询面单列表 */
     getList() {
       this.loading = true;
-      listPackage(this.queryParams).then(response => {
+      listPackageAll(this.queryParams).then(response => {
         this.packageList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -535,7 +535,7 @@ export default {
               this.getList();
             });
           } else {
-            addPackage(this.form).then(response => {
+            addPackageAll(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
