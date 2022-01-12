@@ -1,8 +1,12 @@
 package com.ruoyi.system.service;
 
+import java.io.IOException;
 import java.util.List;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.PackageVo;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 面单Service接口
@@ -52,6 +56,9 @@ public interface IPackageService
      */
     public int insertPackage(PackageVo pkg);
 
+    public void dealDocuments(MultipartFile file) throws IOException ;
+
+    public void writeFile(HttpServletResponse response) throws Exception;
     /**
      * 导入面单
      *

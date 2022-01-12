@@ -193,6 +193,7 @@ INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('send_
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('receiver_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('package_seq', '1', '1');
 
+drop table if exists documents;
 CREATE TABLE `documents`
 (
     `id`           bigint(20) unsigned NOT NULL AUTO_INCREMENT comment '主键',
@@ -201,7 +202,7 @@ CREATE TABLE `documents`
     `extension`    varchar(50)      DEFAULT NULL comment '文件的扩展名',
     `file_data`    varbinary(60000) DEFAULT NULL comment '文件二进制格式',
     `file_size`    bigint(20)       DEFAULT NULL comment '文件大小',
-    `content_type` varchar(50)      DEFAULT NULL comment '文件种类',
+    `content_type` varchar(500)      DEFAULT NULL comment '文件种类',
 #     `excel_content` text         DEFAULT NULL comment 'excel内容',
     `create_user`  varchar(50)      DEFAULT NULL comment '创建人',
     `update_user`  varchar(50)      DEFAULT NULL comment '更新人',

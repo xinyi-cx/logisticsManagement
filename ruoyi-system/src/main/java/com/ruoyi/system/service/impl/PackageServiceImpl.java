@@ -1,20 +1,26 @@
 package com.ruoyi.system.service.impl;
 
+import java.io.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.ruoyi.common.utils.MultpartFileToByte;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.mapper.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -44,6 +50,9 @@ public class PackageServiceImpl implements IPackageService {
 
     @Autowired
     private ParcelMapper parcelMapper;
+
+    @Autowired
+    private DocumentsMapper documentsMapper;
 
     /**
      * 查询面单
@@ -172,6 +181,49 @@ public class PackageServiceImpl implements IPackageService {
 //        接口返回
 //        parcel.setPackageId();
         return parcelMapper.insertParcel(parcel);
+    }
+
+    @Override
+    public void dealDocuments(MultipartFile file) throws IOException {
+        Documents documents = new Documents();
+        documents.setFileData(new String(file.getBytes(), "UTF-8"));
+        documents.setFileName(file.getName());
+        documents.setContentType(file.getContentType());
+        documents.setFileSize(file.getSize());
+        documents.setDisplayName(file.getOriginalFilename());
+        documentsMapper.insertDocuments(documents);
+    }
+
+    @Override
+    public void writeFile(HttpServletResponse response) throws Exception {
+        InputStream in = null;
+        try {
+
+            List<Documents> documents = documentsMapper.selectDocumentsList(new Documents());
+            Documents document = documents.get(0);
+
+            response.setContentType(document.getContentType());
+            response.setCharacterEncoding("utf-8");
+
+            byte[] documentByte = document.getFileData().getBytes("UTF-8");
+//            MultipartFile multipartFile2 = MultpartFileToByte.getMultipartFile(documentByte);
+             in = new ByteArrayInputStream(documentByte);
+            // 4.获取要下载的文件输入流
+//            in = new FileInputStream(multipartFile2);
+//            in =  multipartFile2.getInputStream();
+            int len = 0;
+            // 5.创建数据缓冲区
+            byte[] buffer = new byte[1024];
+            // 6.通过response对象获取OutputStream流
+            // 7.将FileInputStream流写入到buffer缓冲区
+            while ((len = in.read(buffer)) > 0) {
+                // 8.使用OutputStream将缓冲区的数据输出到客户端浏览器
+                response.getOutputStream().write(buffer, 0, len);
+            }
+            IOUtils.closeQuietly(response.getOutputStream());
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
     }
 
     @Override

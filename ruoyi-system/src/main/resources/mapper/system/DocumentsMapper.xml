@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.DocumentsMapper">
+    
+    <resultMap type="Documents" id="DocumentsResult">
+        <result property="id"    column="id"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="displayName"    column="display_name"    />
+        <result property="extension"    column="extension"    />
+        <result property="fileData"    column="file_data"    />
+        <result property="fileSize"    column="file_size"    />
+        <result property="contentType"    column="content_type"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+        <result property="isDelete"    column="is_delete"    />
+    </resultMap>
+
+    <sql id="selectDocumentsVo">
+        select id, file_name, display_name, extension, file_data, file_size, content_type, create_user, update_user, created_time, updated_time, is_delete from documents
+    </sql>
+
+    <select id="selectDocumentsList" parameterType="Documents" resultMap="DocumentsResult">
+        <include refid="selectDocumentsVo"/>
+        <where>  
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="displayName != null  and displayName != ''"> and display_name like concat('%', #{displayName}, '%')</if>
+            <if test="extension != null  and extension != ''"> and extension = #{extension}</if>
+            <if test="fileData != null  and fileData != ''"> and file_data = #{fileData}</if>
+            <if test="fileSize != null "> and file_size = #{fileSize}</if>
+            <if test="contentType != null  and contentType != ''"> and content_type = #{contentType}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+            <if test="isDelete != null "> and is_delete = #{isDelete}</if>
+        </where>
+    </select>
+    
+    <select id="selectDocumentsById" parameterType="Long" resultMap="DocumentsResult">
+        <include refid="selectDocumentsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDocuments" parameterType="Documents" useGeneratedKeys="true" keyProperty="id">
+        insert into documents
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fileName != null">file_name,</if>
+            <if test="displayName != null">display_name,</if>
+            <if test="extension != null">extension,</if>
+            <if test="fileData != null">file_data,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="contentType != null">content_type,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updatedTime != null">updated_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fileName != null">#{fileName},</if>
+            <if test="displayName != null">#{displayName},</if>
+            <if test="extension != null">#{extension},</if>
+            <if test="fileData != null">#{fileData},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="contentType != null">#{contentType},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDocuments" parameterType="Documents">
+        update documents
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="displayName != null">display_name = #{displayName},</if>
+            <if test="extension != null">extension = #{extension},</if>
+            <if test="fileData != null">file_data = #{fileData},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="contentType != null">content_type = #{contentType},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+            <if test="isDelete != null">is_delete = #{isDelete},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDocumentsById" parameterType="Long">
+        delete from documents where id = #{id}
+    </delete>
+
+    <delete id="deleteDocumentsByIds" parameterType="String">
+        delete from documents where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

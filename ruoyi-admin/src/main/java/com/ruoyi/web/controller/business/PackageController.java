@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.business;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.system.domain.vo.PackageVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,18 @@ public class PackageController extends BaseController
         return toAjax(packageService.insertPackage(pkg));
     }
 
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
+        util.importTemplateExcel(response, "面单数据");
+    }
+
+    @PostMapping("/downloadFile/{id}")
+    public void importTemplate(HttpServletResponse response, @PathVariable("id") Long id) throws Exception {
+        packageService.writeFile(response);
+    }
+
     @Log(title = "面单导入", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPermi('system:package:add')")
     @PostMapping("/importData")
@@ -112,6 +125,7 @@ public class PackageController extends BaseController
     {
         ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
         List<PackageVo> packageVos = util.importExcel(file.getInputStream());
+        packageService.dealDocuments(file);
 //        String operName = getUsername();
 //        String message = userService.importUser(userList, updateSupport, operName);
         return AjaxResult.success("message");
