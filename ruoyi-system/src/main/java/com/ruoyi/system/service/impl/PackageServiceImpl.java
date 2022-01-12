@@ -1,9 +1,6 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -51,8 +48,14 @@ public class PackageServiceImpl implements IPackageService {
      * @return 面单
      */
     @Override
-    public Package selectPackageById(Long id) {
-        return packageMapper.selectPackageById(id);
+    public PackageVo selectPackageById(Long id) {
+        Package pkg = packageMapper.selectPackageById(id);
+        List<AddressSender> addressSenders = addressSenderMapper.selectAddressSenderByIdIn(Collections.singletonList(pkg.getSenderId()));
+        Map<Long, AddressSender> addressSenderMap = addressSenders.stream().collect(toMap(AddressSender::getId, Function.identity()));
+        List<AddressReceiver> addressReceivers = addressReceiverMapper.selectAddressReceiverByIdIn(Collections.singletonList(pkg.getReceiverId()));
+        Map<Long, AddressReceiver> addressReceiverMap = addressReceivers.stream().collect(toMap(AddressReceiver::getId, Function.identity()));
+
+        return getPackageVo(pkg, addressSenderMap, addressReceiverMap);
     }
 
     /**
@@ -77,7 +80,7 @@ public class PackageServiceImpl implements IPackageService {
         Package pkg = new Package();
         BeanUtils.copyProperties(packageVo, pkg);
         List<Package> packages = packageMapper.selectPackageList(pkg);
-        if (CollectionUtils.isEmpty(packages)){
+        if (CollectionUtils.isEmpty(packages)) {
             return new ArrayList<>();
         }
         List<AddressSender> addressSenders = addressSenderMapper.selectAddressSenderByIdIn(packages.stream().map(Package::getSenderId).collect(Collectors.toList()));
@@ -205,7 +208,6 @@ public class PackageServiceImpl implements IPackageService {
                 sequenceMapper.updateSequence(sequence);
             }
         }
-
         return nameMap;
     }
 
@@ -221,8 +223,10 @@ public class PackageServiceImpl implements IPackageService {
         addressSender.setName(pkg.getSenderName());
         addressSender.setPhone(pkg.getSenderPhone());
         addressSender.setPostalCode(pkg.getSenderPostalCode());
-        addressSender.setId(id);
-        addressSender.setCreatedTime(new Date());
+        if (ObjectUtils.isNotEmpty(id)) {
+            addressSender.setId(id);
+            addressSender.setCreatedTime(new Date());
+        }
         addressSender.setUpdatedTime(new Date());
         return addressSender;
     }
@@ -237,9 +241,11 @@ public class PackageServiceImpl implements IPackageService {
         addressReceiver.setName(pkg.getReceiverName());
         addressReceiver.setPhone(pkg.getReceiverPhone());
         addressReceiver.setPostalCode(pkg.getReceiverPostalCode());
-        addressReceiver.setId(id);
         addressReceiver.setPln(pkg.getPln());
-        addressReceiver.setCreatedTime(new Date());
+        if (ObjectUtils.isNotEmpty(id)) {
+            addressReceiver.setId(id);
+            addressReceiver.setCreatedTime(new Date());
+        }
         addressReceiver.setUpdatedTime(new Date());
         return addressReceiver;
     }
@@ -251,8 +257,19 @@ public class PackageServiceImpl implements IPackageService {
      * @return 结果
      */
     @Override
-    public int updatePackage(Package pkg) {
-        return packageMapper.updatePackage(pkg);
+    public int updatePackage(PackageVo pkg) {
+        pkg.setUpdatedTime(new Date());
+        Package pac = packageMapper.selectPackageById(pkg.getId());
+        BeanUtils.copyProperties(pkg, pac, "id", "createdTime");
+
+        AddressReceiver addressReceiver = getReceiver(pkg, null);
+        addressReceiver.setId(pac.getReceiverId());
+        AddressSender addressSender = getSender(pkg, null);
+        addressSender.setId(pac.getSenderId());
+        addressSenderMapper.updateAddressSender(addressSender);
+        addressReceiverMapper.updateAddressReceiver(addressReceiver);
+//        pac.setServicesId(1L);
+        return packageMapper.updatePackage(pac);
     }
 
     /**

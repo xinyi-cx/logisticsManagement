@@ -3,7 +3,6 @@ package com.ruoyi.web.controller.business;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.system.domain.vo.PackageVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,10 +66,10 @@ public class PackageController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:package:export')")
     @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, Package pkg)
+    public void export(HttpServletResponse response, PackageVo pkg)
     {
-        List<Package> list = packageService.selectPackageList(pkg);
-        ExcelUtil<Package> util = new ExcelUtil<Package>(Package.class);
+        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
         util.exportExcel(response, list, "面单数据");
     }
 
@@ -111,8 +110,8 @@ public class PackageController extends BaseController
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
     {
-        ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
-        List<SysUser> userList = util.importExcel(file.getInputStream());
+        ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
+        List<PackageVo> packageVos = util.importExcel(file.getInputStream());
 //        String operName = getUsername();
 //        String message = userService.importUser(userList, updateSupport, operName);
         return AjaxResult.success("message");
@@ -124,7 +123,7 @@ public class PackageController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:package:edit')")
     @Log(title = "面单", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody Package pkg)
+    public AjaxResult edit(@RequestBody PackageVo pkg)
     {
         return toAjax(packageService.updatePackage(pkg));
     }

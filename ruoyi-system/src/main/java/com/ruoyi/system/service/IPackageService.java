@@ -18,7 +18,7 @@ public interface IPackageService
      * @param id 面单主键
      * @return 面单
      */
-    public Package selectPackageById(Long id);
+    public PackageVo selectPackageById(Long id);
 
     /**
      * 查询面单列表
@@ -66,7 +66,7 @@ public interface IPackageService
      * @param pkg 面单
      * @return 结果
      */
-    public int updatePackage(Package pkg);
+    public int updatePackage(PackageVo pkg);
 
     /**
      * 批量删除面单
