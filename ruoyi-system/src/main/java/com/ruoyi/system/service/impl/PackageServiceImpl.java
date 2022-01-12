@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -41,6 +42,9 @@ public class PackageServiceImpl implements IPackageService {
     @Autowired
     private SequenceMapper sequenceMapper;
 
+    @Autowired
+    private ParcelMapper parcelMapper;
+
     /**
      * 查询面单
      *
@@ -54,8 +58,9 @@ public class PackageServiceImpl implements IPackageService {
         Map<Long, AddressSender> addressSenderMap = addressSenders.stream().collect(toMap(AddressSender::getId, Function.identity()));
         List<AddressReceiver> addressReceivers = addressReceiverMapper.selectAddressReceiverByIdIn(Collections.singletonList(pkg.getReceiverId()));
         Map<Long, AddressReceiver> addressReceiverMap = addressReceivers.stream().collect(toMap(AddressReceiver::getId, Function.identity()));
+        List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(Collections.singletonList(pkg.getId()));
 
-        return getPackageVo(pkg, addressSenderMap, addressReceiverMap);
+        return getPackageVo(pkg, addressSenderMap, addressReceiverMap, parcels);
     }
 
     /**
@@ -87,11 +92,15 @@ public class PackageServiceImpl implements IPackageService {
         Map<Long, AddressSender> addressSenderMap = addressSenders.stream().collect(toMap(AddressSender::getId, Function.identity()));
         List<AddressReceiver> addressReceivers = addressReceiverMapper.selectAddressReceiverByIdIn(packages.stream().map(Package::getReceiverId).collect(Collectors.toList()));
         Map<Long, AddressReceiver> addressReceiverMap = addressReceivers.stream().collect(toMap(AddressReceiver::getId, Function.identity()));
+        List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
 
-        return packages.stream().map(item -> this.getPackageVo(item, addressSenderMap, addressReceiverMap)).collect(Collectors.toList());
+        return packages.stream().map(item -> this.getPackageVo(item, addressSenderMap, addressReceiverMap, parcels)).collect(Collectors.toList());
     }
 
-    private PackageVo getPackageVo(Package pac, Map<Long, AddressSender> addressSenderMap, Map<Long, AddressReceiver> addressReceiverMap) {
+    private PackageVo getPackageVo(Package pac,
+                                   Map<Long, AddressSender> addressSenderMap,
+                                   Map<Long, AddressReceiver> addressReceiverMap,
+                                   List<Parcel> parcels) {
         PackageVo packageVo = new PackageVo();
         BeanUtils.copyProperties(pac, packageVo);
         packageVo.setSenderAddress(addressSenderMap.get(pac.getSenderId()).getAddress());
@@ -114,6 +123,11 @@ public class PackageServiceImpl implements IPackageService {
         packageVo.setReceiverPostalCode(addressReceiverMap.get(pac.getReceiverId()).getPostalCode());
         packageVo.setPln(addressReceiverMap.get(pac.getReceiverId()).getPln());
 
+        List<Parcel> parcelList = parcels.stream().filter(item -> item.getPackId().equals(pac.getId())).collect(toList());
+        if (CollectionUtils.isNotEmpty(parcelList)){
+            Parcel parcel = parcelList.get(0);
+            BeanUtils.copyProperties(parcel, packageVo, "id", "createdTime", "updatedTime", "createUser", "updateUser");
+        }
         return packageVo;
     }
 
@@ -149,7 +163,15 @@ public class PackageServiceImpl implements IPackageService {
         pac.setReceiverId(addressReceiver.getId());
         pac.setSenderId(addressSender.getId());
         pac.setServicesId(1L);
-        return packageMapper.insertPackage(pac);
+        pac.setId(sequenceMapper.selectNextvalByName("package_seq"));
+        packageMapper.insertPackageWithId(pac);
+        //一对多暂时还未确定
+        Parcel parcel = new Parcel();
+        BeanUtils.copyProperties(pkg, parcel);
+        parcel.setPackId(pac.getId());
+//        接口返回
+//        parcel.setPackageId();
+        return parcelMapper.insertParcel(parcel);
     }
 
     @Override
@@ -164,6 +186,7 @@ public class PackageServiceImpl implements IPackageService {
         List<AddressSender> addressSenders = new ArrayList<>();
         List<AddressReceiver> addressReceivers = new ArrayList<>();
         List<Package> packages = new ArrayList<>();
+        List<Parcel> parcels = new ArrayList<>();
         //生成id 并且更新
         Map<String, Sequence> nameMap = getSeqMap(packages.size());
         for (PackageVo packageVo : packageVos) {
@@ -178,15 +201,23 @@ public class PackageServiceImpl implements IPackageService {
             pac.setSenderId(addressSender.getId());
             pac.setServicesId(1L);
             pac.setBatchId(batchTaskHistory.getId());
+            pac.setId(getId(nameMap, "package_seq"));
+
+            Parcel parcel = new Parcel();
+            BeanUtils.copyProperties(packageVo, parcel);
+            parcel.setPackId(pac.getId());
+//            parcel.setPackId("");
 
             addressSenders.add(addressSender);
             addressReceivers.add(addressReceiver);
             packages.add(pac);
+            parcels.add(parcel);
         }
 
         addressSenderMapper.batchInsert(addressSenders);
         addressReceiverMapper.batchInsert(addressReceivers);
-        return packageMapper.batchInsert(packages);
+        packageMapper.batchInsert(packages);
+        return parcelMapper.batchInsert(parcels);
     }
 
     private Long getId(Map<String, Sequence> nameMap, String seqName) {
@@ -196,7 +227,7 @@ public class PackageServiceImpl implements IPackageService {
         return id;
     }
 
-    private static String[] SEQ_NAMES = {"send_seq", "receiver_seq"};
+    private static String[] SEQ_NAMES = {"send_seq", "receiver_seq", "package_seq"};
 
     private Map<String, Sequence> getSeqMap(int addNum) {
         List<Sequence> sequences = sequenceMapper.selectSequenceList(new Sequence());
@@ -269,6 +300,11 @@ public class PackageServiceImpl implements IPackageService {
         addressSenderMapper.updateAddressSender(addressSender);
         addressReceiverMapper.updateAddressReceiver(addressReceiver);
 //        pac.setServicesId(1L);
+        Parcel parcel = new Parcel();
+        parcel.setPackId(pac.getId());
+        List<Parcel> parcels = parcelMapper.selectParcelList(parcel);
+        BeanUtils.copyProperties(pkg, parcels.get(0), "id", "createdTime");
+        parcelMapper.updateParcel(parcels.get(0));
         return packageMapper.updatePackage(pac);
     }
 

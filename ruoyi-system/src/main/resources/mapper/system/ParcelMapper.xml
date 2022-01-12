@@ -53,7 +53,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectParcelVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectParcelListByPackIdIn" resultMap="ParcelResult" parameterType="list">
+        <include refid="selectParcelVo"/>
+        where pack_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
     <insert id="insertParcel" parameterType="Parcel" useGeneratedKeys="true" keyProperty="id">
         insert into parcel
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -90,6 +99,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createdTime != null">#{createdTime},</if>
             <if test="updatedTime != null">#{updatedTime},</if>
          </trim>
+    </insert>
+
+    <insert id="batchInsert" useGeneratedKeys="true" keyProperty="id">
+        insert into parcel (size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, create_user, update_user, created_time, updated_time )
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.sizeX},
+            #{item.sizeY},
+            #{item.sizeZ},
+            #{item.content},
+            #{item.customerData1},
+            #{item.reference},
+            #{item.weight},
+            #{item.packId},
+            #{item.waybill},
+            #{item.status},
+            #{item.packageId},
+            #{item.createUser},
+            #{item.updateUser},
+            #{item.createdTime},
+            #{item.updatedTime}
+            )
+        </foreach>
     </insert>
 
     <update id="updateParcel" parameterType="Parcel">

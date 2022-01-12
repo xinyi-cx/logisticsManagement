@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.AddressSender;
 import com.ruoyi.system.domain.Parcel;
 
 /**
@@ -27,6 +29,8 @@ public interface ParcelMapper
      */
     public List<Parcel> selectParcelList(Parcel parcel);
 
+    public List<Parcel> selectParcelListByPackIdIn(List<Long> ids);
+
     /**
      * 新增包裹
      * 
@@ -34,6 +38,13 @@ public interface ParcelMapper
      * @return 结果
      */
     public int insertParcel(Parcel parcel);
+
+    /**
+     * 批量添加
+     * @param list
+     * @return
+     */
+    public int batchInsert(List<Parcel> list);
 
     /**
      * 修改包裹

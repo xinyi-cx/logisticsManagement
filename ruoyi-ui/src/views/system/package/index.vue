@@ -101,6 +101,15 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleUpdate(scope.row)"
+          v-hasPermi="['system:package:edit']"
+        >修改</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
           type="danger"
           plain
           icon="el-icon-delete"
@@ -137,7 +146,11 @@
       <!-- 收货人全名 -->
       <el-table-column label="收货人全名" align="center" prop="receiverName" />
       <!-- 国家 -->
-      <el-table-column label="国家" align="center" prop="receiverCountryCode" />
+      <el-table-column label="国家" align="center" prop="receiverCountryCode" >
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_country" :value="scope.row.receiverCountryCode"/>
+        </template>
+      </el-table-column>
       <!-- 城市 -->
       <el-table-column label="城市" align="center" prop="receiverCity" />
       <!-- 货物金额(pln) -->
@@ -177,13 +190,20 @@
             v-hasPermi="['system:package:remove']"
           >删除</el-button>
           -->
+           <el-button
+             size="mini"
+             type="text"
+             icon="el-icon-edit"
+             @click="handleUpdate(scope.row)"
+             v-hasPermi="['system:package:edit']"
+           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:package:remove']"
-          >查看面单</el-button>
+          >删除</el-button>
         </template>
       </el-table-column>
 

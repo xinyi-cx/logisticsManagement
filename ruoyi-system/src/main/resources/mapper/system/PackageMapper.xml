@@ -89,10 +89,48 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <insert id="batchInsert" useGeneratedKeys="true" keyProperty="id">
-        insert into package (payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, batch_id, create_user, update_user, created_time, updated_time)
+    <insert id="insertPackageWithId" parameterType="Package">
+        insert into package
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="payerType != null">payer_type,</if>
+            <if test="senderId != null">sender_id,</if>
+            <if test="receiverId != null">receiver_id,</if>
+            <if test="ref1 != null">ref1,</if>
+            <if test="ref2 != null">ref2,</if>
+            <if test="servicesId != null">services_id,</if>
+            <if test="phone != null">phone,</if>
+            <if test="postalCode != null">postal_code,</if>
+            <if test="batchId != null">batch_id,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updatedTime != null">updated_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="payerType != null">#{payerType},</if>
+            <if test="senderId != null">#{senderId},</if>
+            <if test="receiverId != null">#{receiverId},</if>
+            <if test="ref1 != null">#{ref1},</if>
+            <if test="ref2 != null">#{ref2},</if>
+            <if test="servicesId != null">#{servicesId},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="postalCode != null">#{postalCode},</if>
+            <if test="batchId != null">#{batchId},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsert" >
+        insert into package (id, payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, batch_id, create_user, update_user, created_time, updated_time)
         <foreach collection="list" item="item" index="index" separator=",">
-            (#{item.payerType},
+            (
+            #{item.id},
+            #{item.payerType},
             #{item.senderId},
             #{item.receiverId},
             #{item.ref1},

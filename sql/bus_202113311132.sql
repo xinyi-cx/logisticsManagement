@@ -191,6 +191,7 @@ END;
 
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('send_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('receiver_seq', '1', '1');
+INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('package_seq', '1', '1');
 
 CREATE TABLE `documents`
 (

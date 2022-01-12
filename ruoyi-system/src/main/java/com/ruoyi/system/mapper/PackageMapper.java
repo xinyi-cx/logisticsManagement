@@ -43,6 +43,14 @@ public interface PackageMapper {
     public int insertPackage(Package pkg);
 
     /**
+     * 新增面单
+     *
+     * @param pkg 面单
+     * @return 结果
+     */
+    public int insertPackageWithId(Package pkg);
+
+    /**
      * 批量添加
      * @param list 面单们
      * @return
