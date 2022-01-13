@@ -197,18 +197,18 @@ drop table if exists documents;
 CREATE TABLE `documents`
 (
     `id`           bigint(20) unsigned NOT NULL AUTO_INCREMENT comment '主键',
-    `file_name`    varchar(100)     DEFAULT NULL comment '文件名称',
-    `display_name` varchar(100)     DEFAULT NULL comment '文件显示的名称',
-    `extension`    varchar(50)      DEFAULT NULL comment '文件的扩展名',
-    `file_data`    varbinary(60000) DEFAULT NULL comment '文件二进制格式',
-    `file_size`    bigint(20)       DEFAULT NULL comment '文件大小',
-    `content_type` varchar(500)      DEFAULT NULL comment '文件种类',
+    `file_name`    varchar(100) DEFAULT NULL comment '文件名称',
+    `display_name` varchar(100) DEFAULT NULL comment '文件显示的名称',
+    `extension`    varchar(50)  DEFAULT NULL comment '文件的扩展名',
+    `file_data`    blob         DEFAULT NULL comment '文件二进制格式',
+    `file_size`    bigint(20)   DEFAULT NULL comment '文件大小',
+    `content_type` varchar(500) DEFAULT NULL comment '文件种类',
 #     `excel_content` text         DEFAULT NULL comment 'excel内容',
-    `create_user`  varchar(50)      DEFAULT NULL comment '创建人',
-    `update_user`  varchar(50)      DEFAULT NULL comment '更新人',
-    `created_time` datetime         DEFAULT NULL comment '创建时间',
-    `updated_time` datetime         DEFAULT NULL comment '更新时间',
-    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
+    `create_user`  varchar(50)  DEFAULT NULL comment '创建人',
+    `update_user`  varchar(50)  DEFAULT NULL comment '更新人',
+    `created_time` datetime     DEFAULT NULL comment '创建时间',
+    `updated_time` datetime     DEFAULT NULL comment '更新时间',
+    `is_delete`    tinyint(1)   DEFAULT '0' comment '是否删除',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8

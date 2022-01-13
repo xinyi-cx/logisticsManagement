@@ -34,7 +34,7 @@ public class Documents extends BaseEntity
 
     /** 文件二进制格式 */
     @Excel(name = "文件二进制格式")
-    private String fileData;
+    private byte[] fileData;
 
     /** 文件大小 */
     @Excel(name = "文件大小")
@@ -102,12 +102,12 @@ public class Documents extends BaseEntity
     {
         return extension;
     }
-    public void setFileData(String fileData) 
+    public void setFileData(byte[] fileData)
     {
         this.fileData = fileData;
     }
 
-    public String getFileData() 
+    public byte[] getFileData()
     {
         return fileData;
     }

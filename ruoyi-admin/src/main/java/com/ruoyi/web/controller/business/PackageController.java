@@ -115,20 +115,18 @@ public class PackageController extends BaseController
 
     @PostMapping("/downloadFile/{id}")
     public void importTemplate(HttpServletResponse response, @PathVariable("id") Long id) throws Exception {
-        packageService.writeFile(response);
+        packageService.writeFile(response, id);
     }
 
     @Log(title = "面单导入", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPermi('system:package:add')")
     @PostMapping("/importData")
-    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    public AjaxResult importData(MultipartFile file) throws Exception
     {
         ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
         List<PackageVo> packageVos = util.importExcel(file.getInputStream());
-        packageService.dealDocuments(file);
-//        String operName = getUsername();
-//        String message = userService.importUser(userList, updateSupport, operName);
-        return AjaxResult.success("message");
+        packageService.importPackage(file, packageVos);
+        return AjaxResult.success("导入成功");
     }
 
     /**

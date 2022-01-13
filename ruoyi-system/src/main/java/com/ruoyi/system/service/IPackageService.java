@@ -56,16 +56,20 @@ public interface IPackageService
      */
     public int insertPackage(PackageVo pkg);
 
-    public void dealDocuments(MultipartFile file) throws IOException ;
-
-    public void writeFile(HttpServletResponse response) throws Exception;
+    /**
+     * 下载文件
+     * @param response
+     * @param id
+     * @throws Exception
+     */
+    public void writeFile(HttpServletResponse response, Long id) throws Exception;
     /**
      * 导入面单
      *
      * @param packageVos 面单
      * @return 结果
      */
-    public int importPackage(List<PackageVo> packageVos);
+    public int importPackage(MultipartFile file, List<PackageVo> packageVos) throws IOException;
 
     /**
      * 修改面单

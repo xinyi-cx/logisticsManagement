@@ -133,7 +133,7 @@ public class PackageServiceImpl implements IPackageService {
         packageVo.setPln(addressReceiverMap.get(pac.getReceiverId()).getPln());
 
         List<Parcel> parcelList = parcels.stream().filter(item -> item.getPackId().equals(pac.getId())).collect(toList());
-        if (CollectionUtils.isNotEmpty(parcelList)){
+        if (CollectionUtils.isNotEmpty(parcelList)) {
             Parcel parcel = parcelList.get(0);
             BeanUtils.copyProperties(parcel, packageVo, "id", "createdTime", "updatedTime", "createUser", "updateUser");
         }
@@ -184,53 +184,45 @@ public class PackageServiceImpl implements IPackageService {
     }
 
     @Override
-    public void dealDocuments(MultipartFile file) throws IOException {
+    public void writeFile(HttpServletResponse response, Long id) throws Exception {
+        InputStream fis = null;
+        OutputStream toClient = null;
+        try {
+            Documents document = documentsMapper.selectDocumentsById(id);
+            byte[] documentByte = document.getFileData();
+            fis = new ByteArrayInputStream(documentByte);
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+
+            response.setContentType(document.getContentType());
+            response.setCharacterEncoding("utf-8");
+            toClient = new BufferedOutputStream(response.getOutputStream());
+            toClient.write(buffer);
+            toClient.flush();
+        } finally {
+            IOUtils.closeQuietly(fis);
+            IOUtils.closeQuietly(toClient);
+        }
+    }
+
+    public Documents getDocuments(MultipartFile file) throws IOException {
         Documents documents = new Documents();
-        documents.setFileData(new String(file.getBytes(), "UTF-8"));
+        documents.setFileData(file.getBytes());
         documents.setFileName(file.getName());
         documents.setContentType(file.getContentType());
         documents.setFileSize(file.getSize());
         documents.setDisplayName(file.getOriginalFilename());
         documentsMapper.insertDocuments(documents);
-    }
-
-    @Override
-    public void writeFile(HttpServletResponse response) throws Exception {
-        InputStream in = null;
-        try {
-
-            List<Documents> documents = documentsMapper.selectDocumentsList(new Documents());
-            Documents document = documents.get(0);
-
-            response.setContentType(document.getContentType());
-            response.setCharacterEncoding("utf-8");
-
-            byte[] documentByte = document.getFileData().getBytes("UTF-8");
-//            MultipartFile multipartFile2 = MultpartFileToByte.getMultipartFile(documentByte);
-             in = new ByteArrayInputStream(documentByte);
-            // 4.获取要下载的文件输入流
-//            in = new FileInputStream(multipartFile2);
-//            in =  multipartFile2.getInputStream();
-            int len = 0;
-            // 5.创建数据缓冲区
-            byte[] buffer = new byte[1024];
-            // 6.通过response对象获取OutputStream流
-            // 7.将FileInputStream流写入到buffer缓冲区
-            while ((len = in.read(buffer)) > 0) {
-                // 8.使用OutputStream将缓冲区的数据输出到客户端浏览器
-                response.getOutputStream().write(buffer, 0, len);
-            }
-            IOUtils.closeQuietly(response.getOutputStream());
-        } finally {
-            IOUtils.closeQuietly(in);
-        }
+        return documents;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int importPackage(List<PackageVo> packageVos) {
+    public int importPackage(MultipartFile file, List<PackageVo> packageVos) throws IOException {
+        Documents documents = getDocuments(file);
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setStatus("上传成功");
+        batchTaskHistory.setExcelUrl(documents.getId().toString());
         /**
          * 一系列处理
          */
