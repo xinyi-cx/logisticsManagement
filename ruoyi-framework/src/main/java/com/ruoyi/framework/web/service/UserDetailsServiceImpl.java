@@ -1,5 +1,6 @@
 package com.ruoyi.framework.web.service;
 
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,20 @@ public class UserDetailsServiceImpl implements UserDetailsService
     private SysPermissionService permissionService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+    public UserDetails loadUserByUsername(String val) throws UsernameNotFoundException
     {
-        SysUser user = userService.selectUserByUserName(username);
+        JSONObject jsonObject = JSONObject.parseObject(val);
+        String username = jsonObject.getString("username");
+        String country = jsonObject.getString("country");
+        SysUser user = null;
+        if (StringUtils.isEmpty(country)){
+            user = userService.selectUserByUserName(username);
+        }else{
+            SysUser paramUser = new SysUser();
+            paramUser.setUserName(username);
+            paramUser.setCountry(country);
+            user = userService.selectUserByUser(paramUser);
+        }
         if (StringUtils.isNull(user))
         {
             log.info("登录用户：{} 不存在.", username);

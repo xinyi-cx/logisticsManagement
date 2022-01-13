@@ -43,6 +43,13 @@ public interface ISysUserService
     public SysUser selectUserByUserName(String userName);
 
     /**
+     * 通过用户查询用户
+     * @param user
+     * @return
+     */
+    public SysUser selectUserByUser(SysUser user);
+
+    /**
      * 通过用户ID查询用户
      * 
      * @param userId 用户ID

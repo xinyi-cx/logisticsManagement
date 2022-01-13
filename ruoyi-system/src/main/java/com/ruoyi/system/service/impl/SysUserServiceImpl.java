@@ -112,6 +112,10 @@ public class SysUserServiceImpl implements ISysUserService
         return userMapper.selectUserByUserName(userName);
     }
 
+    @Override
+    public SysUser selectUserByUser(SysUser user){
+        return userMapper.selectUserByUser(user);
+    }
     /**
      * 通过用户ID查询用户
      * 

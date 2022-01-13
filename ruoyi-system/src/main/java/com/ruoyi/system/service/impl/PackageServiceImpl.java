@@ -188,7 +188,8 @@ public class PackageServiceImpl implements IPackageService {
         InputStream fis = null;
         OutputStream toClient = null;
         try {
-            Documents document = documentsMapper.selectDocumentsById(id);
+            BatchTaskHistory batchTaskHistory = batchTaskHistoryMapper.selectBatchTaskHistoryById(id);
+            Documents document = documentsMapper.selectDocumentsById(Long.valueOf(batchTaskHistory.getExcelUrl()));
             byte[] documentByte = document.getFileData();
             fis = new ByteArrayInputStream(documentByte);
             byte[] buffer = new byte[fis.available()];
@@ -199,6 +200,8 @@ public class PackageServiceImpl implements IPackageService {
             toClient = new BufferedOutputStream(response.getOutputStream());
             toClient.write(buffer);
             toClient.flush();
+            batchTaskHistory.setDownloadNum(batchTaskHistory.getDownloadNum()+1);
+            batchTaskHistoryMapper.updateBatchTaskHistory(batchTaskHistory);
         } finally {
             IOUtils.closeQuietly(fis);
             IOUtils.closeQuietly(toClient);

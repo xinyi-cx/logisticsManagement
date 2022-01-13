@@ -1,6 +1,8 @@
 package com.ruoyi.framework.web.service;
 
 import javax.annotation.Resource;
+
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -56,7 +58,7 @@ public class SysLoginService
      * @param uuid 唯一标识
      * @return 结果
      */
-    public String login(String username, String password, String code, String uuid)
+    public String login(String username, String password, String country, String code, String uuid)
     {
         boolean captchaOnOff = configService.selectCaptchaOnOff();
         // 验证码开关
@@ -68,9 +70,12 @@ public class SysLoginService
         Authentication authentication = null;
         try
         {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("username", username);
+            jsonObject.put("country", country);
             // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
             authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+                    .authenticate(new UsernamePasswordAuthenticationToken(jsonObject.toJSONString(), password));
         }
         catch (Exception e)
         {

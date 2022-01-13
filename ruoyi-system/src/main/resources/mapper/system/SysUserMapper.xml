@@ -126,6 +126,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
 	    <include refid="selectUserVo"/>
 		where u.user_name = #{userName}
+		limit 1
+	</select>
+
+	<select id="selectUserByUser" parameterType="SysUser" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		<where>
+			<if test="userName != null and userName != ''">
+				AND u.user_name = #{userName}
+			</if>
+			<if test="country != null and country != ''">
+				AND u.country = #{country}
+			</if>
+		</where>
 	</select>
 	
 	<select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
