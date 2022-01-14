@@ -86,7 +86,7 @@ export default {
       countryList: [],
       codeUrl: "",
       loginForm: {
-        country: "",
+        country: "中国",
         username: "admin",
         password: "admin123",
         rememberMe: false,
@@ -159,10 +159,12 @@ export default {
       });
     },
     getCookie() {
+      const country = Cookies.get("country");
       const username = Cookies.get("username");
       const password = Cookies.get("password");
       const rememberMe = Cookies.get('rememberMe')
       this.loginForm = {
+        country: country === undefined ? this.loginForm.country : country,
         username: username === undefined ? this.loginForm.username : username,
         password: password === undefined ? this.loginForm.password : decrypt(password),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
@@ -186,6 +188,7 @@ export default {
           this.$store.dispatch("Login", this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
           }).catch(() => {
+            console.log("走到login-catch啦");
             this.loading = false;
             if (this.captchaOnOff) {
               this.getCode();

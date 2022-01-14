@@ -20,4 +20,22 @@ const store = new Vuex.Store({
   getters
 })
 
+
+/* 简单的store
+const store = new Vuex.Store({
+  state: {
+    count: 0
+  },
+  mutations: {
+    increment (state) {
+      state.count++;
+    }
+  }
+})
+
+通过store.state来获取状态对象，以及通过store.commit方法触发状态变更：
+store.commit("increment")
+console.log(store.state.count);
+ */
+
 export default store
