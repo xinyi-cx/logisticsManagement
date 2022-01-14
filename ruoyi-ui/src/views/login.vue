@@ -6,7 +6,7 @@
       <el-form-item>
         <el-select v-model="loginForm.country" style="width: 100%" filterable placeholder="请选择国家">
           <el-option
-            v-for="item in countryList"
+            v-for="item in dict.type.sys_country"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -81,12 +81,12 @@ import { encrypt, decrypt } from '@/utils/jsencrypt'
 
 export default {
   name: "Login",
+  dicts: ['sys_country'],
   data() {
     return {
-      countryList: [],
       codeUrl: "",
       loginForm: {
-        country: "中国",
+        country: "CN",
         username: "admin",
         password: "admin123",
         rememberMe: false,
@@ -122,33 +122,10 @@ export default {
     }
   },
   created() {
-    this.getCountryList();
     this.getCode();
     this.getCookie();
   },
   methods: {
-    // TO-DO List  进行接口交互，获取国家列表
-    getCountryList() {
-      const list = [
-        {
-          value: '选项1',
-          label: '中国'
-        },
-        {
-          value: '选项2',
-          label: '俄罗斯'
-        },
-        {
-          value: '选项3',
-          label: '蒙古'
-        },
-        {
-          value: '选项4',
-          label: '波兰'
-        }
-      ];
-      this.countryList = list;
-    },
     getCode() {
       getCodeImg().then(res => {
         this.captchaOnOff = res.captchaOnOff === undefined ? true : res.captchaOnOff;
@@ -188,7 +165,6 @@ export default {
           this.$store.dispatch("Login", this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
           }).catch(() => {
-            console.log("走到login-catch啦");
             this.loading = false;
             if (this.captchaOnOff) {
               this.getCode();
