@@ -1,7 +1,20 @@
 <template>
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">若依后台管理系统</h3>
+      <h3 class="title">DPD物流管理系统</h3>
+      <!-- 国家下拉选择框 -->
+      <el-form-item>
+        <el-select v-model="loginForm.country" style="width: 100%" filterable placeholder="请选择国家">
+          <el-option
+            v-for="item in countryList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            >
+          </el-option>
+          <svg-icon slot="prefix" icon-class="country" class="el-input__icon input-icon" />
+        </el-select>
+      </el-form-item>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
@@ -70,8 +83,10 @@ export default {
   name: "Login",
   data() {
     return {
+      countryList: [],
       codeUrl: "",
       loginForm: {
+        country: "",
         username: "admin",
         password: "admin123",
         rememberMe: false,
@@ -79,6 +94,9 @@ export default {
         uuid: ""
       },
       loginRules: {
+        country: [
+          { required: true, trigger: "blur", message: "请选择所在国家" }
+        ],
         username: [
           { required: true, trigger: "blur", message: "请输入您的账号" }
         ],
@@ -89,7 +107,7 @@ export default {
       },
       loading: false,
       // 验证码开关
-      captchaOnOff: true,
+      captchaOnOff: false,
       // 注册开关
       register: false,
       redirect: undefined
@@ -104,10 +122,33 @@ export default {
     }
   },
   created() {
+    this.getCountryList();
     this.getCode();
     this.getCookie();
   },
   methods: {
+    // TO-DO List  进行接口交互，获取国家列表
+    getCountryList() {
+      const list = [
+        {
+          value: '选项1',
+          label: '中国'
+        },
+        {
+          value: '选项2',
+          label: '俄罗斯'
+        },
+        {
+          value: '选项3',
+          label: '蒙古'
+        },
+        {
+          value: '选项4',
+          label: '波兰'
+        }
+      ];
+      this.countryList = list;
+    },
     getCode() {
       getCodeImg().then(res => {
         this.captchaOnOff = res.captchaOnOff === undefined ? true : res.captchaOnOff;
@@ -132,10 +173,12 @@ export default {
         if (valid) {
           this.loading = true;
           if (this.loginForm.rememberMe) {
+            Cookies.set("country", this.loginForm.country, {expires: 30 });
             Cookies.set("username", this.loginForm.username, { expires: 30 });
             Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
             Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
           } else {
+            Cookies.remove("country");
             Cookies.remove("username");
             Cookies.remove("password");
             Cookies.remove('rememberMe');

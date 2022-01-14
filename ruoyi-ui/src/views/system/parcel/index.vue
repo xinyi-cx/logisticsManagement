@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <!-- 查询条件 -->
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="长" prop="sizeX">
         <el-input
@@ -104,6 +105,7 @@
       </el-form-item>
     </el-form>
 
+    <!-- 列表新增/修改/导出等功能按钮区域 -->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -150,17 +152,38 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
+    <!-- 批量任务列表 -->
     <el-table v-loading="loading" :data="parcelList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="长" align="center" prop="sizeX" />
-      <el-table-column label="宽" align="center" prop="sizeY" />
-      <el-table-column label="高" align="center" prop="sizeZ" />
-      <el-table-column label="备注" align="center" prop="content" />
-      <el-table-column label="客户数据1" align="center" prop="customerData1" />
-      <el-table-column label="内部引用号" align="center" prop="reference" />
-      <el-table-column label="重量" align="center" prop="weight" />
-      <el-table-column label="pack_id" align="center" prop="packId" />
+      <el-table-column label="创建时间" align="center" prop="createdTime">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="类型" align="center" prop="sizeY" />
+      <el-table-column label="状态" align="center" prop="sizeZ" />
+      <el-table-column label="成功面单数" align="center" prop="content">
+      </el-table-column>
+      <el-table-column label="失败面单数" align="center" prop="customerData1" />
+      <el-table-column label="下载次数" align="center" prop="reference" />
+      <el-table-column label="原始Excel" align="center" prop="weight">
+        <template slot-scope="scope">
+          <el-link type="primary" href="" target="_blank">excel文件名</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['system:parcel:edit']"
+          >查看面单</el-button>
+        </template>
+      </el-table-column>
+
       <el-table-column label="waybill 运货单" align="center" prop="waybill" />
       <el-table-column label="包裹状态" align="center" prop="status" />
       <el-table-column label="package_id" align="center" prop="packageId" />
@@ -196,6 +219,7 @@
       </el-table-column>
     </el-table>
     
+    <!-- 翻页 -->
     <pagination
       v-show="total>0"
       :total="total"
@@ -269,6 +293,14 @@
 </template>
 
 <script>
+/*功能点：
+1、获取批量任务历史列表；
+2、查询功能；
+3、单独excel点击下载功能；
+4、查看批量创建历史的面单pdf文件，在查看页面进行下载；
+5、点击成功面单数，跳转至成功批量历史列表--面单列表，新增是否作废字段，并在操作一栏新增<作废>操作；
+6、点击失败面单数，跳转至失败批量历史列表--失败列表；
+*/
 import { listParcel, getParcel, delParcel, addParcel, updateParcel } from "@/api/shippingOrder/parcel";
 
 export default {
