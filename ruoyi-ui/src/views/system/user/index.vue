@@ -115,9 +115,10 @@
       <el-table-column type="selection" align="center" />
       <el-table-column label="用户编号" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
       <el-table-column label="用户名" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
-      <el-table-column label="密码" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" /
-      <el-table-column label="手机号" align="center" key="phonenumber" prop="phonenumber" v-if="columns[3].visible" />
-      <el-table-column label="状态" align="center" key="status" v-if="columns[4].visible">
+      <el-table-column label="密码" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
+      <el-table-column label="所在国家" align="center" key="country" prop="country" v-if="columns[3].visible" :show-overflow-tooltip="true" />
+      <el-table-column label="手机号" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" />
+      <el-table-column label="状态" align="center" key="status" v-if="columns[5].visible">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.status"
@@ -127,7 +128,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[5].visible">
+      <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[6].visible">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
@@ -217,10 +218,10 @@
             <el-form-item label="所在国家">
               <el-select v-model="form.sex" placeholder="请选择" style="width: 100%">
                 <el-option
-                  v-for="dict in dict.type.sys_user_sex"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
+                  v-for="item in dict.type.sys_country"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -285,7 +286,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "User",
-  dicts: ['sys_normal_disable', 'sys_user_sex'],
+  dicts: ['sys_normal_disable', 'sys_user_sex', 'sys_country'],
   components: { Treeselect },
   data() {
     return {
@@ -354,6 +355,7 @@ export default {
         { key: 0, label: `用户编号`, visible: true },
         { key: 1, label: `用户名`, visible: true },
         { key: 2, label: `密码`, visible: true },
+        { key: 2, label: `所在国家`, visible: true },
         { key: 3, label: `手机号`, visible: true },
         { key: 4, label: `状态`, visible: true },
         { key: 5, label: `创建时间`, visible: true }
