@@ -94,29 +94,20 @@
           plain
           icon="el-icon-upload2"
           size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['system:package:edit']"
-        >批量导出</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-upload2"
-          size="mini"
           @click="handleImport"
           v-hasPermi="['system:package:add']"
         >导入</el-button>
       </el-col>
+      
       <el-col :span="1.5">
         <el-button
+          type="warning"
+          plain
+          icon="el-icon-download"
           size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="handleUpdate(scope.row)"
-          v-hasPermi="['system:package:edit']"
-        >修改</el-button>
+          @click="handleExport"
+          v-hasPermi="['system:package:export']"
+        >导出</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -128,16 +119,6 @@
           @click="handleDelete"
           v-hasPermi="['system:package:remove']"
         >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['system:package:export']"
-        >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
