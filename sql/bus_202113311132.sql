@@ -16,6 +16,7 @@ CREATE TABLE `package`
     `created_time` datetime     DEFAULT NULL comment '创建时间',
     `updated_time` datetime     DEFAULT NULL comment '更新时间',
     `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
+    `download_num`  int(10)      DEFAULT 0 comment '下载次数',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8

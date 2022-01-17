@@ -158,6 +158,16 @@ public class PackageServiceImpl implements IPackageService {
     }
 
     /**
+     * 更细下载数量
+     * @param ids
+     * @return
+     */
+    @Override
+    public void updateDownloadNum(List<Long> ids){
+        packageMapper.updateDownloadNum(ids);
+    }
+
+    /**
      * 新增面单
      *
      * @param pkg 面单

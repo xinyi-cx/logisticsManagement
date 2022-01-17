@@ -78,6 +78,20 @@ public class Package extends BaseEntity
     @Excel(name = "是否删除")
     private Integer isDelete;
 
+    /** 下载次数 */
+    @Excel(name = "下载次数")
+    private Integer downloadNum;
+
+    public void setDownloadNum(Integer downloadNum)
+    {
+        this.downloadNum = downloadNum;
+    }
+
+    public Integer getDownloadNum()
+    {
+        return downloadNum;
+    }
+
     public void setId(Long id) 
     {
         this.id = id;

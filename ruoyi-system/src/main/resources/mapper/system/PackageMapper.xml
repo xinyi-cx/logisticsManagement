@@ -19,10 +19,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateUser"    column="update_user"    />
         <result property="createdTime"    column="created_time"    />
         <result property="updatedTime"    column="updated_time"    />
+        <result property="isDelete"    column="is_delete"    />
+        <result property="downloadNum"    column="download_num"    />
     </resultMap>
 
     <sql id="selectPackageVo">
-        select id, payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, batch_id, create_user, update_user, created_time, updated_time from package
+        select id, payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, batch_id, create_user, update_user, created_time, updated_time, download_num, is_delete from package
     </sql>
 
     <select id="selectPackageList" parameterType="Package" resultMap="PackageResult">
@@ -54,6 +56,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select max(id)
             from package
     </select>
+
+    <update id="updateDownloadNum" parameterType="list">
+        update package
+        SET download_num = download_num + 1
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 
     <insert id="insertPackage" parameterType="Package" useGeneratedKeys="true" keyProperty="id">
         insert into package
@@ -158,8 +169,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phone != null">phone = #{phone},</if>
             <if test="postalCode != null">postal_code = #{postalCode},</if>
             <if test="batchId != null">batch_id = #{batchId},</if>
-            <if test="createUser != null">create_user = #{createUser},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="downloadNum != null">download_num = #{downloadNum},</if>
             updated_time = sysdate(),
         </trim>
         where id = #{id}

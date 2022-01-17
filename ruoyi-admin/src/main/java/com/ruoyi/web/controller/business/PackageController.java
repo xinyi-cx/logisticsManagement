@@ -1,11 +1,13 @@
 package com.ruoyi.web.controller.business;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.system.domain.vo.PackageVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -69,6 +71,9 @@ public class PackageController extends BaseController
     public void export(HttpServletResponse response, PackageVo pkg)
     {
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        if (!CollectionUtils.isEmpty(list)){
+            packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
+        }
         ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
         util.exportExcel(response, list, "面单数据");
     }

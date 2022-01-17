@@ -76,6 +76,20 @@ public class PackageVo extends BaseEntity
     @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
 
+    /** 下载次数 */
+    @Excel(name = "下载次数")
+    private Integer downloadNum;
+
+    public void setDownloadNum(Integer downloadNum)
+    {
+        this.downloadNum = downloadNum;
+    }
+
+    public Integer getDownloadNum()
+    {
+        return downloadNum;
+    }
+
     /** 收件人地址 */
     @Excel(name = "收件人地址")
     private String receiverAddress;

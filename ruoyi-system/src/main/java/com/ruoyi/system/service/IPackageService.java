@@ -41,6 +41,13 @@ public interface IPackageService
     public List<PackageVo> selectPackageVoList(PackageVo packageVo);
 
     /**
+     * 更细下载数量
+     * @param ids
+     * @return
+     */
+    public void updateDownloadNum(List<Long> ids);
+
+  /**
      * 新增面单
      * 
      * @param pkg 面单

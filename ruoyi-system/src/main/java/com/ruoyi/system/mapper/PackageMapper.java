@@ -35,6 +35,13 @@ public interface PackageMapper {
     public List<Package> selectPackageList(Package pkg);
 
     /**
+     * 更细下载数量
+     * @param ids
+     * @return
+     */
+    public int updateDownloadNum(List<Long> ids);
+
+    /**
      * 新增面单
      *
      * @param pkg 面单
