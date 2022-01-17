@@ -38,6 +38,9 @@ public class PackageServiceImpl implements IPackageService {
     private PackageMapper packageMapper;
 
     @Autowired
+    private RedirectPackageMapper redirectPackageMapper;
+
+    @Autowired
     private AddressSenderMapper addressSenderMapper;
 
     @Autowired
@@ -93,8 +96,21 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     public List<PackageVo> selectPackageVoList(PackageVo packageVo) {
         Package pkg = new Package();
+        pkg.setCreateUser(SecurityUtils.getLoginUser().getUsername());
         BeanUtils.copyProperties(packageVo, pkg);
-        List<Package> packages = packageMapper.selectPackageList(pkg);
+        List<Package> packagesAll = packageMapper.selectPackageList(pkg);
+        List<Package> packages = new ArrayList<>();
+        if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())){
+            RedirectPackage redirectPackage = new RedirectPackage();
+            redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+            redirectPackage.setIsDelete(0);
+            List<Long> originalIds = redirectPackageMapper.selectRedirectPackageList(redirectPackage).stream().map(RedirectPackage::getOriginalId).collect(toList());
+            if (CollectionUtils.isEmpty(originalIds)) {
+                packages = packagesAll.stream().filter(item -> originalIds.contains(item.getId())).collect(toList());
+            }
+        }else {
+            packages = packagesAll;
+        }
         if (CollectionUtils.isEmpty(packages)) {
             return new ArrayList<>();
         }
@@ -161,8 +177,6 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertPackage(PackageVo pkg) {
-        pkg.setCreatedTime(new Date());
-        pkg.setUpdatedTime(new Date());
         Package pac = new Package();
         BeanUtils.copyProperties(pkg, pac);
         //生成id
@@ -177,6 +191,14 @@ public class PackageServiceImpl implements IPackageService {
         pac.setCreateUser(SecurityUtils.getLoginUser().getUsername());
         pac.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
         packageMapper.insertPackageWithId(pac);
+        if (ObjectUtils.isNotEmpty(pkg.getOriginalId())){
+            RedirectPackage redirectPackage = new RedirectPackage();
+            redirectPackage.setId(pac.getId());
+            redirectPackage.setOriginalId(pkg.getOriginalId());
+            redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+            redirectPackage.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            redirectPackageMapper.insertRedirectPackage(redirectPackage);
+        }
         //一对多暂时还未确定
         Parcel parcel = new Parcel();
         BeanUtils.copyProperties(pkg, parcel);
@@ -362,6 +384,13 @@ public class PackageServiceImpl implements IPackageService {
         List<Parcel> parcels = parcelMapper.selectParcelList(parcel);
         BeanUtils.copyProperties(pkg, parcels.get(0), "id", "createdTime");
         parcelMapper.updateParcel(parcels.get(0));
+        if (ObjectUtils.isNotEmpty(pkg.getOriginalId())){
+            RedirectPackage redirectPackage = new RedirectPackage();
+            redirectPackage.setId(pac.getId());
+            redirectPackage.setOriginalId(pkg.getOriginalId());
+            redirectPackage.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            redirectPackageMapper.updateRedirectPackage(redirectPackage);
+        }
         return packageMapper.updatePackage(pac);
     }
 

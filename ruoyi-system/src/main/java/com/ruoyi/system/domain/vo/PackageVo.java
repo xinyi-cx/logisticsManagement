@@ -188,6 +188,18 @@ public class PackageVo extends BaseEntity
     @Excel(name = "package_id")
     private Long packageId;
 
+    /** 原面单主键 */
+    @Excel(name = "原面单主键")
+    private Long originalId;
+
+    public Long getOriginalId() {
+        return originalId;
+    }
+
+    public void setOriginalId(Long originalId) {
+        this.originalId = originalId;
+    }
+
     public BigDecimal getPln() {
         return pln;
     }

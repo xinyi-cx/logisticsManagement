@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RedirectPackageMapper">
+    
+    <resultMap type="RedirectPackage" id="RedirectPackageResult">
+        <result property="id"    column="id"    />
+        <result property="originalId"    column="original_id"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+        <result property="isDelete"    column="is_delete"    />
+    </resultMap>
+
+    <sql id="selectRedirectPackageVo">
+        select id, original_id, create_user, update_user, created_time, updated_time, is_delete from redirect_package
+    </sql>
+
+    <select id="selectRedirectPackageList" parameterType="RedirectPackage" resultMap="RedirectPackageResult">
+        <include refid="selectRedirectPackageVo"/>
+        <where>  
+            <if test="originalId != null "> and original_id = #{originalId}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+            <if test="isDelete != null "> and is_delete = #{isDelete}</if>
+        </where>
+    </select>
+    
+    <select id="selectRedirectPackageById" parameterType="Long" resultMap="RedirectPackageResult">
+        <include refid="selectRedirectPackageVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRedirectPackage" parameterType="RedirectPackage">
+        insert into redirect_package
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="originalId != null">original_id,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            created_time,
+            updated_time,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="originalId != null">#{originalId},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+            sysdate(),
+            sysdate(),
+         </trim>
+    </insert>
+
+    <update id="updateRedirectPackage" parameterType="RedirectPackage">
+        update redirect_package
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="originalId != null">original_id = #{originalId},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            updated_time = sysdate(),
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRedirectPackageById" parameterType="Long">
+        delete from redirect_package where id = #{id}
+    </delete>
+
+    <delete id="deleteRedirectPackageByIds" parameterType="String">
+        delete from redirect_package where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
