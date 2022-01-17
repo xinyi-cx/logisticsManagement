@@ -143,70 +143,25 @@
 
     <el-table v-loading="loading" :data="historyList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
+      <el-table-column label="内部引用号" align="center" prop="id" />
       <el-table-column label="创建时间" align="center" prop="createdTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="类型" align="center" prop="type" />
       <el-table-column label="状态" align="center" prop="status" />
-      <el-table-column label="成功面单数" align="center" prop="successNum">
-        <template slot-scope="scope">
-          <!-- 待添加点击处理事件 跳转至成功面单列表 -->
-          <router-link :to="'/tool/success/index/' + scope.row.id" class="link-type">
-           <span>{{ scope.row.successNum }}</span>
-          </router-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="失败面单数" align="center" prop="failNum">
-        <template slot-scope="scope">
-          <!-- 待添加点击处理事件 跳转至失败面单列表-->
-          <router-link :to="'/tool/failure/index/' + scope.row.id" class="link-type">
-           <span>{{ scope.row.failNum }}</span>
-          </router-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="下载次数" align="center" prop="downloadNum" />
-      <el-table-column label="原始excel" align="center" prop="excelUrl" width="180">
-        <template slot-scope="scope">
-          <!-- 待需要添加点击处理事件 下载excel-->
-          <el-link>{{scope.row.excelUrl}}</el-link>
-        </template>
-      </el-table-column>
-      <!--
-      <el-table-column label="excel内容" align="center" prop="excelContent" />
-      <el-table-column label="创建人" align="center" prop="createUser" />
-      <el-table-column label="更新人" align="center" prop="updateUser" />
-      <el-table-column label="更新时间" align="center" prop="updatedTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.updatedTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      -->
+
+      <el-table-column label="失败原因" align="center" prop="downloadNum" width="180"/>
+     
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:history:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:history:remove']"
-          >删除</el-button>
-          <el-button
-            size="mini"
-            type="text"
             icon="el-icon-view" class="text-danger"
-            @click="handleDelete(scope.row)"
+            @click="viewOriginData(scope.row)"
             v-hasPermi="['system:history:remove']"
-          >查看批量面单</el-button>
+          >查看原始数据内容</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -219,23 +174,120 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改批量任务历史对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="成功面单数" prop="successNum">
-          <el-input v-model="form.successNum" placeholder="请输入成功面单数" />
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="106px">
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="收货人全名" prop="receiverName">
+            <el-input v-model="form.receiverName" placeholder="请输入收获人全名" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+          <el-col :span="12">
+            <el-form-item label="国家" prop="receiverCountryCode">
+              <el-select v-model="form.receiverCountryCode" placeholder="请选择">
+                <el-option
+                  v-for="dict in dict.type.sys_country"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="城市" prop="receiverCity">
+              <el-input v-model="form.receiverCity" placeholder="请输入城市名" maxlength="30" />
+            </el-form-item>
+          </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="街道" prop="receiverAddress">
+            <el-input v-model="form.receiverAddress" placeholder="请输入街道信息" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="邮政编码" prop="receiverPostalCode">
+            <el-input v-model="form.receiverPostalCode" placeholder="请输入邮政编码" maxlength="30" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="手机号码" prop="receiverPhone">
+            <el-input v-model.number="form.receiverPhone" placeholder="请输入手机号码" maxlength="30" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="邮件/联系方式" prop="receiverEmail">
+            <el-input v-model="form.receiverEmail" placeholder="请输入邮件/联系方式" maxlength="30" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="货物金额(PLN)" prop="pln">
+            <el-input v-model.number="form.pln" placeholder="max:6000" maxlength="30" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <h3 class="headline">其他</h3>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="内部引用号" prop="reference">
+            <el-input v-model="form.reference" placeholder="请输入内部引用号" maxlength="30" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="重量(KG)" prop="weight">
+            <el-input v-model="form.weight" placeholder="max(National:31.5,International:40)" maxlength="30" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="分类" prop="ref1">
+            <el-input v-model="form.ref1" placeholder="请输入分类" maxlength="30" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="分类2" prop="ref2">
+            <el-input v-model="form.ref2" placeholder="请输入分类2" maxlength="30" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="备注" prop="content">
+            <el-input v-model="form.content" placeholder="请输入邮政备注" maxlength="30" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <!--
+        <el-form-item label="发件人id" prop="senderId">
+          <el-input v-model="form.senderId" placeholder="请输入发件人id" />
         </el-form-item>
-        <el-form-item label="失败面单数" prop="failNum">
-          <el-input v-model="form.failNum" placeholder="请输入失败面单数" />
+        <el-form-item label="收货人id" prop="receiverId">
+          <el-input v-model="form.receiverId" placeholder="请输入收货人id" />
         </el-form-item>
-        <el-form-item label="下载次数" prop="downloadNum">
-          <el-input v-model="form.downloadNum" placeholder="请输入下载次数" />
+        <el-form-item label="分类1" prop="ref1">
+          <el-input v-model="form.ref1" placeholder="请输入分类1" />
         </el-form-item>
-        <el-form-item label="原始excel路径" prop="excelUrl">
-          <el-input v-model="form.excelUrl" placeholder="请输入原始excel路径" />
+        <el-form-item label="分类2" prop="ref2">
+          <el-input v-model="form.ref2" placeholder="请输入分类2" />
         </el-form-item>
-        <el-form-item label="excel内容">
-          <editor v-model="form.excelContent" :min-height="192"/>
+        <el-form-item label="服务id" prop="servicesId">
+          <el-input v-model="form.servicesId" placeholder="请输入服务id" />
+        </el-form-item>
+        <el-form-item label="手机号码" prop="phone">
+          <el-input v-model="form.phone" placeholder="请输入手机号码" />
+        </el-form-item>
+        <el-form-item label="邮政编码" prop="postalCode">
+          <el-input v-model="form.postalCode" placeholder="请输入邮政编码" />
         </el-form-item>
         <el-form-item label="创建人" prop="createUser">
           <el-input v-model="form.createUser" placeholder="请输入创建人" />
@@ -259,6 +311,7 @@
             placeholder="选择更新时间">
           </el-date-picker>
         </el-form-item>
+        -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -420,6 +473,10 @@ export default {
       this.download('system/history/export', {
         ...this.queryParams
       }, `history_${new Date().getTime()}.xlsx`)
+    },
+    /** 查看原始数据 */
+    viewOriginData(row) {
+      this.open = true;
     }
   }
 };

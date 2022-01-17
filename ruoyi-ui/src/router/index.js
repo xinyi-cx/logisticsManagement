@@ -68,7 +68,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/index'),
+        component: () => import('@/views/system/package/index'),
         name: 'Index',
         meta: { title: '首页', icon: 'dashboard', affix: true }
       }
@@ -161,7 +161,36 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },
+  // 批量任务历史中成功面单列表
+  {
+    path: '/tool/success',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:dict:list'],
+    children: [
+      {
+        path: 'index/:id(\\d+)',
+        component: () => import('@/views/system/history/successDetail'),
+        name: 'Data',
+        meta: { title: '成功面单列表', activeMenu: '/tool/history' }
+      }
+    ]
+  },
+  {
+    path: '/tool/failure',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:dict:list'],
+    children: [
+      {
+        path: 'index/:id(\\d+)',
+        component: () => import('@/views/system/history/failureDetail'),
+        name: 'Data',
+        meta: { title: '成功面单列表', activeMenu: '/tool/history' }
+      }
+    ]
+  },
 ]
 
 export default new Router({

@@ -80,27 +80,6 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['system:package:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-upload2"
-          size="mini"
-          @click="handleImport"
-          v-hasPermi="['system:package:add']"
-        >导入</el-button>
-      </el-col>
-      
-      <el-col :span="1.5">
-        <el-button
           type="warning"
           plain
           icon="el-icon-download"
@@ -108,17 +87,6 @@
           @click="handleExport"
           v-hasPermi="['system:package:export']"
         >导出</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:package:remove']"
-        >删除</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -162,6 +130,8 @@
       <el-table-column label="分类" align="center" prop="ref1" />
       <!-- 分类2 -->
       <el-table-column label="分类2" align="center" prop="ref2" />
+
+      <el-table-column label="是否作废" align="center" prop="ref2" />
       <!-- 操作 -->
       <el-table-column label="操作" align="center" prop="id">
          <template slot-scope="scope">
@@ -172,22 +142,30 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:package:edit']"
-          >修改</el-button>
+          >查看面单</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:package:remove']"
-          >删除</el-button>
+          >作废</el-button>
           -->
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
+            icon="el-icon-view"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:package:remove']"
-          >删除</el-button>
+          >查看面单</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            class="text-success"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['system:package:remove']"
+          >作废</el-button>
         </template>
       </el-table-column>
 
