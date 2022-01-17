@@ -4,14 +4,13 @@
       <h3 class="title">DPD物流管理系统</h3>
       <!-- 国家下拉选择框 -->
       <el-form-item>
-        <el-select v-model="loginForm.country" style="width: 100%" filterable placeholder="请选择国家">
+        <el-select v-model="loginForm.country" placeholder="请选择国家" style="width: 100%" clearable filterable>
           <el-option
-            v-for="item in dict.type.sys_country"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-            >
-          </el-option>
+            v-for="item in countryList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+            ></el-option>
           <svg-icon slot="prefix" icon-class="country" class="el-input__icon input-icon" />
         </el-select>
       </el-form-item>
@@ -75,18 +74,19 @@
 </template>
 
 <script>
-import { getCodeImg } from "@/api/login";
+import axios from 'axios';
+import { getCodeImg,getCountryList } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 
 export default {
   name: "Login",
-  dicts: ['sys_country'],
   data() {
     return {
       codeUrl: "",
+      countryList: [],
       loginForm: {
-        country: "CN",
+        country: "",
         username: "admin",
         password: "admin123",
         rememberMe: false,
@@ -122,10 +122,20 @@ export default {
     }
   },
   created() {
+    this.getCountryList();
     this.getCode();
     this.getCookie();
   },
   methods: {
+    getCountryList() {
+      axios.get(`/data/countryList.json`).then(res =>  {
+        console.log('获取json');
+        const data = res.data;
+        this.countryList = data.data;
+      }).catch(err => {
+        console.log('报错了');
+      })
+    },
     getCode() {
       getCodeImg().then(res => {
         this.captchaOnOff = res.captchaOnOff === undefined ? true : res.captchaOnOff;
