@@ -56,8 +56,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contentType != null">content_type,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
-            <if test="createdTime != null">created_time,</if>
-            <if test="updatedTime != null">updated_time,</if>
+            created_time,
+            updated_time,
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fileName != null">#{fileName},</if>
@@ -68,8 +68,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contentType != null">#{contentType},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
-            <if test="createdTime != null">#{createdTime},</if>
-            <if test="updatedTime != null">#{updatedTime},</if>
+            sysdate(),
+            sysdate(),
          </trim>
     </insert>
 
@@ -84,8 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contentType != null">content_type = #{contentType},</if>
             <if test="createUser != null">create_user = #{createUser},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
-            <if test="createdTime != null">created_time = #{createdTime},</if>
-            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+            updated_time = sysdate(),
             <if test="isDelete != null">is_delete = #{isDelete},</if>
         </trim>
         where id = #{id}

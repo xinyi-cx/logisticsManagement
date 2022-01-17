@@ -64,8 +64,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pln != null">pln,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
-            <if test="createdTime != null">created_time,</if>
-            <if test="updatedTime != null">updated_time,</if>
+            created_time,
+            updated_time,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="address != null">#{address},</if>
@@ -79,8 +79,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pln != null">#{pln},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
-            <if test="createdTime != null">#{createdTime},</if>
-            <if test="updatedTime != null">#{updatedTime},</if>
+            sysdate(),
+            sysdate(),
         </trim>
     </insert>
 
@@ -98,8 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pln != null">pln = #{pln},</if>
             <if test="createUser != null">create_user = #{createUser},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
-            <if test="createdTime != null">created_time = #{createdTime},</if>
-            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+            updated_time = sysdate(),
         </trim>
         where id = #{id}
     </update>
@@ -109,7 +108,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <update id="deleteAddressReceiverByIds" parameterType="String">
-        update address_receiver set is_delete = 1  where id in
+        update address_receiver set is_delete = 1, updated_time = sysdate()
+        where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
@@ -139,8 +139,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postalCode != null">postal_code,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
-            <if test="createdTime != null">created_time,</if>
-            <if test="updatedTime != null">updated_time,</if>
+            created_time,
+            updated_time,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -155,8 +155,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postalCode != null">#{postalCode},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
-            <if test="createdTime != null">#{createdTime},</if>
-            <if test="updatedTime != null">#{updatedTime},</if>
+            sysdate(),
+            sysdate(),
         </trim>
     </insert>
 
@@ -175,8 +175,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.postalCode},
             #{item.createUser},
             #{item.updateUser},
-            #{item.createdTime},
-            #{item.updatedTime})
+            sysdate(),
+            sysdate())
         </foreach>
     </insert>
 

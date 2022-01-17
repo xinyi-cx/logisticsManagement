@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.utils.MultpartFileToByte;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.PackageVo;
@@ -173,11 +174,15 @@ public class PackageServiceImpl implements IPackageService {
         pac.setSenderId(addressSender.getId());
         pac.setServicesId(1L);
         pac.setId(sequenceMapper.selectNextvalByName("package_seq"));
+        pac.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+        pac.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
         packageMapper.insertPackageWithId(pac);
         //一对多暂时还未确定
         Parcel parcel = new Parcel();
         BeanUtils.copyProperties(pkg, parcel);
         parcel.setPackId(pac.getId());
+        parcel.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+        parcel.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
 //        接口返回
 //        parcel.setPackageId();
         return parcelMapper.insertParcel(parcel);
@@ -215,6 +220,8 @@ public class PackageServiceImpl implements IPackageService {
         documents.setContentType(file.getContentType());
         documents.setFileSize(file.getSize());
         documents.setDisplayName(file.getOriginalFilename());
+        documents.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+        documents.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
         documentsMapper.insertDocuments(documents);
         return documents;
     }
@@ -226,6 +233,8 @@ public class PackageServiceImpl implements IPackageService {
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
+        batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+        batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
         /**
          * 一系列处理
          */
@@ -237,8 +246,6 @@ public class PackageServiceImpl implements IPackageService {
         //生成id 并且更新
         Map<String, Sequence> nameMap = getSeqMap(packages.size());
         for (PackageVo packageVo : packageVos) {
-            packageVo.setCreatedTime(new Date());
-            packageVo.setUpdatedTime(new Date());
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
             AddressSender addressSender = getSender(packageVo, getId(nameMap, "send_seq"));
 
@@ -249,10 +256,13 @@ public class PackageServiceImpl implements IPackageService {
             pac.setServicesId(1L);
             pac.setBatchId(batchTaskHistory.getId());
             pac.setId(getId(nameMap, "package_seq"));
-
+            pac.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+            pac.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
             Parcel parcel = new Parcel();
             BeanUtils.copyProperties(packageVo, parcel);
             parcel.setPackId(pac.getId());
+            parcel.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+            parcel.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
 //            parcel.setPackId("");
 
             addressSenders.add(addressSender);
@@ -303,9 +313,9 @@ public class PackageServiceImpl implements IPackageService {
         addressSender.setPostalCode(pkg.getSenderPostalCode());
         if (ObjectUtils.isNotEmpty(id)) {
             addressSender.setId(id);
-            addressSender.setCreatedTime(new Date());
+            addressSender.setCreateUser(SecurityUtils.getLoginUser().getUsername());
         }
-        addressSender.setUpdatedTime(new Date());
+        addressSender.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
         return addressSender;
     }
 
@@ -322,9 +332,9 @@ public class PackageServiceImpl implements IPackageService {
         addressReceiver.setPln(pkg.getPln());
         if (ObjectUtils.isNotEmpty(id)) {
             addressReceiver.setId(id);
-            addressReceiver.setCreatedTime(new Date());
+            addressReceiver.setCreateUser(SecurityUtils.getLoginUser().getUsername());
         }
-        addressReceiver.setUpdatedTime(new Date());
+        addressReceiver.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
         return addressReceiver;
     }
 
@@ -336,7 +346,7 @@ public class PackageServiceImpl implements IPackageService {
      */
     @Override
     public int updatePackage(PackageVo pkg) {
-        pkg.setUpdatedTime(new Date());
+        pkg.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
         Package pac = packageMapper.selectPackageById(pkg.getId());
         BeanUtils.copyProperties(pkg, pac, "id", "createdTime");
 

@@ -54,8 +54,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packId != null">pack_id,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
-            <if test="createdTime != null">created_time,</if>
-            <if test="updatedTime != null">updated_time,</if>
+            created_time,
+            updated_time,
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="sessionId != null">#{sessionId},</if>
@@ -66,8 +66,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packId != null">#{packId},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
-            <if test="createdTime != null">#{createdTime},</if>
-            <if test="updatedTime != null">#{updatedTime},</if>
+            sysdate(),
+            sysdate(),
          </trim>
     </insert>
 
@@ -82,8 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packId != null">pack_id = #{packId},</if>
             <if test="createUser != null">create_user = #{createUser},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
-            <if test="createdTime != null">created_time = #{createdTime},</if>
-            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+            updated_time = sysdate(),
         </trim>
         where id = #{id}
     </update>

@@ -213,3 +213,18 @@ CREATE TABLE `documents`
 ) engine = innodb
   CHARSET = utf8
   auto_increment = 200 comment = '文件';
+
+drop table if exists redirect_package;
+CREATE TABLE `redirect_package`
+(
+    `id`           bigint(20) unsigned NOT NULL AUTO_INCREMENT comment '转寄面单主键',
+    `original_id`  bigint(20)  DEFAULT NULL comment '原面单主键',
+    `create_user`  varchar(50) DEFAULT NULL comment '创建人',
+    `update_user`  varchar(50) DEFAULT NULL comment '更新人',
+    `created_time` datetime    DEFAULT NULL comment '创建时间',
+    `updated_time` datetime    DEFAULT NULL comment '更新时间',
+    `is_delete`    tinyint(1)  DEFAULT '0' comment '是否删除',
+    PRIMARY KEY (`id`)
+) engine = innodb
+  CHARSET = utf8
+  auto_increment = 200 comment = '转寄面单原面单关联关系表';
