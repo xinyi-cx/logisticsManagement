@@ -122,41 +122,41 @@ public class PackageVo extends BaseEntity
     @Excel(name = "收件人邮政编码")
     private String receiverPostalCode;
 
-    /** 发件人街道？地址 */
-    @Excel(name = "发件人街道？地址")
-    private String senderAddress;
-
-    /** 发件人城市 */
-    @Excel(name = "发件人城市")
-    private String senderCity;
-
-    /** 发件人公司 */
-    @Excel(name = "发件人公司")
-    private String senderCompany;
-
-    /** 发件人国家 */
-    @Excel(name = "发件人国家")
-    private String senderCountryCode;
-
-    /** 发件人邮件 */
-    @Excel(name = "发件人邮件")
-    private String senderEmail;
-
-    /** 发件人fid */
-    @Excel(name = "发件人fid")
-    private Long senderFid;
-
-    /** 发件人姓名 */
-    @Excel(name = "发件人姓名")
-    private String senderName;
-
-    /** 发件人手机号码 */
-    @Excel(name = "发件人手机号码")
-    private String senderPhone;
-
-    /** 发件人邮政编码 */
-    @Excel(name = "发件人邮政编码")
-    private String senderPostalCode;
+//    /** 发件人街道？地址 */
+//    @Excel(name = "发件人街道？地址")
+//    private String senderAddress;
+//
+//    /** 发件人城市 */
+//    @Excel(name = "发件人城市")
+//    private String senderCity;
+//
+//    /** 发件人公司 */
+//    @Excel(name = "发件人公司")
+//    private String senderCompany;
+//
+//    /** 发件人国家 */
+//    @Excel(name = "发件人国家")
+//    private String senderCountryCode;
+//
+//    /** 发件人邮件 */
+//    @Excel(name = "发件人邮件")
+//    private String senderEmail;
+//
+//    /** 发件人fid */
+//    @Excel(name = "发件人fid")
+//    private Long senderFid;
+//
+//    /** 发件人姓名 */
+//    @Excel(name = "发件人姓名")
+//    private String senderName;
+//
+//    /** 发件人手机号码 */
+//    @Excel(name = "发件人手机号码")
+//    private String senderPhone;
+//
+//    /** 发件人邮政编码 */
+//    @Excel(name = "发件人邮政编码")
+//    private String senderPostalCode;
 
     /** 长 */
     @Excel(name = "长")
@@ -408,77 +408,6 @@ public class PackageVo extends BaseEntity
         this.receiverPostalCode = receiverPostalCode;
     }
 
-    public String getSenderAddress() {
-        return senderAddress;
-    }
-
-    public void setSenderAddress(String senderAddress) {
-        this.senderAddress = senderAddress;
-    }
-
-    public String getSenderCity() {
-        return senderCity;
-    }
-
-    public void setSenderCity(String senderCity) {
-        this.senderCity = senderCity;
-    }
-
-    public String getSenderCompany() {
-        return senderCompany;
-    }
-
-    public void setSenderCompany(String senderCompany) {
-        this.senderCompany = senderCompany;
-    }
-
-    public String getSenderCountryCode() {
-        return senderCountryCode;
-    }
-
-    public void setSenderCountryCode(String senderCountryCode) {
-        this.senderCountryCode = senderCountryCode;
-    }
-
-    public String getSenderEmail() {
-        return senderEmail;
-    }
-
-    public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
-    }
-
-    public Long getSenderFid() {
-        return senderFid;
-    }
-
-    public void setSenderFid(Long senderFid) {
-        this.senderFid = senderFid;
-    }
-
-    public String getSenderName() {
-        return senderName;
-    }
-
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
-    }
-
-    public String getSenderPhone() {
-        return senderPhone;
-    }
-
-    public void setSenderPhone(String senderPhone) {
-        this.senderPhone = senderPhone;
-    }
-
-    public String getSenderPostalCode() {
-        return senderPostalCode;
-    }
-
-    public void setSenderPostalCode(String senderPostalCode) {
-        this.senderPostalCode = senderPostalCode;
-    }
 
     public Integer getSizeX() {
         return sizeX;

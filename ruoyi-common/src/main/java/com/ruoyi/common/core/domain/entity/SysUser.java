@@ -98,6 +98,105 @@ public class SysUser extends BaseEntity
     /** 角色ID */
     private Long roleId;
 
+    /** 发件人街道？地址 */
+    private String address;
+
+    /** 发件人城市 */
+    private String city;
+
+    /** 发件人公司 */
+    private String company;
+
+    /** 发件人国家 */
+    private String countryCode;
+
+    /** 发件人邮件 */
+    private String sendEmail;
+
+    /** 发件人fid */
+    private Long fid;
+
+    /** 发件人姓名 */
+    private String name;
+
+    /** 发件人手机号码 */
+    private String phone;
+
+    /** 发件人邮政编码 */
+    private String postalCode;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public String getSendEmail() {
+        return sendEmail;
+    }
+
+    public void setSendEmail(String sendEmail) {
+        this.sendEmail = sendEmail;
+    }
+
+    public Long getFid() {
+        return fid;
+    }
+
+    public void setFid(Long fid) {
+        this.fid = fid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
     public SysUser()
     {
 

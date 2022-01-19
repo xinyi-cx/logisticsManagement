@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
+
+import com.ruoyi.system.domain.AddressSender;
+import com.ruoyi.system.mapper.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +27,6 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
-import com.ruoyi.system.mapper.SysPostMapper;
-import com.ruoyi.system.mapper.SysRoleMapper;
-import com.ruoyi.system.mapper.SysUserMapper;
-import com.ruoyi.system.mapper.SysUserPostMapper;
-import com.ruoyi.system.mapper.SysUserRoleMapper;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
 
@@ -60,6 +60,12 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     protected Validator validator;
+
+    @Autowired
+    private AddressSenderMapper addressSenderMapper;
+
+    @Autowired
+    private SequenceMapper sequenceMapper;
 
     /**
      * 根据条件分页查询用户列表
@@ -251,7 +257,7 @@ public class SysUserServiceImpl implements ISysUserService
 
     /**
      * 新增保存用户信息
-     * 
+     *
      * @param user 用户信息
      * @return 结果
      */
@@ -265,7 +271,21 @@ public class SysUserServiceImpl implements ISysUserService
         insertUserPost(user);
         // 新增用户与角色管理
         insertUserRole(user);
+        if (StringUtils.isNotEmpty(user.getAddress())){
+            // 新增发件信息
+            insertSender(user);
+        }
         return rows;
+    }
+
+    private void insertSender(SysUser user){
+        AddressSender addressSender = new AddressSender();
+        BeanUtils.copyProperties(user, addressSender, "email");
+        addressSender.setEmail(user.getSendEmail());
+        addressSender.setCreateUser(user.getUserId().toString());
+        addressSender.setUpdateUser(user.getUserId().toString());
+        addressSender.setId(sequenceMapper.selectNextvalByName("send_seq"));
+        addressSenderMapper.insertAddressSenderWithId(addressSender);
     }
 
     /**

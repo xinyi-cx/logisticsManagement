@@ -129,15 +129,6 @@ public class PackageServiceImpl implements IPackageService {
                                    List<Parcel> parcels) {
         PackageVo packageVo = new PackageVo();
         BeanUtils.copyProperties(pac, packageVo);
-        packageVo.setSenderAddress(addressSenderMap.get(pac.getSenderId()).getAddress());
-        packageVo.setSenderCity(addressSenderMap.get(pac.getSenderId()).getCity());
-        packageVo.setSenderCompany(addressSenderMap.get(pac.getSenderId()).getCompany());
-        packageVo.setSenderCountryCode(addressSenderMap.get(pac.getSenderId()).getCountryCode());
-        packageVo.setSenderEmail(addressSenderMap.get(pac.getSenderId()).getEmail());
-        packageVo.setSenderFid(addressSenderMap.get(pac.getSenderId()).getFid());
-        packageVo.setSenderName(addressSenderMap.get(pac.getSenderId()).getName());
-        packageVo.setSenderPhone(addressSenderMap.get(pac.getSenderId()).getPhone());
-        packageVo.setSenderPostalCode(addressSenderMap.get(pac.getSenderId()).getPostalCode());
 
         packageVo.setReceiverAddress(addressReceiverMap.get(pac.getReceiverId()).getAddress());
         packageVo.setReceiverCity(addressReceiverMap.get(pac.getReceiverId()).getCity());
@@ -191,8 +182,8 @@ public class PackageServiceImpl implements IPackageService {
         BeanUtils.copyProperties(pkg, pac);
         //生成id
         AddressReceiver addressReceiver = getReceiver(pkg, sequenceMapper.selectNextvalByName("receiver_seq"));
-        AddressSender addressSender = getSender(pkg, sequenceMapper.selectNextvalByName("send_seq"));
-        addressSenderMapper.insertAddressSenderWithId(addressSender);
+        AddressSender addressSender = getSender();
+//        addressSenderMapper.insertAddressSenderWithId(addressSender);
         addressReceiverMapper.insertAddressReceiverWithId(addressReceiver);
         pac.setReceiverId(addressReceiver.getId());
         pac.setSenderId(addressSender.getId());
@@ -271,15 +262,15 @@ public class PackageServiceImpl implements IPackageService {
          * 一系列处理
          */
         batchTaskHistoryMapper.insertBatchTaskHistory(batchTaskHistory);
-        List<AddressSender> addressSenders = new ArrayList<>();
+//        List<AddressSender> addressSenders = new ArrayList<>();
         List<AddressReceiver> addressReceivers = new ArrayList<>();
         List<Package> packages = new ArrayList<>();
         List<Parcel> parcels = new ArrayList<>();
         //生成id 并且更新
         Map<String, Sequence> nameMap = getSeqMap(packages.size());
+        AddressSender addressSender = getSender();
         for (PackageVo packageVo : packageVos) {
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
-            AddressSender addressSender = getSender(packageVo, getId(nameMap, "send_seq"));
 
             Package pac = new Package();
             BeanUtils.copyProperties(packageVo, pac);
@@ -297,13 +288,13 @@ public class PackageServiceImpl implements IPackageService {
             parcel.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
 //            parcel.setPackId("");
 
-            addressSenders.add(addressSender);
+//            addressSenders.add(addressSender);
             addressReceivers.add(addressReceiver);
             packages.add(pac);
             parcels.add(parcel);
         }
 
-        addressSenderMapper.batchInsert(addressSenders);
+//        addressSenderMapper.batchInsert(addressSenders);
         addressReceiverMapper.batchInsert(addressReceivers);
         packageMapper.batchInsert(packages);
         return parcelMapper.batchInsert(parcels);
@@ -332,23 +323,26 @@ public class PackageServiceImpl implements IPackageService {
     }
 
 
-    private AddressSender getSender(PackageVo pkg, Long id) {
-        AddressSender addressSender = new AddressSender();
-        addressSender.setAddress(pkg.getSenderAddress());
-        addressSender.setCity(pkg.getSenderCity());
-        addressSender.setCompany(pkg.getSenderCompany());
-        addressSender.setCountryCode(pkg.getSenderCountryCode());
-        addressSender.setEmail(pkg.getSenderEmail());
-        addressSender.setFid(pkg.getSenderFid());
-        addressSender.setName(pkg.getSenderName());
-        addressSender.setPhone(pkg.getSenderPhone());
-        addressSender.setPostalCode(pkg.getSenderPostalCode());
-        if (ObjectUtils.isNotEmpty(id)) {
-            addressSender.setId(id);
-            addressSender.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-        }
-        addressSender.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
-        return addressSender;
+    private AddressSender getSender() {
+        AddressSender senderParam = new AddressSender();
+        senderParam.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        return addressSenderMapper.selectAddressSenderList(senderParam).get(0);
+//        AddressSender addressSender = new AddressSender();
+//        addressSender.setAddress(pkg.getSenderAddress());
+//        addressSender.setCity(pkg.getSenderCity());
+//        addressSender.setCompany(pkg.getSenderCompany());
+//        addressSender.setCountryCode(pkg.getSenderCountryCode());
+//        addressSender.setEmail(pkg.getSenderEmail());
+//        addressSender.setFid(pkg.getSenderFid());
+//        addressSender.setName(pkg.getSenderName());
+//        addressSender.setPhone(pkg.getSenderPhone());
+//        addressSender.setPostalCode(pkg.getSenderPostalCode());
+//        if (ObjectUtils.isNotEmpty(id)) {
+//            addressSender.setId(id);
+//            addressSender.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+//        }
+//        addressSender.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+//        return addressSender;
     }
 
     private AddressReceiver getReceiver(PackageVo pkg, Long id) {
@@ -384,9 +378,9 @@ public class PackageServiceImpl implements IPackageService {
 
         AddressReceiver addressReceiver = getReceiver(pkg, null);
         addressReceiver.setId(pac.getReceiverId());
-        AddressSender addressSender = getSender(pkg, null);
+        AddressSender addressSender = getSender();
         addressSender.setId(pac.getSenderId());
-        addressSenderMapper.updateAddressSender(addressSender);
+//        addressSenderMapper.updateAddressSender(addressSender);
         addressReceiverMapper.updateAddressReceiver(addressReceiver);
 //        pac.setServicesId(1L);
         Parcel parcel = new Parcel();
