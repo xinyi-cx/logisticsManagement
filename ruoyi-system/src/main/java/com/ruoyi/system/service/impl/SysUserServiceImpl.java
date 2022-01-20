@@ -175,9 +175,12 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 结果
      */
     @Override
-    public String checkUserNameUnique(String userName)
+    public String checkUserNameAndCountryUnique(String userName, String country)
     {
-        int count = userMapper.checkUserNameUnique(userName);
+        SysUser paramUser = new SysUser();
+        paramUser.setCountry(country);
+        paramUser.setUserName(userName);
+        int count = userMapper.selectUserListByParam(paramUser).size();
         if (count > 0)
         {
             return UserConstants.NOT_UNIQUE;

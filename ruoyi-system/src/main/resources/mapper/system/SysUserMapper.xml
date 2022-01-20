@@ -87,7 +87,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<!-- 数据范围过滤 -->
 		${params.dataScope}
 	</select>
-	
+
+	<select id="selectUserListByParam" parameterType="SysUser" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		<where>
+			<if test="userName != null and userName != ''">
+				AND u.user_name = #{userName}
+			</if>
+			<if test="country != null and country != ''">
+				AND u.country = #{country}
+			</if>
+		</where>
+		limit 1
+	</select>
+
 	<select id="selectAllocatedList" parameterType="SysUser" resultMap="SysUserResult">
 	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.country, u.status, u.create_time
 	    from sys_user u
@@ -139,6 +152,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND u.country = #{country}
 			</if>
 		</where>
+		limit 1
 	</select>
 	
 	<select id="selectUserById" parameterType="Long" resultMap="SysUserResult">

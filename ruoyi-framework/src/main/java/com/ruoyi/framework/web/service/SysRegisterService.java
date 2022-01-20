@@ -39,7 +39,7 @@ public class SysRegisterService
      */
     public String register(RegisterBody registerBody)
     {
-        String msg = "", username = registerBody.getUsername(), password = registerBody.getPassword();
+        String msg = "", username = registerBody.getUsername(), password = registerBody.getPassword(), country = registerBody.getCountry();
 
         boolean captchaOnOff = configService.selectCaptchaOnOff();
         // 验证码开关
@@ -66,7 +66,7 @@ public class SysRegisterService
         {
             msg = "密码长度必须在5到20个字符之间";
         }
-        else if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(username)))
+        else if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameAndCountryUnique(username, country)))
         {
             msg = "保存用户'" + username + "'失败，注册账号已存在";
         }
