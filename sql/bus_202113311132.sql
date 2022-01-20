@@ -93,7 +93,7 @@ CREATE TABLE `parcel`
     `content`        varchar(500) DEFAULT NULL comment '备注',
     `customer_data1` varchar(500) DEFAULT NULL comment '客户数据1',
     `reference`      varchar(500) DEFAULT NULL comment '内部引用号',
-    `weight`         int(10)      DEFAULT NULL comment '重量',
+    `weight`         decimal(10, 4)      DEFAULT NULL comment '重量',
     `pack_id`        bigint(20)   DEFAULT NULL comment 'pack_id',
     `waybill`        varchar(100) DEFAULT NULL comment 'waybill 运货单',
     `status`         varchar(100) DEFAULT NULL comment '包裹状态',

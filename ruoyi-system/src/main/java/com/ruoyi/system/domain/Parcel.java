@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -46,7 +47,7 @@ public class Parcel extends BaseEntity
 
     /** 重量 */
     @Excel(name = "重量")
-    private Integer weight;
+    private BigDecimal weight;
 
     /** pack_id */
     @Excel(name = "pack_id")
@@ -149,12 +150,12 @@ public class Parcel extends BaseEntity
     {
         return reference;
     }
-    public void setWeight(Integer weight) 
+    public void setWeight(BigDecimal weight)
     {
         this.weight = weight;
     }
 
-    public Integer getWeight() 
+    public BigDecimal getWeight()
     {
         return weight;
     }

@@ -23,61 +23,61 @@ public class PackageVo extends BaseEntity
     private Long id;
 
     /** 付款人类型 */
-    @Excel(name = "付款人类型")
+//    @Excel(name = "付款人类型")
     private String payerType;
 
     /** 发件人id */
-    @Excel(name = "发件人id")
+//    @Excel(name = "发件人id")
     private Long senderId;
 
     /** 收货人id */
-    @Excel(name = "收货人id")
+//    @Excel(name = "收货人id")
     private Long receiverId;
 
     /** 货物金额 */
-    @Excel(name = "货物金额")
+    @Excel(name = "COD Amount")
     private BigDecimal pln;
 
     /** 分类1 */
-    @Excel(name = "分类1")
+    @Excel(name = "Category")
     private String ref1;
 
     /** 分类2 */
-    @Excel(name = "分类2")
+    @Excel(name = "Category_2")
     private String ref2;
 
     /** 服务id */
-    @Excel(name = "服务id")
+//    @Excel(name = "服务id")
     private Long servicesId;
 
     /** 手机号码 */
-    @Excel(name = "手机号码")
+//    @Excel(name = "手机号码")
     private String phone;
 
     /** 邮政编码 */
-    @Excel(name = "邮政编码")
+//    @Excel(name = "邮政编码")
     private String postalCode;
 
     /** 创建人 */
-    @Excel(name = "创建人")
+//    @Excel(name = "创建人")
     private String createUser;
 
     /** 更新人 */
-    @Excel(name = "更新人")
+//    @Excel(name = "更新人")
     private String updateUser;
 
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
+//    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date createdTime;
 
     /** 更新时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
+//    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
 
     /** 下载次数 */
-    @Excel(name = "下载次数")
+//    @Excel(name = "下载次数")
     private Integer downloadNum;
 
     public void setDownloadNum(Integer downloadNum)
@@ -91,35 +91,35 @@ public class PackageVo extends BaseEntity
     }
 
     /** 收件人地址 */
-    @Excel(name = "收件人地址")
+    @Excel(name = "Street")
     private String receiverAddress;
 
     /** 收件人城市 */
-    @Excel(name = "收件人城市")
+    @Excel(name = "City")
     private String receiverCity;
 
     /** 收件人公司 */
-    @Excel(name = "收件人公司")
+//    @Excel(name = "收件人公司")
     private String receiverCompany;
 
     /** 收件人国家编码 */
-    @Excel(name = "收件人国家编码")
+    @Excel(name = "Country")
     private String receiverCountryCode;
 
     /** 收件人邮件 */
-    @Excel(name = "收件人邮件")
+    @Excel(name = "e-mail/Contact")
     private String receiverEmail;
 
     /** 收件人姓名 */
-    @Excel(name = "收件人姓名")
+    @Excel(name = "Name")
     private String receiverName;
 
     /** 收件人手机号码 */
-    @Excel(name = "收件人手机号码")
+    @Excel(name = "Phone")
     private String receiverPhone;
 
     /** 收件人邮政编码 */
-    @Excel(name = "收件人邮政编码")
+    @Excel(name = "Zip code")
     private String receiverPostalCode;
 
 //    /** 发件人街道？地址 */
@@ -159,51 +159,51 @@ public class PackageVo extends BaseEntity
 //    private String senderPostalCode;
 
     /** 长 */
-    @Excel(name = "长")
+//    @Excel(name = "长")
     private Integer sizeX;
 
     /** 宽 */
-    @Excel(name = "宽")
+//    @Excel(name = "宽")
     private Integer sizeY;
 
     /** 高 */
-    @Excel(name = "高")
+//    @Excel(name = "高")
     private Integer sizeZ;
 
     /** 备注 */
-    @Excel(name = "备注")
+    @Excel(name = "Note")
     private String content;
 
     /** 客户数据1 */
-    @Excel(name = "客户数据1")
+//    @Excel(name = "客户数据1")
     private String customerData1;
 
     /** 内部引用号 */
-    @Excel(name = "内部引用号")
+    @Excel(name = "Reference")
     private String reference;
 
     /** 重量 */
-    @Excel(name = "重量")
-    private Integer weight;
+    @Excel(name = "Weight")
+    private BigDecimal weight;
 
     /** pack_id */
-    @Excel(name = "pack_id")
+//    @Excel(name = "pack_id")
     private Long packId;
 
     /** waybill 运货单 */
-    @Excel(name = "waybill 运货单")
+//    @Excel(name = "waybill 运货单")
     private String waybill;
 
     /** 包裹状态 */
-    @Excel(name = "包裹状态")
+//    @Excel(name = "包裹状态")
     private String status;
 
     /** package_id */
-    @Excel(name = "package_id")
+//    @Excel(name = "package_id")
     private Long packageId;
 
     /** 原面单主键 */
-    @Excel(name = "原面单主键")
+//    @Excel(name = "原面单主键")
     private Long originalId;
 
     public Long getOriginalId() {
@@ -457,11 +457,11 @@ public class PackageVo extends BaseEntity
         this.reference = reference;
     }
 
-    public Integer getWeight() {
+    public BigDecimal getWeight() {
         return weight;
     }
 
-    public void setWeight(Integer weight) {
+    public void setWeight(BigDecimal weight) {
         this.weight = weight;
     }
 
