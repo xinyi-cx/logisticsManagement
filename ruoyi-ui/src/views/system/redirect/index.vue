@@ -128,8 +128,10 @@
       <el-table-column type="selection" width="55" align="center" />
       <!-- 物流单号 -->
       <el-table-column label="物流单号" align="center" prop="id" />
+      <!-- 物流单号 -->
+      <el-table-column label="原面单ID" align="center" prop="originalId" />
       <!-- 创建时间 -->
-      <el-table-column label="创建时间" align="center" prop="id">
+      <el-table-column label="创建时间" align="center" prop="createdTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
         </template>
@@ -423,6 +425,7 @@
 
 <script>
 import { listPackageAll, getPackage, delPackage, updatePackage, addPackageAll } from "@/api/shippingOrder/package";
+// import { listRedirect } from "@/api/shippingOrder/redirect";
 import { getToken } from "@/utils/auth";
 
 export default {
@@ -465,6 +468,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        originalId: 1,
         payerType: null,
         ref1: null,
         ref2: null,
