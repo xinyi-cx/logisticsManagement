@@ -55,6 +55,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
+    <insert id="insertServicesWithId" parameterType="Services">
+        insert into services
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="codAmount != null">cod_amount,</if>
+            <if test="codCurrency != null">cod_currency,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            created_time,
+            updated_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="codAmount != null">#{codAmount},</if>
+            <if test="codCurrency != null">#{codCurrency},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            sysdate(),
+            sysdate(),
+        </trim>
+    </insert>
+
+    <insert id="batchInsert">
+        insert into services (id, cod_amount, cod_currency, create_user, update_user, created_time, updated_time)
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.codAmount},
+            #{item.codCurrency},
+            #{item.createUser},
+            #{item.updateUser},
+            sysdate(),
+            sysdate())
+        </foreach>
+    </insert>
+
     <update id="updateServices" parameterType="Services">
         update services
         <trim prefix="SET" suffixOverrides=",">
@@ -63,7 +99,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createUser != null">create_user = #{createUser},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
             <if test="createdTime != null">created_time = #{createdTime},</if>
-            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+            updated_time = sysdate(),
         </trim>
         where id = #{id}
     </update>

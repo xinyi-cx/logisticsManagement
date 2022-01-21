@@ -1,7 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
 import com.ruoyi.system.domain.Services;
+
+import java.util.List;
 
 /**
  * 【请填写功能名称】Mapper接口
@@ -34,6 +35,10 @@ public interface ServicesMapper
      * @return 结果
      */
     public int insertServices(Services services);
+
+    public int insertServicesWithId(Services services);
+
+    public int batchInsert(List<Services> servicesList);
 
     /**
      * 修改【请填写功能名称】

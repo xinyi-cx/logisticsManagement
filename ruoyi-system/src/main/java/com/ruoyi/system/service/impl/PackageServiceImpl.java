@@ -1,27 +1,28 @@
 package com.ruoyi.system.service.impl;
 
-import java.io.*;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import com.ruoyi.common.utils.MultpartFileToByte;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.Package;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.mapper.*;
+import com.ruoyi.system.service.IPackageService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.service.IPackageService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -45,6 +46,9 @@ public class PackageServiceImpl implements IPackageService {
 
     @Autowired
     private AddressReceiverMapper addressReceiverMapper;
+
+    @Autowired
+    private ServicesMapper servicesMapper;
 
     @Autowired
     private BatchTaskHistoryMapper batchTaskHistoryMapper;
@@ -183,11 +187,13 @@ public class PackageServiceImpl implements IPackageService {
         //生成id
         AddressReceiver addressReceiver = getReceiver(pkg, sequenceMapper.selectNextvalByName("receiver_seq"));
         AddressSender addressSender = getSender();
+        Services services = getServices(pkg, sequenceMapper.selectNextvalByName("services_seq"));
 //        addressSenderMapper.insertAddressSenderWithId(addressSender);
         addressReceiverMapper.insertAddressReceiverWithId(addressReceiver);
+        servicesMapper.insertServicesWithId(services);
         pac.setReceiverId(addressReceiver.getId());
         pac.setSenderId(addressSender.getId());
-        pac.setServicesId(1L);
+        pac.setServicesId(services.getId());
         pac.setId(sequenceMapper.selectNextvalByName("package_seq"));
         pac.setCreateUser(SecurityUtils.getLoginUser().getUsername());
         pac.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
@@ -211,6 +217,12 @@ public class PackageServiceImpl implements IPackageService {
         return parcelMapper.insertParcel(parcel);
     }
 
+    /**
+     * 下载excel
+     * @param response
+     * @param id
+     * @throws Exception
+     */
     @Override
     public void writeFile(HttpServletResponse response, Long id) throws Exception {
         InputStream fis = null;
@@ -264,6 +276,7 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistoryMapper.insertBatchTaskHistory(batchTaskHistory);
 //        List<AddressSender> addressSenders = new ArrayList<>();
         List<AddressReceiver> addressReceivers = new ArrayList<>();
+        List<Services> servicesList = new ArrayList<>();
         List<Package> packages = new ArrayList<>();
         List<Parcel> parcels = new ArrayList<>();
         //生成id 并且更新
@@ -271,12 +284,13 @@ public class PackageServiceImpl implements IPackageService {
         AddressSender addressSender = getSender();
         for (PackageVo packageVo : packageVos) {
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
+            Services services = getServices(packageVo, getId(nameMap, "services_seq"));
 
             Package pac = new Package();
             BeanUtils.copyProperties(packageVo, pac);
             pac.setReceiverId(addressReceiver.getId());
             pac.setSenderId(addressSender.getId());
-            pac.setServicesId(1L);
+            pac.setServicesId(services.getId());
             pac.setBatchId(batchTaskHistory.getId());
             pac.setId(getId(nameMap, "package_seq"));
             pac.setCreateUser(SecurityUtils.getLoginUser().getUsername());
@@ -290,12 +304,14 @@ public class PackageServiceImpl implements IPackageService {
 
 //            addressSenders.add(addressSender);
             addressReceivers.add(addressReceiver);
+            servicesList.add(services);
             packages.add(pac);
             parcels.add(parcel);
         }
 
 //        addressSenderMapper.batchInsert(addressSenders);
         addressReceiverMapper.batchInsert(addressReceivers);
+        servicesMapper.batchInsert(servicesList);
         packageMapper.batchInsert(packages);
         return parcelMapper.batchInsert(parcels);
     }
@@ -307,7 +323,7 @@ public class PackageServiceImpl implements IPackageService {
         return id;
     }
 
-    private static String[] SEQ_NAMES = {"send_seq", "receiver_seq", "package_seq"};
+    private static String[] SEQ_NAMES = {"send_seq", "receiver_seq", "package_seq", "services_seq"};
 
     private Map<String, Sequence> getSeqMap(int addNum) {
         List<Sequence> sequences = sequenceMapper.selectSequenceList(new Sequence());
@@ -362,6 +378,18 @@ public class PackageServiceImpl implements IPackageService {
         }
         addressReceiver.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
         return addressReceiver;
+    }
+
+    private Services getServices(PackageVo pkg, Long id) {
+        Services services = new Services();
+        services.setCodAmount(pkg.getPln().toString());
+        services.setCodCurrency("PLN");
+        if (ObjectUtils.isNotEmpty(id)) {
+            services.setId(id);
+            services.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+        }
+        services.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+        return services;
     }
 
     /**
