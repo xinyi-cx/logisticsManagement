@@ -116,7 +116,11 @@
       <el-table-column label="用户编号" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
       <el-table-column label="用户名" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
       <el-table-column label="密码" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
-      <el-table-column label="所在国家" align="center" key="country" prop="country" v-if="columns[3].visible" :show-overflow-tooltip="true" />
+      <el-table-column label="所在国家" align="center" key="country" prop="country" v-if="columns[3].visible" :show-overflow-tooltip="true" >
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_country" :value="scope.row.country"/>
+        </template>
+      </el-table-column>
       <el-table-column label="手机号" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" />
       <el-table-column label="状态" align="center" key="status" v-if="columns[5].visible">
         <template slot-scope="scope">
@@ -190,18 +194,44 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="用户名" prop="nickName">
+            <el-form-item label="用户昵称" prop="nickName">
               <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="密码" prop="deptId">
+            <el-form-item label="所属部门" prop="deptId">
               <el-input v-model="form.deptId" placeholder="请设置密码" maxlength="30" />
-              <!-- <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" /> -->
+               <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>   
+        <el-row>
+          <el-col :span="12">
+            <el-form-item v-if="form.userId == undefined" label="用户名称" prop="userName">
+              <el-input v-model="form.userName" placeholder="请输入用户名称" maxlength="30"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
+              <el-input v-model="form.password" placeholder="请输入用户密码" type="password" maxlength="20" show-password/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+<!--        <el-row>-->
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="用户性别">-->
+<!--              <el-select v-model="form.sex" placeholder="请选择">-->
+<!--                <el-option-->
+<!--                  v-for="dict in dict.type.sys_user_sex"-->
+<!--                  :key="dict.value"-->
+<!--                  :label="dict.label"-->
+<!--                  :value="dict.value"-->
+<!--                ></el-option>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+        <el-row>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
@@ -216,7 +246,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="所在国家">
-              <el-select v-model="form.sex" placeholder="请选择" style="width: 100%">
+              <el-select v-model="form.country" placeholder="请选择" style="width: 100%" clearable filterable>
                 <el-option
                   v-for="item in dict.type.sys_country"
                   :key="item.value"
@@ -238,6 +268,70 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="发件人国家" prop="countryCode">
+              <el-select v-model="form.countryCode" placeholder="请输入发件人国家" style="width: 100%" clearable filterable>
+                <el-option
+                  v-for="item in dict.type.sys_country"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发件人城市" prop="city">
+              <el-input v-model="form.city" placeholder="请输入发件人城市"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="发件人公司" prop="company">
+              <el-input v-model="form.company" placeholder="请输入发件人公司"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发件人地址" prop="address">
+              <el-input v-model="form.address" type="textarea" placeholder="请输入发件人地址"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="发件人姓名" prop="name">
+              <el-input v-model="form.name" placeholder="请输入发件人姓名"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发件人fid" prop="fid">
+              <el-input v-model="form.fid" placeholder="请输入发件人fid"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="发件人邮件" prop="email">
+              <el-input v-model="form.sendEmail" placeholder="请输入发件人邮件"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发件人手机号码" prop="phone">
+              <el-input v-model="form.phone" placeholder="请输入发件人手机号码"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="发件人邮政编码" prop="postalCode">
+              <el-input v-model="form.postalCode" placeholder="请输入发件人邮政编码"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -420,16 +514,16 @@ export default {
         this.deptOptions = response.data;
       });
     },
-    // 筛选节点
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
-    },
-    // 节点单击事件
-    handleNodeClick(data) {
-      this.queryParams.deptId = data.id;
-      this.getList();
-    },
+    // // 筛选节点
+    // filterNode(value, data) {
+    //   if (!value) return true;
+    //   return data.label.indexOf(value) !== -1;
+    // },
+    // // 节点单击事件
+    // handleNodeClick(data) {
+    //   this.queryParams.deptId = data.id;
+    //   this.getList();
+    // },
     // 用户状态修改
     handleStatusChange(row) {
       let text = row.status === "0" ? "启用" : "停用";
@@ -457,10 +551,20 @@ export default {
         phonenumber: undefined,
         email: undefined,
         sex: undefined,
+        country: undefined,
         status: "0",
         remark: undefined,
         postIds: [],
-        roleIds: []
+        roleIds: [],
+        address: undefined,
+        city: undefined,
+        company: undefined,
+        countryCode: undefined,
+        sendEmail: undefined,
+        fid: undefined,
+        name: undefined,
+        phone: undefined,
+        postalCode: undefined
       };
       this.resetForm("form");
     },

@@ -86,7 +86,7 @@ export default {
       codeUrl: "",
       countryList: [],
       loginForm: {
-        country: "",
+        country: "CN",
         username: "admin",
         password: "admin123",
         rememberMe: false,

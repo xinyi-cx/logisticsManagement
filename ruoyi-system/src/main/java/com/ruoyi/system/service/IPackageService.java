@@ -1,12 +1,13 @@
 package com.ruoyi.system.service;
 
-import java.io.IOException;
-import java.util.List;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.PackageVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 面单Service接口
@@ -23,6 +24,8 @@ public interface IPackageService
      * @return 面单
      */
     public PackageVo selectPackageById(Long id);
+
+    public Map getStatistics(Long id);
 
     /**
      * 查询面单列表

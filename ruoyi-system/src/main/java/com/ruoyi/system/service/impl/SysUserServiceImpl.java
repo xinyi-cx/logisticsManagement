@@ -1,20 +1,5 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.validation.Validator;
-
-import com.ruoyi.system.domain.AddressSender;
-import com.ruoyi.system.mapper.*;
-import org.apache.commons.lang3.ObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.entity.SysRole;
@@ -24,11 +9,25 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.system.domain.AddressSender;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
+import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户 业务层处理
@@ -131,7 +130,17 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public SysUser selectUserById(Long userId)
     {
-        return userMapper.selectUserById(userId);
+        SysUser sysUser = userMapper.selectUserById(userId);
+        AddressSender paramAddressSender = new AddressSender();
+        paramAddressSender.setCreateUser(sysUser.getUserId().toString());
+        List<AddressSender> selectAddressSenderList = addressSenderMapper.selectAddressSenderList(paramAddressSender);
+        AddressSender addressSender = new AddressSender();
+        if (!CollectionUtils.isEmpty(selectAddressSenderList)){
+            addressSender = selectAddressSenderList.get(0);
+        }
+        BeanUtils.copyProperties(addressSender, sysUser, "email", "id");
+        sysUser.setSendEmail(addressSender.getEmail());
+        return sysUser;
     }
 
     /**
@@ -276,19 +285,29 @@ public class SysUserServiceImpl implements ISysUserService
         insertUserRole(user);
         if (StringUtils.isNotEmpty(user.getAddress())){
             // 新增发件信息
-            insertSender(user);
+            insertOrUpdateSender(user);
         }
         return rows;
     }
 
-    private void insertSender(SysUser user){
+    private void insertOrUpdateSender(SysUser user){
+        AddressSender paramAddressSender = new AddressSender();
+        paramAddressSender.setCreateUser(user.getUserId().toString());
+        List<AddressSender> selectAddressSenderList = addressSenderMapper.selectAddressSenderList(paramAddressSender);
         AddressSender addressSender = new AddressSender();
-        BeanUtils.copyProperties(user, addressSender, "email");
+        if (!CollectionUtils.isEmpty(selectAddressSenderList)){
+            addressSender = selectAddressSenderList.get(0);
+        }
+        BeanUtils.copyProperties(user, addressSender, "email", "id");
         addressSender.setEmail(user.getSendEmail());
         addressSender.setCreateUser(user.getUserId().toString());
         addressSender.setUpdateUser(user.getUserId().toString());
-        addressSender.setId(sequenceMapper.selectNextvalByName("send_seq"));
-        addressSenderMapper.insertAddressSenderWithId(addressSender);
+        if (!CollectionUtils.isEmpty(selectAddressSenderList)){
+            addressSenderMapper.updateAddressSender(addressSender);
+        }else{
+            addressSender.setId(sequenceMapper.selectNextvalByName("send_seq"));
+            addressSenderMapper.insertAddressSenderWithId(addressSender);
+        }
     }
 
     /**
@@ -322,6 +341,10 @@ public class SysUserServiceImpl implements ISysUserService
         userPostMapper.deleteUserPostByUserId(userId);
         // 新增用户与岗位管理
         insertUserPost(user);
+        if (StringUtils.isNotEmpty(user.getAddress())){
+            // 新增发件信息
+            insertOrUpdateSender(user);
+        }
         return userMapper.updateUser(user);
     }
 

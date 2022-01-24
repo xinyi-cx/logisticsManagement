@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
@@ -17,10 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -62,6 +60,9 @@ public class PackageServiceImpl implements IPackageService {
     @Autowired
     private DocumentsMapper documentsMapper;
 
+    @Autowired
+    private PackagesGenerationResponseMapper packagesGenerationResponseMapper;
+
     /**
      * 查询面单
      *
@@ -78,6 +79,34 @@ public class PackageServiceImpl implements IPackageService {
         List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(Collections.singletonList(pkg.getId()));
 
         return getPackageVo(pkg, addressSenderMap, addressReceiverMap, parcels);
+    }
+
+    @Override
+    public Map getStatistics(Long id) {
+        Package paramPackage = new Package();
+        paramPackage.setBatchId(id);
+        List<Package> packages = packageMapper.selectPackageList(paramPackage);
+        List<PackagesGenerationResponse> packagesGenerationResponses =
+                packagesGenerationResponseMapper.selectPackagesGenerationResponseListByPacIds(packages.stream().map(Package::getId).collect(toList()));
+        Map<String, List<PackagesGenerationResponse>> datePackageList = new HashMap<>();
+        packagesGenerationResponses.stream().forEach(item -> {
+                    String createtimeStr = DateUtils.parseDateToStr(DateUtils.YYYYMMDD, item.getCreatedTime());
+                    if (datePackageList.containsKey(createtimeStr)) {
+                        List<PackagesGenerationResponse> adds = datePackageList.get(createtimeStr);
+                        adds.add(item);
+                    } else {
+                        List<PackagesGenerationResponse> adds = new ArrayList<>();
+                        adds.add(item);
+                        datePackageList.put(createtimeStr, adds);
+                    }
+                }
+        );
+        for (String key : datePackageList.keySet()) {
+            //获取状态数量
+            Map<String,Long> collect = datePackageList.get(key).stream().collect(Collectors.groupingBy(PackagesGenerationResponse::getPkgStatus, Collectors.counting()));
+            //再和日期接在一起
+        }
+        return null;
     }
 
     /**

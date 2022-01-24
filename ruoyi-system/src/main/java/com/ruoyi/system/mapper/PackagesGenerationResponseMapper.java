@@ -1,7 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
 import com.ruoyi.system.domain.PackagesGenerationResponse;
+
+import java.util.List;
 
 /**
  * 面单返回值Mapper接口
@@ -26,6 +27,8 @@ public interface PackagesGenerationResponseMapper
      * @return 面单返回值集合
      */
     public List<PackagesGenerationResponse> selectPackagesGenerationResponseList(PackagesGenerationResponse packagesGenerationResponse);
+
+    public List<PackagesGenerationResponse> selectPackagesGenerationResponseListByPacIds(List<Long> ids);
 
     /**
      * 新增面单返回值

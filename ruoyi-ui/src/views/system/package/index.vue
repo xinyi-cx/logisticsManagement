@@ -255,7 +255,7 @@
       <el-row>
           <el-col :span="12">
             <el-form-item label="国家" prop="receiverCountryCode">
-              <el-select v-model="form.receiverCountryCode" placeholder="请选择">
+              <el-select v-model="form.receiverCountryCode" placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="dict in dict.type.sys_country"
                   :key="dict.value"
