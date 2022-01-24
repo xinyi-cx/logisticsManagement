@@ -79,6 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <insert id="batchInsert">
         insert into services (id, cod_amount, cod_currency, create_user, update_user, created_time, updated_time)
+        VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.id},

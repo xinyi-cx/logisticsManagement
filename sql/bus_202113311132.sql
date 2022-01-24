@@ -45,6 +45,8 @@ CREATE TABLE `address_sender`
   CHARSET = utf8
   auto_increment = 200 comment = '发件人信息';
 
+INSERT INTO business.address_sender (id, address, city, company, country_code, email, fid, name, phone, postal_code, create_user, update_user, created_time, updated_time, is_delete) VALUES (1, 'admin', '北京', '公司', 'CN', 'ry@163.com', 123456, '管理员', '15888888888', '100000', '1', '1', '2022-01-24 17:43:27', '2022-01-24 17:43:33', 0);
+
 drop table if exists address_receiver;
 CREATE TABLE `address_receiver`
 (

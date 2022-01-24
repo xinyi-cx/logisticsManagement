@@ -101,8 +101,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <insert id="batchInsert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="batchInsert">
         insert into parcel (size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, create_user, update_user, created_time, updated_time )
+        VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.sizeX},

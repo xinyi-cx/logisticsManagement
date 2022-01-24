@@ -162,6 +162,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <insert id="batchInsert">
         insert into address_receiver (id, address, city, company, country_code, email, name, phone, pln, postal_code, create_user, update_user, created_time, updated_time)
+        VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.id},
             #{item.address},
@@ -176,7 +177,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.createUser},
             #{item.updateUser},
             sysdate(),
-            sysdate())
+            sysdate()
+            )
         </foreach>
     </insert>
 
