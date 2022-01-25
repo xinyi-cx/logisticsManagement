@@ -3,8 +3,6 @@ package com.ruoyi.system.domain.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,6 +16,16 @@ import java.util.Date;
 public class PackageVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
+
+    private String hisParam;
+
+    public String getHisParam() {
+        return hisParam;
+    }
+
+    public void setHisParam(String hisParam) {
+        this.hisParam = hisParam;
+    }
 
     /** 面单主键 */
     private Long id;

@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, type, status, success_num, fail_num, download_num, excel_url, excel_content, create_user, update_user, created_time, updated_time from batch_task_history
     </sql>
 
-    <select id="selectBatchTaskHistoryList" parameterType="BatchTaskHistory" resultMap="BatchTaskHistoryResult">
+    <select id="selectBatchTaskHistoryList" parameterType="BatchTaskHistoryVo" resultMap="BatchTaskHistoryResult">
         <include refid="selectBatchTaskHistoryVo"/>
         <where>  
             <if test="type != null  and type != ''"> and type = #{type}</if>
@@ -31,12 +31,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="successNum != null "> and success_num = #{successNum}</if>
             <if test="failNum != null "> and fail_num = #{failNum}</if>
             <if test="downloadNum != null "> and download_num = #{downloadNum}</if>
-            <if test="excelUrl != null  and excelUrl != ''"> and excel_url = #{excelUrl}</if>
-            <if test="excelContent != null  and excelContent != ''"> and excel_content = #{excelContent}</if>
             <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
-            <if test="createdTime != null "> and created_time = #{createdTime}</if>
-            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+            <if test="createdTimeStart != null "> and created_time >= #{createdTimeStart}</if>
+            <if test="createdTimeEnd != null "> and created_time >= #{createdTimeEnd}</if>
         </where>
     </select>
     

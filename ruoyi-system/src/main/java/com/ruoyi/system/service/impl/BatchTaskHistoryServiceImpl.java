@@ -1,11 +1,13 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
+import com.ruoyi.system.domain.BatchTaskHistory;
+import com.ruoyi.system.domain.vo.BatchTaskHistoryVo;
+import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
+import com.ruoyi.system.service.IBatchTaskHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
-import com.ruoyi.system.domain.BatchTaskHistory;
-import com.ruoyi.system.service.IBatchTaskHistoryService;
+
+import java.util.List;
 
 /**
  * 批量任务历史Service业务层处理
@@ -34,13 +36,13 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     /**
      * 查询批量任务历史列表
      * 
-     * @param batchTaskHistory 批量任务历史
+     * @param batchTaskHistoryVo 批量任务历史
      * @return 批量任务历史
      */
     @Override
-    public List<BatchTaskHistory> selectBatchTaskHistoryList(BatchTaskHistory batchTaskHistory)
+    public List<BatchTaskHistory> selectBatchTaskHistoryList(BatchTaskHistoryVo batchTaskHistoryVo)
     {
-        return batchTaskHistoryMapper.selectBatchTaskHistoryList(batchTaskHistory);
+        return batchTaskHistoryMapper.selectBatchTaskHistoryList(batchTaskHistoryVo);
     }
 
     /**

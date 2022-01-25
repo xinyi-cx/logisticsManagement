@@ -128,7 +128,14 @@ public class PackageServiceImpl implements IPackageService {
      */
     @Override
     public List<PackageVo> selectPackageVoList(PackageVo packageVo) {
+        Long hisId = null;
+        Boolean sucFlag = null;
+        if (ObjectUtils.isNotEmpty(packageVo.getHisParam())){
+            sucFlag = "000".equals(packageVo.getHisParam().substring(0, 3));
+            hisId = Long.valueOf(packageVo.getHisParam().substring(3));
+        }
         Package pkg = new Package();
+        pkg.setBatchId(hisId);
         pkg.setCreateUser(SecurityUtils.getLoginUser().getUsername());
         BeanUtils.copyProperties(packageVo, pkg);
         List<Package> packagesAll = packageMapper.selectPackageList(pkg);

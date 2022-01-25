@@ -154,7 +154,7 @@
       <el-table-column label="成功面单数" align="center" prop="successNum">
         <template slot-scope="scope">
           <!-- 待添加点击处理事件 跳转至成功面单列表 -->
-          <router-link :to="'/tool/success/index/' + scope.row.id" class="link-type">
+          <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type">
            <span>{{ scope.row.successNum }}</span>
           </router-link>
         </template>
@@ -162,7 +162,7 @@
       <el-table-column label="失败面单数" align="center" prop="failNum">
         <template slot-scope="scope">
           <!-- 待添加点击处理事件 跳转至失败面单列表-->
-          <router-link :to="'/tool/failure/index/' + scope.row.id" class="link-type">
+          <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type">
            <span>{{ scope.row.failNum }}</span>
           </router-link>
         </template>
@@ -170,8 +170,12 @@
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
       <el-table-column label="原始excel" align="center" prop="excelUrl" width="180">
         <template slot-scope="scope">
-          <!-- 待需要添加点击处理事件 下载excel-->
-          <el-link>{{scope.row.excelUrl}}</el-link>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDownload(scope.row)"
+            v-hasPermi="['system:history:edit']"
+          >{{scope.row.excelUrl}}</el-button>
         </template>
       </el-table-column>
       <!--
@@ -347,8 +351,7 @@ export default {
         status: undefined,
         createUser: undefined,
         updateUser: undefined,
-        createdTime: undefined,
-        updatedTime: undefined
+        createdTime: undefined
       },
       // 表单参数
       form: {},

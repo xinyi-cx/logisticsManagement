@@ -164,33 +164,33 @@ export const dynamicRoutes = [
   },
   // 批量任务历史中成功面单列表
   {
-    path: '/tool/success',
+    path: '/system/package',
     component: Layout,
     hidden: true,
-    permissions: ['system:dict:list'],
+    permissions: ['system:package:list'],
     children: [
       {
-        path: 'index/:id(\\d+)',
-        component: () => import('@/views/system/history/successDetail'),
+        path: 'index/:hisParam(\\d+)',
+        component: () => import('@/views/system/package/index'),
         name: 'Data',
-        meta: { title: '成功面单列表', activeMenu: '/tool/history' }
+        meta: { title: '面单列表', activeMenu: '/system/history' }
       }
     ]
   },
-  {
-    path: '/tool/failure',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:dict:list'],
-    children: [
-      {
-        path: 'index/:id(\\d+)',
-        component: () => import('@/views/system/history/failureDetail'),
-        name: 'Data',
-        meta: { title: '成功面单列表', activeMenu: '/tool/history' }
-      }
-    ]
-  },
+  // {
+  //   path: '/tool/failure',
+  //   component: Layout,
+  //   hidden: true,
+  //   permissions: ['system:dict:list'],
+  //   children: [
+  //     {
+  //       path: 'index/:id(\\d+)',
+  //       component: () => import('@/views/system/history/failureDetail'),
+  //       name: 'Data',
+  //       meta: { title: '成功面单列表', activeMenu: '/tool/history' }
+  //     }
+  //   ]
+  // },
 ]
 
 export default new Router({

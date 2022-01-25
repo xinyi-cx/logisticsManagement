@@ -463,6 +463,7 @@ export default {
       },
       // 查询参数
       queryParams: {
+        hisParam: null,
         pageNum: 1,
         pageSize: 10,
         payerType: null,
@@ -484,6 +485,8 @@ export default {
     };
   },
   created() {
+    const hisParam = this.$route.params && this.$route.params.hisParam;
+    this.queryParams.hisParam = hisParam;
     this.getList();
   },
   methods: {
