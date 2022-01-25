@@ -55,6 +55,17 @@ public class PackageController extends BaseController
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
         return getDataTable(list);
     }
+
+    /**
+     * 查询面单列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:package:list')")
+    @GetMapping("/all")
+    public List<PackageVo> all(PackageVo pkg)
+    {
+        return packageService.selectPackageVoList(pkg);
+    }
+
     /**
      * 导出面单列表
      */

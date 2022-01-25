@@ -17,6 +17,14 @@ export function listPackageAll(query) {
   })
 }
 
+export function packageAll(query) {
+  return request({
+    url: '/system/package/all',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询面单详细
 export function getPackage(id) {
   return request({

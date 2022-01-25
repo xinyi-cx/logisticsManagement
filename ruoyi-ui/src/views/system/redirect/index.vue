@@ -247,6 +247,20 @@
     <!-- 添加或修改面单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="106px">
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="原面单编号" prop="originalId">
+              <el-select v-model="form.originalId" placeholder="请选择">
+                <el-option
+                  v-for="dict in allPackage"
+                  :key="dict.id"
+                  :label="dict.id"
+                  :value="dict.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="收货人全名" prop="receiverName">
@@ -424,7 +438,7 @@
 </template>
 
 <script>
-import { listPackageAll, getPackage, delPackage, updatePackage, addPackageAll } from "@/api/shippingOrder/package";
+import { listPackageAll, getPackage, delPackage, updatePackage, addPackageAll, packageAll } from "@/api/shippingOrder/package";
 // import { listRedirect } from "@/api/shippingOrder/redirect";
 import { getToken } from "@/utils/auth";
 
@@ -433,6 +447,7 @@ export default {
   dicts: ['sys_country'],
   data() {
     return {
+      allPackage: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -488,9 +503,15 @@ export default {
     };
   },
   created() {
+    this.getAll();
     this.getList();
   },
   methods: {
+    getAll(){
+      packageAll(null).then(response => {
+        this.allPackage = response;
+      });
+    },
     /** 查询面单列表 */
     getList() {
       this.loading = true;
