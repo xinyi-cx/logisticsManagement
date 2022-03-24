@@ -1,11 +1,13 @@
 package com.ruoyi.system.domain;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 面单对象 package
@@ -81,6 +83,50 @@ public class Package extends BaseEntity
     /** 下载次数 */
     @Excel(name = "下载次数")
     private Integer downloadNum;
+
+    private AddressReceiver receiver;
+
+    private AddressSender sender;
+
+    private Services service;
+
+    private List<Parcel> parcels;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public AddressReceiver getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(AddressReceiver receiver) {
+        this.receiver = receiver;
+    }
+
+    public AddressSender getSender() {
+        return sender;
+    }
+
+    public void setSender(AddressSender sender) {
+        this.sender = sender;
+    }
+
+    public Services getService() {
+        return service;
+    }
+
+    public void setService(Services service) {
+        this.service = service;
+    }
+
+    public List<Parcel> getParcels() {
+        return parcels;
+    }
+
+    public void setParcels(List<Parcel> parcels) {
+        this.parcels = parcels;
+    }
 
     public void setDownloadNum(Integer downloadNum)
     {

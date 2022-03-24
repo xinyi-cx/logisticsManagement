@@ -121,3 +121,10 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+dpdservices:
+  address: https://dpdservicesdemo.dpd.com.pl/DPDPackageObjServicesService/DPDPackageObjServices
+  authdata:
+    login: test
+    password: thetu4Ee
+    fid: 1495
