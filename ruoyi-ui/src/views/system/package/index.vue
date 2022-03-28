@@ -407,9 +407,7 @@
         <div class="el-upload__tip text-center" slot="tip">
           <span>仅允许导入xls、xlsx格式文件。</span>
           <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
-          <!--
-          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate2">下载测试数据</el-link>
-          -->
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplatePDF">下载测试数据</el-link>
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
@@ -572,6 +570,10 @@ export default {
     importTemplate2(){
       this.download('system/package/downloadFile/11', {
       }, `package_template_${new Date().getTime()}.xlsx`)
+    },
+    importTemplatePDF(){
+      this.download('system/package/downloadFile/2', {
+      }, `package_template_${new Date().getTime()}.pdf`)
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {

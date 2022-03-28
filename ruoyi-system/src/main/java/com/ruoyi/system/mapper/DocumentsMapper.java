@@ -1,7 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
 import com.ruoyi.system.domain.Documents;
+
+import java.util.List;
 
 /**
  * 文件Mapper接口
@@ -18,6 +19,10 @@ public interface DocumentsMapper
      * @return 文件
      */
     public Documents selectDocumentsById(Long id);
+
+    public Documents selectDocumentsBySessionId(Long sessionId);
+
+    public Documents selectDocumentsByPackageId(Long packageId);
 
     /**
      * 查询文件列表

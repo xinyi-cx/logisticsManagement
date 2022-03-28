@@ -6,6 +6,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="Documents" id="DocumentsResult">
         <result property="id"    column="id"    />
+        <result property="sessionId"    column="session_id"    />
+        <result property="packageId"    column="package_id"    />
+        <result property="documentId"    column="document_id"    />
         <result property="fileName"    column="file_name"    />
         <result property="displayName"    column="display_name"    />
         <result property="extension"    column="extension"    />
@@ -20,12 +23,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectDocumentsVo">
-        select id, file_name, display_name, extension, file_data, file_size, content_type, create_user, update_user, created_time, updated_time, is_delete from documents
+        select id, session_id, package_id, document_id, file_name, display_name, extension, file_data, file_size, content_type, create_user, update_user, created_time, updated_time, is_delete from documents
     </sql>
 
     <select id="selectDocumentsList" parameterType="Documents" resultMap="DocumentsResult">
         <include refid="selectDocumentsVo"/>
-        <where>  
+        <where>
+            <if test="sessionId != null "> and session_id = #{sessionId}</if>
+            <if test="packageId != null "> and package_id = #{packageId}</if>
+            <if test="documentId != null "> and document_id = #{documentId}</if>
             <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
             <if test="displayName != null  and displayName != ''"> and display_name like concat('%', #{displayName}, '%')</if>
             <if test="extension != null  and extension != ''"> and extension = #{extension}</if>
@@ -44,10 +50,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectDocumentsVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectDocumentsBySessionId" parameterType="Long" resultMap="DocumentsResult">
+        <include refid="selectDocumentsVo"/>
+        where session_id = #{sessionId}
+    </select>
+
+    <select id="selectDocumentsByPackageId" parameterType="Long" resultMap="DocumentsResult">
+        <include refid="selectDocumentsVo"/>
+        where package_id = #{packageId}
+    </select>
+
     <insert id="insertDocuments" parameterType="Documents" useGeneratedKeys="true" keyProperty="id">
         insert into documents
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">session_id,</if>
+            <if test="packageId != null">package_id,</if>
+            <if test="documentId != null">document_id,</if>
             <if test="fileName != null">file_name,</if>
             <if test="displayName != null">display_name,</if>
             <if test="extension != null">extension,</if>
@@ -60,6 +79,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             updated_time,
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">#{sessionId},</if>
+            <if test="packageId != null">#{packageId},</if>
+            <if test="documentId != null">#{documentId},</if>
             <if test="fileName != null">#{fileName},</if>
             <if test="displayName != null">#{displayName},</if>
             <if test="extension != null">#{extension},</if>
@@ -76,6 +98,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateDocuments" parameterType="Documents">
         update documents
         <trim prefix="SET" suffixOverrides=",">
+            <if test="sessionId != null">session_id = #{sessionId},</if>
+            <if test="packageId != null">package_id = #{packageId},</if>
+            <if test="documentId != null">document_id = #{documentId},</if>
             <if test="fileName != null">file_name = #{fileName},</if>
             <if test="displayName != null">display_name = #{displayName},</if>
             <if test="extension != null">extension = #{extension},</if>

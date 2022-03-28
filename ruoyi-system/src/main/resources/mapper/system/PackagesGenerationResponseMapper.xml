@@ -19,12 +19,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPackagesGenerationResponseVo">
-        select id, session_id, package_id, status, pkg_reference, pkg_status, pack_id, create_user, update_user, created_time, updated_time from packages_generation_response
+        select id, session_id, package_id, status, pkg_reference, pkg_status, pack_id, create_user, update_user, created_time, updated_time, is_delete from packages_generation_response
     </sql>
 
     <select id="selectPackagesGenerationResponseList" parameterType="PackagesGenerationResponse" resultMap="PackagesGenerationResponseResult">
         <include refid="selectPackagesGenerationResponseVo"/>
-        <where>  
+        <where>
+            is_delete = 0
             <if test="sessionId != null "> and session_id = #{sessionId}</if>
             <if test="packageId != null "> and package_id = #{packageId}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
@@ -33,8 +34,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packId != null "> and pack_id = #{packId}</if>
             <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
-            <if test="createdTime != null "> and created_time = #{createdTime}</if>
-            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
         </where>
     </select>
 
@@ -50,7 +49,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPackagesGenerationResponseVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectPackagesGenerationResponseByPackId" parameterType="Long" resultMap="PackagesGenerationResponseResult">
+        <include refid="selectPackagesGenerationResponseVo"/>
+        where pack_id = #{packId}
+    </select>
+
     <insert id="insertPackagesGenerationResponse" parameterType="PackagesGenerationResponse" useGeneratedKeys="true" keyProperty="id">
         insert into packages_generation_response
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -79,6 +83,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
+    <insert id="batchInsert" >
+        insert into packages_generation_response (id, session_id, package_id, status, pkg_reference, pkg_status, pack_id, create_user, update_user, created_time, updated_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.sessionId},
+            #{item.packageId},
+            #{item.status},
+            #{item.pkgReference},
+            #{item.pkgStatus},
+            #{item.packId},
+            #{item.createUser},
+            #{item.updateUser},
+            sysdate(),
+            sysdate())
+        </foreach>
+    </insert>
+
     <update id="updatePackagesGenerationResponse" parameterType="PackagesGenerationResponse">
         update packages_generation_response
         <trim prefix="SET" suffixOverrides=",">
@@ -95,14 +118,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePackagesGenerationResponseById" parameterType="Long">
-        delete from packages_generation_response where id = #{id}
-    </delete>
+    <update id="deletePackagesGenerationResponseById" parameterType="Long">
+        update packages_generation_response
+         set is_delete = 1
+         where id = #{id}
+    </update>
 
-    <delete id="deletePackagesGenerationResponseByIds" parameterType="String">
-        delete from packages_generation_response where id in 
+    <update id="deletePackagesGenerationResponseByIds" parameterType="String">
+        update packages_generation_response
+        set is_delete = 1, updated_time = sysdate()
+        where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
-    </delete>
+    </update>
 </mapper>

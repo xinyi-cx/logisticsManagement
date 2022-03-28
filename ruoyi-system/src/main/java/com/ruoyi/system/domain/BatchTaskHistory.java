@@ -1,11 +1,12 @@
 package com.ruoyi.system.domain;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Date;
 
 /**
  * 批量任务历史对象 batch_task_history
@@ -48,7 +49,7 @@ public class BatchTaskHistory extends BaseEntity
     @Excel(name = "下载次数")
     private Integer downloadNum;
 
-    /** 原始excel路径 */
+    /** 原始excel路径 documents的id */
     @Excel(name = "原始excel路径")
     private String excelUrl;
 

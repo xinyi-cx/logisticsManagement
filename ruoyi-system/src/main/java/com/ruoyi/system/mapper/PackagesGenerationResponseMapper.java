@@ -20,6 +20,7 @@ public interface PackagesGenerationResponseMapper
      */
     public PackagesGenerationResponse selectPackagesGenerationResponseById(Long id);
 
+    public PackagesGenerationResponse selectPackagesGenerationResponseByPackId(Long packId);
     /**
      * 查询面单返回值列表
      * 
@@ -37,6 +38,13 @@ public interface PackagesGenerationResponseMapper
      * @return 结果
      */
     public int insertPackagesGenerationResponse(PackagesGenerationResponse packagesGenerationResponse);
+
+    /**
+     * 批量添加
+     * @param list 面单返回值
+     * @return
+     */
+    public int batchInsert(List<PackagesGenerationResponse> list);
 
     /**
      * 修改面单返回值

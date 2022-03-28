@@ -1,14 +1,24 @@
 package com.ruoyi.system.DPDServicesExample.client;
 
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.dpdservices.*;
+import com.ruoyi.system.mapper.DocumentsMapper;
+import com.ruoyi.system.mapper.SequenceMapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toMap;
 
 @Component
 public class DPDServicesXMLClient {
@@ -25,10 +35,16 @@ public class DPDServicesXMLClient {
     @Autowired
     private DPDPackageObjServices xmlServices;
 
+    @Autowired
+    private SequenceMapper sequenceMapper;
+
+    @Autowired
+    private DocumentsMapper documentsMapper;
+
     private long sessionId;
     private long packageId;
 
-//    @PostConstruct
+    @PostConstruct
     public void runExamples() {
         findPostalCode();
     }
@@ -59,6 +75,8 @@ public class DPDServicesXMLClient {
 
         try {
             DocumentGenerationResponseV1 ret = xmlServices.generateProtocolV1(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.A_4, authData);
+            saveFile(packageId, ret);
+            System.out.println("test");
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
         }
@@ -66,10 +84,10 @@ public class DPDServicesXMLClient {
 
     /**
      * 生成pdf文件
-     * @param authData
      * @param paramPackageId
      */
-    private void generateProtocolByPackageId(AuthDataV1 authData, long paramPackageId) {
+    public DocumentGenerationResponseV1 generateProtocolByPackageId(long paramPackageId) {
+        AuthDataV1 authData = getAuthData();
         PackageDSPV1 pkg5 = new PackageDSPV1();
         pkg5.setPackageId(paramPackageId);
 
@@ -80,19 +98,20 @@ public class DPDServicesXMLClient {
         DpdServicesParamsV1 param = new DpdServicesParamsV1();
         param.setPolicy(PolicyDSPEnumV1.STOP_ON_FIRST_ERROR);
         param.setSession(session);
-
+        DocumentGenerationResponseV1 ret = new DocumentGenerationResponseV1();
         try {
-            DocumentGenerationResponseV1 ret = xmlServices.generateProtocolV1(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.A_4, authData);
+            ret = xmlServices.generateProtocolV1(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.A_4, authData);
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
         }
+        return ret;
     }
 
     private void generateSpedLabels(long sessionId, AuthDataV1 authData) {
         SessionDSPV1 session = new SessionDSPV1();
         DpdServicesParamsV1 param = new DpdServicesParamsV1();
         param.setPolicy(PolicyDSPEnumV1.STOP_ON_FIRST_ERROR);
-
+//        param.setDocumentId();
         // Na podstawie sessionId
         session.setSessionId(sessionId);
         session.setSessionType(SessionTypeDSPEnumV1.DOMESTIC);
@@ -100,19 +119,33 @@ public class DPDServicesXMLClient {
 
         try {
             DocumentGenerationResponseV1 ret = xmlServices.generateSpedLabelsV4(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.A_4, OutputLabelTypeEnumV1.BIC_3, "", authData);
+            saveFile(sessionId, ret);
+            System.out.println("test");
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
         }
 
     }
 
+    private void saveFile(Long id, DocumentGenerationResponseV1 ret){
+        Documents documentsInsert = new Documents();
+        documentsInsert.setPackageId(id);
+        documentsInsert.setFileData(ret.getDocumentData());
+        documentsInsert.setDocumentId(ret.getDocumentId());
+        documentsInsert.setExtension("PDF");
+        documentsInsert.setContentType("application/pdf");
+        documentsInsert.setFileName("file");
+        documentsInsert.setDisplayName(id.toString() + ".pdf");
+        documentsMapper.insertDocuments(documentsInsert);
+    }
+
     /**
      * 生成返回值
-     * @param authData
      * @param packages
      * @return
      */
-    private List<PackagesGenerationResponse> generatePackagesNumberByBusiness(AuthDataV1 authData, List<Package> packages) {
+    public List<PackagesGenerationResponse> generatePackagesNumberByBusiness(List<Package> packages) {
+        AuthDataV1 authData = getAuthData();
         OpenUMLFeV3 umlf = new OpenUMLFeV3(); // Ilość przesyłek
         for (Package aPackage : packages) {
             AddressReceiver receiver = aPackage.getReceiver();
@@ -121,7 +154,10 @@ public class DPDServicesXMLClient {
             List<Parcel> parcels = aPackage.getParcels();
 
             PackageOpenUMLFeV3 pkg = new PackageOpenUMLFeV3();
-            pkg.setPayerType(PayerTypeEnumOpenUMLFeV1.SENDER);
+            if(ObjectUtils.isEmpty(aPackage.getPayerType())){
+                aPackage.setPayerType("SENDER");
+            }
+            pkg.setPayerType(PayerTypeEnumOpenUMLFeV1.fromValue(aPackage.getPayerType()));
 
             PackageAddressOpenUMLFeV1 addressSender = new PackageAddressOpenUMLFeV1();
             addressSender.setAddress(sender.getAddress());
@@ -152,7 +188,10 @@ public class DPDServicesXMLClient {
             ServicesOpenUMLFeV4 services = new ServicesOpenUMLFeV4();
             ServiceCODOpenUMLFeV1 cod = new ServiceCODOpenUMLFeV1();
             cod.setAmount(ser.getCodAmount());
-            cod.setCurrency(ServiceCurrencyEnum.PLN);
+            if(ObjectUtils.isEmpty(ser.getCodCurrency())){
+                ser.setCodCurrency("PLN");
+            }
+            cod.setCurrency(ServiceCurrencyEnum.fromValue(ser.getCodAmount()));
             services.setCod(cod);
 
             ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
@@ -165,6 +204,18 @@ public class DPDServicesXMLClient {
                 parcel1.setSizeX(parcel.getSizeX());
                 parcel1.setSizeY(parcel.getSizeY());
                 parcel1.setSizeZ(parcel.getSizeZ());
+                if (ObjectUtils.isEmpty(parcel.getContent())){
+                    String uuid = IdUtils.fastSimpleUUID();
+                    parcel.setContent(uuid);
+                }
+                if (ObjectUtils.isEmpty(parcel.getCustomerData1())){
+                    String uuid = IdUtils.fastSimpleUUID();
+                    parcel.setCustomerData1(uuid);
+                }
+                if (ObjectUtils.isEmpty(parcel.getReference())){
+                    String uuid = IdUtils.fastSimpleUUID();
+                    parcel.setReference(uuid);
+                }
                 parcel1.setContent(parcel.getContent());//id
                 parcel1.setCustomerData1(parcel.getCustomerData1());//id
                 parcel1.setReference(parcel.getReference()); //parametr opcjonalny
@@ -183,14 +234,40 @@ public class DPDServicesXMLClient {
 
         List<PackagesGenerationResponse> returnResponses = new ArrayList<>();
         List<PackagePGRV2> packagePGRV2s = documentGenerationResponse.getPackages().getPackage();
+        Map<String, Sequence> nameMap = getSeqMap(packages.size());
         for (int i = 0; i < packages.size(); i++) {
             PackagesGenerationResponse packagesGenerationResponse = new PackagesGenerationResponse();
+            packagesGenerationResponse.setId(getId(nameMap, "pack_gen_seq"));
+            packagesGenerationResponse.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+            packagesGenerationResponse.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
             packagesGenerationResponse.setSessionId(documentGenerationResponse.getSessionId());
             packagesGenerationResponse.setStatus(documentGenerationResponse.getStatus());
             mapResult(packagePGRV2s.get(i), packages.get(i), packagesGenerationResponse);
             returnResponses.add(packagesGenerationResponse);
         }
         return returnResponses;
+    }
+
+    private static String[] SEQ_NAMES = {"pack_gen_seq"};
+
+    private Map<String, Sequence> getSeqMap(int addNum) {
+        List<Sequence> sequences = sequenceMapper.selectSequenceList(new Sequence());
+        Map<String, Sequence> nameMap = sequences.stream().collect(toMap(Sequence::getSeqName, Function.identity()));
+        for (String seqName : SEQ_NAMES) {
+            if (nameMap.containsKey(seqName)) {
+                Sequence sequence = nameMap.get(seqName);
+                sequence.setCurrentVal(sequence.getCurrentVal() + addNum * sequence.getIncrementVal());
+                sequenceMapper.updateSequence(sequence);
+            }
+        }
+        return nameMap;
+    }
+
+    private Long getId(Map<String, Sequence> nameMap, String seqName) {
+        Sequence sequence = nameMap.get(seqName);
+        Long id = sequence.getCurrentVal() + sequence.getIncrementVal();
+        sequence.setCurrentVal(id);
+        return id;
     }
 
     /**
@@ -265,9 +342,9 @@ public class DPDServicesXMLClient {
         parcel1.setSizeX(7);
         parcel1.setSizeY(5);
         parcel1.setSizeZ(4);
-        parcel1.setContent("telefon");
-        parcel1.setCustomerData1("imei 1234");
-        parcel1.setReference("Nr kl. 11"); //parametr opcjonalny
+        parcel1.setContent(IdUtils.fastSimpleUUID());
+        parcel1.setCustomerData1(IdUtils.fastSimpleUUID());
+        parcel1.setReference(IdUtils.fastSimpleUUID()); //parametr opcjonalny
         parcel1.setWeight(0.3);
 
         pkg.getParcels().add(parcel1);
@@ -276,9 +353,9 @@ public class DPDServicesXMLClient {
         parcel2.setSizeX(20);
         parcel2.setSizeY(30);
         parcel2.setSizeZ(1);
-        parcel2.setContent("Umowa");
-        parcel2.setCustomerData1("Nr kl. 001234");
-        parcel2.setReference("Umowa nr 11"); //parametr opcjonalny
+        parcel2.setContent(IdUtils.fastSimpleUUID());
+        parcel2.setCustomerData1(IdUtils.fastSimpleUUID());
+        parcel2.setReference(IdUtils.fastSimpleUUID()); //parametr opcjonalny
         parcel2.setWeight(0.1);
 
         pkg.getParcels().add(parcel2);

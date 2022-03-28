@@ -1,17 +1,18 @@
 package com.ruoyi.system.domain;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Date;
 
 /**
  * 文件对象 documents
  * 
  * @author ruoyi
- * @date 2022-01-12
+ * @date 2022-03-25
  */
 public class Documents extends BaseEntity
 {
@@ -19,6 +20,12 @@ public class Documents extends BaseEntity
 
     /** 主键 */
     private Long id;
+
+    private Long sessionId;
+
+    private Long packageId;
+
+    private String documentId;
 
     /** 文件名称 */
     @Excel(name = "文件名称")
@@ -75,7 +82,34 @@ public class Documents extends BaseEntity
     {
         return id;
     }
-    public void setFileName(String fileName) 
+    public void setSessionId(Long sessionId) 
+    {
+        this.sessionId = sessionId;
+    }
+
+    public Long getSessionId() 
+    {
+        return sessionId;
+    }
+    public void setPackageId(Long packageId) 
+    {
+        this.packageId = packageId;
+    }
+
+    public Long getPackageId() 
+    {
+        return packageId;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    public void setFileName(String fileName)
     {
         this.fileName = fileName;
     }
@@ -179,6 +213,8 @@ public class Documents extends BaseEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
+            .append("sessionId", getSessionId())
+            .append("packageId", getPackageId())
             .append("fileName", getFileName())
             .append("displayName", getDisplayName())
             .append("extension", getExtension())

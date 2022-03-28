@@ -36,6 +36,13 @@ public interface IPackageService
     public List<Package> selectPackageList(Package pkg);
 
     /**
+     * 下载pdf？
+     * @param response
+     * @param pkgId
+     */
+    public void getPDFById(HttpServletResponse response, Long pkgId) throws IOException;
+
+    /**
      * 查询面单列表
      *
      * @param packageVo 面单
@@ -79,7 +86,7 @@ public interface IPackageService
      * @param packageVos 面单
      * @return 结果
      */
-    public int importPackage(MultipartFile file, List<PackageVo> packageVos) throws IOException;
+    public void importPackage(MultipartFile file, List<PackageVo> packageVos) throws IOException;
 
     /**
      * 修改面单
