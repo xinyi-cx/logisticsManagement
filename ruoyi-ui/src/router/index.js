@@ -31,6 +31,11 @@ import Layout from '@/layout'
 // 公共路由
 export const constantRoutes = [
   {
+    path: '/dashbord',
+    component: () => import('@/views/system/dashboard/index'),
+    hidden: true
+  },
+  {
     path: '/redirect',
     component: Layout,
     hidden: true,
@@ -177,6 +182,21 @@ export const dynamicRoutes = [
       }
     ]
   },
+  // 数据看板
+  {
+    path: '/dashboard',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:dashboard:list'],
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/system/dashboard/index'),
+        name: 'Data',
+        meta: { title: '数据看板', activeMenu: '/dashboard' }
+      }
+    ]
+  }
   // {
   //   path: '/tool/failure',
   //   component: Layout,
