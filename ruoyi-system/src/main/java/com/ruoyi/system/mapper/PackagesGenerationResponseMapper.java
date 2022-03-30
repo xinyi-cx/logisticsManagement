@@ -20,6 +20,8 @@ public interface PackagesGenerationResponseMapper
      */
     public PackagesGenerationResponse selectPackagesGenerationResponseById(Long id);
 
+    public List<PackagesGenerationResponse> selectPackagesGenerationResponseByPackIdIn(List<Long> packIds);
+
     public PackagesGenerationResponse selectPackagesGenerationResponseByPackId(Long packId);
     /**
      * 查询面单返回值列表

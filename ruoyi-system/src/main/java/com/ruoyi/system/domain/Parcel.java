@@ -1,12 +1,13 @@
 package com.ruoyi.system.domain;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 包裹对象 parcel
@@ -65,6 +66,8 @@ public class Parcel extends BaseEntity
     @Excel(name = "package_id")
     private Long packageId;
 
+    private Long parcelId;
+
     /** 创建人 */
     @Excel(name = "创建人")
     private String createUser;
@@ -96,7 +99,16 @@ public class Parcel extends BaseEntity
     {
         return id;
     }
-    public void setSizeX(Integer sizeX) 
+
+    public Long getParcelId() {
+        return parcelId;
+    }
+
+    public void setParcelId(Long parcelId) {
+        this.parcelId = parcelId;
+    }
+
+    public void setSizeX(Integer sizeX)
     {
         this.sizeX = sizeX;
     }

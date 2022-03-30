@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +41,10 @@ public class DPDServicesXMLClient {
     private DocumentsMapper documentsMapper;
 
     private long sessionId;
+    private long parcelId;
     private long packageId;
 
-    @PostConstruct
+//    @PostConstruct
     public void runExamples() {
         findPostalCode();
     }
@@ -53,8 +53,8 @@ public class DPDServicesXMLClient {
         AuthDataV1 authData = getAuthData();
 
         generatePackagesNumber(authData);
-
-        generateSpedLabels(sessionId, authData);
+//        generateSpedLabels2(authData);
+        generateSpedLabelsBySessionId(sessionId);
 
         generateProtocol(authData);
 
@@ -107,7 +107,8 @@ public class DPDServicesXMLClient {
         return ret;
     }
 
-    private void generateSpedLabels(long sessionId, AuthDataV1 authData) {
+    public DocumentGenerationResponseV1 generateSpedLabelsBySessionId(long sessionId) {
+        AuthDataV1 authData = getAuthData();
         SessionDSPV1 session = new SessionDSPV1();
         DpdServicesParamsV1 param = new DpdServicesParamsV1();
         param.setPolicy(PolicyDSPEnumV1.STOP_ON_FIRST_ERROR);
@@ -117,9 +118,38 @@ public class DPDServicesXMLClient {
         session.setSessionType(SessionTypeDSPEnumV1.DOMESTIC);
         param.setSession(session);
 
+        DocumentGenerationResponseV1 ret = new DocumentGenerationResponseV1();
         try {
-            DocumentGenerationResponseV1 ret = xmlServices.generateSpedLabelsV4(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.A_4, OutputLabelTypeEnumV1.BIC_3, "", authData);
-            saveFile(sessionId, ret);
+            ret = xmlServices.generateSpedLabelsV4(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.A_4, OutputLabelTypeEnumV1.BIC_3, "", authData);
+//            saveFile(sessionId, ret);
+            System.out.println("test");
+        } catch (DPDServiceException_Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    public void generateSpedLabels2(long parcelIdT, long sessionIdT) {
+        AuthDataV1 authData = getAuthData();
+//        245977011 0000000906700Q
+        DpdServicesParamsV2 paramsV2 = new DpdServicesParamsV2();
+        paramsV2.setPolicy(PolicyDSPEnumV2.STOP_ON_FIRST_ERROR);
+        SessionDSPV2 sessionDSPV2 = new SessionDSPV2();
+
+        PackageDSPV2 packageDSPV2 = new PackageDSPV2();
+        ParcelDSPV2 parcelDSPV2 = new ParcelDSPV2();
+        parcelDSPV2.setParcelId(parcelIdT);
+        PackageDSPV2.Parcels parcels = new PackageDSPV2.Parcels();
+        parcels.getParcel().add  (parcelDSPV2);
+        packageDSPV2.setParcels(parcels);
+        SessionDSPV2.Packages packages = new SessionDSPV2.Packages();
+        packages.getPackage().add(packageDSPV2);
+        sessionDSPV2.setPackages(packages);
+        sessionDSPV2.setSessionId(sessionIdT);
+        paramsV2.setSession(sessionDSPV2);
+        paramsV2.setGenProtForNonMatching(false);
+        try {
+            DocumentGenerationResponseV2 ret = xmlServices.generateProtocolsWithDestinationsV2(paramsV2, authData);
             System.out.println("test");
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
@@ -191,7 +221,7 @@ public class DPDServicesXMLClient {
             if(ObjectUtils.isEmpty(ser.getCodCurrency())){
                 ser.setCodCurrency("PLN");
             }
-            cod.setCurrency(ServiceCurrencyEnum.fromValue(ser.getCodAmount()));
+            cod.setCurrency(ServiceCurrencyEnum.fromValue(ser.getCodCurrency()));
             services.setCod(cod);
 
             ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
@@ -292,75 +322,78 @@ public class DPDServicesXMLClient {
             parcel.setWaybill(parcelPGRV2.getWaybill());
             parcel.setStatus(parcelPGRV2.getStatus());
             parcel.setPackageId(sourse.getPackageId());
+            parcel.setParcelId(parcelPGRV2.getParcelId());
         }
 
     }
 
     private void generatePackagesNumber(AuthDataV1 authData) {
         OpenUMLFeV3 umlf = new OpenUMLFeV3(); // Ilość przesyłek
-        PackageOpenUMLFeV3 pkg = new PackageOpenUMLFeV3();
-        pkg.setPayerType(PayerTypeEnumOpenUMLFeV1.SENDER);
+        for (int i = 0; i < 2; i++) {
+            PackageOpenUMLFeV3 pkg = new PackageOpenUMLFeV3();
+            pkg.setPayerType(PayerTypeEnumOpenUMLFeV1.SENDER);
 
-        PackageAddressOpenUMLFeV1 addressSender = new PackageAddressOpenUMLFeV1();
-        addressSender.setAddress("Ul. Mineralna 15");
-        addressSender.setCity("Warszawa");
-        addressSender.setCompany("DPD Polska Sp. z o.o.");
-        addressSender.setCountryCode("PL");
-        addressSender.setEmail("dpd@com.pl");
-        addressSender.setFid(1495);
-        addressSender.setName("Jan Kowalski");
-        addressSender.setPhone("022 577 55 00");
-        addressSender.setPostalCode("02274");
-        pkg.setSender(addressSender);
+            PackageAddressOpenUMLFeV1 addressSender = new PackageAddressOpenUMLFeV1();
+            addressSender.setAddress("Ul. Mineralna 15");
+            addressSender.setCity("Warszawa");
+            addressSender.setCompany("DPD Polska Sp. z o.o.");
+            addressSender.setCountryCode("PL");
+            addressSender.setEmail("dpd@com.pl");
+            addressSender.setFid(1495);
+            addressSender.setName("Jan Kowalski");
+            addressSender.setPhone("022 577 55 00");
+            addressSender.setPostalCode("02274");
+            pkg.setSender(addressSender);
 
-        PackageAddressOpenUMLFeV1 addressReceiver = new PackageAddressOpenUMLFeV1();
-        addressReceiver.setAddress("ul. Brzeziñska 59");
-        addressReceiver.setCity("Mysłowice");
-        addressReceiver.setCompany("Oddział Regionalny w Katowicach");
-        addressReceiver.setCountryCode("PL");
-        addressReceiver.setEmail("dpd@com.pl");
-        addressReceiver.setName("Jan Malinowski)");
-        addressReceiver.setPhone("32 202-40-11");
-        addressReceiver.setPostalCode("41404");
-        pkg.setReceiver(addressReceiver);
+            PackageAddressOpenUMLFeV1 addressReceiver = new PackageAddressOpenUMLFeV1();
+            addressReceiver.setAddress("ul. Brzeziñska 59");
+            addressReceiver.setCity("Mysłowice");
+            addressReceiver.setCompany("Oddział Regionalny w Katowicach");
+            addressReceiver.setCountryCode("PL");
+            addressReceiver.setEmail("dpd@com.pl");
+            addressReceiver.setName("Jan Malinowski)");
+            addressReceiver.setPhone("32 202-40-11");
+            addressReceiver.setPostalCode("41404");
+            pkg.setReceiver(addressReceiver);
 
-        pkg.setRef1("5h163K1");
-        pkg.setRef2("FV/2017/12/1234");
+            pkg.setRef1("5h163K1");
+            pkg.setRef2("FV/2017/12/1234");
 
-        ServicesOpenUMLFeV4 services = new ServicesOpenUMLFeV4();
-        ServiceCODOpenUMLFeV1 cod = new ServiceCODOpenUMLFeV1();
-        cod.setAmount("1234");
-        cod.setCurrency(ServiceCurrencyEnum.PLN);
-        services.setCod(cod);
+            ServicesOpenUMLFeV4 services = new ServicesOpenUMLFeV4();
+            ServiceCODOpenUMLFeV1 cod = new ServiceCODOpenUMLFeV1();
+            cod.setAmount("1234");
+            cod.setCurrency(ServiceCurrencyEnum.PLN);
+            services.setCod(cod);
 
-        ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
-        services.setRod(rod);
+            ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
+            services.setRod(rod);
 
-        pkg.setServices(services);
+            pkg.setServices(services);
 
-        ParcelOpenUMLFeV1 parcel1 = new ParcelOpenUMLFeV1();
-        parcel1.setSizeX(7);
-        parcel1.setSizeY(5);
-        parcel1.setSizeZ(4);
-        parcel1.setContent(IdUtils.fastSimpleUUID());
-        parcel1.setCustomerData1(IdUtils.fastSimpleUUID());
-        parcel1.setReference(IdUtils.fastSimpleUUID()); //parametr opcjonalny
-        parcel1.setWeight(0.3);
+            ParcelOpenUMLFeV1 parcel1 = new ParcelOpenUMLFeV1();
+            parcel1.setSizeX(7);
+            parcel1.setSizeY(5);
+            parcel1.setSizeZ(4);
+            parcel1.setContent(IdUtils.fastSimpleUUID());
+            parcel1.setCustomerData1(IdUtils.fastSimpleUUID());
+            parcel1.setReference(IdUtils.fastSimpleUUID()); //parametr opcjonalny
+            parcel1.setWeight(0.3);
 
-        pkg.getParcels().add(parcel1);
+            pkg.getParcels().add(parcel1);
 
-        ParcelOpenUMLFeV1 parcel2 = new ParcelOpenUMLFeV1();
-        parcel2.setSizeX(20);
-        parcel2.setSizeY(30);
-        parcel2.setSizeZ(1);
-        parcel2.setContent(IdUtils.fastSimpleUUID());
-        parcel2.setCustomerData1(IdUtils.fastSimpleUUID());
-        parcel2.setReference(IdUtils.fastSimpleUUID()); //parametr opcjonalny
-        parcel2.setWeight(0.1);
+            ParcelOpenUMLFeV1 parcel2 = new ParcelOpenUMLFeV1();
+            parcel2.setSizeX(20);
+            parcel2.setSizeY(30);
+            parcel2.setSizeZ(1);
+            parcel2.setContent(IdUtils.fastSimpleUUID());
+            parcel2.setCustomerData1(IdUtils.fastSimpleUUID());
+            parcel2.setReference(IdUtils.fastSimpleUUID()); //parametr opcjonalny
+            parcel2.setWeight(0.1);
 
-        pkg.getParcels().add(parcel2);
+            pkg.getParcels().add(parcel2);
 
-        umlf.getPackages().add(pkg);
+            umlf.getPackages().add(pkg);
+        }
 
         PackagesGenerationResponseV2 documentGenerationResponse = null;
         try {
@@ -372,8 +405,10 @@ public class DPDServicesXMLClient {
         // interpretacja wyniku
         sessionId = documentGenerationResponse.getSessionId();
         packageId = documentGenerationResponse.getPackages().getPackage().get(0).getPackageId();
-
+//        245977011 0000000906700Q
+        //运货单？
         String waybill = documentGenerationResponse.getPackages().getPackage().get(0).getParcels().getParcel().get(1).getWaybill();
+        parcelId = documentGenerationResponse.getPackages().getPackage().get(0).getParcels().getParcel().get(1).getParcelId();
         String umlfStatus = documentGenerationResponse.getStatus(); // status całej sesji
 
         System.out.println("Status sesji: " + umlfStatus);

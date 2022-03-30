@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,14 @@ public class PackageController extends BaseController
         startPage();
         List<Package> list = packageService.selectPackageList(pkg);
         return getDataTable(list);
+    }
+
+    /**
+     * 查询面单列表
+     */
+    @GetMapping("/getResponse/{id}")
+    public void getResponse(@PathVariable("id") Long id) throws IOException {
+        packageService.getResponse(id);
     }
 
     /**
@@ -136,6 +145,18 @@ public class PackageController extends BaseController
     @PostMapping("/downloadFile/{id}")
     public void importTemplate(HttpServletResponse response, @PathVariable("id") Long id) throws Exception {
         packageService.writeFile(response, id);
+    }
+
+    /**
+     * 根据id查看面单pdf
+     * @param response
+     * @param id
+     * @throws IOException
+     */
+    @PostMapping("/getPDFById/{id}")
+    public void getPDFById(HttpServletResponse response, @PathVariable("id") Long id) throws IOException {
+//        pkgId
+        packageService.getPDFById(response, id);
     }
 
     @Log(title = "面单导入", businessType = BusinessType.IMPORT)

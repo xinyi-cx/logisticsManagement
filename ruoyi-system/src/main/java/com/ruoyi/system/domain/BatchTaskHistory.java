@@ -29,6 +29,8 @@ public class BatchTaskHistory extends BaseEntity
     /** 主键 */
     private Long id;
 
+    private Long sessionId;
+
     /** 类型 */
     @Excel(name = "类型")
     private String type;
@@ -88,7 +90,16 @@ public class BatchTaskHistory extends BaseEntity
     {
         return id;
     }
-    public void setType(String type) 
+
+    public Long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void setType(String type)
     {
         this.type = type;
     }

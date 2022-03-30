@@ -100,6 +100,7 @@ CREATE TABLE `parcel`
     `waybill`        varchar(100) DEFAULT NULL comment 'waybill 运货单',
     `status`         varchar(100) DEFAULT NULL comment '包裹状态',
     `package_id`     bigint(20)   DEFAULT NULL comment 'package_id',
+    `parcel_id`  bigint(20)   DEFAULT NULL comment '返回值parcel_id',
     `create_user`    varchar(50)  DEFAULT NULL comment '创建人',
     `update_user`    varchar(50)  DEFAULT NULL comment '更新人',
     `created_time`   datetime     DEFAULT NULL comment '创建时间',
@@ -197,6 +198,7 @@ INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('recei
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('package_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('services_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('pack_gen_seq', '1', '1');
+INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('bat_task_seq', '1', '1');
 
 drop table if exists documents;
 CREATE TABLE `documents`

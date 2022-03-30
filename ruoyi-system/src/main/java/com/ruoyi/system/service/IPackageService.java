@@ -35,8 +35,10 @@ public interface IPackageService
      */
     public List<Package> selectPackageList(Package pkg);
 
+    public void getResponse(Long pkgId) throws IOException;
+
     /**
-     * 下载pdf？
+     * 下载pdf
      * @param response
      * @param pkgId
      */

@@ -130,42 +130,6 @@ public class PackageVo extends BaseEntity
     @Excel(name = "Zip code")
     private String receiverPostalCode;
 
-//    /** 发件人街道？地址 */
-//    @Excel(name = "发件人街道？地址")
-//    private String senderAddress;
-//
-//    /** 发件人城市 */
-//    @Excel(name = "发件人城市")
-//    private String senderCity;
-//
-//    /** 发件人公司 */
-//    @Excel(name = "发件人公司")
-//    private String senderCompany;
-//
-//    /** 发件人国家 */
-//    @Excel(name = "发件人国家")
-//    private String senderCountryCode;
-//
-//    /** 发件人邮件 */
-//    @Excel(name = "发件人邮件")
-//    private String senderEmail;
-//
-//    /** 发件人fid */
-//    @Excel(name = "发件人fid")
-//    private Long senderFid;
-//
-//    /** 发件人姓名 */
-//    @Excel(name = "发件人姓名")
-//    private String senderName;
-//
-//    /** 发件人手机号码 */
-//    @Excel(name = "发件人手机号码")
-//    private String senderPhone;
-//
-//    /** 发件人邮政编码 */
-//    @Excel(name = "发件人邮政编码")
-//    private String senderPostalCode;
-
     /** 长 */
 //    @Excel(name = "长")
     private Integer sizeX;
@@ -210,6 +174,16 @@ public class PackageVo extends BaseEntity
 //    @Excel(name = "package_id")
     private Long packageId;
 
+    private Long parcelId;
+
+    private Long sessionId;
+
+    private String packagesGenerationResponseStatus;
+
+    private String pkgReference;
+
+    private String pkgStatus;
+
     /** 原面单主键 */
 //    @Excel(name = "原面单主键")
     private Long originalId;
@@ -220,6 +194,46 @@ public class PackageVo extends BaseEntity
 
     public void setOriginalId(Long originalId) {
         this.originalId = originalId;
+    }
+
+    public Long getParcelId() {
+        return parcelId;
+    }
+
+    public void setParcelId(Long parcelId) {
+        this.parcelId = parcelId;
+    }
+
+    public Long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getPackagesGenerationResponseStatus() {
+        return packagesGenerationResponseStatus;
+    }
+
+    public void setPackagesGenerationResponseStatus(String packagesGenerationResponseStatus) {
+        this.packagesGenerationResponseStatus = packagesGenerationResponseStatus;
+    }
+
+    public String getPkgReference() {
+        return pkgReference;
+    }
+
+    public void setPkgReference(String pkgReference) {
+        this.pkgReference = pkgReference;
+    }
+
+    public String getPkgStatus() {
+        return pkgStatus;
+    }
+
+    public void setPkgStatus(String pkgStatus) {
+        this.pkgStatus = pkgStatus;
     }
 
     public BigDecimal getPln() {

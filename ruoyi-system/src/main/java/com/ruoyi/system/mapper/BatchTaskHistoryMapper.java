@@ -35,7 +35,7 @@ public interface BatchTaskHistoryMapper
      * @param batchTaskHistory 批量任务历史
      * @return 结果
      */
-    public int insertBatchTaskHistory(BatchTaskHistory batchTaskHistory);
+    public int insertBatchTaskHistoryWithId(BatchTaskHistory batchTaskHistory);
 
     /**
      * 修改批量任务历史

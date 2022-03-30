@@ -1,12 +1,21 @@
 package com.ruoyi.system.service.impl;
 
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
 import com.ruoyi.system.domain.BatchTaskHistory;
+import com.ruoyi.system.domain.Documents;
 import com.ruoyi.system.domain.vo.BatchTaskHistoryVo;
+import com.ruoyi.system.dpdservices.DocumentGenerationResponseV1;
 import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
+import com.ruoyi.system.mapper.DocumentsMapper;
 import com.ruoyi.system.service.IBatchTaskHistoryService;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -20,6 +29,12 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
 {
     @Autowired
     private BatchTaskHistoryMapper batchTaskHistoryMapper;
+
+    @Autowired
+    private DocumentsMapper documentsMapper;
+
+    @Autowired
+    private DPDServicesXMLClient dpdServicesXMLClient;
 
     /**
      * 查询批量任务历史
@@ -42,6 +57,7 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     @Override
     public List<BatchTaskHistory> selectBatchTaskHistoryList(BatchTaskHistoryVo batchTaskHistoryVo)
     {
+        batchTaskHistoryVo.setCreateUser(SecurityUtils.getLoginUser().getUsername());
         return batchTaskHistoryMapper.selectBatchTaskHistoryList(batchTaskHistoryVo);
     }
 
@@ -54,7 +70,7 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     @Override
     public int insertBatchTaskHistory(BatchTaskHistory batchTaskHistory)
     {
-        return batchTaskHistoryMapper.insertBatchTaskHistory(batchTaskHistory);
+        return batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
     }
 
     /**
@@ -92,4 +108,48 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     {
         return batchTaskHistoryMapper.deleteBatchTaskHistoryById(id);
     }
+
+    @Override
+    public void getPDFById(HttpServletResponse response, Long id) throws IOException {
+        BatchTaskHistory batchTaskHistory = batchTaskHistoryMapper.selectBatchTaskHistoryById(id);
+        Documents documents = documentsMapper.selectDocumentsBySessionId(batchTaskHistory.getSessionId());
+        if (ObjectUtils.isEmpty(documents)) {
+            //下载PDF并且存储
+            DocumentGenerationResponseV1 ret = dpdServicesXMLClient.generateSpedLabelsBySessionId(batchTaskHistory.getSessionId());
+            Documents documentsInsert = new Documents();
+            documentsInsert.setSessionId(batchTaskHistory.getSessionId());
+            documentsInsert.setFileData(ret.getDocumentData());
+            documentsInsert.setDocumentId(ret.getDocumentId());
+            documentsInsert.setExtension("PDF");
+            documentsInsert.setContentType("application/pdf");
+            documentsInsert.setFileName("file");
+            documentsInsert.setDisplayName(batchTaskHistory.getSessionId().toString() + ".pdf");
+            documentsInsert.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+            documentsInsert.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            documentsMapper.insertDocuments(documentsInsert);
+            documents = documentsInsert;
+        }
+        getFileByDocuments(documents, response);
+    }
+
+    private void getFileByDocuments(Documents document, HttpServletResponse response) throws IOException {
+        InputStream fis = null;
+        OutputStream toClient = null;
+        try {
+            byte[] documentByte = document.getFileData();
+            fis = new ByteArrayInputStream(documentByte);
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+
+            response.setContentType(document.getContentType());
+            response.setCharacterEncoding("utf-8");
+            toClient = new BufferedOutputStream(response.getOutputStream());
+            toClient.write(buffer);
+            toClient.flush();
+        } finally {
+            IOUtils.closeQuietly(fis);
+            IOUtils.closeQuietly(toClient);
+        }
+    }
+
 }

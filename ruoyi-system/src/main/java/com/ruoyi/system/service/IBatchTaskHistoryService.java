@@ -3,6 +3,8 @@ package com.ruoyi.system.service;
 import com.ruoyi.system.domain.BatchTaskHistory;
 import com.ruoyi.system.domain.vo.BatchTaskHistoryVo;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -60,4 +62,13 @@ public interface IBatchTaskHistoryService
      * @return 结果
      */
     public int deleteBatchTaskHistoryById(Long id);
+
+    /**
+     * 下载pdf
+     * @param response
+     * @param id
+     */
+    public void getPDFById(HttpServletResponse response, Long id) throws IOException;
+
+
 }

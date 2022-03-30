@@ -83,7 +83,10 @@ public class PackageServiceImpl implements IPackageService {
         Map<Long, AddressReceiver> addressReceiverMap = addressReceivers.stream().collect(toMap(AddressReceiver::getId, Function.identity()));
         List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(Collections.singletonList(pkg.getId()));
 
-        return getPackageVo(pkg, addressSenderMap, addressReceiverMap, parcels);
+        List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(Collections.singletonList(pkg.getId()));
+        Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
+
+        return getPackageVo(pkg, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap);
     }
 
     @Override
@@ -123,6 +126,12 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     public List<Package> selectPackageList(Package pkg) {
         return packageMapper.selectPackageList(pkg);
+    }
+
+    @Override
+    public void getResponse(Long pkgId) throws IOException {
+//        dpdServicesXMLClient.generateSpedLabels2(245977414, 232962721);
+        System.out.println("test");
     }
 
     @Override
@@ -189,13 +198,17 @@ public class PackageServiceImpl implements IPackageService {
         Map<Long, AddressReceiver> addressReceiverMap = addressReceivers.stream().collect(toMap(AddressReceiver::getId, Function.identity()));
         List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
 
-        return packages.stream().map(item -> this.getPackageVo(item, addressSenderMap, addressReceiverMap, parcels)).collect(Collectors.toList());
+        List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
+        Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
+
+        return packages.stream().map(item -> this.getPackageVo(item, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap)).collect(Collectors.toList());
     }
 
     private PackageVo getPackageVo(Package pac,
                                    Map<Long, AddressSender> addressSenderMap,
                                    Map<Long, AddressReceiver> addressReceiverMap,
-                                   List<Parcel> parcels) {
+                                   List<Parcel> parcels,
+                                   Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap) {
         PackageVo packageVo = new PackageVo();
         BeanUtils.copyProperties(pac, packageVo);
 
@@ -213,6 +226,11 @@ public class PackageServiceImpl implements IPackageService {
         if (CollectionUtils.isNotEmpty(parcelList)) {
             Parcel parcel = parcelList.get(0);
             BeanUtils.copyProperties(parcel, packageVo, "id", "createdTime", "updatedTime", "createUser", "updateUser");
+        }
+        PackagesGenerationResponse packagesGenerationResponse = packagesGenerationResponseMap.get(pac.getId());
+        if (ObjectUtils.isNotEmpty(packagesGenerationResponse)){
+            BeanUtils.copyProperties(packagesGenerationResponse, packageVo, "id", "createdTime", "updatedTime", "createUser", "updateUser", "status", "packId");
+            packageVo.setPackagesGenerationResponseStatus(packagesGenerationResponse.getStatus());
         }
         return packageVo;
     }
@@ -352,14 +370,14 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setExcelUrl(documents.getId().toString());
         batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUsername());
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+        batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
         /**
          * 一系列处理
          */
-        batchTaskHistoryMapper.insertBatchTaskHistory(batchTaskHistory);
-        List<Package> packages = new ArrayList<>();
         //生成id 并且更新
-        Map<String, Sequence> nameMap = getSeqMap(packages.size());
+        Map<String, Sequence> nameMap = getSeqMap(packageVos.size());
         AddressSender addressSender = getSender();
+        List<Package> packages = new ArrayList<>();
         for (PackageVo packageVo : packageVos) {
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
             Services services = getServices(packageVo, getId(nameMap, "services_seq"));
@@ -398,6 +416,8 @@ public class PackageServiceImpl implements IPackageService {
             servicesList.add(pac.getService());
             parcels.addAll(pac.getParcels());
         }
+        batchTaskHistory.setSessionId(returnResponses.get(0).getSessionId());
+        batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
         packageMapper.batchInsert(packages);
         addressReceiverMapper.batchInsert(addressReceivers);
         servicesMapper.batchInsert(servicesList);
@@ -412,14 +432,15 @@ public class PackageServiceImpl implements IPackageService {
         return id;
     }
 
-    private static String[] SEQ_NAMES = {"send_seq", "receiver_seq", "package_seq", "services_seq"};
+    private static String[] SEQ_NAMES = {"receiver_seq", "package_seq", "services_seq"};
 
     private Map<String, Sequence> getSeqMap(int addNum) {
         List<Sequence> sequences = sequenceMapper.selectSequenceList(new Sequence());
         Map<String, Sequence> nameMap = sequences.stream().collect(toMap(Sequence::getSeqName, Function.identity()));
         for (String seqName : SEQ_NAMES) {
             if (nameMap.containsKey(seqName)) {
-                Sequence sequence = nameMap.get(seqName);
+                Sequence sequence = new Sequence();
+                BeanUtils.copyProperties(nameMap.get(seqName), sequence);
                 sequence.setCurrentVal(sequence.getCurrentVal() + addNum * sequence.getIncrementVal());
                 sequenceMapper.updateSequence(sequence);
             }

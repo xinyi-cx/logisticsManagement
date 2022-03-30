@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -95,5 +96,17 @@ public class BatchTaskHistoryController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(batchTaskHistoryService.deleteBatchTaskHistoryByIds(ids));
+    }
+
+    /**
+     * 根据id查看批量面单pdf
+     * @param response
+     * @param id
+     * @throws IOException
+     */
+    @PostMapping("/getPDFById/{id}")
+    public void getPDFById(HttpServletResponse response, @PathVariable("id") Long id) throws IOException {
+        // 批量的id
+        batchTaskHistoryService.getPDFById(response, id);
     }
 }
