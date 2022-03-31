@@ -8,6 +8,7 @@ import com.ruoyi.system.domain.vo.BatchTaskHistoryVo;
 import com.ruoyi.system.dpdservices.DocumentGenerationResponseV1;
 import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
 import com.ruoyi.system.mapper.DocumentsMapper;
+import com.ruoyi.system.mapper.SequenceMapper;
 import com.ruoyi.system.service.IBatchTaskHistoryService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -36,6 +37,9 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     @Autowired
     private DPDServicesXMLClient dpdServicesXMLClient;
 
+    @Autowired
+    private SequenceMapper sequenceMapper;
+
     /**
      * 查询批量任务历史
      * 
@@ -57,7 +61,7 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     @Override
     public List<BatchTaskHistory> selectBatchTaskHistoryList(BatchTaskHistoryVo batchTaskHistoryVo)
     {
-        batchTaskHistoryVo.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+        batchTaskHistoryVo.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         return batchTaskHistoryMapper.selectBatchTaskHistoryList(batchTaskHistoryVo);
     }
 
@@ -117,6 +121,7 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
             //下载PDF并且存储
             DocumentGenerationResponseV1 ret = dpdServicesXMLClient.generateSpedLabelsBySessionId(batchTaskHistory.getSessionId());
             Documents documentsInsert = new Documents();
+            documentsInsert.setId(sequenceMapper.selectNextvalByName("doc_seq"));
             documentsInsert.setSessionId(batchTaskHistory.getSessionId());
             documentsInsert.setFileData(ret.getDocumentData());
             documentsInsert.setDocumentId(ret.getDocumentId());
@@ -124,8 +129,8 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
             documentsInsert.setContentType("application/pdf");
             documentsInsert.setFileName("file");
             documentsInsert.setDisplayName(batchTaskHistory.getSessionId().toString() + ".pdf");
-            documentsInsert.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-            documentsInsert.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            documentsInsert.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            documentsInsert.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
             documentsMapper.insertDocuments(documentsInsert);
             documents = documentsInsert;
         }

@@ -79,8 +79,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    insertBatchTaskHistoryWithId
-
     <update id="updateBatchTaskHistory" parameterType="BatchTaskHistory">
         update batch_task_history
         <trim prefix="SET" suffixOverrides=",">

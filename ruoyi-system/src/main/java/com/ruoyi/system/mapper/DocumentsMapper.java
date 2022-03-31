@@ -41,6 +41,13 @@ public interface DocumentsMapper
     public int insertDocuments(Documents documents);
 
     /**
+     * 批量添加
+     * @param list 文件们
+     * @return
+     */
+    public int batchInsert(List<Documents> list);
+
+    /**
      * 修改文件
      * 
      * @param documents 文件

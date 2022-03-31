@@ -25,6 +25,11 @@ public interface IPackageService
      */
     public PackageVo selectPackageById(Long id);
 
+    /**
+     * 获取echarts数据
+     * @param id 批次id
+     * @return
+     */
     public Map getStatistics(Long id);
 
     /**

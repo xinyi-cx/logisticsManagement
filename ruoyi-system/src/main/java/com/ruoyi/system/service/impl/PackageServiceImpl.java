@@ -89,6 +89,11 @@ public class PackageServiceImpl implements IPackageService {
         return getPackageVo(pkg, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap);
     }
 
+    /**
+     *
+     * @param id 批次id
+     * @return
+     */
     @Override
     public Map getStatistics(Long id) {
         Package paramPackage = new Package();
@@ -96,6 +101,7 @@ public class PackageServiceImpl implements IPackageService {
         List<Package> packages = packageMapper.selectPackageList(paramPackage);
         List<PackagesGenerationResponse> packagesGenerationResponses =
                 packagesGenerationResponseMapper.selectPackagesGenerationResponseListByPacIds(packages.stream().map(Package::getId).collect(toList()));
+        //创建时间
         Map<String, List<PackagesGenerationResponse>> datePackageList = new HashMap<>();
         packagesGenerationResponses.stream().forEach(item -> {
                     String createtimeStr = DateUtils.parseDateToStr(DateUtils.YYYYMMDD, item.getCreatedTime());
@@ -114,6 +120,14 @@ public class PackageServiceImpl implements IPackageService {
             Map<String, Long> collect = datePackageList.get(key).stream().collect(Collectors.groupingBy(PackagesGenerationResponse::getPkgStatus, Collectors.counting()));
             //再和日期接在一起
         }
+//        xAxis: {
+//                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+//        },
+//        series: [
+//        {
+//            data: [1120, 200, 150, 80, 70, 110, 130],
+//            type: 'bar'
+//        }
         return null;
     }
 
@@ -131,6 +145,7 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     public void getResponse(Long pkgId) throws IOException {
 //        dpdServicesXMLClient.generateSpedLabels2(245977414, 232962721);
+        dpdServicesXMLClient.generateProtocolByPackageId(pkgId);
         System.out.println("test");
     }
 
@@ -143,6 +158,7 @@ public class PackageServiceImpl implements IPackageService {
             //下载PDF并且存储
             DocumentGenerationResponseV1 ret = dpdServicesXMLClient.generateProtocolByPackageId(packagesGenerationResponse.getPackageId());
             Documents documentsInsert = new Documents();
+            documentsInsert.setId(sequenceMapper.selectNextvalByName("doc_seq"));
             documentsInsert.setPackageId(packagesGenerationResponse.getPackageId());
             documentsInsert.setFileData(ret.getDocumentData());
             documentsInsert.setDocumentId(ret.getDocumentId());
@@ -150,8 +166,8 @@ public class PackageServiceImpl implements IPackageService {
             documentsInsert.setContentType("application/pdf");
             documentsInsert.setFileName("file");
             documentsInsert.setDisplayName(pkgId.toString() + ".pdf");
-            documentsInsert.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-            documentsInsert.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            documentsInsert.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            documentsInsert.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
             documentsMapper.insertDocuments(documentsInsert);
             documents = documentsInsert;
         }
@@ -174,13 +190,13 @@ public class PackageServiceImpl implements IPackageService {
         }
         Package pkg = new Package();
         pkg.setBatchId(hisId);
-        pkg.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+        pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         BeanUtils.copyProperties(packageVo, pkg);
         List<Package> packagesAll = packageMapper.selectPackageList(pkg);
         List<Package> packages = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())) {
             RedirectPackage redirectPackage = new RedirectPackage();
-            redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+            redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
             redirectPackage.setIsDelete(0);
             List<Long> originalIds = redirectPackageMapper.selectRedirectPackageList(redirectPackage).stream().map(RedirectPackage::getOriginalId).collect(toList());
             if (CollectionUtils.isEmpty(originalIds)) {
@@ -276,23 +292,23 @@ public class PackageServiceImpl implements IPackageService {
         pac.setSenderId(addressSender.getId());
         pac.setServicesId(services.getId());
         pac.setId(sequenceMapper.selectNextvalByName("package_seq"));
-        pac.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-        pac.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+        pac.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        pac.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
 
         if (ObjectUtils.isNotEmpty(pkg.getOriginalId())) {
             RedirectPackage redirectPackage = new RedirectPackage();
             redirectPackage.setId(pac.getId());
             redirectPackage.setOriginalId(pkg.getOriginalId());
-            redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-            redirectPackage.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            redirectPackage.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
             redirectPackageMapper.insertRedirectPackage(redirectPackage);
         }
         //一对多暂时还未确定 一对一 不存在一对多
         Parcel parcel = new Parcel();
         BeanUtils.copyProperties(pkg, parcel);
         parcel.setPackId(pac.getId());
-        parcel.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-        parcel.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+        parcel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        parcel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
 
         List<Parcel> parcels = new ArrayList<>();
         parcels.add(parcel);
@@ -350,13 +366,14 @@ public class PackageServiceImpl implements IPackageService {
 
     public Documents getDocuments(MultipartFile file) throws IOException {
         Documents documents = new Documents();
+        documents.setId(sequenceMapper.selectNextvalByName("doc_seq"));
         documents.setFileData(file.getBytes());
         documents.setFileName(file.getName());
         documents.setContentType(file.getContentType());
         documents.setFileSize(file.getSize());
         documents.setDisplayName(file.getOriginalFilename());
-        documents.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-        documents.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+        documents.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        documents.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         documentsMapper.insertDocuments(documents);
         return documents;
     }
@@ -368,8 +385,8 @@ public class PackageServiceImpl implements IPackageService {
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
-        batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-        batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+        batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
         /**
          * 一系列处理
@@ -389,13 +406,13 @@ public class PackageServiceImpl implements IPackageService {
             pac.setServicesId(services.getId());
             pac.setBatchId(batchTaskHistory.getId());
             pac.setId(getId(nameMap, "package_seq"));
-            pac.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-            pac.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            pac.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            pac.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
             Parcel parcel = new Parcel();
             BeanUtils.copyProperties(packageVo, parcel);
             parcel.setPackId(pac.getId());
-            parcel.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-            parcel.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            parcel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            parcel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
 
             pac.setService(services);
             pac.setReceiver(addressReceiver);
@@ -465,9 +482,9 @@ public class PackageServiceImpl implements IPackageService {
 //        addressSender.setPostalCode(pkg.getSenderPostalCode());
 //        if (ObjectUtils.isNotEmpty(id)) {
 //            addressSender.setId(id);
-//            addressSender.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+//            addressSender.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
 //        }
-//        addressSender.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+//        addressSender.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
 //        return addressSender;
     }
 
@@ -484,9 +501,9 @@ public class PackageServiceImpl implements IPackageService {
         addressReceiver.setPln(pkg.getPln());
         if (ObjectUtils.isNotEmpty(id)) {
             addressReceiver.setId(id);
-            addressReceiver.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+            addressReceiver.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         }
-        addressReceiver.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+        addressReceiver.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         return addressReceiver;
     }
 
@@ -496,9 +513,9 @@ public class PackageServiceImpl implements IPackageService {
         services.setCodCurrency("PLN");
         if (ObjectUtils.isNotEmpty(id)) {
             services.setId(id);
-            services.setCreateUser(SecurityUtils.getLoginUser().getUsername());
+            services.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         }
-        services.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+        services.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         return services;
     }
 
@@ -510,7 +527,7 @@ public class PackageServiceImpl implements IPackageService {
      */
     @Override
     public int updatePackage(PackageVo pkg) {
-        pkg.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+        pkg.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         Package pac = packageMapper.selectPackageById(pkg.getId());
         BeanUtils.copyProperties(pkg, pac, "id", "createdTime");
 
@@ -530,7 +547,7 @@ public class PackageServiceImpl implements IPackageService {
             RedirectPackage redirectPackage = new RedirectPackage();
             redirectPackage.setId(pac.getId());
             redirectPackage.setOriginalId(pkg.getOriginalId());
-            redirectPackage.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            redirectPackage.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
             redirectPackageMapper.updateRedirectPackage(redirectPackage);
         }
         return packageMapper.updatePackage(pac);

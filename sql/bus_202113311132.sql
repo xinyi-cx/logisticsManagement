@@ -136,6 +136,7 @@ drop table if exists batch_task_history;
 CREATE TABLE `batch_task_history`
 (
     `id`            bigint(20) unsigned NOT NULL AUTO_INCREMENT comment '主键',
+    `session_id`  bigint(20) DEFAULT NULL,
     `type`          varchar(100) DEFAULT NULL comment '类型',
     `status`        varchar(100) DEFAULT NULL comment '状态',
     `success_num`   int(10)      DEFAULT NULL comment '成功面单数',
@@ -199,6 +200,7 @@ INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('packa
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('services_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('pack_gen_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('bat_task_seq', '1', '1');
+INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('doc_seq', '1', '1');
 
 drop table if exists documents;
 CREATE TABLE `documents`

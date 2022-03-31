@@ -61,9 +61,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where package_id = #{packageId}
     </select>
 
-    <insert id="insertDocuments" parameterType="Documents" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertDocuments" parameterType="Documents">
         insert into documents
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
             <if test="sessionId != null">session_id,</if>
             <if test="packageId != null">package_id,</if>
             <if test="documentId != null">document_id,</if>
@@ -79,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             updated_time,
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
             <if test="sessionId != null">#{sessionId},</if>
             <if test="packageId != null">#{packageId},</if>
             <if test="documentId != null">#{documentId},</if>
@@ -93,6 +95,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             sysdate(),
             sysdate(),
          </trim>
+    </insert>
+
+    <insert id="batchInsert" >
+        insert into documents (id, session_id, package_id, document_id, file_name, display_name, extension, file_data, file_size, content_type, create_user, update_user, created_time, updated_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.sessionId},
+            #{item.packageId},
+            #{item.documentId},
+            #{item.fileName},
+            #{item.displayName},
+            #{item.extension},
+            #{item.fileData},
+            #{item.fileSize},
+            #{item.contentType},
+            #{item.createUser},
+            #{item.updateUser},
+            sysdate(),
+            sysdate()
+            )
+        </foreach>
     </insert>
 
     <update id="updateDocuments" parameterType="Documents">

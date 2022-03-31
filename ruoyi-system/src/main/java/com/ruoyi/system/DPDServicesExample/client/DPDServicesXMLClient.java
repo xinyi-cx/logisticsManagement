@@ -1,5 +1,10 @@
 package com.ruoyi.system.DPDServicesExample.client;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfReader;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.domain.Package;
@@ -8,10 +13,13 @@ import com.ruoyi.system.dpdservices.*;
 import com.ruoyi.system.mapper.DocumentsMapper;
 import com.ruoyi.system.mapper.SequenceMapper;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +108,8 @@ public class DPDServicesXMLClient {
         param.setSession(session);
         DocumentGenerationResponseV1 ret = new DocumentGenerationResponseV1();
         try {
-            ret = xmlServices.generateProtocolV1(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.A_4, authData);
+            ret = xmlServices.generateProtocolV1(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.LBL_PRINTER, authData);
+            saveFile(paramPackageId, ret);
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
         }
@@ -120,8 +129,8 @@ public class DPDServicesXMLClient {
 
         DocumentGenerationResponseV1 ret = new DocumentGenerationResponseV1();
         try {
-            ret = xmlServices.generateSpedLabelsV4(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.A_4, OutputLabelTypeEnumV1.BIC_3, "", authData);
-//            saveFile(sessionId, ret);
+            ret = xmlServices.generateSpedLabelsV4(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.LBL_PRINTER, OutputLabelTypeEnumV1.BIC_3, "", authData);
+            saveFile(sessionId, ret);
             System.out.println("test");
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
@@ -159,6 +168,7 @@ public class DPDServicesXMLClient {
 
     private void saveFile(Long id, DocumentGenerationResponseV1 ret){
         Documents documentsInsert = new Documents();
+        documentsInsert.setId(sequenceMapper.selectNextvalByName("doc_seq"));
         documentsInsert.setPackageId(id);
         documentsInsert.setFileData(ret.getDocumentData());
         documentsInsert.setDocumentId(ret.getDocumentId());
@@ -184,7 +194,7 @@ public class DPDServicesXMLClient {
             List<Parcel> parcels = aPackage.getParcels();
 
             PackageOpenUMLFeV3 pkg = new PackageOpenUMLFeV3();
-            if(ObjectUtils.isEmpty(aPackage.getPayerType())){
+            if (ObjectUtils.isEmpty(aPackage.getPayerType())) {
                 aPackage.setPayerType("SENDER");
             }
             pkg.setPayerType(PayerTypeEnumOpenUMLFeV1.fromValue(aPackage.getPayerType()));
@@ -218,7 +228,7 @@ public class DPDServicesXMLClient {
             ServicesOpenUMLFeV4 services = new ServicesOpenUMLFeV4();
             ServiceCODOpenUMLFeV1 cod = new ServiceCODOpenUMLFeV1();
             cod.setAmount(ser.getCodAmount());
-            if(ObjectUtils.isEmpty(ser.getCodCurrency())){
+            if (ObjectUtils.isEmpty(ser.getCodCurrency())) {
                 ser.setCodCurrency("PLN");
             }
             cod.setCurrency(ServiceCurrencyEnum.fromValue(ser.getCodCurrency()));
@@ -234,15 +244,15 @@ public class DPDServicesXMLClient {
                 parcel1.setSizeX(parcel.getSizeX());
                 parcel1.setSizeY(parcel.getSizeY());
                 parcel1.setSizeZ(parcel.getSizeZ());
-                if (ObjectUtils.isEmpty(parcel.getContent())){
+                if (ObjectUtils.isEmpty(parcel.getContent())) {
                     String uuid = IdUtils.fastSimpleUUID();
                     parcel.setContent(uuid);
                 }
-                if (ObjectUtils.isEmpty(parcel.getCustomerData1())){
+                if (ObjectUtils.isEmpty(parcel.getCustomerData1())) {
                     String uuid = IdUtils.fastSimpleUUID();
                     parcel.setCustomerData1(uuid);
                 }
-                if (ObjectUtils.isEmpty(parcel.getReference())){
+                if (ObjectUtils.isEmpty(parcel.getReference())) {
                     String uuid = IdUtils.fastSimpleUUID();
                     parcel.setReference(uuid);
                 }
@@ -257,25 +267,92 @@ public class DPDServicesXMLClient {
 
         PackagesGenerationResponseV2 documentGenerationResponse = null;
         try {
+            //生成返回值
             documentGenerationResponse = xmlServices.generatePackagesNumbersV4(umlf, PkgNumsGenerationPolicyV1.IGNORE_ERRORS, "PL", authData);
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
         }
 
+        DocumentGenerationResponseV1 ret = generateSpedLabelsBySessionId(documentGenerationResponse.getSessionId());
+
+        Sequence sequence = sequenceMapper.selectSequenceBySeqName("doc_seq");
+        Long currentVal = sequence.getCurrentVal();
+        sequence.setCurrentVal(sequence.getCurrentVal() + (packages.size() + 1) * sequence.getIncrementVal());
+        sequenceMapper.updateSequence(sequence);
+
+        List<Documents> documentsList = new ArrayList<>();
+        Documents documentsSession = new Documents();
+        documentsSession.setId(++currentVal);
+        documentsSession.setSessionId(documentGenerationResponse.getSessionId());
+        documentsSession.setFileData(ret.getDocumentData());
+        documentsSession.setDocumentId(ret.getDocumentId());
+        documentsSession.setExtension("PDF");
+        documentsSession.setContentType("application/pdf");
+        documentsSession.setFileName("file");
+        documentsSession.setDisplayName(documentGenerationResponse.getSessionId().toString() + ".pdf");
+        documentsSession.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        documentsSession.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        documentsList.add(documentsSession);
+
+        //根据sessionId生成pdf 并且分散到pack上
         List<PackagesGenerationResponse> returnResponses = new ArrayList<>();
         List<PackagePGRV2> packagePGRV2s = documentGenerationResponse.getPackages().getPackage();
         Map<String, Sequence> nameMap = getSeqMap(packages.size());
         for (int i = 0; i < packages.size(); i++) {
             PackagesGenerationResponse packagesGenerationResponse = new PackagesGenerationResponse();
             packagesGenerationResponse.setId(getId(nameMap, "pack_gen_seq"));
-            packagesGenerationResponse.setCreateUser(SecurityUtils.getLoginUser().getUsername());
-            packagesGenerationResponse.setUpdateUser(SecurityUtils.getLoginUser().getUsername());
+            packagesGenerationResponse.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            packagesGenerationResponse.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
             packagesGenerationResponse.setSessionId(documentGenerationResponse.getSessionId());
             packagesGenerationResponse.setStatus(documentGenerationResponse.getStatus());
             mapResult(packagePGRV2s.get(i), packages.get(i), packagesGenerationResponse);
             returnResponses.add(packagesGenerationResponse);
+
+            Documents documentsOne = new Documents();
+            documentsOne.setId(++currentVal);
+            documentsOne.setSessionId(packagesGenerationResponse.getSessionId());
+            documentsOne.setPackageId(packagesGenerationResponse.getPackageId());
+            documentsOne.setFileData(getOnePagePDFFile(documentsSession, i + 1));
+            documentsOne.setDocumentId(ret.getDocumentId());
+            documentsOne.setExtension("PDF");
+            documentsOne.setContentType("application/pdf");
+            documentsOne.setFileName("file");
+            documentsOne.setDisplayName(packagesGenerationResponse.getPackageId().toString() + ".pdf");
+            documentsOne.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            documentsOne.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            documentsList.add(documentsOne);
         }
+        documentsMapper.batchInsert(documentsList);
         return returnResponses;
+    }
+
+    private byte[] getOnePagePDFFile(Documents documents, int pageNum) {
+        Document document = null;
+        PdfCopy copy = null;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            PdfReader reader = new PdfReader(documents.getFileData());
+            int n = reader.getNumberOfPages();
+            if (pageNum > n) {
+                pageNum = n;
+            }
+            document = new Document(reader.getPageSize(1));
+
+            copy = new PdfCopy(document, byteArrayOutputStream);
+            document.open();
+
+            document.newPage();
+            PdfImportedPage page = copy.getImportedPage(reader, pageNum);
+            copy.addPage(page);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } finally {
+            document.close();
+            copy.close();
+        }
+        return byteArrayOutputStream.toByteArray();
     }
 
     private static String[] SEQ_NAMES = {"pack_gen_seq"};
@@ -285,7 +362,8 @@ public class DPDServicesXMLClient {
         Map<String, Sequence> nameMap = sequences.stream().collect(toMap(Sequence::getSeqName, Function.identity()));
         for (String seqName : SEQ_NAMES) {
             if (nameMap.containsKey(seqName)) {
-                Sequence sequence = nameMap.get(seqName);
+                Sequence sequence = new Sequence();
+                BeanUtils.copyProperties(nameMap.get(seqName), sequence);
                 sequence.setCurrentVal(sequence.getCurrentVal() + addNum * sequence.getIncrementVal());
                 sequenceMapper.updateSequence(sequence);
             }
