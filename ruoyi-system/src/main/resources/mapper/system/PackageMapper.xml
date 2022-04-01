@@ -42,6 +42,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="batchId != null "> and batch_id = #{batchId}</if>
             <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="createdTime != null  and createdTime != ''"> and to_char(created_time,'yyyy-MM-dd') = to_char(#{createdTime},'yyyy-MM-dd')</if>
+            <if test="updatedTime != null  and updatedTime != ''"> and to_char(updated_time,'yyyy-MM-dd') = to_char(#{updatedTime},'yyyy-MM-dd')</if>
         </where>
     </select>
     
