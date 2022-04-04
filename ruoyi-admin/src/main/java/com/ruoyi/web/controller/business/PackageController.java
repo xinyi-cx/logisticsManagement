@@ -92,15 +92,14 @@ public class PackageController extends BaseController
     }
 
     /**
-     * 根据批次获取统计数据
-     * @param id
+     * 根据批次
+     * @param dateStr
      * @return
      */
-    @PreAuthorize("@ss.hasPermi('system:package:query')")
-    @GetMapping(value = "/statistics/{id}")
-    public AjaxResult getStatistics(@PathVariable("id") Long id)
+    @GetMapping(value = "/statistics/{dateStr}")
+    public AjaxResult getStatistics(@PathVariable("dateStr") String dateStr)
     {
-        return AjaxResult.success(packageService.selectPackageById(id));
+        return AjaxResult.success(packageService.getStatistics(dateStr));
     }
 
     /**

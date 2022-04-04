@@ -27,10 +27,10 @@ public interface IPackageService
 
     /**
      * 获取echarts数据
-     * @param id 批次id
+     * @param dateStr 批次 时间 格式为 yyyymmdd
      * @return
      */
-    public Map getStatistics(Long id);
+    public Map getStatistics(String dateStr);
 
     /**
      * 查询面单列表

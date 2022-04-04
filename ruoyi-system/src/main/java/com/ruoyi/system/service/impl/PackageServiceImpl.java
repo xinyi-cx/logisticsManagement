@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
@@ -90,45 +91,55 @@ public class PackageServiceImpl implements IPackageService {
     }
 
     /**
-     *
-     * @param id 批次id
+     * @param dateStr
      * @return
      */
     @Override
-    public Map getStatistics(Long id) {
+    public Map getStatistics(String dateStr) {
+        Date paramDate = new Date();
+        if (StringUtils.isNotEmpty(dateStr)) {
+            paramDate = DateUtils.dateTime(DateUtils.YYYYMMDD, dateStr);
+        }
+
         Package paramPackage = new Package();
-        paramPackage.setBatchId(id);
+        paramPackage.setCreatedTime(paramDate);
         List<Package> packages = packageMapper.selectPackageList(paramPackage);
         List<PackagesGenerationResponse> packagesGenerationResponses =
                 packagesGenerationResponseMapper.selectPackagesGenerationResponseListByPacIds(packages.stream().map(Package::getId).collect(toList()));
-        //创建时间
-        Map<String, List<PackagesGenerationResponse>> datePackageList = new HashMap<>();
-        packagesGenerationResponses.stream().forEach(item -> {
-                    String createtimeStr = DateUtils.parseDateToStr(DateUtils.YYYYMMDD, item.getCreatedTime());
-                    if (datePackageList.containsKey(createtimeStr)) {
-                        List<PackagesGenerationResponse> adds = datePackageList.get(createtimeStr);
-                        adds.add(item);
-                    } else {
-                        List<PackagesGenerationResponse> adds = new ArrayList<>();
-                        adds.add(item);
-                        datePackageList.put(createtimeStr, adds);
-                    }
-                }
-        );
-        for (String key : datePackageList.keySet()) {
-            //获取状态数量
-            Map<String, Long> collect = datePackageList.get(key).stream().collect(Collectors.groupingBy(PackagesGenerationResponse::getPkgStatus, Collectors.counting()));
-            //再和日期接在一起
-        }
-//        xAxis: {
-//                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-//        },
-//        series: [
-//        {
-//            data: [1120, 200, 150, 80, 70, 110, 130],
-//            type: 'bar'
+//        //创建时间
+//        Map<String, List<PackagesGenerationResponse>> datePackageList = new HashMap<>();
+//        packagesGenerationResponses.stream().forEach(item -> {
+//                    String createtimeStr = DateUtils.parseDateToStr(DateUtils.YYYYMMDD, item.getCreatedTime());
+//                    if (datePackageList.containsKey(createtimeStr)) {
+//                        List<PackagesGenerationResponse> adds = datePackageList.get(createtimeStr);
+//                        adds.add(item);
+//                    } else {
+//                        List<PackagesGenerationResponse> adds = new ArrayList<>();
+//                        adds.add(item);
+//                        datePackageList.put(createtimeStr, adds);
+//                    }
+//                }
+//        );
+//        for (String key : datePackageList.keySet()) {
+//            //获取状态数量
+//            Map<String, Long> collect = datePackageList.get(key).stream().collect(Collectors.groupingBy(PackagesGenerationResponse::getPkgStatus, Collectors.counting()));
+//            //再和日期接在一起
 //        }
-        return null;
+        if (CollectionUtils.isEmpty(packagesGenerationResponses)) {
+            return new HashMap();
+        }
+        Map<String, Long> collect = packagesGenerationResponses.stream().collect(Collectors.groupingBy(PackagesGenerationResponse::getPkgStatus, Collectors.counting()));
+
+        Map<String, List<String>> returnList = new HashMap<>();
+        List<String> xAxisData = new ArrayList<>();
+        List<String> seriesData = new ArrayList<>();
+        for (String key : collect.keySet()) {
+            xAxisData.add(key);
+            seriesData.add(collect.get(key).toString());
+        }
+        returnList.put("xAxisData", xAxisData);
+        returnList.put("seriesData", seriesData);
+        return returnList;
     }
 
     /**
@@ -244,7 +255,7 @@ public class PackageServiceImpl implements IPackageService {
             BeanUtils.copyProperties(parcel, packageVo, "id", "createdTime", "updatedTime", "createUser", "updateUser");
         }
         PackagesGenerationResponse packagesGenerationResponse = packagesGenerationResponseMap.get(pac.getId());
-        if (ObjectUtils.isNotEmpty(packagesGenerationResponse)){
+        if (ObjectUtils.isNotEmpty(packagesGenerationResponse)) {
             BeanUtils.copyProperties(packagesGenerationResponse, packageVo, "id", "createdTime", "updatedTime", "createUser", "updateUser", "status", "packId");
             packageVo.setPackagesGenerationResponseStatus(packagesGenerationResponse.getStatus());
         }
