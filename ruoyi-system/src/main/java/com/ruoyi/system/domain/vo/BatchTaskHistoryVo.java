@@ -16,6 +16,8 @@ public class BatchTaskHistoryVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    private Long sessionId;
+
     /** 类型 */
     @Excel(name = "类型")
     private String type;
@@ -62,6 +64,14 @@ public class BatchTaskHistoryVo extends BaseEntity
     /** 是否删除 */
     @Excel(name = "是否删除")
     private Integer isDelete;
+
+    public Long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
+    }
 
     public Date getCreatedTimeStart() {
         return createdTimeStart;

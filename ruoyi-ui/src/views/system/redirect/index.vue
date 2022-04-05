@@ -127,8 +127,8 @@
       <!-- 多选 -->
       <el-table-column type="selection" width="55" align="center" />
       <!-- 物流单号 -->
-      <el-table-column label="物流单号" align="center" prop="id" />
-      <!-- 物流单号 -->
+      <el-table-column label="物流单号" align="center" prop="waybill" />
+      <!-- 原面单ID -->
       <el-table-column label="原面单ID" align="center" prop="originalId" />
       <!-- 创建时间 -->
       <el-table-column label="创建时间" align="center" prop="createdTime">
@@ -159,7 +159,7 @@
       <!-- 备注 -->
       <el-table-column label="备注" align="center" prop="content" />
       <!-- 下载次数 -->
-      <el-table-column label="下载次数" align="center" prop="id" />
+      <el-table-column label="下载次数" align="center" prop="downloadNum" />
       <!-- 分类 -->
       <el-table-column label="分类" align="center" prop="ref1" />
       <!-- 分类2 -->

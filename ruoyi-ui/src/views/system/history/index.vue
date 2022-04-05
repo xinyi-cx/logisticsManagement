@@ -1,14 +1,28 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-     <el-form-item label="创建时间" prop="createdTime">
-        <el-date-picker clearable size="small"
-          v-model="queryParams.createdTime"
-          type="date"
+<!--     <el-form-item label="创建时间" prop="createdTime">-->
+<!--        <el-date-picker clearable size="small"-->
+<!--          v-model="queryParams.createdTime"-->
+<!--          type="date"-->
+<!--          value-format="yyyy-MM-dd"-->
+<!--          placeholder="选择创建时间">-->
+<!--        </el-date-picker>-->
+<!--      </el-form-item>-->
+
+      <el-form-item label="创建时间">
+        <el-date-picker
+          v-model="dateRange"
+          size="small"
+          style="width: 240px"
           value-format="yyyy-MM-dd"
-          placeholder="选择创建时间">
-        </el-date-picker>
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
       </el-form-item>
+
       <el-form-item label="状态" prop="status">
         <el-select
           v-model="queryParams.status"
@@ -343,15 +357,14 @@ export default {
         // 上传的地址
         url: process.env.VUE_APP_BASE_API + "/system/package/importData"
       },
+      // 日期范围
+      dateRange: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         type: undefined,
-        status: undefined,
-        createUser: undefined,
-        updateUser: undefined,
-        createdTime: undefined
+        status: undefined
       },
       // 表单参数
       form: {},
@@ -367,7 +380,7 @@ export default {
     /** 查询批量任务历史列表 */
     getList() {
       this.loading = true;
-      listHistory(this.queryParams).then(response => {
+      listHistory(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.historyList = response.rows;
         this.total = response.total;
         this.loading = false;

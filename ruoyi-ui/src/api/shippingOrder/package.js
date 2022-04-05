@@ -67,3 +67,11 @@ export function delPackage(id) {
     method: 'delete'
   })
 }
+
+//获取echarts数据
+export function statistics(dateStr) {
+  return request({
+    url: '/system/package/statistics/' + dateStr,
+    method: 'get'
+  })
+}
