@@ -49,6 +49,8 @@ public interface IPackageService
      */
     public void getPDFById(HttpServletResponse response, Long pkgId) throws IOException;
 
+    public void getPDFByBatchId(HttpServletResponse response, Long batchId) throws IOException;
+
     /**
      * 查询面单列表
      *

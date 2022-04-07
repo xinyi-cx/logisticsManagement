@@ -163,24 +163,15 @@
       <!-- 分类2 -->
       <el-table-column label="分类2" align="center" prop="ref2" />
       <!-- 操作 -->
-      <el-table-column label="操作" align="center" prop="id">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
          <template slot-scope="scope">
-         <!-- 修改与删除按钮
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:package:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:package:remove']"
-          >删除</el-button>
-          -->
+           <el-button
+             size="mini"
+             type="text"
+             icon="el-icon-edit"
+             @click="handleDownloadPDF(scope.row)"
+             v-hasPermi="['system:history:edit']"
+           >查看面单</el-button>
           <el-button
             size="mini"
             type="text"
@@ -407,7 +398,7 @@
         <div class="el-upload__tip text-center" slot="tip">
           <span>仅允许导入xls、xlsx格式文件。</span>
           <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
-          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplatePDF">下载测试数据</el-link>
+<!--          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplatePDF">下载测试数据</el-link>-->
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
@@ -571,9 +562,10 @@ export default {
       this.download('system/package/downloadFile/11', {
       }, `package_template_${new Date().getTime()}.xlsx`)
     },
-    importTemplatePDF(){
-      this.download('system/package/downloadFile/2', {
-      }, `package_template_${new Date().getTime()}.pdf`)
+    handleDownloadPDF(row) {
+      const id = row.id;
+      this.download('system/package/getPDFById' + id, {
+      }, `package_${new Date().getTime()}.pdf`)
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {

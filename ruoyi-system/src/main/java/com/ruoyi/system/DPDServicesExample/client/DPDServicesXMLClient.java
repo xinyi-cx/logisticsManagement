@@ -273,6 +273,11 @@ public class DPDServicesXMLClient {
             e.printStackTrace();
         }
 
+        if (ObjectUtils.isEmpty(documentGenerationResponse.getSessionId())){
+            //失败处理？
+
+        }
+
         DocumentGenerationResponseV1 ret = generateSpedLabelsBySessionId(documentGenerationResponse.getSessionId());
 
         Sequence sequence = sequenceMapper.selectSequenceBySeqName("doc_seq");

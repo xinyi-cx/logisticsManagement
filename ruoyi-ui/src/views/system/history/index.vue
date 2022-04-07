@@ -32,7 +32,7 @@
           style="width: 240px"
         >
           <el-option
-            v-for="dict in dict.type.sys_normal_disable"
+            v-for="dict in dict.type.sys_bat_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -182,16 +182,16 @@
         </template>
       </el-table-column>
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
-      <el-table-column label="原始excel" align="center" prop="excelUrl" width="180">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDownload(scope.row)"
-            v-hasPermi="['system:history:edit']"
-          >{{scope.row.excelUrl}}</el-button>
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="原始excel" align="center" prop="excelUrl" width="180">-->
+<!--        <template slot-scope="scope">-->
+<!--          <el-button-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            @click="handleDownload(scope.row)"-->
+<!--            v-hasPermi="['system:history:edit']"-->
+<!--          >{{scope.row.excelUrl}}</el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <!--
       <el-table-column label="excel内容" align="center" prop="excelContent" />
       <el-table-column label="创建人" align="center" prop="createUser" />
@@ -211,19 +211,12 @@
             @click="handleDownload(scope.row)"
             v-hasPermi="['system:history:edit']"
           >查看excel</el-button>
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-delete"-->
-<!--            @click="handleDelete(scope.row)"-->
-<!--            v-hasPermi="['system:history:remove']"-->
-<!--          >删除</el-button>-->
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-view" class="text-danger"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:history:remove']"
+            icon="el-icon-edit"
+            @click="handleDownloadPDF(scope.row)"
+            v-hasPermi="['system:history:edit']"
           >查看批量面单</el-button>
         </template>
       </el-table-column>
@@ -442,6 +435,12 @@ export default {
       const id = row.id;
       this.download('system/package/downloadFile/'+ id, {
       }, `batch_task_${new Date().getTime()}.xlsx`)
+    },
+    handleDownloadPDF(row) {
+      this.reset();
+      const id = row.id;
+      this.download('system/package/getPDFByBatchId/'+ id, {
+      }, `batch_package_${new Date().getTime()}.pdf`)
     },
     /** 导入按钮操作 */
     handleImport() {

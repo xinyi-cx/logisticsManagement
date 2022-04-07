@@ -97,13 +97,16 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     public Map getStatistics(String dateStr) {
         Date paramDate = new Date();
-        if (StringUtils.isNotEmpty(dateStr)) {
+        if (StringUtils.isEmpty(dateStr) || "null".equals(dateStr)) {
             paramDate = DateUtils.dateTime(DateUtils.YYYYMMDD, dateStr);
         }
 
         Package paramPackage = new Package();
         paramPackage.setCreatedTime(paramDate);
         List<Package> packages = packageMapper.selectPackageList(paramPackage);
+        if (CollectionUtils.isEmpty(packages)) {
+            return new HashMap();
+        }
         List<PackagesGenerationResponse> packagesGenerationResponses =
                 packagesGenerationResponseMapper.selectPackagesGenerationResponseListByPacIds(packages.stream().map(Package::getId).collect(toList()));
 //        //创建时间
@@ -164,7 +167,7 @@ public class PackageServiceImpl implements IPackageService {
     public void getPDFById(HttpServletResponse response, Long pkgId) throws IOException {
         //查看pdf路径暂未知晓
         PackagesGenerationResponse packagesGenerationResponse = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackId(pkgId);
-        Documents documents = documentsMapper.selectDocumentsBySessionId(packagesGenerationResponse.getPackageId());
+        Documents documents = documentsMapper.selectDocumentsByPackageId(packagesGenerationResponse.getPackageId());
         if (ObjectUtils.isEmpty(documents)) {
             //下载PDF并且存储
             DocumentGenerationResponseV1 ret = dpdServicesXMLClient.generateProtocolByPackageId(packagesGenerationResponse.getPackageId());
@@ -185,6 +188,35 @@ public class PackageServiceImpl implements IPackageService {
         getFileByDocuments(documents, response);
     }
 
+    @Override
+    public void getPDFByBatchId(HttpServletResponse response, Long batchId) throws IOException {
+        BatchTaskHistory batchTaskHistory = batchTaskHistoryMapper.selectBatchTaskHistoryById(batchId);
+        Documents paramDocuments = new Documents();
+        paramDocuments.setSessionId(batchTaskHistory.getSessionId());
+        List<Documents> documentsList = documentsMapper.selectDocumentsList(paramDocuments);
+        Documents documents;
+        if (CollectionUtils.isEmpty(documentsList)) {
+            //下载PDF并且存储
+            DocumentGenerationResponseV1 ret = dpdServicesXMLClient.generateSpedLabelsBySessionId(batchTaskHistory.getSessionId());
+            Documents documentsInsert = new Documents();
+            documentsInsert.setId(sequenceMapper.selectNextvalByName("doc_seq"));
+            documentsInsert.setSessionId(batchTaskHistory.getSessionId());
+            documentsInsert.setFileData(ret.getDocumentData());
+            documentsInsert.setDocumentId(ret.getDocumentId());
+            documentsInsert.setExtension("PDF");
+            documentsInsert.setContentType("application/pdf");
+            documentsInsert.setFileName("file");
+            documentsInsert.setDisplayName(batchId.toString() + ".pdf");
+            documentsInsert.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            documentsInsert.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            documentsMapper.insertDocuments(documentsInsert);
+            documents = documentsInsert;
+        } else {
+            documents = documentsList.stream().filter(item -> ObjectUtils.isEmpty(item.getSessionId())).collect(toList()).get(0);
+        }
+        getFileByDocuments(documents, response);
+    }
+
     /**
      * 查询面单列表
      *
@@ -200,9 +232,9 @@ public class PackageServiceImpl implements IPackageService {
             hisId = Long.valueOf(packageVo.getHisParam().substring(3));
         }
         Package pkg = new Package();
+        BeanUtils.copyProperties(packageVo, pkg);
         pkg.setBatchId(hisId);
         pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-        BeanUtils.copyProperties(packageVo, pkg);
         List<Package> packagesAll = packageMapper.selectPackageList(pkg);
         List<Package> packages = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())) {
@@ -227,8 +259,15 @@ public class PackageServiceImpl implements IPackageService {
 
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
         Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
+        List<PackageVo> resultList = packages.stream().map(item -> this.getPackageVo(item, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap)).collect(Collectors.toList());
+        if (null == sucFlag) {
+            return resultList;
+        }
 
-        return packages.stream().map(item -> this.getPackageVo(item, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap)).collect(Collectors.toList());
+        if (sucFlag) {
+            return resultList.stream().filter(item -> "OK".equals(item.getStatus())).collect(toList());
+        }
+        return resultList.stream().filter(item -> "FAIL".equals(item.getStatus())).collect(toList());
     }
 
     private PackageVo getPackageVo(Package pac,
@@ -351,6 +390,8 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     public void writeFile(HttpServletResponse response, Long id) throws Exception {
         BatchTaskHistory batchTaskHistory = batchTaskHistoryMapper.selectBatchTaskHistoryById(id);
+        batchTaskHistory.setDownloadNum(batchTaskHistory.getDownloadNum()+1);
+        batchTaskHistoryMapper.updateBatchTaskHistory(batchTaskHistory);
         Documents document = documentsMapper.selectDocumentsById(Long.valueOf(batchTaskHistory.getExcelUrl()));
         getFileByDocuments(document, response);
     }
@@ -433,24 +474,28 @@ public class PackageServiceImpl implements IPackageService {
             pac.setSender(addressSender);
             packages.add(pac);
         }
+        try {
+            List<PackagesGenerationResponse> returnResponses = dpdServicesXMLClient.generatePackagesNumberByBusiness(packages);
 
-        List<PackagesGenerationResponse> returnResponses = dpdServicesXMLClient.generatePackagesNumberByBusiness(packages);
-
-        List<AddressReceiver> addressReceivers = new ArrayList<>();
-        List<Services> servicesList = new ArrayList<>();
-        List<Parcel> parcels = new ArrayList<>();
-        for (Package pac : packages) {
-            addressReceivers.add(pac.getReceiver());
-            servicesList.add(pac.getService());
-            parcels.addAll(pac.getParcels());
+            List<AddressReceiver> addressReceivers = new ArrayList<>();
+            List<Services> servicesList = new ArrayList<>();
+            List<Parcel> parcels = new ArrayList<>();
+            for (Package pac : packages) {
+                addressReceivers.add(pac.getReceiver());
+                servicesList.add(pac.getService());
+                parcels.addAll(pac.getParcels());
+            }
+            batchTaskHistory.setSessionId(returnResponses.get(0).getSessionId());
+            batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
+            packageMapper.batchInsert(packages);
+            addressReceiverMapper.batchInsert(addressReceivers);
+            servicesMapper.batchInsert(servicesList);
+            parcelMapper.batchInsert(parcels);
+            packagesGenerationResponseMapper.batchInsert(returnResponses);
+        }catch (Exception e){
+            batchTaskHistory.setStatus("上传失败");
+            batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
         }
-        batchTaskHistory.setSessionId(returnResponses.get(0).getSessionId());
-        batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
-        packageMapper.batchInsert(packages);
-        addressReceiverMapper.batchInsert(addressReceivers);
-        servicesMapper.batchInsert(servicesList);
-        parcelMapper.batchInsert(parcels);
-        packagesGenerationResponseMapper.batchInsert(returnResponses);
     }
 
     private Long getId(Map<String, Sequence> nameMap, String seqName) {

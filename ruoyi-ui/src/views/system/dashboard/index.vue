@@ -2,13 +2,17 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="查询批次" prop="ref1">
-        <el-input
-          v-model="queryParams.batchNo"
-          placeholder="请输入查询批次"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+        <el-date-picker clearable size="small"
+                        v-model="paramDte"
+                        type="date"
+                        value-format="yyyyMMdd"
+                        placeholder="请选择查询批次"
+                        :picker-options="pickerOptions">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -26,12 +30,38 @@ export default {
   data() {
     return {
       echartsData:{},
-      paramDte:"",
+      paramDte: null,
       //查询参数
       queryParams: {
+        //批次字段是什么？
         batchNo: null,
       },
-      showSearch: true
+      showSearch: true,
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.$emit('pick', new Date());
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            const date = new Date();
+            date.setTime(date.getTime() - 3600 * 1000 *24);
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周前',
+          onClick(picker) {
+            const date = new Date();
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', date);
+          }
+        }]
+      }
     }
   },
   created() {
@@ -51,9 +81,10 @@ export default {
     drawLine() {
       // 初始化echarts实例
       let mychart = echarts.init(document.getElementById('statusChart'));
+      let titleDate = this.paramDte ? this.paramDte : '今日';
       let option = {
         title: {
-          text: '今日各订单状态柱形图',
+          text: `${titleDate}各订单状态柱形图`,
           textStyle: {
             color: '#333',
             fontWeight: 'bold'
@@ -78,6 +109,7 @@ export default {
           barWidth: '20%',
           showBackground: true,
           itemStyle: {
+            borderRadius: 5,
             color: new echarts.graphic.LinearGradient(0,0,0,1,[
                 { offset: 0, color: '#83bff6'},
                 { offset: 0.7, color: '#188df0'},
@@ -100,6 +132,19 @@ export default {
       };
       //绘制图表
       mychart.setOption(option);
+      mychart.on('click', function(params) {
+        console.log(params.name);
+
+      });
+    },
+    // 搜索事件
+    handleQuery() {
+      this.getEcartsData();
+    },
+    // 重置事件
+    resetQuery() {
+      this.paramDte = null;
+      this.getEcartsData();
     }
   }
 }

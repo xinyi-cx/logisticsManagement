@@ -1,6 +1,6 @@
 -- 菜单 SQL
 insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-values('批量任务历史', '3', '1', 'history', 'system/history/index', 1, 0, 'C', '0', '0', 'system:history:list', '#', 'admin', sysdate(), '', null, '批量任务历史菜单');
+values('批量任务历史', '11', '2', 'history', 'system/history/index', 1, 0, 'C', '0', '0', 'system:history:list', '#', 'admin', sysdate(), '', null, '批量任务历史菜单');
 
 -- 按钮父菜单ID
 SELECT @parentId := LAST_INSERT_ID();

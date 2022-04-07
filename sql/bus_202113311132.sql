@@ -201,6 +201,7 @@ INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('servi
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('pack_gen_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('bat_task_seq', '1', '1');
 INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('doc_seq', '1', '1');
+INSERT INTO sequence (`seq_name`, `current_val`, `increment_val`) VALUES ('wl_seq', '1', '1');
 
 drop table if exists documents;
 CREATE TABLE `documents`
@@ -239,3 +240,32 @@ CREATE TABLE `redirect_package`
 ) engine = innodb
   CHARSET = utf8
   auto_increment = 200 comment = '转寄面单原面单关联关系表';
+
+drop table if exists logistics_info;
+CREATE TABLE `logistics_info`
+(
+    `id`             bigint(20) unsigned NOT NULL AUTO_INCREMENT comment '主键',
+    `company`      varchar(500) DEFAULT NULL comment '物流公司',
+    `delivery_time`      datetime DEFAULT NULL comment '发货时间',
+    `order`      varchar(500) DEFAULT NULL comment '订单号',
+    `last_time`      datetime DEFAULT NULL comment '最新物流时间',
+    `last_msg`      varchar(500) DEFAULT NULL comment '最新物流信息',
+    `rep_msg`      varchar(500) DEFAULT NULL comment '回复信息',
+    `failure_msg`      varchar(500) DEFAULT 'not failure'  comment '失败原因',
+    `content`        varchar(500) DEFAULT NULL comment '备注',
+    `reference`      varchar(500) DEFAULT NULL comment '内部引用号',
+    `pack_id`        bigint(20)   DEFAULT NULL comment 'pack_id',
+    `sec_pack_id`        bigint(20)   DEFAULT NULL comment '转寄pack_id',
+    `waybill`        varchar(100) DEFAULT NULL comment '物流单号',
+    `status`         varchar(100) DEFAULT NULL comment '包裹状态',
+    `package_id`     bigint(20)   DEFAULT NULL comment 'package_id',
+    `parcel_id`  bigint(20)   DEFAULT NULL comment 'parcel_id',
+    `create_user`    varchar(50)  DEFAULT NULL comment '创建人',
+    `update_user`    varchar(50)  DEFAULT NULL comment '更新人',
+    `created_time`   datetime     DEFAULT NULL comment '创建时间',
+    `updated_time`   datetime     DEFAULT NULL comment '更新时间',
+    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
+    PRIMARY KEY (`id`)
+) engine = innodb
+  CHARSET = utf8
+  auto_increment = 200 comment = '物流信息';

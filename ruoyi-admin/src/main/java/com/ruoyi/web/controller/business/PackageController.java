@@ -158,6 +158,17 @@ public class PackageController extends BaseController
         packageService.getPDFById(response, id);
     }
 
+    /**
+     * 根据批量id查看面单pdf
+     * @param response
+     * @param id
+     * @throws IOException
+     */
+    @PostMapping("/getPDFByBatchId/{id}")
+    public void getPDFByBatchId(HttpServletResponse response, @PathVariable("id") Long id) throws IOException {
+        packageService.getPDFByBatchId(response, id);
+    }
+
     @Log(title = "面单导入", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPermi('system:package:add')")
     @PostMapping("/importData")
