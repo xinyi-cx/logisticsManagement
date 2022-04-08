@@ -95,7 +95,7 @@ public interface IPackageService
      * @param packageVos 面单
      * @return 结果
      */
-    public void importPackage(MultipartFile file, List<PackageVo> packageVos) throws IOException;
+    public void importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception;
 
     /**
      * 修改面单

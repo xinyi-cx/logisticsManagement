@@ -52,6 +52,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectPackageByIdIn" parameterType="list" resultMap="PackageResult">
+        <include refid="selectPackageVo"/>
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <select id="selectMaxId"  resultType="long">
         select max(id)
             from package
@@ -178,7 +186,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <update id="deletePackageById" parameterType="Long">
-        update package set is_delete = 1 where id = #{id}
+        update package set is_delete = 1, updated_time = sysdate()
+        where id = #{id}
     </update>
 
     <update id="deletePackageByIds" parameterType="String">

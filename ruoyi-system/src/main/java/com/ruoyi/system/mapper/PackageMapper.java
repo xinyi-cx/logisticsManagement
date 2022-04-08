@@ -1,8 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
-
 import com.ruoyi.system.domain.Package;
+
+import java.util.List;
 
 /**
  * 面单Mapper接口
@@ -18,6 +18,8 @@ public interface PackageMapper {
      * @return 面单
      */
     public Package selectPackageById(Long id);
+
+    public List<Package> selectPackageByIdIn(List<Long> ids);
 
     /**
      * 查询面单

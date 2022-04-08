@@ -430,16 +430,40 @@ public class PackageServiceImpl implements IPackageService {
         return documents;
     }
 
+    private boolean checkForRe(List<PackageVo> packageVos){
+        List<Long> originalIds = packageVos.stream().map(PackageVo::getOriginalId).filter(Objects::nonNull).distinct().collect(toList());
+        if(CollectionUtils.isEmpty(originalIds) || CollectionUtils.isEmpty(packageVos) || originalIds.size()!=packageVos.size()){
+            return false;
+        }
+        List<Package> packages = packageMapper.selectPackageByIdIn(originalIds);
+        return CollectionUtils.isNotEmpty(packages) && packages.size()==originalIds.size();
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void importPackage(MultipartFile file, List<PackageVo> packageVos) throws IOException {
+    public void importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception {
         Documents documents = getDocuments(file);
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
+        batchTaskHistory.setType("面单导入");
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
         batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
+
+        Set<Long> originalIds = packageVos.stream().map(PackageVo::getOriginalId).filter(Objects::nonNull).collect(Collectors.toSet());
+        boolean reflag =  originalIds.isEmpty();
+
+        if(!reflag){
+            batchTaskHistory.setType("转寄面单导入");
+            boolean checkForReFlag = checkForRe(packageVos);
+            if (!checkForReFlag){
+                batchTaskHistory.setStatus("上传失败");
+                batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
+                throw new Exception("原面单号不能为空，或者原面单号不正确");
+            }
+        }
+
         /**
          * 一系列处理
          */
@@ -447,6 +471,7 @@ public class PackageServiceImpl implements IPackageService {
         Map<String, Sequence> nameMap = getSeqMap(packageVos.size());
         AddressSender addressSender = getSender();
         List<Package> packages = new ArrayList<>();
+        List<RedirectPackage> redirectPackages = new ArrayList<>();
         for (PackageVo packageVo : packageVos) {
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
             Services services = getServices(packageVo, getId(nameMap, "services_seq"));
@@ -473,6 +498,14 @@ public class PackageServiceImpl implements IPackageService {
             pac.setParcels(parcels1);
             pac.setSender(addressSender);
             packages.add(pac);
+            if(!reflag){
+                RedirectPackage redirectPackage = new RedirectPackage();
+                redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+                redirectPackage.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+                redirectPackage.setOriginalId(packageVo.getOriginalId());
+                redirectPackage.setId(pac.getId());
+                redirectPackages.add(redirectPackage);
+            }
         }
         try {
             List<PackagesGenerationResponse> returnResponses = dpdServicesXMLClient.generatePackagesNumberByBusiness(packages);
@@ -492,6 +525,9 @@ public class PackageServiceImpl implements IPackageService {
             servicesMapper.batchInsert(servicesList);
             parcelMapper.batchInsert(parcels);
             packagesGenerationResponseMapper.batchInsert(returnResponses);
+            if(!reflag){
+                redirectPackageMapper.batchInsert(redirectPackages);
+            }
         }catch (Exception e){
             batchTaskHistory.setStatus("上传失败");
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);

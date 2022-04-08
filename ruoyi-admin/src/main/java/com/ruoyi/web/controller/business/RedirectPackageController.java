@@ -7,13 +7,18 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.vo.PackageVo;
+import com.ruoyi.system.domain.vo.REPackageVo;
 import com.ruoyi.system.service.IPackageService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * 转寄面单原面单关联关系Controller
@@ -95,4 +100,30 @@ public class RedirectPackageController extends BaseController
     {
         return toAjax(packageService.deletePackageByIds(ids));
     }
+
+    @Log(title = "转寄面单导入", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('system:package:add')")
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file) throws Exception
+    {
+        ExcelUtil<REPackageVo> util = new ExcelUtil<REPackageVo>(REPackageVo.class);
+        List<REPackageVo> rePackageVos = util.importExcel(file.getInputStream());
+        List<PackageVo> packageVos = rePackageVos.stream().map(item ->
+                {
+                    PackageVo packageVo = new PackageVo();
+                    BeanUtils.copyProperties(item, packageVo);
+                    return packageVo;
+                }
+        ).collect(toList());
+        packageService.importPackage(file, packageVos);
+        return AjaxResult.success("导入成功");
+    }
+
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<REPackageVo> util = new ExcelUtil<REPackageVo>(REPackageVo.class);
+        util.importTemplateExcel(response, "转寄面单数据");
+    }
+
 }

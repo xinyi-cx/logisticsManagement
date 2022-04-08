@@ -50,11 +50,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="originalId != null">#{originalId},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
-            <if test="createdTime != null">#{createdTime},</if>
-            <if test="updatedTime != null">#{updatedTime},</if>
             sysdate(),
             sysdate(),
          </trim>
+    </insert>
+
+    <insert id="batchInsert" >
+        insert into redirect_package (id, original_id, create_user, update_user, created_time, updated_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.originalId},
+            #{item.createUser},
+            #{item.updateUser},
+            sysdate(),
+            sysdate())
+        </foreach>
     </insert>
 
     <update id="updateRedirectPackage" parameterType="RedirectPackage">
@@ -67,14 +79,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteRedirectPackageById" parameterType="Long">
-        delete from redirect_package where id = #{id}
-    </delete>
+    <update id="deleteRedirectPackageById" parameterType="Long">
+        update redirect_package set is_delete = 1, updated_time = sysdate()
+        where id = #{id}
+    </update>
 
-    <delete id="deleteRedirectPackageByIds" parameterType="String">
-        delete from redirect_package where id in 
+    <update id="deleteRedirectPackageByIds" parameterType="String">
+        update redirect_package set is_delete = 1, updated_time = sysdate()
+        where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
-    </delete>
+    </update>
 </mapper>

@@ -1,7 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
 import com.ruoyi.system.domain.RedirectPackage;
+
+import java.util.List;
 
 /**
  * 转寄面单原面单关联关系Mapper接口
@@ -34,6 +35,8 @@ public interface RedirectPackageMapper
      * @return 结果
      */
     public int insertRedirectPackage(RedirectPackage redirectPackage);
+
+    public int batchInsert(List<RedirectPackage> list);
 
     /**
      * 修改转寄面单原面单关联关系
