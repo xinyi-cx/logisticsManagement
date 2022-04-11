@@ -1,6 +1,7 @@
 package com.ruoyi.system.DPDServicesExample.config;
 
 import com.ruoyi.system.DPDServicesExample.common.TrustAllX509TrustManager;
+import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.DPDInfoServicesObjEvents;
 import com.ruoyi.system.dpdservices.DPDPackageObjServices;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
@@ -19,6 +20,8 @@ public class ClientConfig {
     @Value("${dpdservices.address}")
     private String address;
 
+    @Value("${dpdservices.addressInfo}")
+    private String addressInfo;
 
     @Bean
     public DPDPackageObjServices dpdPackageXmlServices() {
@@ -33,6 +36,20 @@ public class ClientConfig {
         }
 
         return dpdPackageObjServices;
+    }
+
+    @Bean
+    public DPDInfoServicesObjEvents dpdInfoServicesObjEvents() {
+        JaxWsProxyFactoryBean jaxWsProxyFactoryBean = new JaxWsProxyFactoryBean();
+        jaxWsProxyFactoryBean.setServiceClass(DPDInfoServicesObjEvents.class);
+        jaxWsProxyFactoryBean.setAddress(addressInfo);
+
+        DPDInfoServicesObjEvents dpdInfoServicesObjEvents = (DPDInfoServicesObjEvents) jaxWsProxyFactoryBean.create();
+
+        if(address.contains("https")){
+            httpsSetup(ClientProxy.getClient(dpdInfoServicesObjEvents));
+        }
+        return dpdInfoServicesObjEvents;
     }
 
     //Workaround for self-signed ssl certificate

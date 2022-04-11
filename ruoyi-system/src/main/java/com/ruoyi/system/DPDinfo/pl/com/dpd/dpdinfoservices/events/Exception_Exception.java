@@ -19,14 +19,14 @@ public class Exception_Exception
      * Java type that goes as soapenv:Fault detail element.
      * 
      */
-    private pl.com.dpd.dpdinfoservices.events.Exception faultInfo;
+    private Exception faultInfo;
 
     /**
      * 
      * @param faultInfo
      * @param message
      */
-    public Exception_Exception(String message, pl.com.dpd.dpdinfoservices.events.Exception faultInfo) {
+    public Exception_Exception(String message, Exception faultInfo) {
         super(message);
         this.faultInfo = faultInfo;
     }
@@ -37,7 +37,7 @@ public class Exception_Exception
      * @param cause
      * @param message
      */
-    public Exception_Exception(String message, pl.com.dpd.dpdinfoservices.events.Exception faultInfo, Throwable cause) {
+    public Exception_Exception(String message, Exception faultInfo, Throwable cause) {
         super(message, cause);
         this.faultInfo = faultInfo;
     }
@@ -45,9 +45,9 @@ public class Exception_Exception
     /**
      * 
      * @return
-     *     returns fault bean: pl.com.dpd.dpdinfoservices.events.Exception
+     *     returns fault bean: Exception
      */
-    public pl.com.dpd.dpdinfoservices.events.Exception getFaultInfo() {
+    public Exception getFaultInfo() {
         return faultInfo;
     }
 

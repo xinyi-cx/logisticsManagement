@@ -1,7 +1,8 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
 import com.ruoyi.system.domain.Parcel;
+
+import java.util.List;
 
 /**
  * 包裹Service接口
@@ -58,4 +59,6 @@ public interface IParcelService
      * @return 结果
      */
     public int deleteParcelById(Long id);
+
+    public void getParcelMsg();
 }

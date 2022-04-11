@@ -33,6 +33,13 @@ public interface IPackageService
     public Map getStatistics(String dateStr);
 
     /**
+     * 获取物流状态的echarts数据
+     * @param dateStr
+     * @return
+     */
+    public Map getStatisticsForParcel(String dateStr);
+
+    /**
      * 查询面单列表
      * 
      * @param pkg 面单

@@ -1,9 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
-
-import com.ruoyi.system.domain.AddressSender;
 import com.ruoyi.system.domain.Parcel;
+
+import java.util.List;
 
 /**
  * 包裹Mapper接口
@@ -69,4 +68,12 @@ public interface ParcelMapper
      * @return 结果
      */
     public int deleteParcelByIds(Long[] ids);
+
+    /**
+     * 批量更新
+     * @param list
+     * @return
+     */
+    public int batchUpdate(List<Parcel> list);
+
 }

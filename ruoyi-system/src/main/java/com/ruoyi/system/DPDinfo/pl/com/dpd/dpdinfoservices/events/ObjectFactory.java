@@ -49,9 +49,9 @@ public class ObjectFactory {
      * Create an instance of {@link GetEventsForWaybillV1 }
      * 
      */
-    public GetEventsForWaybillV1 createGetEventsForWaybillV1() {
-        return new GetEventsForWaybillV1();
-    }
+//    public GetEventsForWaybillV1 createGetEventsForWaybillV1() {
+//        return new GetEventsForWaybillV1();
+//    }
 
     /**
      * Create an instance of {@link GetEventsForCustomerV1Response }
@@ -93,13 +93,13 @@ public class ObjectFactory {
         return new GetEventsForCustomerV1();
     }
 
-    /**
-     * Create an instance of {@link GetEventsForWaybillV1Response }
-     * 
-     */
-    public GetEventsForWaybillV1Response createGetEventsForWaybillV1Response() {
-        return new GetEventsForWaybillV1Response();
-    }
+//    /**
+//     * Create an instance of {@link GetEventsForWaybillV1Response }
+//     *
+//     */
+//    public GetEventsForWaybillV1Response createGetEventsForWaybillV1Response() {
+//        return new GetEventsForWaybillV1Response();
+//    }
 
     /**
      * Create an instance of {@link MarkEventsAsProcessedV1 }
@@ -266,14 +266,14 @@ public class ObjectFactory {
         return new JAXBElement<GetEventsForCustomerV1>(_GetEventsForCustomerV1_QNAME, GetEventsForCustomerV1 .class, null, value);
     }
 
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link GetEventsForWaybillV1Response }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://events.dpdinfoservices.dpd.com.pl/", name = "getEventsForWaybillV1Response")
-    public JAXBElement<GetEventsForWaybillV1Response> createGetEventsForWaybillV1Response(GetEventsForWaybillV1Response value) {
-        return new JAXBElement<GetEventsForWaybillV1Response>(_GetEventsForWaybillV1Response_QNAME, GetEventsForWaybillV1Response.class, null, value);
-    }
+//    /**
+//     * Create an instance of {@link JAXBElement }{@code <}{@link GetEventsForWaybillV1Response }{@code >}}
+//     *
+//     */
+//    @XmlElementDecl(namespace = "http://events.dpdinfoservices.dpd.com.pl/", name = "getEventsForWaybillV1Response")
+//    public JAXBElement<GetEventsForWaybillV1Response> createGetEventsForWaybillV1Response(GetEventsForWaybillV1Response value) {
+//        return new JAXBElement<GetEventsForWaybillV1Response>(_GetEventsForWaybillV1Response_QNAME, GetEventsForWaybillV1Response.class, null, value);
+//    }
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link MarkEventsAsProcessedV1 }{@code >}}
@@ -329,13 +329,13 @@ public class ObjectFactory {
         return new JAXBElement<GetEventsForCustomerV1Response>(_GetEventsForCustomerV1Response_QNAME, GetEventsForCustomerV1Response.class, null, value);
     }
 
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link GetEventsForWaybillV1 }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://events.dpdinfoservices.dpd.com.pl/", name = "getEventsForWaybillV1")
-    public JAXBElement<GetEventsForWaybillV1> createGetEventsForWaybillV1(GetEventsForWaybillV1 value) {
-        return new JAXBElement<GetEventsForWaybillV1>(_GetEventsForWaybillV1_QNAME, GetEventsForWaybillV1 .class, null, value);
-    }
+//    /**
+//     * Create an instance of {@link JAXBElement }{@code <}{@link GetEventsForWaybillV1 }{@code >}}
+//     *
+//     */
+//    @XmlElementDecl(namespace = "http://events.dpdinfoservices.dpd.com.pl/", name = "getEventsForWaybillV1")
+//    public JAXBElement<GetEventsForWaybillV1> createGetEventsForWaybillV1(GetEventsForWaybillV1 value) {
+//        return new JAXBElement<GetEventsForWaybillV1>(_GetEventsForWaybillV1_QNAME, GetEventsForWaybillV1 .class, null, value);
+//    }
 
 }

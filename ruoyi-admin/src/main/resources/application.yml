@@ -124,7 +124,12 @@ xss:
 
 dpdservices:
   address: https://dpdservicesdemo.dpd.com.pl/DPDPackageObjServicesService/DPDPackageObjServices
+  addressInfo: https://dpdinfoservices.dpd.com.pl/DPDInfoServicesObjEventsService/DPDInfoServicesObjEvents
   authdata:
     login: test
     password: thetu4Ee
     fid: 1495
+  authdataV1:
+    login: 33368701
+    password: lZIVxoSrtWSZhhPJ
+    channel: 333687

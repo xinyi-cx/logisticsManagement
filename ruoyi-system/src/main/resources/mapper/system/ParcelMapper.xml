@@ -150,6 +150,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="batchUpdate" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+        update parcel
+        set
+            size_x = #{item.sizeX},
+            size_y = #{item.sizeY},
+            size_z = #{item.sizeZ},
+            content = #{item.content},
+            customer_data1 = #{item.customerData1},
+            reference = #{item.reference},
+            weight = #{item.weight},
+            pack_id = #{item.packId},
+            waybill = #{item.waybill},
+            status = #{item.status},
+            package_id = #{item.packageId},
+            parcel_id = #{item.parcelId},
+            create_user = #{item.createUser},
+            update_user = #{item.updateUser},
+            updated_time = sysdate(),
+        where id = #{item.id}
+        </foreach>
+    </update>
+
     <update id="deleteParcelById" parameterType="Long">
         update parcel set is_delete = 1, updated_time = sysdate()
         where id = #{id}

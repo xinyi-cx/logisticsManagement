@@ -1,11 +1,13 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
+import com.ruoyi.system.DPDServicesExample.client.DPDInfoXMLClient;
+import com.ruoyi.system.domain.Parcel;
+import com.ruoyi.system.mapper.ParcelMapper;
+import com.ruoyi.system.service.IParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.ParcelMapper;
-import com.ruoyi.system.domain.Parcel;
-import com.ruoyi.system.service.IParcelService;
+
+import java.util.List;
 
 /**
  * 包裹Service业务层处理
@@ -18,6 +20,9 @@ public class ParcelServiceImpl implements IParcelService
 {
     @Autowired
     private ParcelMapper parcelMapper;
+
+    @Autowired
+    private DPDInfoXMLClient dpdInfoXMLClient;
 
     /**
      * 查询包裹
@@ -90,4 +95,11 @@ public class ParcelServiceImpl implements IParcelService
     {
         return parcelMapper.deleteParcelById(id);
     }
+
+    @Override
+    public void getParcelMsg(){
+
+    }
+
+
 }

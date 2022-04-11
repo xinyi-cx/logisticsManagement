@@ -97,7 +97,7 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     public Map getStatistics(String dateStr) {
         Date paramDate = new Date();
-        if (StringUtils.isEmpty(dateStr) || "null".equals(dateStr)) {
+        if (!StringUtils.isEmpty(dateStr) && !"null".equals(dateStr)) {
             paramDate = DateUtils.dateTime(DateUtils.YYYYMMDD, dateStr);
         }
 
@@ -132,6 +132,38 @@ public class PackageServiceImpl implements IPackageService {
             return new HashMap();
         }
         Map<String, Long> collect = packagesGenerationResponses.stream().collect(Collectors.groupingBy(PackagesGenerationResponse::getPkgStatus, Collectors.counting()));
+
+        Map<String, List<String>> returnList = new HashMap<>();
+        List<String> xAxisData = new ArrayList<>();
+        List<String> seriesData = new ArrayList<>();
+        for (String key : collect.keySet()) {
+            xAxisData.add(key);
+            seriesData.add(collect.get(key).toString());
+        }
+        returnList.put("xAxisData", xAxisData);
+        returnList.put("seriesData", seriesData);
+        return returnList;
+    }
+
+    @Override
+    public Map getStatisticsForParcel(String dateStr) {
+        Date paramDate = new Date();
+        if (!StringUtils.isEmpty(dateStr) && !"null".equals(dateStr)) {
+            paramDate = DateUtils.dateTime(DateUtils.YYYYMMDD, dateStr);
+        }
+
+        Package paramPackage = new Package();
+        paramPackage.setCreatedTime(paramDate);
+        List<Package> packages = packageMapper.selectPackageList(paramPackage);
+        if (CollectionUtils.isEmpty(packages)) {
+            return new HashMap();
+        }
+        List<Parcel> parcels =
+                parcelMapper.selectParcelListByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
+        if (CollectionUtils.isEmpty(parcels)) {
+            return new HashMap();
+        }
+        Map<String, Long> collect = parcels.stream().collect(Collectors.groupingBy(Parcel::getStatus, Collectors.counting()));
 
         Map<String, List<String>> returnList = new HashMap<>();
         List<String> xAxisData = new ArrayList<>();
