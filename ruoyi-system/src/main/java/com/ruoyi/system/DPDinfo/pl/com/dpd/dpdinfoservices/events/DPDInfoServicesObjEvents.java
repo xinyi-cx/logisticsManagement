@@ -23,28 +23,28 @@ import javax.xml.ws.ResponseWrapper;
 public interface DPDInfoServicesObjEvents {
 
 
-//    /**
-//     *
-//     * @param limit
-//     * @param language
-//     * @param authDataV1
-//     * @return
-//     *     returns pl.com.dpd.dpdinfoservices.events.CustomerEventsResponseV1
-//     * @throws Exception_Exception
-//     */
-//    @WebMethod
-//    @WebResult(targetNamespace = "")
-//    @RequestWrapper(localName = "getEventsForCustomerV2", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.GetEventsForCustomerV2")
-//    @ResponseWrapper(localName = "getEventsForCustomerV2Response", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.GetEventsForCustomerV2Response")
-//    public CustomerEventsResponseV1 getEventsForCustomerV2(
-//        @WebParam(name = "limit", targetNamespace = "")
-//        Integer limit,
-//        @WebParam(name = "language", targetNamespace = "")
-//        String language,
-//        @WebParam(name = "authDataV1", targetNamespace = "")
-//        AuthDataV1 authDataV1)
-//        throws Exception_Exception
-//    ;
+    /**
+     *
+     * @param limit
+     * @param language
+     * @param authDataV1
+     * @return
+     *     returns pl.com.dpd.dpdinfoservices.events.CustomerEventsResponseV1
+     * @throws Exception_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getEventsForCustomerV2", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.GetEventsForCustomerV2")
+    @ResponseWrapper(localName = "getEventsForCustomerV2Response", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.GetEventsForCustomerV2Response")
+    public CustomerEventsResponseV1 getEventsForCustomerV2(
+        @WebParam(name = "limit", targetNamespace = "")
+        Integer limit,
+        @WebParam(name = "language", targetNamespace = "")
+        String language,
+        @WebParam(name = "authDataV1", targetNamespace = "")
+        AuthDataV1 authDataV1)
+        throws Exception_Exception
+    ;
 
     /**
      * 
@@ -111,48 +111,48 @@ public interface DPDInfoServicesObjEvents {
 //        AuthDataV1 authDataV1)
 //        throws Exception_Exception
 //    ;
-//
-//    /**
-//     *
-//     * @param limit
-//     * @param language
-//     * @param authDataV1
-//     * @return
-//     *     returns pl.com.dpd.dpdinfoservices.events.CustomerEventsResponseV2
-//     * @throws Exception_Exception
-//     */
-//    @WebMethod
-//    @WebResult(targetNamespace = "")
-//    @RequestWrapper(localName = "getEventsForCustomerV4", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.GetEventsForCustomerV4")
-//    @ResponseWrapper(localName = "getEventsForCustomerV4Response", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.GetEventsForCustomerV4Response")
-//    public CustomerEventsResponseV2 getEventsForCustomerV4(
-//        @WebParam(name = "limit", targetNamespace = "")
-//        Integer limit,
-//        @WebParam(name = "language", targetNamespace = "")
-//        String language,
-//        @WebParam(name = "authDataV1", targetNamespace = "")
-//        AuthDataV1 authDataV1)
-//        throws Exception_Exception
-//    ;
-//
-//    /**
-//     *
-//     * @param confirmId
-//     * @param authDataV1
-//     * @return
-//     *     returns java.lang.Boolean
-//     * @throws Exception_Exception
-//     */
-//    @WebMethod
-//    @WebResult(targetNamespace = "")
-//    @RequestWrapper(localName = "markEventsAsProcessedV1", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.MarkEventsAsProcessedV1")
-//    @ResponseWrapper(localName = "markEventsAsProcessedV1Response", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.MarkEventsAsProcessedV1Response")
-//    public Boolean markEventsAsProcessedV1(
-//        @WebParam(name = "confirmId", targetNamespace = "")
-//        String confirmId,
-//        @WebParam(name = "authDataV1", targetNamespace = "")
-//        AuthDataV1 authDataV1)
-//        throws Exception_Exception
-//    ;
+
+    /**
+     *
+     * @param limit
+     * @param language
+     * @param authDataV1
+     * @return
+     *     returns pl.com.dpd.dpdinfoservices.events.CustomerEventsResponseV2
+     * @throws Exception_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getEventsForCustomerV4", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.GetEventsForCustomerV4")
+    @ResponseWrapper(localName = "getEventsForCustomerV4Response", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.GetEventsForCustomerV4Response")
+    public CustomerEventsResponseV2 getEventsForCustomerV4(
+        @WebParam(name = "limit", targetNamespace = "")
+        Integer limit,
+        @WebParam(name = "language", targetNamespace = "")
+        String language,
+        @WebParam(name = "authDataV1", targetNamespace = "")
+        AuthDataV1 authDataV1)
+        throws Exception_Exception
+    ;
+
+    /**
+     *
+     * @param confirmId
+     * @param authDataV1
+     * @return
+     *     returns java.lang.Boolean
+     * @throws Exception_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "markEventsAsProcessedV1", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.MarkEventsAsProcessedV1")
+    @ResponseWrapper(localName = "markEventsAsProcessedV1Response", targetNamespace = "http://events.dpdinfoservices.dpd.com.pl/", className = "pl.com.dpd.dpdinfoservices.events.MarkEventsAsProcessedV1Response")
+    public Boolean markEventsAsProcessedV1(
+        @WebParam(name = "confirmId", targetNamespace = "")
+        String confirmId,
+        @WebParam(name = "authDataV1", targetNamespace = "")
+        AuthDataV1 authDataV1)
+        throws Exception_Exception
+    ;
 
 }

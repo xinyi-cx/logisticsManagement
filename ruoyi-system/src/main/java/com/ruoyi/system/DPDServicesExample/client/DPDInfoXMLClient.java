@@ -4,18 +4,28 @@ import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.*;
 import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.Parcel;
 import com.ruoyi.system.domain.Sequence;
+import com.ruoyi.system.domain.WaybillLRel;
 import com.ruoyi.system.mapper.LogisticsInfoMapper;
+import com.ruoyi.system.mapper.ParcelMapper;
 import com.ruoyi.system.mapper.SequenceMapper;
+import com.ruoyi.system.mapper.WaybillLRelMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
 @Component
@@ -37,16 +47,117 @@ public class DPDInfoXMLClient {
     private LogisticsInfoMapper logisticsInfoMapper;
 
     @Autowired
+    private WaybillLRelMapper waybillLRelMapper;
+
+    @Autowired
+    private ParcelMapper parcelMapper;
+
+    @Autowired
     private DPDInfoServicesObjEvents dpdInfoServicesObjEvents;
 
 //    @PostConstruct
     public void runExamples() {
         Parcel parcel = new Parcel();
-        parcel.setWaybill("0000368219709W");
-        getEventsForOneWaybill(parcel);
+//        0000368219706W
+//        0000368219709W
+        parcel.setWaybill("0000368219706W");
+//        getEventsForOneWaybill(parcel);
+        getEventsForWaybills(parcel);
     }
 
-    private void getEventsForOneWaybill(Parcel parcel) {
+    @Async
+    public void getEventsForOneWaybill(Parcel parcel) {
+        AuthDataV1 authData = getAuthData();
+        LogisticsInfo logisticsInfo = new LogisticsInfo();
+        logisticsInfo.setPackId(parcel.getPackId());
+        //转寄字段
+        logisticsInfo.setPackageId(parcel.getPackageId());
+        logisticsInfo.setParcelId(parcel.getParcelId());
+        logisticsInfo.setCreateUser(parcel.getCreateUser());
+        logisticsInfo.setUpdateUser(parcel.getUpdateUser());
+        logisticsInfo.setWaybill(parcel.getWaybill());
+        logisticsInfo.setCompany("DPD");
+        List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
+        try {
+            CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(parcel.getWaybill(), EventsSelectTypeEnum.ALL, "EN", authData);
+            List<CustomerEventV3> customerEventV3s = ret.getEventsList();
+
+            customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
+
+            CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
+            logisticsInfo.setLastMsg(customerEventV3.getDescription());
+            //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
+            List<WaybillLRel> waybillLRels = getRL(parcel.getWaybill(), allEventDataList);
+            String status;
+            if (CollectionUtils.isEmpty(waybillLRels)) {
+                status = getStatus(allEventDataList);
+            } else {
+                status = "ERROR";
+            }
+            parcel.setStatus(status);
+            logisticsInfo.setStatus(status);
+            logisticsInfo.setLastTime(customerEventV3.getEventTime());
+
+            List<String> waybills = new ArrayList<>();
+            waybills.add(parcel.getWaybill());
+            List<LogisticsInfo> logisticsInfos = new ArrayList<>();
+            logisticsInfos.add(logisticsInfo);
+            List<Parcel> parcels = new ArrayList<>();
+            parcels.add(parcel);
+            dealWlData(waybills, logisticsInfos, parcels, waybillLRels);
+
+        } catch (Exception_Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void dealWlData(List<String> waybills, List<LogisticsInfo> logisticsInfos, List<Parcel> parcels, List<WaybillLRel> waybillLRels) {
+        logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
+        logisticsInfoMapper.batchInsert(logisticsInfos);
+        parcelMapper.batchUpdate(parcels);
+        if (!CollectionUtils.isEmpty(waybillLRels)) {
+            waybillLRelMapper.batchInsert(waybillLRels);
+        }
+    }
+
+    private List<WaybillLRel> getRL(String waybill, List<CustomerEventDataV3> allEventDataList) {
+        if (CollectionUtils.isEmpty(allEventDataList)) {
+            return new ArrayList<>();
+        }
+        return allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && item.getValue().endsWith("L"))
+                .map(item -> {
+                    WaybillLRel waybillLRel = new WaybillLRel();
+                    waybillLRel.setWaybill(waybill);
+                    waybillLRel.setWaybillL(item.getValue());
+                    return waybillLRel;
+                }).collect(Collectors.toList());
+    }
+
+    private String getStatus(List<CustomerEventDataV3> allEventDataList) {
+        if (CollectionUtils.isEmpty(allEventDataList)) {
+            return "";
+        }
+        List<CustomerEventDataV3> returnList = allEventDataList.stream().filter(item -> isStatus(item.getValue())).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(returnList)) {
+            return "";
+        }
+        return returnList.get(0).getValue();
+    }
+
+    private static final String upper = "^[A-Z]+$";
+
+    private boolean isStatus(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return false;
+        }
+        if (value.contains("@") || value.contains(".")) {
+            return false;
+        }
+        return value.replace(" ", "").matches(upper);
+    }
+
+    private void getEventsForWaybills(Parcel parcel) {
         AuthDataV1 authData = getAuthData();
         LogisticsInfo logisticsInfo = new LogisticsInfo();
         logisticsInfo.setPackId(parcel.getPackId());
@@ -56,15 +167,88 @@ public class DPDInfoXMLClient {
         logisticsInfo.setUpdateUser(parcel.getUpdateUser());
         logisticsInfo.setWaybill(parcel.getWaybill());
         try {
-            CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(parcel.getWaybill(), EventsSelectTypeEnum.ALL, "EN", authData);
-            List<CustomerEventV3> customerEventV3s = ret.getEventsList();
-            CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
-            logisticsInfo.setLastMsg(customerEventV3.getDescription());
-//            parcel.setStatus("");
+//            markEventsAsProcessedV1
+            CustomerEventsResponseV3 ret3 = dpdInfoServicesObjEvents.getEventsForWaybillV1(parcel.getWaybill(), EventsSelectTypeEnum.ALL, "EN", authData);
+
+            CustomerEventsResponseV1 ret = dpdInfoServicesObjEvents.getEventsForCustomerV2(10, "EN", authData);
+            CustomerEventsResponseV2 ret2 = dpdInfoServicesObjEvents.getEventsForCustomerV4(0, "EN", authData);
+            List<CustomerEventV2> customerEventV2s = ret2.getEventsList();
+
+//            List<String> waybills = customerEventV2s.stream().map(CustomerEventV2::getWaybill).collect(Collectors.toList());
+//            List<LogisticsInfo> oriLogisticsInfos = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(waybills);
+//            List<Parcel> parcels = parcelMapper.selectParcelListByWaybillIn(waybills);
+//            Map<String, Parcel> waybillParcelMap = parcels.stream().collect(toMap(Parcel::getWaybill, Function.identity()));
+//            List<LogisticsInfo> allLogisticsInfoList = new ArrayList<>();
+//            List<Parcel> changeParcels = new ArrayList<>();
+//            for (CustomerEventV2 customerEventV2 : customerEventV2s) {
+//                LogisticsInfo logisticsInfo1 = getLogisticsInfo(customerEventV2, waybillParcelMap, changeParcels);
+//                allLogisticsInfoList.add(logisticsInfo1);
+//            }
+//            List<LogisticsInfo> needDataLogisticsInfos = needDataLogisticsInfo(allLogisticsInfoList, oriLogisticsInfos);
+
+
             System.out.println("test");
-        }catch (com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.Exception_Exception e) {
+        } catch (Exception_Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * 根据CustomerEventV2获取到需要存储的 LogisticsInfo
+     *
+     * @param customerEventV2
+     * @param waybillParcelMap
+     */
+    private LogisticsInfo getLogisticsInfo(CustomerEventV2 customerEventV2, Map<String, Parcel> waybillParcelMap, List<Parcel> changeParcels) {
+        String waybill = customerEventV2.getWaybill();
+        LogisticsInfo logisticsInfo = new LogisticsInfo();
+        if (waybillParcelMap.containsKey(waybill)) {
+            Parcel parcel = waybillParcelMap.get(waybill);
+            logisticsInfo.setPackId(parcel.getPackId());
+            //转寄字段
+            logisticsInfo.setPackageId(parcel.getPackageId());
+            logisticsInfo.setParcelId(parcel.getParcelId());
+            logisticsInfo.setCreateUser(parcel.getCreateUser());
+            logisticsInfo.setUpdateUser(parcel.getUpdateUser());
+
+            parcel.setStatus(customerEventV2.getOperationType());
+            changeParcels.add(parcel);
+        }
+        logisticsInfo.setWaybill(waybill);
+        logisticsInfo.setCompany("DPD");
+        logisticsInfo.setReference(customerEventV2.getParcelReference());
+        logisticsInfo.setPackageReference(customerEventV2.getPackageReference());
+        logisticsInfo.setDepot(customerEventV2.getDepot());
+        logisticsInfo.setLastMsg(customerEventV2.getDescription());
+        logisticsInfo.setLastTime(customerEventV2.getEventTime());
+        //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
+//        List<WaybillLRel> waybillLRels = getRL(waybill, allEventDataList);
+        logisticsInfo.setStatus(customerEventV2.getOperationType());
+        return logisticsInfo;
+    }
+
+    /**
+     * 获取到需要保存到数据库中的数据
+     *
+     * @param logisticsInfos    获取到的所有logisticsInfo
+     * @param oriLogisticsInfos 数据库中的logisticsInfo 直接搜索未删除的
+     */
+    private List<LogisticsInfo> needDataLogisticsInfo(List<LogisticsInfo> logisticsInfos, List<LogisticsInfo> oriLogisticsInfos) {
+        Map<String, List<LogisticsInfo>> waybillLogisticsInfosMap = oriLogisticsInfos.stream().collect(groupingBy(LogisticsInfo::getWaybill));
+        List<LogisticsInfo> returnList = new ArrayList<>();
+        for (LogisticsInfo logisticsInfo : logisticsInfos) {
+            if (waybillLogisticsInfosMap.containsKey(logisticsInfo.getWaybill())) {
+                List<LogisticsInfo> key = waybillLogisticsInfosMap.get(logisticsInfo.getWaybill()).stream()
+                        .filter(item -> StringUtils.isNotEmpty(item.getLastTime()) && item.getLastTime().equals(logisticsInfo.getLastTime()))
+                        .collect(Collectors.toList());
+                if (!CollectionUtils.isEmpty(key)) {
+                    continue;
+                }
+            }
+            returnList.add(logisticsInfo);
+        }
+        return returnList;
     }
 
     private void getEventsForWaybills(List<Parcel> parcel) {

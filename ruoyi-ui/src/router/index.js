@@ -180,6 +180,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/system/package/index'),
         name: 'Data',
         meta: { title: '面单列表', activeMenu: '/system/history' }
+      },
+      {
+        path: 'index/:status(\\d+)//:datStr(\\d+)',
+        component: () => import('@/views/system/package/index'),
+        name: 'PackageList',
+        meta: { title: '面单列表', activeMenu: '/system/dashboard' }
       }
     ]
   },

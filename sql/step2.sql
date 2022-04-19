@@ -111,7 +111,6 @@ CREATE TABLE `parcel`
   CHARSET = utf8
   auto_increment = 200 comment = '包裹';
 
-# sessionId 对应多个packageId  一个packageId对应多个parcel
 drop table if exists packages_generation_response;
 CREATE TABLE `packages_generation_response`
 (
@@ -246,9 +245,9 @@ CREATE TABLE `logistics_info`
 (
     `id`             bigint(20) unsigned NOT NULL AUTO_INCREMENT comment '主键',
     `company`      varchar(500) DEFAULT NULL comment '物流公司',
-    `delivery_time`      datetime DEFAULT NULL comment '发货时间',
+    `delivery_time`      varchar(100) DEFAULT NULL comment '发货时间',
     `order`      varchar(500) DEFAULT NULL comment '订单号',
-    `last_time`      datetime DEFAULT NULL comment '最新物流时间',
+    `last_time`      varchar(100) DEFAULT NULL comment '最新物流时间',
     `last_msg`      varchar(500) DEFAULT NULL comment '最新物流信息',
     `rep_msg`      varchar(500) DEFAULT NULL comment '回复信息',
     `failure_msg`      varchar(500) DEFAULT 'not failure'  comment '失败原因',
@@ -265,7 +264,24 @@ CREATE TABLE `logistics_info`
     `created_time`   datetime     DEFAULT NULL comment '创建时间',
     `updated_time`   datetime     DEFAULT NULL comment '更新时间',
     `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
+    `redirect_num`  int(10)      DEFAULT 0 comment '转寄次数',
     PRIMARY KEY (`id`)
 ) engine = innodb
   CHARSET = utf8
   auto_increment = 200 comment = '物流信息';
+
+drop table if exists waybill_l_rel;
+CREATE TABLE `waybill_l_rel`
+(
+    `waybill`        varchar(100) DEFAULT NULL comment '物流单号',
+    `waybill_l`        varchar(100) DEFAULT NULL comment '物流单号L',
+    `create_user`    varchar(50)  DEFAULT NULL comment '创建人',
+    `update_user`    varchar(50)  DEFAULT NULL comment '更新人',
+    `created_time`   datetime     DEFAULT NULL comment '创建时间',
+    `updated_time`   datetime     DEFAULT NULL comment '更新时间',
+    `is_delete`    tinyint(1)   DEFAULT '0'  comment '是否删除',
+    `status`   varchar(100)     DEFAULT NULL comment '状态',
+    `back_date`   varchar(100)     DEFAULT NULL comment '回退时间'
+) engine = innodb
+  CHARSET = utf8
+  auto_increment = 200 comment = '物流单号和L关联表';

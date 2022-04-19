@@ -69,6 +69,9 @@ public class PackageServiceImpl implements IPackageService {
     @Autowired
     private DPDServicesXMLClient dpdServicesXMLClient;
 
+    @Autowired
+    private LogisticsInfoMapper logisticsInfoMapper;
+
     /**
      * 查询面单
      *
@@ -87,7 +90,7 @@ public class PackageServiceImpl implements IPackageService {
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(Collections.singletonList(pkg.getId()));
         Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
 
-        return getPackageVo(pkg, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap);
+        return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap);
     }
 
     /**
@@ -97,18 +100,24 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     public Map getStatistics(String dateStr) {
         Date paramDate = new Date();
-        if (!StringUtils.isEmpty(dateStr) && !"null".equals(dateStr)) {
+        if (!StringUtils.isEmpty(dateStr) && !"null".equals(dateStr) && dateStr.length() == 8) {
             paramDate = DateUtils.dateTime(DateUtils.YYYYMMDD, dateStr);
         }
 
         Package paramPackage = new Package();
-        paramPackage.setCreatedTime(paramDate);
+        if (!StringUtils.isEmpty(dateStr) && !"null".equals(dateStr) && dateStr.length() == 6){
+            //按照月度统计
+            paramPackage.setParamMonth(dateStr);
+        }else {
+            paramPackage.setCreatedTime(paramDate);
+        }
         List<Package> packages = packageMapper.selectPackageList(paramPackage);
         if (CollectionUtils.isEmpty(packages)) {
             return new HashMap();
         }
-        List<PackagesGenerationResponse> packagesGenerationResponses =
-                packagesGenerationResponseMapper.selectPackagesGenerationResponseListByPacIds(packages.stream().map(Package::getId).collect(toList()));
+//        List<PackagesGenerationResponse> packagesGenerationResponses =
+//                packagesGenerationResponseMapper.selectPackagesGenerationResponseListByPacIds(packages.stream().map(Package::getId).collect(toList()));
+        List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
 //        //创建时间
 //        Map<String, List<PackagesGenerationResponse>> datePackageList = new HashMap<>();
 //        packagesGenerationResponses.stream().forEach(item -> {
@@ -128,10 +137,14 @@ public class PackageServiceImpl implements IPackageService {
 //            Map<String, Long> collect = datePackageList.get(key).stream().collect(Collectors.groupingBy(PackagesGenerationResponse::getPkgStatus, Collectors.counting()));
 //            //再和日期接在一起
 //        }
-        if (CollectionUtils.isEmpty(packagesGenerationResponses)) {
+//        if (CollectionUtils.isEmpty(packagesGenerationResponses)) {
+//            return new HashMap();
+//        }
+//        Map<String, Long> collect = packagesGenerationResponses.stream().collect(Collectors.groupingBy(PackagesGenerationResponse::getPkgStatus, Collectors.counting()));
+        if (CollectionUtils.isEmpty(parcels)) {
             return new HashMap();
         }
-        Map<String, Long> collect = packagesGenerationResponses.stream().collect(Collectors.groupingBy(PackagesGenerationResponse::getPkgStatus, Collectors.counting()));
+        Map<String, Long> collect = parcels.stream().collect(Collectors.groupingBy(Parcel::getStatus, Collectors.counting()));
 
         Map<String, List<String>> returnList = new HashMap<>();
         List<String> xAxisData = new ArrayList<>();
@@ -244,7 +257,7 @@ public class PackageServiceImpl implements IPackageService {
             documentsMapper.insertDocuments(documentsInsert);
             documents = documentsInsert;
         } else {
-            documents = documentsList.stream().filter(item -> ObjectUtils.isEmpty(item.getSessionId())).collect(toList()).get(0);
+            documents = documentsList.stream().filter(item -> ObjectUtils.isEmpty(item.getPackageId())).collect(toList()).get(0);
         }
         getFileByDocuments(documents, response);
     }
@@ -267,6 +280,18 @@ public class PackageServiceImpl implements IPackageService {
         BeanUtils.copyProperties(packageVo, pkg);
         pkg.setBatchId(hisId);
         pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        if (StringUtils.isNotEmpty(packageVo.getStatus())){
+            Date paramDate = new Date();
+            if (!StringUtils.isEmpty(packageVo.getDatStr()) && !"null".equals(packageVo.getDatStr()) && packageVo.getDatStr().length() == 8 ) {
+                paramDate = DateUtils.dateTime(DateUtils.YYYYMMDD, packageVo.getDatStr());
+            }
+            if (!StringUtils.isEmpty(packageVo.getDatStr()) && !"null".equals(packageVo.getDatStr()) && packageVo.getDatStr().length() == 6){
+                //按照月度统计
+                pkg.setParamMonth(packageVo.getDatStr());
+            }else {
+                pkg.setCreatedTime(paramDate);
+            }
+        }
         List<Package> packagesAll = packageMapper.selectPackageList(pkg);
         List<Package> packages = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())) {
@@ -291,18 +316,19 @@ public class PackageServiceImpl implements IPackageService {
 
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
         Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
-        List<PackageVo> resultList = packages.stream().map(item -> this.getPackageVo(item, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap)).collect(Collectors.toList());
+        List<PackageVo> resultList = packages.stream().map(item -> this.getPackageVo(packageVo, item, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap)).filter(Objects::nonNull).collect(Collectors.toList());
         if (null == sucFlag) {
             return resultList;
         }
 
         if (sucFlag) {
-            return resultList.stream().filter(item -> "OK".equals(item.getStatus())).collect(toList());
+            return resultList.stream().filter(item -> "OK".equals(item.getPackagesGenerationResponseStatus())).collect(toList());
         }
-        return resultList.stream().filter(item -> "FAIL".equals(item.getStatus())).collect(toList());
+        return resultList.stream().filter(item -> !"OK".equals(item.getPackagesGenerationResponseStatus())).collect(toList());
     }
 
-    private PackageVo getPackageVo(Package pac,
+    private PackageVo getPackageVo(PackageVo paramPackageVo,
+                                   Package pac,
                                    Map<Long, AddressSender> addressSenderMap,
                                    Map<Long, AddressReceiver> addressReceiverMap,
                                    List<Parcel> parcels,
@@ -323,7 +349,12 @@ public class PackageServiceImpl implements IPackageService {
         List<Parcel> parcelList = parcels.stream().filter(item -> item.getPackId().equals(pac.getId())).collect(toList());
         if (CollectionUtils.isNotEmpty(parcelList)) {
             Parcel parcel = parcelList.get(0);
+            if (StringUtils.isNotEmpty(paramPackageVo.getStatus()) && !StringUtils.equals(parcel.getStatus(), paramPackageVo.getStatus())) {
+                return null;
+            }
             BeanUtils.copyProperties(parcel, packageVo, "id", "createdTime", "updatedTime", "createUser", "updateUser");
+        } else {
+            return null;
         }
         PackagesGenerationResponse packagesGenerationResponse = packagesGenerationResponseMap.get(pac.getId());
         if (ObjectUtils.isNotEmpty(packagesGenerationResponse)) {
@@ -551,6 +582,8 @@ public class PackageServiceImpl implements IPackageService {
                 parcels.addAll(pac.getParcels());
             }
             batchTaskHistory.setSessionId(returnResponses.get(0).getSessionId());
+            batchTaskHistory.setSuccessNum((int) returnResponses.stream().filter(item -> "OK".equals(item.getPkgStatus())).count());
+            batchTaskHistory.setFailNum((int) returnResponses.stream().filter(item -> !"OK".equals(item.getPkgStatus())).count());
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
             packageMapper.batchInsert(packages);
             addressReceiverMapper.batchInsert(addressReceivers);
@@ -558,11 +591,19 @@ public class PackageServiceImpl implements IPackageService {
             parcelMapper.batchInsert(parcels);
             packagesGenerationResponseMapper.batchInsert(returnResponses);
             if(!reflag){
+                dealForRedirect(new ArrayList<Long>(originalIds));
                 redirectPackageMapper.batchInsert(redirectPackages);
             }
         }catch (Exception e){
             batchTaskHistory.setStatus("上传失败");
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
+        }
+    }
+
+    private void dealForRedirect(List<Long> originalIds){
+        List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListByPackIdIn(originalIds);
+        if (CollectionUtils.isNotEmpty(logisticsInfos)){
+            logisticsInfoMapper.updateRedirectNumByIds(logisticsInfos.stream().map(LogisticsInfo::getId).collect(toList()));
         }
     }
 

@@ -66,4 +66,15 @@ public interface LogisticsInfoMapper
      * @return 结果
      */
     public int deleteLogisticsInfoByIds(Long[] ids);
+
+    public int deleteLogisticsInfoByWaybills(List<String> waybills);
+
+    public int updateRedirectNumByWaybills(List<String> waybills);
+
+    public int updateRedirectNumByIds(List<Long> ids);
+
+    public List<LogisticsInfo> selectLogisticsInfoListByPackIdIn(List<Long> ids);
+
+    public List<LogisticsInfo> selectLogisticsInfoListByWaybillIn(List<String> waybills);
+
 }

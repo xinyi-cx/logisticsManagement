@@ -17,24 +17,24 @@
           placeholder="选择最新物流时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="pack_id" prop="packId">
-        <el-input
-          v-model="queryParams.packId"
-          placeholder="请输入pack_id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="转寄pack_id" prop="secPackId">
-        <el-input
-          v-model="queryParams.secPackId"
-          placeholder="请输入转寄pack_id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="pack_id" prop="packId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.packId"-->
+<!--          placeholder="请输入pack_id"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="转寄pack_id" prop="secPackId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.secPackId"-->
+<!--          placeholder="请输入转寄pack_id"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="物流单号" prop="waybill">
         <el-input
           v-model="queryParams.waybill"
@@ -44,67 +44,40 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="package_id" prop="packageId">
-        <el-input
-          v-model="queryParams.packageId"
-          placeholder="请输入package_id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="parcel_id" prop="parcelId">
-        <el-input
-          v-model="queryParams.parcelId"
-          placeholder="请输入parcel_id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="创建人" prop="createUser">
-        <el-input
-          v-model="queryParams.createUser"
-          placeholder="请输入创建人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="更新人" prop="updateUser">
-        <el-input
-          v-model="queryParams.updateUser"
-          placeholder="请输入更新人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createdTime">
-        <el-date-picker clearable size="small"
-          v-model="queryParams.createdTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择创建时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updatedTime">
-        <el-date-picker clearable size="small"
-          v-model="queryParams.updatedTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择更新时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="是否删除" prop="isDelete">
-        <el-input
-          v-model="queryParams.isDelete"
-          placeholder="请输入是否删除"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="package_id" prop="packageId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.packageId"-->
+<!--          placeholder="请输入package_id"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="parcel_id" prop="parcelId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.parcelId"-->
+<!--          placeholder="请输入parcel_id"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="创建时间" prop="createdTime">-->
+<!--        <el-date-picker clearable size="small"-->
+<!--          v-model="queryParams.createdTime"-->
+<!--          type="date"-->
+<!--          value-format="yyyy-MM-dd"-->
+<!--          placeholder="选择创建时间">-->
+<!--        </el-date-picker>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="更新时间" prop="updatedTime">-->
+<!--        <el-date-picker clearable size="small"-->
+<!--          v-model="queryParams.updatedTime"-->
+<!--          type="date"-->
+<!--          value-format="yyyy-MM-dd"-->
+<!--          placeholder="选择更新时间">-->
+<!--        </el-date-picker>-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -112,38 +85,38 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['system:info:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['system:info:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:info:remove']"
-        >删除</el-button>
-      </el-col>
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          icon="el-icon-plus"-->
+<!--          size="mini"-->
+<!--          @click="handleAdd"-->
+<!--          v-hasPermi="['system:info:add']"-->
+<!--        >新增</el-button>-->
+<!--      </el-col>-->
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          icon="el-icon-edit"-->
+<!--          size="mini"-->
+<!--          :disabled="single"-->
+<!--          @click="handleUpdate"-->
+<!--          v-hasPermi="['system:info:edit']"-->
+<!--        >修改</el-button>-->
+<!--      </el-col>-->
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="danger"-->
+<!--          plain-->
+<!--          icon="el-icon-delete"-->
+<!--          size="mini"-->
+<!--          :disabled="multiple"-->
+<!--          @click="handleDelete"-->
+<!--          v-hasPermi="['system:info:remove']"-->
+<!--        >删除</el-button>-->
+<!--      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -177,34 +150,34 @@
       <el-table-column label="失败原因" align="center" prop="failureMsg" />
       <el-table-column label="备注" align="center" prop="content" />
       <el-table-column label="内部引用号" align="center" prop="reference" />
-      <el-table-column label="pack_id" align="center" prop="packId" />
-      <el-table-column label="转寄pack_id" align="center" prop="secPackId" />
+<!--      <el-table-column label="pack_id" align="center" prop="packId" />-->
+<!--      <el-table-column label="转寄pack_id" align="center" prop="secPackId" />-->
       <el-table-column label="物流单号" align="center" prop="waybill" />
       <el-table-column label="包裹状态" align="center" prop="status" />
-      <el-table-column label="package_id" align="center" prop="packageId" />
-      <el-table-column label="parcel_id" align="center" prop="parcelId" />
-      <el-table-column label="创建人" align="center" prop="createUser" />
-      <el-table-column label="更新人" align="center" prop="updateUser" />
-      <el-table-column label="创建时间" align="center" prop="createdTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="更新时间" align="center" prop="updatedTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.updatedTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否删除" align="center" prop="isDelete" />
+<!--      <el-table-column label="package_id" align="center" prop="packageId" />-->
+<!--      <el-table-column label="parcel_id" align="center" prop="parcelId" />-->
+<!--      <el-table-column label="创建人" align="center" prop="createUser" />-->
+<!--      <el-table-column label="更新人" align="center" prop="updateUser" />-->
+<!--      <el-table-column label="创建时间" align="center" prop="createdTime" width="180">-->
+<!--        <template slot-scope="scope">-->
+<!--          <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column label="更新时间" align="center" prop="updatedTime" width="180">-->
+<!--        <template slot-scope="scope">-->
+<!--          <span>{{ parseTime(scope.row.updatedTime, '{y}-{m}-{d}') }}</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column label="是否删除" align="center" prop="isDelete" />-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:info:edit']"
-          >修改</el-button>
+<!--          <el-button-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            icon="el-icon-edit"-->
+<!--            @click="handleUpdate(scope.row)"-->
+<!--            v-hasPermi="['system:info:edit']"-->
+<!--          >修改</el-button>-->
           <el-button
             size="mini"
             type="text"
@@ -215,7 +188,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"

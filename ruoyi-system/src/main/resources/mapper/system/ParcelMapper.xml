@@ -48,7 +48,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
         </where>
     </select>
-    
+
+    <select id="selectParcelListNeedDeal" parameterType="Parcel" resultMap="ParcelResult">
+        <include refid="selectParcelVo"/>
+        <where>
+            is_delete = 0
+            and status != 'SEND'
+            and status != 'ERROR'
+            and status != 'EXPIRED'
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="customerData1 != null  and customerData1 != ''"> and customer_data1 = #{customerData1}</if>
+            <if test="reference != null  and reference != ''"> and reference = #{reference}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="packId != null "> and pack_id = #{packId}</if>
+            <if test="waybill != null  and waybill != ''"> and waybill = #{waybill}</if>
+            <if test="packageId != null "> and package_id = #{packageId}</if>
+            <if test="parcelId != null "> and parcel_id = #{parcelId}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+        </where>
+    </select>
+
     <select id="selectParcelById" parameterType="Long" resultMap="ParcelResult">
         <include refid="selectParcelVo"/>
         where id = #{id}
@@ -62,6 +81,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </select>
 
+    <select id="selectParcelListByWaybillIn" resultMap="ParcelResult" parameterType="list">
+        <include refid="selectParcelVo"/>
+        where waybill in
+        <foreach item="waybill" collection="list" open="(" separator="," close=")">
+            #{waybill}
+        </foreach>
+    </select>
 
     <insert id="insertParcel" parameterType="Parcel" useGeneratedKeys="true" keyProperty="id">
         insert into parcel
@@ -179,7 +205,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <update id="deleteParcelByIds" parameterType="String">
-        update parcel set is_delete = 1   where id in
+        update parcel set is_delete = 1, updated_time = sysdate()   where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

@@ -36,9 +36,11 @@ public class Package extends BaseEntity
 
     /** 分类1 */
     @Excel(name = "分类1")
+    //售后字段 售后邮箱
     private String ref1;
 
     /** 分类2 */
+    // 售后电话
     @Excel(name = "分类2")
     private String ref2;
 
@@ -83,6 +85,19 @@ public class Package extends BaseEntity
     /** 下载次数 */
     @Excel(name = "下载次数")
     private Integer downloadNum;
+
+    /**
+     * 安月查询参数 yyyyMM
+     */
+    private String paramMonth;
+
+    public String getParamMonth() {
+        return paramMonth;
+    }
+
+    public void setParamMonth(String paramMonth) {
+        this.paramMonth = paramMonth;
+    }
 
     private AddressReceiver receiver;
 

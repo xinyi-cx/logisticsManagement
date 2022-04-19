@@ -28,7 +28,11 @@ public interface ParcelMapper
      */
     public List<Parcel> selectParcelList(Parcel parcel);
 
+    public List<Parcel> selectParcelListNeedDeal(Parcel parcel);
+
     public List<Parcel> selectParcelListByPackIdIn(List<Long> ids);
+
+    public List<Parcel> selectParcelListByWaybillIn(List<String> waybills);
 
     /**
      * 新增包裹

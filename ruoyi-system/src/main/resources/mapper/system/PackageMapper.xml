@@ -44,7 +44,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
             <if test="createdTime != null"> and date_format(created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
             <if test="updatedTime != null"> and date_format(updated_time,'%Y-%m-%d') = date_format(#{updatedTime},'%Y-%m-%d')</if>
+            <if test="paramMonth != null  and paramMonth != ''">and date_format(created_time,'%Y%m') = #{paramMonth}</if>
         </where>
+        order by updated_time desc
     </select>
     
     <select id="selectPackageById" parameterType="Long" resultMap="PackageResult">

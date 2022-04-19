@@ -19,6 +19,16 @@ public class PackageVo extends BaseEntity
 
     private String hisParam;
 
+    private String datStr;
+
+    public String getDatStr() {
+        return datStr;
+    }
+
+    public void setDatStr(String datStr) {
+        this.datStr = datStr;
+    }
+
     public String getHisParam() {
         return hisParam;
     }

@@ -40,6 +40,7 @@ public class Parcel extends BaseEntity
 
     /** 客户数据1 */
     @Excel(name = "客户数据1")
+    //物品信息
     private String customerData1;
 
     /** 内部引用号 */
@@ -60,6 +61,7 @@ public class Parcel extends BaseEntity
 
     /** 包裹状态 */
     @Excel(name = "包裹状态")
+    //最终状态，签收or回退or重寄
     private String status;
 
     /** package_id */

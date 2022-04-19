@@ -1,11 +1,12 @@
 package com.ruoyi.system.domain;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Date;
 
 /**
  * 物流信息对象 logistics_info
@@ -25,18 +26,16 @@ public class LogisticsInfo extends BaseEntity
     private String company;
 
     /** 发货时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "发货时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date deliveryTime;
+    @Excel(name = "发货时间")
+    private String deliveryTime;
 
     /** 订单号 */
     @Excel(name = "订单号")
     private String order;
 
     /** 最新物流时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "最新物流时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date lastTime;
+    @Excel(name = "最新物流时间")
+    private String lastTime;
 
     /** 最新物流信息 */
     @Excel(name = "最新物流信息")
@@ -101,10 +100,47 @@ public class LogisticsInfo extends BaseEntity
     private Date updatedTime;
 
     /** 是否删除 */
-    @Excel(name = "是否删除")
     private Integer isDelete;
 
-    public void setId(Long id) 
+    /** package内部引用号 */
+    @Excel(name = "package内部引用号")
+    private String packageReference;
+
+    /** 内部引用号 */
+    @Excel(name = "内部引用号")
+    private String depot;
+
+    public String getPackageReference() {
+        return packageReference;
+    }
+
+    public void setPackageReference(String packageReference) {
+        this.packageReference = packageReference;
+    }
+
+    public String getDepot() {
+        return depot;
+    }
+
+    public void setDepot(String depot) {
+        this.depot = depot;
+    }
+
+    /**
+     * 转寄次数
+     */
+    @Excel(name = "转寄次数")
+    private Integer redirectNum;
+
+    public Integer getRedirectNum() {
+        return redirectNum;
+    }
+
+    public void setRedirectNum(Integer redirectNum) {
+        this.redirectNum = redirectNum;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
@@ -122,12 +158,12 @@ public class LogisticsInfo extends BaseEntity
     {
         return company;
     }
-    public void setDeliveryTime(Date deliveryTime) 
+    public void setDeliveryTime(String deliveryTime)
     {
         this.deliveryTime = deliveryTime;
     }
 
-    public Date getDeliveryTime() 
+    public String getDeliveryTime()
     {
         return deliveryTime;
     }
@@ -140,12 +176,12 @@ public class LogisticsInfo extends BaseEntity
     {
         return order;
     }
-    public void setLastTime(Date lastTime) 
+    public void setLastTime(String lastTime)
     {
         this.lastTime = lastTime;
     }
 
-    public Date getLastTime() 
+    public String getLastTime()
     {
         return lastTime;
     }

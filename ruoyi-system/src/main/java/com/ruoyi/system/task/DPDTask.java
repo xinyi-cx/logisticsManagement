@@ -29,5 +29,6 @@ public class DPDTask
     public void dpdTaskGetParcelMsg()
     {
         System.out.println("获取物流信息");
+        parcelService.getParcelMsg();
     }
 }

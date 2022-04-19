@@ -452,6 +452,8 @@ export default {
       },
       // 查询参数
       queryParams: {
+        status: null,
+        datStr: null,
         hisParam: null,
         pageNum: 1,
         pageSize: 10,
@@ -475,7 +477,18 @@ export default {
   },
   created() {
     const hisParam = this.$route.params && this.$route.params.hisParam;
-    this.queryParams.hisParam = hisParam;
+    const status = this.$route.params && this.$route.params.status;
+    const datStr = this.$route.params && this.$route.params.datStr;
+    console.log(status+"aaa",datStr);
+    if (hisParam){
+      this.queryParams.hisParam = hisParam;
+    }
+    if (status){
+      this.queryParams.status = status;
+    }
+    if (datStr){
+      this.queryParams.datStr = datStr;
+    }
     this.getList();
   },
   methods: {
@@ -564,7 +577,7 @@ export default {
     },
     handleDownloadPDF(row) {
       const id = row.id;
-      this.download('system/package/getPDFById' + id, {
+      this.download('system/package/getPDFById/' + id, {
       }, `package_${new Date().getTime()}.pdf`)
     },
     // 文件上传中处理
