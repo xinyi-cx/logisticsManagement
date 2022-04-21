@@ -8,7 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="company"    column="company"    />
         <result property="deliveryTime"    column="delivery_time"    />
-        <result property="order"    column="order"    />
+        <result property="orderNo"    column="order_no"    />
         <result property="lastTime"    column="last_time"    />
         <result property="lastMsg"    column="last_msg"    />
         <result property="repMsg"    column="rep_msg"    />
@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticsInfoVo">
-        select id, company, delivery_time, order, last_time, last_msg, rep_msg, failure_msg, content, reference,
+        select id, company, delivery_time, order_no, last_time, last_msg, rep_msg, failure_msg, content, reference,
         pack_id, sec_pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time,
         is_delete, redirect_num, package_reference, depot from logistics_info
     </sql>
@@ -43,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             is_delete = 0
             <if test="company != null  and company != ''"> and company = #{company}</if>
             <if test="deliveryTime != null and deliveryTime != ''"> and delivery_time = #{deliveryTime}</if>
-            <if test="order != null  and order != ''"> and order = #{order}</if>
+            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
             <if test="lastTime != null and lastTime != ''"> and last_time = #{lastTime}</if>
             <if test="lastMsg != null  and lastMsg != ''"> and last_msg = #{lastMsg}</if>
             <if test="repMsg != null  and repMsg != ''"> and rep_msg = #{repMsg}</if>
@@ -77,7 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null">id,</if>
             <if test="company != null">company,</if>
             <if test="deliveryTime != null">delivery_time,</if>
-            <if test="order != null">order,</if>
+            <if test="orderNo != null">order_no,</if>
             <if test="lastTime != null">last_time,</if>
             <if test="lastMsg != null">last_msg,</if>
             <if test="repMsg != null">rep_msg,</if>
@@ -101,7 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null">#{id},</if>
             <if test="company != null">#{company},</if>
             <if test="deliveryTime != null">#{deliveryTime},</if>
-            <if test="order != null">#{order},</if>
+            <if test="orderNo != null">#{orderNo},</if>
             <if test="lastTime != null">#{lastTime},</if>
             <if test="lastMsg != null">#{lastMsg},</if>
             <if test="repMsg != null">#{repMsg},</if>
@@ -124,7 +124,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <insert id="batchInsert" >
-        insert into logistics_info (id, company, delivery_time, order, last_time, last_msg, rep_msg, failure_msg, content, reference, package_reference, depot,
+        insert into logistics_info (id, company, delivery_time, order_no, last_time, last_msg, rep_msg, failure_msg, content, reference, package_reference, depot,
         pack_id, sec_pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
@@ -132,7 +132,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.id},
             #{item.company},
             #{item.deliveryTime},
-            #{item.order},
+            #{item.orderNo},
             #{item.lastTime},
             #{item.lastMsg},
             #{item.repMsg},
@@ -159,7 +159,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="company != null">company = #{company},</if>
             <if test="deliveryTime != null">delivery_time = #{deliveryTime},</if>
-            <if test="order != null">order = #{order},</if>
+            <if test="orderNo != null">order_no = #{orderNo},</if>
             <if test="lastTime != null">last_time = #{lastTime},</if>
             <if test="lastMsg != null">last_msg = #{lastMsg},</if>
             <if test="repMsg != null">rep_msg = #{repMsg},</if>

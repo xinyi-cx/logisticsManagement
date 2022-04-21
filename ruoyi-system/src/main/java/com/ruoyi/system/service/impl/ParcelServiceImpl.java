@@ -108,5 +108,11 @@ public class ParcelServiceImpl implements IParcelService
         System.out.println("getParcelMsg end");
     }
 
+    @Override
+    public void getAllParcelMsg() {
+        System.out.println("getAllParcelMsg start");
+        dpdInfoXMLClient.getEventsForWaybills();
+        System.out.println("getAllParcelMsg end");
+    }
 
 }

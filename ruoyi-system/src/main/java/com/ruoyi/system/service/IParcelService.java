@@ -60,5 +60,14 @@ public interface IParcelService
      */
     public int deleteParcelById(Long id);
 
+    /**
+     * 获取物流信息。 调用接口是调用的每次获取一个物流信息
+     */
     public void getParcelMsg();
+
+    /**
+     * 获取物流信息。 调用接口是调用的获取所有物流信息
+     */
+    public void getAllParcelMsg();
+
 }

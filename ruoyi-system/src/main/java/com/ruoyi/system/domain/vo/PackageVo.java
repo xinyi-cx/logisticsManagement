@@ -198,6 +198,18 @@ public class PackageVo extends BaseEntity
 //    @Excel(name = "原面单主键")
     private Long originalId;
 
+    /** 原面单主键 */
+//    @Excel(name = "原面单物流单号")
+    private String originalWaybill;
+
+    public String getOriginalWaybill() {
+        return originalWaybill;
+    }
+
+    public void setOriginalWaybill(String originalWaybill) {
+        this.originalWaybill = originalWaybill;
+    }
+
     public Long getOriginalId() {
         return originalId;
     }

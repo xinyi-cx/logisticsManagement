@@ -493,13 +493,13 @@ public class PackageServiceImpl implements IPackageService {
         return documents;
     }
 
-    private boolean checkForRe(List<PackageVo> packageVos){
-        List<Long> originalIds = packageVos.stream().map(PackageVo::getOriginalId).filter(Objects::nonNull).distinct().collect(toList());
-        if(CollectionUtils.isEmpty(originalIds) || CollectionUtils.isEmpty(packageVos) || originalIds.size()!=packageVos.size()){
+    private boolean checkForRe(List<PackageVo> packageVos) {
+        List<String> originalWaybills = packageVos.stream().map(PackageVo::getOriginalWaybill).filter(Objects::nonNull).distinct().collect(toList());
+        if (CollectionUtils.isEmpty(originalWaybills) || CollectionUtils.isEmpty(packageVos) || originalWaybills.size() != packageVos.size()) {
             return false;
         }
-        List<Package> packages = packageMapper.selectPackageByIdIn(originalIds);
-        return CollectionUtils.isNotEmpty(packages) && packages.size()==originalIds.size();
+        List<Parcel> parcels = parcelMapper.selectParcelListByWaybillIn(originalWaybills);
+        return CollectionUtils.isNotEmpty(parcels) && parcels.size() == originalWaybills.size();
     }
 
     @Override
@@ -514,8 +514,8 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
 
-        Set<Long> originalIds = packageVos.stream().map(PackageVo::getOriginalId).filter(Objects::nonNull).collect(Collectors.toSet());
-        boolean reflag =  originalIds.isEmpty();
+        Set<String> originalWaybills = packageVos.stream().map(PackageVo::getOriginalWaybill).filter(Objects::nonNull).collect(Collectors.toSet());
+        boolean reflag =  originalWaybills.isEmpty();
 
         if(!reflag){
             batchTaskHistory.setType("转寄面单导入");
@@ -523,7 +523,7 @@ public class PackageServiceImpl implements IPackageService {
             if (!checkForReFlag){
                 batchTaskHistory.setStatus("上传失败");
                 batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
-                throw new Exception("原面单号不能为空，或者原面单号不正确");
+                throw new Exception("原面单物流单号不能为空，或者原面单物流单号不正确");
             }
         }
 
@@ -591,7 +591,7 @@ public class PackageServiceImpl implements IPackageService {
             parcelMapper.batchInsert(parcels);
             packagesGenerationResponseMapper.batchInsert(returnResponses);
             if(!reflag){
-                dealForRedirect(new ArrayList<Long>(originalIds));
+                dealForRedirect(new ArrayList<String>(originalWaybills));
                 redirectPackageMapper.batchInsert(redirectPackages);
             }
         }catch (Exception e){
@@ -600,8 +600,8 @@ public class PackageServiceImpl implements IPackageService {
         }
     }
 
-    private void dealForRedirect(List<Long> originalIds){
-        List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListByPackIdIn(originalIds);
+    private void dealForRedirect(List<String> originalWaybills){
+        List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(originalWaybills);
         if (CollectionUtils.isNotEmpty(logisticsInfos)){
             logisticsInfoMapper.updateRedirectNumByIds(logisticsInfos.stream().map(LogisticsInfo::getId).collect(toList()));
         }

@@ -66,7 +66,7 @@ public class PackageController extends BaseController
     }
 
     /**
-     * 查询面单列表
+     * 转寄面单页面查询面单列表
      */
     @PreAuthorize("@ss.hasPermi('system:package:list')")
     @GetMapping("/all")

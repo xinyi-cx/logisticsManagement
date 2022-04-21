@@ -185,8 +185,20 @@ public class REPackageVo extends BaseEntity
     private String pkgStatus;
 
     /** 原面单主键 */
-    @Excel(name = "原面单id")
+//    @Excel(name = "原面单id")
     private Long originalId;
+
+    /** 原面单主键 */
+    @Excel(name = "原面单物流单号")
+    private String originalWaybill;
+
+    public String getOriginalWaybill() {
+        return originalWaybill;
+    }
+
+    public void setOriginalWaybill(String originalWaybill) {
+        this.originalWaybill = originalWaybill;
+    }
 
     public Long getOriginalId() {
         return originalId;

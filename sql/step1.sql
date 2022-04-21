@@ -829,8 +829,8 @@ create table sys_job (
 insert into sys_job values(1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams',        '0/10 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
 insert into sys_job values(2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(\'ry\')',  '0/15 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
 insert into sys_job values(3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)',  '0/20 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
-INSERT INTO sys_job VALUES(4, '获取物流信息', 'DEFAULT', 'dpdTask.dpdTaskGetParcelMsg()', '1 0/1 * * * ?', '1', '1', '1', 'admin', '2022-04-11 10:19:36', '', null, '');
-
+INSERT INTO sys_job VALUES(4, '根据获取单个物流接口获取物流信息', 'DEFAULT', 'dpdTask.dpdTaskGetParcelMsg()', '1 0/1 * * * ?', '1', '1', '1', 'admin', sysdate(), '', null, '');
+INSERT INTO sys_job VALUES(4, '根据获取所有物流接口获取物流信息', 'DEFAULT', 'dpdTask.dpdTaskGetAllParcelMsg()', '1 0/1 * * * ?', '1', '1', '1', 'admin', sysdate(), '', null, '此方法无法获取到英文物流信息');
 -- ----------------------------
 -- 16、定时任务调度日志表
 -- ----------------------------

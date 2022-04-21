@@ -31,7 +31,7 @@ public class LogisticsInfo extends BaseEntity
 
     /** 订单号 */
     @Excel(name = "订单号")
-    private String order;
+    private String orderNo;
 
     /** 最新物流时间 */
     @Excel(name = "最新物流时间")
@@ -167,14 +167,14 @@ public class LogisticsInfo extends BaseEntity
     {
         return deliveryTime;
     }
-    public void setOrder(String order) 
+    public void setOrderNo(String orderNo)
     {
-        this.order = order;
+        this.orderNo = orderNo;
     }
 
-    public String getOrder() 
+    public String getOrderNo()
     {
-        return order;
+        return orderNo;
     }
     public void setLastTime(String lastTime)
     {
@@ -336,7 +336,7 @@ public class LogisticsInfo extends BaseEntity
             .append("id", getId())
             .append("company", getCompany())
             .append("deliveryTime", getDeliveryTime())
-            .append("order", getOrder())
+            .append("order", getOrderNo())
             .append("lastTime", getLastTime())
             .append("lastMsg", getLastMsg())
             .append("repMsg", getRepMsg())

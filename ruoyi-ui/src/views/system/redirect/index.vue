@@ -249,12 +249,12 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="106px">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="原面单编号" prop="originalId">
+            <el-form-item label="原面单物流单号" prop="originalId">
               <el-select v-model="form.originalId" placeholder="请选择">
                 <el-option
                   v-for="dict in allPackage"
                   :key="dict.id"
-                  :label="dict.id"
+                  :label="dict.waybill"
                   :value="dict.id"
                 ></el-option>
               </el-select>
@@ -423,9 +423,6 @@
         <div class="el-upload__tip text-center" slot="tip">
           <span>仅允许导入xls、xlsx格式文件。</span>
           <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
-          <!--
-          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate2">下载测试数据</el-link>
-          -->
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
@@ -477,7 +474,7 @@ export default {
         // 设置上传的请求头部
         headers: { Authorization: "Bearer " + getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + "/system/package/importData"
+        url: process.env.VUE_APP_BASE_API + "/system/redirect/importData"
       },
       // 查询参数
       queryParams: {
@@ -588,11 +585,7 @@ export default {
     },
     /** 下载模板操作 */
     importTemplate() {
-      this.download('system/package/importTemplate', {
-      }, `package_template_${new Date().getTime()}.xlsx`)
-    },
-    importTemplate2(){
-      this.download('system/package/downloadFile/11', {
+      this.download('system/redirect/importTemplate', {
       }, `package_template_${new Date().getTime()}.xlsx`)
     },
     // 文件上传中处理
