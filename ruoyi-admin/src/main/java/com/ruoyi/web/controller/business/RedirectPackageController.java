@@ -74,7 +74,7 @@ public class RedirectPackageController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:package:add')")
     @Log(title = "转寄面单原面单关联关系", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody PackageVo pkg)
+    public AjaxResult add(@RequestBody PackageVo pkg) throws Exception
     {
         return toAjax(packageService.insertPackage(pkg));
     }

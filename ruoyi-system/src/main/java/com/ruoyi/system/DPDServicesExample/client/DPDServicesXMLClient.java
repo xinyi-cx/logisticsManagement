@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -184,7 +185,7 @@ public class DPDServicesXMLClient {
      * @param packages
      * @return
      */
-    public List<PackagesGenerationResponse> generatePackagesNumberByBusiness(List<Package> packages) {
+    public List<PackagesGenerationResponse> generatePackagesNumberByBusiness(List<Package> packages) throws Exception {
         AuthDataV1 authData = getAuthData();
         OpenUMLFeV3 umlf = new OpenUMLFeV3(); // Ilość przesyłek
         for (Package aPackage : packages) {
@@ -275,7 +276,7 @@ public class DPDServicesXMLClient {
 
         if (ObjectUtils.isEmpty(documentGenerationResponse.getSessionId())){
             //失败处理？
-
+            throw new Exception(documentGenerationResponse.getStatus());
         }
 
         DocumentGenerationResponseV1 ret = generateSpedLabelsBySessionId(documentGenerationResponse.getSessionId());

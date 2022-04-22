@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -394,7 +395,7 @@ public class PackageServiceImpl implements IPackageService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insertPackage(PackageVo pkg) {
+    public int insertPackage(PackageVo pkg) throws Exception {
         Package pac = new Package();
         BeanUtils.copyProperties(pkg, pac);
         AddressReceiver addressReceiver = getReceiver(pkg, sequenceMapper.selectNextvalByName("receiver_seq"));
@@ -597,6 +598,8 @@ public class PackageServiceImpl implements IPackageService {
         }catch (Exception e){
             batchTaskHistory.setStatus("上传失败");
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
+            e.printStackTrace();
+            throw new Exception("上传失败");
         }
     }
 

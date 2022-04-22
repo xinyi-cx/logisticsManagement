@@ -87,7 +87,7 @@ public interface IPackageService
      * @param pkg 面单
      * @return 结果
      */
-    public int insertPackage(PackageVo pkg);
+    public int insertPackage(PackageVo pkg) throws Exception;
 
     /**
      * 下载文件
