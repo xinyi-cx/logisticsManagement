@@ -526,6 +526,21 @@ public class DPDServicesXMLClient {
         System.out.println(postalCodeV11.getStatus());
     }
 
+    public String checkPostalCode(String countryCode, String zipCode) {
+        AuthDataV1 authDataV1 = getAuthData();
+        PostalCodeV1 postalCodeV1 = new PostalCodeV1();
+        postalCodeV1.setCountryCode(countryCode);
+        postalCodeV1.setZipCode(zipCode);
+
+        FindPostalCodeResponseV1 postalCodeV11 = null;
+        try {
+            postalCodeV11 = xmlServices.findPostalCodeV1(postalCodeV1, authDataV1);
+        } catch (DPDServiceException_Exception e) {
+            e.printStackTrace();
+        }
+        return postalCodeV11.getStatus();
+    }
+
     private AuthDataV1 getAuthData() {
         AuthDataV1 authDataV1 = new AuthDataV1();
         authDataV1.setLogin(login);
