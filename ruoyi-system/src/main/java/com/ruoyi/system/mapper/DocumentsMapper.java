@@ -24,6 +24,8 @@ public interface DocumentsMapper
 
     public Documents selectDocumentsByPackageId(Long packageId);
 
+    public List<Documents> selectDocumentsByPackageIdIn(List<Long> packageIds);
+
     /**
      * 查询文件列表
      * 

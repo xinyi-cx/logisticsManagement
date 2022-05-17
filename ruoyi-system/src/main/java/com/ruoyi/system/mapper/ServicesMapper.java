@@ -28,6 +28,8 @@ public interface ServicesMapper
      */
     public List<Services> selectServicesList(Services services);
 
+    public List<Services> selectServicesListByIdIn(List<Long> ids);
+
     /**
      * 新增【请填写功能名称】
      * 

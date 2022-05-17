@@ -9,7 +9,7 @@
           placeholder="选择发货时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="最新物流时间" prop="lastTime">
+      <el-form-item label="最新物流时间" prop="lastTime" label-width="100px">
         <el-date-picker clearable size="small"
           v-model="queryParams.lastTime"
           type="date"
@@ -130,9 +130,14 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange" style="width: 100%;">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
+<!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <el-table-column fixed label="物流单号" align="center" width="200px">
+        <template slot-scope="scope">
+          <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.waybill" target="_blank">{{scope.row.waybill}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="物流公司" align="center" prop="company" />
       <el-table-column label="发货时间" align="center" prop="deliveryTime" width="180">
         <template slot-scope="scope">
@@ -145,14 +150,13 @@
           <span>{{ parseTime(scope.row.lastTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="最新物流信息" align="center" prop="lastMsg" />
+      <el-table-column label="最新物流信息" align="center" prop="lastMsg" width="200" show-overflow-tooltip/>
       <el-table-column label="回复信息" align="center" prop="repMsg" />
       <el-table-column label="失败原因" align="center" prop="failureMsg" />
       <el-table-column label="备注" align="center" prop="content" />
-      <el-table-column label="内部引用号" align="center" prop="reference" />
+      <el-table-column label="内部引用号" align="center" prop="reference" width="200" />
 <!--      <el-table-column label="pack_id" align="center" prop="packId" />-->
 <!--      <el-table-column label="转寄pack_id" align="center" prop="secPackId" />-->
-      <el-table-column label="物流单号" align="center" prop="waybill" />
       <el-table-column label="包裹状态" align="center" prop="status" />
 <!--      <el-table-column label="package_id" align="center" prop="packageId" />-->
 <!--      <el-table-column label="parcel_id" align="center" prop="parcelId" />-->
@@ -169,7 +173,7 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
 <!--      <el-table-column label="是否删除" align="center" prop="isDelete" />-->
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
 <!--          <el-button-->
 <!--            size="mini"-->

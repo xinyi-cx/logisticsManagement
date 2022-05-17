@@ -89,6 +89,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </select>
 
+    <select id="selectParcelListByReferenceIn" resultMap="ParcelResult" parameterType="list">
+        <include refid="selectParcelVo"/>
+        where reference in
+        <foreach item="reference" collection="list" open="(" separator="," close=")">
+            #{reference}
+        </foreach>
+    </select>
+
     <insert id="insertParcel" parameterType="Parcel" useGeneratedKeys="true" keyProperty="id">
         insert into parcel
         <trim prefix="(" suffix=")" suffixOverrides=",">

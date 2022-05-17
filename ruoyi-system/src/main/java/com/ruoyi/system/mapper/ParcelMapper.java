@@ -34,6 +34,8 @@ public interface ParcelMapper
 
     public List<Parcel> selectParcelListByWaybillIn(List<String> waybills);
 
+    public List<Parcel> selectParcelListByReferenceIn(List<String> references);
+
     /**
      * 新增包裹
      * 

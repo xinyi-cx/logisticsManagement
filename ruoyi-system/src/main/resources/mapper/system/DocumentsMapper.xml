@@ -26,6 +26,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, session_id, package_id, document_id, file_name, display_name, extension, file_data, file_size, content_type, create_user, update_user, created_time, updated_time, is_delete from documents
     </sql>
 
+    <select id="selectDocumentsByPackageIdIn" parameterType="list" resultMap="DocumentsResult">
+        <include refid="selectDocumentsVo"/>
+        where package_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <select id="selectDocumentsList" parameterType="Documents" resultMap="DocumentsResult">
         <include refid="selectDocumentsVo"/>
         <where>

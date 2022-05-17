@@ -8,7 +8,7 @@ spring:
             master:
                 url: jdbc:mysql://127.0.0.1:3306/business?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
-                password: 1234
+                password: dev
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
@@ -55,3 +55,19 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+dpdservices:
+    address: https://dpdservicesdemo.dpd.com.pl/DPDPackageObjServicesService/DPDPackageObjServices
+    addressInfo: https://dpdinfoservices.dpd.com.pl/DPDInfoServicesObjEventsService/DPDInfoServicesObjEvents
+    authdata:
+        login: test
+        password: thetu4Ee
+        fid: 1495
+    authdataV1:
+        login: 33368701
+        password: lZIVxoSrtWSZhhPJ
+        channel: 333687
+
+mb:
+    url: https://www.i8956.com/interface/index.php
+    apiAccountId: 29689
+    apiKey: 2675166dc4b2242bf88c3ea25a452b3f

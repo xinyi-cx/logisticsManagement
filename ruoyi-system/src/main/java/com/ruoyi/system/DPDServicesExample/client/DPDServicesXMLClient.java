@@ -5,7 +5,6 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
-import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
@@ -296,8 +295,8 @@ public class DPDServicesXMLClient {
         documentsSession.setContentType("application/pdf");
         documentsSession.setFileName("file");
         documentsSession.setDisplayName(documentGenerationResponse.getSessionId().toString() + ".pdf");
-        documentsSession.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-        documentsSession.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        documentsSession.setCreateUser(packages.get(0).getCreateUser());
+        documentsSession.setUpdateUser(packages.get(0).getUpdateUser());
         documentsList.add(documentsSession);
 
         //根据sessionId生成pdf 并且分散到pack上
@@ -307,8 +306,8 @@ public class DPDServicesXMLClient {
         for (int i = 0; i < packages.size(); i++) {
             PackagesGenerationResponse packagesGenerationResponse = new PackagesGenerationResponse();
             packagesGenerationResponse.setId(getId(nameMap, "pack_gen_seq"));
-            packagesGenerationResponse.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-            packagesGenerationResponse.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            packagesGenerationResponse.setCreateUser(packages.get(0).getCreateUser());
+            packagesGenerationResponse.setUpdateUser(packages.get(0).getUpdateUser());
             packagesGenerationResponse.setSessionId(documentGenerationResponse.getSessionId());
             packagesGenerationResponse.setStatus(documentGenerationResponse.getStatus());
             mapResult(packagePGRV2s.get(i), packages.get(i), packagesGenerationResponse);
@@ -324,8 +323,8 @@ public class DPDServicesXMLClient {
             documentsOne.setContentType("application/pdf");
             documentsOne.setFileName("file");
             documentsOne.setDisplayName(packagesGenerationResponse.getPackageId().toString() + ".pdf");
-            documentsOne.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-            documentsOne.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            documentsOne.setCreateUser(packages.get(0).getCreateUser());
+            documentsOne.setUpdateUser(packages.get(0).getUpdateUser());
             documentsList.add(documentsOne);
         }
         documentsMapper.batchInsert(documentsList);

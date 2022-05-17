@@ -107,8 +107,24 @@ public class Package extends BaseEntity
 
     private List<Parcel> parcels;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+    private PackagesGenerationResponse packagesGenerationResponse;
+
+    private Documents documents;
+
+    public Documents getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Documents documents) {
+        this.documents = documents;
+    }
+
+    public PackagesGenerationResponse getPackagesGenerationResponse() {
+        return packagesGenerationResponse;
+    }
+
+    public void setPackagesGenerationResponse(PackagesGenerationResponse packagesGenerationResponse) {
+        this.packagesGenerationResponse = packagesGenerationResponse;
     }
 
     public AddressReceiver getReceiver() {

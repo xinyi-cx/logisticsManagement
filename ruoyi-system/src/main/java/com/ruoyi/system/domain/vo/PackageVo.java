@@ -161,7 +161,7 @@ public class PackageVo extends BaseEntity
     private String customerData1;
 
     /** 内部引用号 */
-    @Excel(name = "Reference")
+    @Excel(name = "code")
     private String reference;
 
     /** 重量 */
