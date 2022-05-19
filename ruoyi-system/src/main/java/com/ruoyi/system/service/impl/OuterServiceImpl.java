@@ -280,7 +280,7 @@ public class OuterServiceImpl implements IOuterService {
      * @return
      * @throws Exception
      */
-    private List<MbReturnDto> dealNotify(List<String> codes, String notify, String userId) throws Exception {
+    private void dealNotify(List<String> codes, String notify, String userId) throws Exception {
         //获取到codes
         String codeStr = codes.stream().collect(Collectors.joining(","));
         Map<String, String> param = new HashMap<>();
@@ -303,6 +303,9 @@ public class OuterServiceImpl implements IOuterService {
                 mbReturnDtoMapper.batchUpdate(updateList);
             }
             if (!CollectionUtils.isEmpty(insertDPDList)) {
+                if (checkUser(userId, insertDPDList)) {
+                    return;
+                }
                 Map<String, String> checkCountryAndZip = checkCountryAndZip(insertDPDList);
                 if (CollectionUtils.isEmpty(checkCountryAndZip)
                         || checkCountryAndZip.containsValue("NONEXISTING_POSTAL_CODE")
@@ -317,27 +320,36 @@ public class OuterServiceImpl implements IOuterService {
                 }
             }
         }
-        return mbReturnDtos;
     }
 
-    private void checkUser(String userId, List<MbReturnDto> mbReturnDtos) throws Exception {
+    private boolean checkUser(String userId, List<MbReturnDto> mbReturnDtos) throws Exception {
         UserAuthorization param = new UserAuthorization();
         param.setCreateBy(userId);
         List<UserAuthorization> userAuthorizations = userAuthorizationMapper.selectUserAuthorizationList(param);
-        if (CollectionUtils.isEmpty(userAuthorizations)){
+        if (CollectionUtils.isEmpty(userAuthorizations)) {
             throw new Exception("未找到授权用户");
         }
         Map<String, String> userTokenMap = userAuthorizations.stream().collect(toMap(
                 UserAuthorization::getUserName, UserAuthorization::getUserToken
         ));
-        StringBuffer errSb = new StringBuffer();
         boolean errorFlag = false;
+        Map<String, String> errorMap = new HashMap<>();
         for (MbReturnDto dto : mbReturnDtos) {
-//            if (userTokenMap.containsKey()){
-//                customer
-//            }
+            customer customer = JSON.parseObject(dto.getCustomer(), customer.class);
+            if (!userTokenMap.containsKey(customer.getLogisticsKeys().getWishu().getApi_key())
+                    || !userTokenMap.get(customer.getLogisticsKeys().getWishu().getApi_key())
+                    .equals(customer.getLogisticsKeys().getWishu().getApi_secret())) {
+                errorFlag = true;
+                StringBuffer errSb = new StringBuffer();
+                errSb.append("customer, api_key: ").append(customer.getLogisticsKeys().getWishu().getApi_key())
+                        .append("不存在, 或者与api_secret不匹配");
+                errorMap.put(dto.getCode(), errSb.toString());
+            }
         }
-
+        if (errorFlag) {
+            changeStatusToException(errorMap);
+        }
+        return errorFlag;
     }
 
     private Map<String, String> checkCountryAndZip(List<MbReturnDto> mbReturnDtos) {
