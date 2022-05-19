@@ -157,6 +157,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="country != null and country != ''">
 				AND u.country = #{country}
 			</if>
+			<if test="mbToken != null and mbToken != ''">
+				AND u.mb_token = #{mbToken}
+			</if>
 		</where>
 		limit 1
 	</select>

@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -111,6 +112,7 @@ public class PackageServiceImpl implements IPackageService {
         }else {
             paramPackage.setCreatedTime(paramDate);
         }
+        paramPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         List<Package> packages = packageMapper.selectPackageList(paramPackage);
         if (CollectionUtils.isEmpty(packages)) {
             return new HashMap();
@@ -416,7 +418,6 @@ public class PackageServiceImpl implements IPackageService {
             redirectPackage.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
             redirectPackageMapper.insertRedirectPackage(redirectPackage);
         }
-        //一对多暂时还未确定 一对一 不存在一对多
         Parcel parcel = new Parcel();
         BeanUtils.copyProperties(pkg, parcel);
         parcel.setPackId(pac.getId());
@@ -514,6 +515,27 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
 
+        Map<String, String> checkCountryAndZip = checkCountryAndZip(packageVos);
+        if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)
+                || checkCountryAndZip.containsValue("NONEXISTING_POSTAL_CODE")
+                || checkCountryAndZip.containsValue("NONEXISTING_COUNTRY_CODE")
+                || checkCountryAndZip.containsValue("WRONG_POSTAL_PATTERN")) {
+            if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)){
+                throw new Exception("邮编或国家代码验证失败");
+            }
+            StringBuilder sb = new StringBuilder();
+            for (String key : checkCountryAndZip.keySet()) {
+                sb.append("code: ").append(key)
+                        .append(", 邮编或国家代码验证失败, 失败信息为: ").append(checkCountryAndZip.get(key)).append("\n");
+            }
+            throw new Exception(sb.toString());
+        }
+
+        Boolean checkWeight = checkWeight(packageVos);
+        if (checkWeight){
+            throw new Exception("重量不得大于10");
+        }
+
         Set<String> originalWaybills = packageVos.stream().map(PackageVo::getOriginalWaybill).filter(Objects::nonNull).collect(Collectors.toSet());
         boolean reflag =  originalWaybills.isEmpty();
 
@@ -600,6 +622,22 @@ public class PackageServiceImpl implements IPackageService {
             e.printStackTrace();
             throw new Exception("上传失败");
         }
+    }
+
+    private Map<String, String> checkCountryAndZip(List<PackageVo> packageVos){
+        return packageVos.parallelStream().collect(toMap(
+                PackageVo::getReference,
+                item -> dpdServicesXMLClient.findPostalCode(item.getReceiverCountryCode(), item.getPostalCode())
+        ));
+    }
+
+    private Boolean checkWeight(List<PackageVo> packageVos){
+        for (PackageVo packageVo : packageVos) {
+            if (packageVo.getWeight().compareTo(BigDecimal.TEN) == 1){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void dealForRedirect(List<String> originalWaybills){

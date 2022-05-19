@@ -61,12 +61,11 @@ public class DPDServicesXMLClient {
         AuthDataV1 authData = getAuthData();
 
         generatePackagesNumber(authData);
-//        generateSpedLabels2(authData);
-        generateSpedLabelsBySessionId(sessionId);
+////        generateSpedLabels2(authData);
+//        generateSpedLabelsBySessionId(sessionId);
+//
+//        generateProtocol(authData);
 
-        generateProtocol(authData);
-
-        findPostalCode(authData);
     }
 
     private void generateProtocol(AuthDataV1 authData) {
@@ -207,7 +206,7 @@ public class DPDServicesXMLClient {
             addressSender.setEmail(sender.getEmail());
             addressSender.setFid(Integer.valueOf(sender.getFid().toString()));
             addressSender.setName(sender.getName());
-            addressSender.setPhone(sender.getName());
+            addressSender.setPhone(sender.getPhone());
             addressSender.setPostalCode(sender.getPostalCode());
             pkg.setSender(addressSender);
 
@@ -221,16 +220,16 @@ public class DPDServicesXMLClient {
             addressReceiver.setPhone(receiver.getPhone());
             addressReceiver.setPostalCode(receiver.getPostalCode());
             pkg.setReceiver(addressReceiver);
-
-            pkg.setRef1(aPackage.getRef1());
-            pkg.setRef2(aPackage.getRef2());
+//            pkg.setRef1(StringUtils.isEmpty(aPackage.getRef1())?"5h163K1": aPackage.getRef1());
+//            pkg.setRef2(StringUtils.isEmpty(aPackage.getRef2())?"FV/2017/12/1234": aPackage.getRef2());
 
             ServicesOpenUMLFeV4 services = new ServicesOpenUMLFeV4();
             ServiceCODOpenUMLFeV1 cod = new ServiceCODOpenUMLFeV1();
             cod.setAmount(ser.getCodAmount());
-            if (ObjectUtils.isEmpty(ser.getCodCurrency())) {
+//            if (ObjectUtils.isEmpty(ser.getCodCurrency())) {
+            //只能是PLN否则报错
                 ser.setCodCurrency("PLN");
-            }
+//            }
             cod.setCurrency(ServiceCurrencyEnum.fromValue(ser.getCodCurrency()));
             services.setCod(cod);
 
@@ -241,9 +240,9 @@ public class DPDServicesXMLClient {
 
             for (Parcel parcel : parcels) {
                 ParcelOpenUMLFeV1 parcel1 = new ParcelOpenUMLFeV1();
-                parcel1.setSizeX(parcel.getSizeX());
-                parcel1.setSizeY(parcel.getSizeY());
-                parcel1.setSizeZ(parcel.getSizeZ());
+                parcel1.setSizeX(0 == parcel.getSizeX() ? 1 : parcel.getSizeX());
+                parcel1.setSizeY(0 == parcel.getSizeY() ? 1 : parcel.getSizeY());
+                parcel1.setSizeZ(0 == parcel.getSizeZ() ? 1 : parcel.getSizeZ());
                 if (ObjectUtils.isEmpty(parcel.getContent())) {
                     String uuid = IdUtils.fastSimpleUUID();
                     parcel.setContent(uuid);
@@ -510,19 +509,24 @@ public class DPDServicesXMLClient {
         }
     }
 
-    private void findPostalCode(AuthDataV1 authDataV1) {
+    public String findPostalCode(String countryCode, String zipCode) {
+        AuthDataV1 authData = getAuthData();
         PostalCodeV1 postalCodeV1 = new PostalCodeV1();
-        postalCodeV1.setCountryCode("PL");
-        postalCodeV1.setZipCode("01-864");
+        postalCodeV1.setCountryCode(countryCode);
+        postalCodeV1.setZipCode(zipCode);
 
         FindPostalCodeResponseV1 postalCodeV11 = null;
         try {
-            postalCodeV11 = xmlServices.findPostalCodeV1(postalCodeV1, authDataV1);
+            postalCodeV11 = xmlServices.findPostalCodeV1(postalCodeV1, authData);
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
         }
+//        OK – post code is correct
+//• NONEXISTING_POSTAL_CODE – post code does not exist
+//• NONEXISTING_COUNTRY_CODE – country code does not exist
+//• WRONG_POSTAL_PATTERN – in the event the given parameters are wrong
+        return postalCodeV11.getStatus();
 
-        System.out.println(postalCodeV11.getStatus());
     }
 
     public String checkPostalCode(String countryCode, String zipCode) {

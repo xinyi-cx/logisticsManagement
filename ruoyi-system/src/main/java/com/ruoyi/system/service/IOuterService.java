@@ -1,6 +1,6 @@
 package com.ruoyi.system.service;
 
-import com.ruoyi.system.domain.AddressReceiver;
+import com.ruoyi.system.domain.mb.MbReceiveDto;
 
 /**
  * 收货人信息Service接口
@@ -10,12 +10,13 @@ import com.ruoyi.system.domain.AddressReceiver;
  */
 public interface IOuterService
 {
+
     /**
-     * 查询收货人信息
-     * 
-     * @param id 收货人信息主键
-     * @return 收货人信息
+     * 接收马帮的主动通知
+     *
+     * @param mbReceiveDto
+     * @throws Exception
      */
-    public AddressReceiver selectAddressReceiverById(Long id);
+    public void receiveMb(MbReceiveDto mbReceiveDto) throws Exception;
 
 }

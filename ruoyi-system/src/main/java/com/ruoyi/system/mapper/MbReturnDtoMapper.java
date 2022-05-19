@@ -28,6 +28,8 @@ public interface MbReturnDtoMapper
      */
     public List<MbReturnDto> selectMbReturnDtoList(MbReturnDto mbReturnDto);
 
+    public List<String> selectMbReturnDtoCodeListByCodes(List<String> codes);
+
     /**
      * 新增马帮订单信息
      * 
@@ -66,4 +68,11 @@ public interface MbReturnDtoMapper
      * @return 结果
      */
     public int deleteMbReturnDtoByCodes(String[] codes);
+
+    /**
+     * 批量更新
+     * @param list
+     * @return
+     */
+    public int batchUpdate(List<MbReturnDto> list);
 }

@@ -1,118 +1,145 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.MbReturnDtoMapper">
-    
+
     <resultMap type="MbReturnDto" id="MbReturnDtoResult">
-        <result property="code"    column="code"    />
-        <result property="customizeCode"    column="customize_code"    />
-        <result property="platformTradeCode"    column="platform_trade_code"    />
-        <result property="status"    column="status"    />
-        <result property="hasException"    column="has_exception"    />
-        <result property="processMessage"    column="process_message"    />
-        <result property="packageId"    column="package_id"    />
-        <result property="priceForcast"    column="price_forcast"    />
-        <result property="priceReal"    column="price_real"    />
-        <result property="shippingCountryCode"    column="shipping_country_code"    />
-        <result property="timeCreated"    column="time_created"    />
-        <result property="weightForcast"    column="weight_forcast"    />
-        <result property="weightReal"    column="weight_real"    />
-        <result property="length"    column="length"    />
-        <result property="width"    column="width"    />
-        <result property="height"    column="height"    />
-        <result property="productNameCn"    column="product_name_cn"    />
-        <result property="productNameEn"    column="product_name_en"    />
-        <result property="productValue"    column="product_value"    />
-        <result property="remark"    column="remark"    />
-        <result property="itemListQuantity"    column="item_list_quantity"    />
-        <result property="itemListCount"    column="item_list_count"    />
-        <result property="currencyCode"    column="currency_code"    />
-        <result property="platformPayTime"    column="platform_pay_time"    />
-        <result property="AUSDetails"    column="AUS_details"    />
-        <result property="codFlag"    column="cod_flag"    />
-        <result property="codValue"    column="cod_value"    />
-        <result property="vatNo"    column="vat_no"    />
-        <result property="vatType"    column="vat_type"    />
-        <result property="hasBattery"    column="has_battery"    />
-        <result property="hasMagnetic"    column="has_magnetic"    />
-        <result property="hasPowder"    column="has_powder"    />
-        <result property="customer"    column="customer"    />
-        <result property="expressChannelCode"    column="express_channel_code"    />
-        <result property="supplierInnerCode"    column="supplier_inner_code"    />
-        <result property="expressChannel"    column="express_channel"    />
-        <result property="myExpressChannel"    column="my_express_channel"    />
-        <result property="labelHTMLUrl"    column="label_HTML_url"    />
-        <result property="labelPDFUrl"    column="label_PDF_url"    />
-        <result property="extendFieldsStr"    column="extend_fields_str"    />
-        <result property="itemListStr"    column="item_list_str"    />
-        <result property="addressPickupStr"    column="address_pickup_str"    />
-        <result property="addressReceiveStr"    column="address_receive_str"    />
-        <result property="addressBackStr"    column="address_back_str"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
+        <result property="code" column="code"/>
+        <result property="customizeCode" column="customize_code"/>
+        <result property="platformTradeCode" column="platform_trade_code"/>
+        <result property="status" column="status"/>
+        <result property="hasException" column="has_exception"/>
+        <result property="processMessage" column="process_message"/>
+        <result property="packageId" column="package_id"/>
+        <result property="priceForcast" column="price_forcast"/>
+        <result property="priceReal" column="price_real"/>
+        <result property="shippingCountryCode" column="shipping_country_code"/>
+        <result property="timeCreated" column="time_created"/>
+        <result property="weightForcast" column="weight_forcast"/>
+        <result property="weightReal" column="weight_real"/>
+        <result property="length" column="length"/>
+        <result property="width" column="width"/>
+        <result property="height" column="height"/>
+        <result property="productNameCn" column="product_name_cn"/>
+        <result property="productNameEn" column="product_name_en"/>
+        <result property="productValue" column="product_value"/>
+        <result property="remark" column="remark"/>
+        <result property="itemListQuantity" column="item_list_quantity"/>
+        <result property="itemListCount" column="item_list_count"/>
+        <result property="currencyCode" column="currency_code"/>
+        <result property="platformPayTime" column="platform_pay_time"/>
+        <result property="AUSDetails" column="AUS_details"/>
+        <result property="codFlag" column="cod_flag"/>
+        <result property="codValue" column="cod_value"/>
+        <result property="vatNo" column="vat_no"/>
+        <result property="vatType" column="vat_type"/>
+        <result property="hasBattery" column="has_battery"/>
+        <result property="hasMagnetic" column="has_magnetic"/>
+        <result property="hasPowder" column="has_powder"/>
+        <result property="customer" column="customer"/>
+        <result property="expressChannelCode" column="express_channel_code"/>
+        <result property="supplierInnerCode" column="supplier_inner_code"/>
+        <result property="expressChannel" column="express_channel"/>
+        <result property="myExpressChannel" column="my_express_channel"/>
+        <result property="labelHTMLUrl" column="label_HTML_url"/>
+        <result property="labelPDFUrl" column="label_PDF_url"/>
+        <result property="extendFieldsStr" column="extend_fields_str"/>
+        <result property="itemListStr" column="item_list_str"/>
+        <result property="addressPickupStr" column="address_pickup_str"/>
+        <result property="addressReceiveStr" column="address_receive_str"/>
+        <result property="addressBackStr" column="address_back_str"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="selectMbReturnDtoVo">
-        select code, customize_code, platform_trade_code, status, has_exception, process_message, package_id, price_forcast, price_real, shipping_country_code, time_created, weight_forcast, weight_real, length, width, height, product_name_cn, product_name_en, product_value, remark, item_list_quantity, item_list_count, currency_code, platform_pay_time, AUS_details, cod_flag, cod_value, vat_no, vat_type, has_battery, has_magnetic, has_powder, customer, express_channel_code, supplier_inner_code, express_channel, my_express_channel, label_HTML_url, label_PDF_url, extend_fields_str, item_list_str, address_pickup_str, address_receive_str, address_back_str, create_by, create_time, update_by, update_time from mb_return_dto
+        select code, customize_code, platform_trade_code, status, has_exception, process_message, package_id, price_forcast, price_real, shipping_country_code, time_created, weight_forcast, weight_real, `length`, width, height, product_name_cn, product_name_en, product_value, remark, item_list_quantity, item_list_count, currency_code, platform_pay_time, AUS_details, cod_flag, cod_value, vat_no, vat_type, has_battery, has_magnetic, has_powder, customer, express_channel_code, supplier_inner_code, express_channel, my_express_channel, label_HTML_url, label_PDF_url, extend_fields_str, item_list_str, address_pickup_str, address_receive_str, address_back_str, create_by, create_time, update_by, update_time from mb_return_dto
     </sql>
 
     <select id="selectMbReturnDtoList" parameterType="MbReturnDto" resultMap="MbReturnDtoResult">
         <include refid="selectMbReturnDtoVo"/>
-        <where>  
-            <if test="code != null  and code != ''"> and code = #{code}</if>
-            <if test="customizeCode != null  and customizeCode != ''"> and customize_code = #{customizeCode}</if>
-            <if test="platformTradeCode != null  and platformTradeCode != ''"> and platform_trade_code = #{platformTradeCode}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="hasException != null  and hasException != ''"> and has_exception = #{hasException}</if>
-            <if test="processMessage != null  and processMessage != ''"> and process_message = #{processMessage}</if>
-            <if test="packageId != null  and packageId != ''"> and package_id = #{packageId}</if>
-            <if test="priceForcast != null  and priceForcast != ''"> and price_forcast = #{priceForcast}</if>
-            <if test="priceReal != null  and priceReal != ''"> and price_real = #{priceReal}</if>
-            <if test="shippingCountryCode != null  and shippingCountryCode != ''"> and shipping_country_code = #{shippingCountryCode}</if>
-            <if test="timeCreated != null  and timeCreated != ''"> and time_created = #{timeCreated}</if>
-            <if test="weightForcast != null  and weightForcast != ''"> and weight_forcast = #{weightForcast}</if>
-            <if test="weightReal != null  and weightReal != ''"> and weight_real = #{weightReal}</if>
-            <if test="length != null  and length != ''"> and length = #{length}</if>
-            <if test="width != null  and width != ''"> and width = #{width}</if>
-            <if test="height != null  and height != ''"> and height = #{height}</if>
-            <if test="productNameCn != null  and productNameCn != ''"> and product_name_cn = #{productNameCn}</if>
-            <if test="productNameEn != null  and productNameEn != ''"> and product_name_en = #{productNameEn}</if>
-            <if test="productValue != null  and productValue != ''"> and product_value = #{productValue}</if>
-            <if test="itemListQuantity != null  and itemListQuantity != ''"> and item_list_quantity = #{itemListQuantity}</if>
-            <if test="itemListCount != null  and itemListCount != ''"> and item_list_count = #{itemListCount}</if>
-            <if test="currencyCode != null  and currencyCode != ''"> and currency_code = #{currencyCode}</if>
-            <if test="platformPayTime != null  and platformPayTime != ''"> and platform_pay_time = #{platformPayTime}</if>
-            <if test="AUSDetails != null  and AUSDetails != ''"> and AUS_details = #{AUSDetails}</if>
-            <if test="codFlag != null  and codFlag != ''"> and cod_flag = #{codFlag}</if>
-            <if test="codValue != null  and codValue != ''"> and cod_value = #{codValue}</if>
-            <if test="vatNo != null  and vatNo != ''"> and vat_no = #{vatNo}</if>
-            <if test="vatType != null  and vatType != ''"> and vat_type = #{vatType}</if>
-            <if test="hasBattery != null  and hasBattery != ''"> and has_battery = #{hasBattery}</if>
-            <if test="hasMagnetic != null  and hasMagnetic != ''"> and has_magnetic = #{hasMagnetic}</if>
-            <if test="hasPowder != null  and hasPowder != ''"> and has_powder = #{hasPowder}</if>
-            <if test="customer != null  and customer != ''"> and customer = #{customer}</if>
-            <if test="expressChannelCode != null  and expressChannelCode != ''"> and express_channel_code = #{expressChannelCode}</if>
-            <if test="supplierInnerCode != null  and supplierInnerCode != ''"> and supplier_inner_code = #{supplierInnerCode}</if>
-            <if test="expressChannel != null  and expressChannel != ''"> and express_channel = #{expressChannel}</if>
-            <if test="myExpressChannel != null  and myExpressChannel != ''"> and my_express_channel = #{myExpressChannel}</if>
-            <if test="labelHTMLUrl != null  and labelHTMLUrl != ''"> and label_HTML_url = #{labelHTMLUrl}</if>
-            <if test="labelPDFUrl != null  and labelPDFUrl != ''"> and label_PDF_url = #{labelPDFUrl}</if>
-            <if test="extendFieldsStr != null  and extendFieldsStr != ''"> and extend_fields_str = #{extendFieldsStr}</if>
-            <if test="itemListStr != null  and itemListStr != ''"> and item_list_str = #{itemListStr}</if>
-            <if test="addressPickupStr != null  and addressPickupStr != ''"> and address_pickup_str = #{addressPickupStr}</if>
-            <if test="addressReceiveStr != null  and addressReceiveStr != ''"> and address_receive_str = #{addressReceiveStr}</if>
-            <if test="addressBackStr != null  and addressBackStr != ''"> and address_back_str = #{addressBackStr}</if>
+        <where>
+            <if test="code != null  and code != ''">and code = #{code}</if>
+            <if test="customizeCode != null  and customizeCode != ''">and customize_code = #{customizeCode}</if>
+            <if test="platformTradeCode != null  and platformTradeCode != ''">and platform_trade_code =
+                #{platformTradeCode}
+            </if>
+            <if test="status != null  and status != ''">and status = #{status}</if>
+            <if test="hasException != null  and hasException != ''">and has_exception = #{hasException}</if>
+            <if test="processMessage != null  and processMessage != ''">and process_message = #{processMessage}</if>
+            <if test="packageId != null  and packageId != ''">and package_id = #{packageId}</if>
+            <if test="priceForcast != null  and priceForcast != ''">and price_forcast = #{priceForcast}</if>
+            <if test="priceReal != null  and priceReal != ''">and price_real = #{priceReal}</if>
+            <if test="shippingCountryCode != null  and shippingCountryCode != ''">and shipping_country_code =
+                #{shippingCountryCode}
+            </if>
+            <if test="timeCreated != null  and timeCreated != ''">and time_created = #{timeCreated}</if>
+            <if test="weightForcast != null  and weightForcast != ''">and weight_forcast = #{weightForcast}</if>
+            <if test="weightReal != null  and weightReal != ''">and weight_real = #{weightReal}</if>
+            <if test="length != null  and length != ''">and `length` = #{length}</if>
+            <if test="width != null  and width != ''">and width = #{width}</if>
+            <if test="height != null  and height != ''">and height = #{height}</if>
+            <if test="productNameCn != null  and productNameCn != ''">and product_name_cn = #{productNameCn}</if>
+            <if test="productNameEn != null  and productNameEn != ''">and product_name_en = #{productNameEn}</if>
+            <if test="productValue != null  and productValue != ''">and product_value = #{productValue}</if>
+            <if test="itemListQuantity != null  and itemListQuantity != ''">and item_list_quantity =
+                #{itemListQuantity}
+            </if>
+            <if test="itemListCount != null  and itemListCount != ''">and item_list_count = #{itemListCount}</if>
+            <if test="currencyCode != null  and currencyCode != ''">and currency_code = #{currencyCode}</if>
+            <if test="platformPayTime != null  and platformPayTime != ''">and platform_pay_time = #{platformPayTime}
+            </if>
+            <if test="AUSDetails != null  and AUSDetails != ''">and AUS_details = #{AUSDetails}</if>
+            <if test="codFlag != null  and codFlag != ''">and cod_flag = #{codFlag}</if>
+            <if test="codValue != null  and codValue != ''">and cod_value = #{codValue}</if>
+            <if test="vatNo != null  and vatNo != ''">and vat_no = #{vatNo}</if>
+            <if test="vatType != null  and vatType != ''">and vat_type = #{vatType}</if>
+            <if test="hasBattery != null  and hasBattery != ''">and has_battery = #{hasBattery}</if>
+            <if test="hasMagnetic != null  and hasMagnetic != ''">and has_magnetic = #{hasMagnetic}</if>
+            <if test="hasPowder != null  and hasPowder != ''">and has_powder = #{hasPowder}</if>
+            <if test="customer != null  and customer != ''">and customer = #{customer}</if>
+            <if test="expressChannelCode != null  and expressChannelCode != ''">and express_channel_code =
+                #{expressChannelCode}
+            </if>
+            <if test="supplierInnerCode != null  and supplierInnerCode != ''">and supplier_inner_code =
+                #{supplierInnerCode}
+            </if>
+            <if test="expressChannel != null  and expressChannel != ''">and express_channel = #{expressChannel}</if>
+            <if test="myExpressChannel != null  and myExpressChannel != ''">and my_express_channel =
+                #{myExpressChannel}
+            </if>
+            <if test="labelHTMLUrl != null  and labelHTMLUrl != ''">and label_HTML_url = #{labelHTMLUrl}</if>
+            <if test="labelPDFUrl != null  and labelPDFUrl != ''">and label_PDF_url = #{labelPDFUrl}</if>
+            <if test="extendFieldsStr != null  and extendFieldsStr != ''">and extend_fields_str = #{extendFieldsStr}
+            </if>
+            <if test="itemListStr != null  and itemListStr != ''">and item_list_str = #{itemListStr}</if>
+            <if test="addressPickupStr != null  and addressPickupStr != ''">and address_pickup_str =
+                #{addressPickupStr}
+            </if>
+            <if test="addressReceiveStr != null  and addressReceiveStr != ''">and address_receive_str =
+                #{addressReceiveStr}
+            </if>
+            <if test="addressBackStr != null  and addressBackStr != ''">and address_back_str = #{addressBackStr}</if>
         </where>
     </select>
-    
+
+
+    <select id="selectMbReturnDtoCodeListByCodes" parameterType="list" resultType="string">
+        select code from mb_return_dto
+        where code in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <select id="selectMbReturnDtoByCode" parameterType="String" resultMap="MbReturnDtoResult">
         <include refid="selectMbReturnDtoVo"/>
         where code = #{code}
     </select>
-        
+
     <insert id="insertMbReturnDto" parameterType="MbReturnDto">
         insert into mb_return_dto
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -129,7 +156,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="timeCreated != null">time_created,</if>
             <if test="weightForcast != null">weight_forcast,</if>
             <if test="weightReal != null">weight_real,</if>
-            <if test="length != null">length,</if>
+            <if test="length != null">`length`,</if>
             <if test="width != null">width,</if>
             <if test="height != null">height,</if>
             <if test="productNameCn != null">product_name_cn,</if>
@@ -161,10 +188,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="addressReceiveStr != null">address_receive_str,</if>
             <if test="addressBackStr != null">address_back_str,</if>
             <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
+            create_time,
             <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-         </trim>
+            update_time,
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="code != null">#{code},</if>
             <if test="customizeCode != null">#{customizeCode},</if>
@@ -211,17 +238,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="addressReceiveStr != null">#{addressReceiveStr},</if>
             <if test="addressBackStr != null">#{addressBackStr},</if>
             <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
+            sysdate(),
             <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+            sysdate(),
+        </trim>
     </insert>
 
     <insert id="batchInsert">
         insert into mb_return_dto (code, customize_code, platform_trade_code, status,
         has_exception, process_message, package_id, price_forcast, price_real,
         shipping_country_code, time_created, weight_forcast, weight_real,
-        length, width, height, product_name_cn, product_name_en, product_value,
+        `length`, width, height, product_name_cn, product_name_en, product_value,
         remark, item_list_quantity, item_list_count, currency_code, platform_pay_time,
         AUS_details, cod_flag, cod_value, vat_no, vat_type, has_battery, has_magnetic,
         has_powder, customer, express_channel_code, supplier_inner_code, express_channel,
@@ -296,7 +323,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="timeCreated != null">time_created = #{timeCreated},</if>
             <if test="weightForcast != null">weight_forcast = #{weightForcast},</if>
             <if test="weightReal != null">weight_real = #{weightReal},</if>
-            <if test="length != null">length = #{length},</if>
+            <if test="length != null">`length` = #{length},</if>
             <if test="width != null">width = #{width},</if>
             <if test="height != null">height = #{height},</if>
             <if test="productNameCn != null">product_name_cn = #{productNameCn},</if>
@@ -327,12 +354,62 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="addressPickupStr != null">address_pickup_str = #{addressPickupStr},</if>
             <if test="addressReceiveStr != null">address_receive_str = #{addressReceiveStr},</if>
             <if test="addressBackStr != null">address_back_str = #{addressBackStr},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateTime != null">update_time = sysdate(),</if>
         </trim>
         where code = #{code}
+    </update>
+
+    <update id="batchUpdate" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update mb_return_dto
+            <set>
+                customize_code = #{item.customizeCode},
+                platform_trade_code = #{item.platformTradeCode},
+                status = #{item.status},
+                has_exception = #{item.hasException},
+                process_message = #{item.processMessage},
+                package_id = #{item.packageId},
+                price_forcast = #{item.priceForcast},
+                price_real = #{item.priceReal},
+                shipping_country_code = #{item.shippingCountryCode},
+                time_created = #{item.timeCreated},
+                weight_forcast = #{item.weightForcast},
+                weight_real = #{item.weightReal},
+                `length` = #{item.length},
+                width = #{item.width},
+                height = #{item.height},
+                product_name_cn = #{item.productNameCn},
+                product_name_en = #{item.productNameEn},
+                product_value = #{item.productValue},
+                remark = #{item.remark},
+                item_list_quantity = #{item.itemListQuantity},
+                item_list_count = #{item.itemListCount},
+                currency_code = #{item.currencyCode},
+                platform_pay_time = #{item.platformPayTime},
+                AUS_details = #{item.AUSDetails},
+                cod_flag = #{item.codFlag},
+                cod_value = #{item.codValue},
+                vat_no = #{item.vatNo},
+                vat_type = #{item.vatType},
+                has_battery = #{item.hasBattery},
+                has_magnetic = #{item.hasMagnetic},
+                has_powder = #{item.hasPowder},
+                customer = #{item.customer},
+                express_channel_code = #{item.expressChannelCode},
+                supplier_inner_code = #{item.supplierInnerCode},
+                express_channel = #{item.expressChannel},
+                my_express_channel = #{item.myExpressChannel},
+                label_HTML_url = #{item.labelHTMLUrl},
+                label_PDF_url = #{item.labelPDFUrl},
+                extend_fields_str = #{item.extendFieldsStr},
+                item_list_str = #{item.itemListStr},
+                address_pickup_str = #{item.addressPickupStr},
+                address_receive_str = #{item.addressReceiveStr},
+                address_back_str = #{item.addressBackStr},
+                update_time = sysdate()
+            </set>
+            where code = #{item.code}
+        </foreach>
     </update>
 
     <delete id="deleteMbReturnDtoByCode" parameterType="String">
@@ -340,7 +417,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteMbReturnDtoByCodes" parameterType="String">
-        delete from mb_return_dto where code in 
+        delete from mb_return_dto where code in
         <foreach item="code" collection="array" open="(" separator="," close=")">
             #{code}
         </foreach>

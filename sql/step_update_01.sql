@@ -54,3 +54,20 @@ create table mb_return_dto
 ) engine = innodb
   CHARSET = utf8
   auto_increment = 100 comment = '马帮订单信息';
+
+drop table if exists user_authorization;
+create table user_authorization
+(
+    user_id     bigint(20)   not null auto_increment comment '用户ID',
+    user_name   varchar(30)  not null comment '用户授权账号',
+    user_token  varchar(100) not null comment '用户授权token',
+    is_delete   tinyint(1)   DEFAULT '0' comment '是否删除',
+    create_by   varchar(64)  default '' comment '创建者',
+    create_time datetime comment '创建时间',
+    update_by   varchar(64)  default '' comment '更新者',
+    update_time datetime comment '更新时间',
+    remark      varchar(500) default null comment '备注',
+    primary key (user_id)
+) engine = innodb
+  CHARSET = utf8
+  auto_increment = 100 comment = '用户授权信息表';

@@ -56,23 +56,23 @@ public class MbReturnDto extends BaseEntity {
     private String timeCreated;
 
     /** 客户预报订单重量（单位：g 克） */
-    @Excel(name = "客户预报订单重量", readConverterExp = "单=位：g,克=")
+    @Excel(name = "客户预报订单重量", readConverterExp = "单位：g,克=")
     private String weightForcast;
 
     /** 供应商实际称重订单重量（单位：g 克） */
-    @Excel(name = "供应商实际称重订单重量", readConverterExp = "单=位：g,克=")
+    @Excel(name = "供应商实际称重订单重量", readConverterExp = "单位：g,克=")
     private String weightReal;
 
     /** 包裹长度（单位：mm 毫米） */
-    @Excel(name = "包裹长度", readConverterExp = "单=位：mm,毫=米")
+    @Excel(name = "包裹长度", readConverterExp = "单位：mm,毫=米")
     private String length;
 
     /** 包裹宽度（单位：mm 毫米） */
-    @Excel(name = "包裹宽度", readConverterExp = "单=位：mm,毫=米")
+    @Excel(name = "包裹宽度", readConverterExp = "单位：mm,毫=米")
     private String width;
 
     /** 包裹高度（单位：mm 毫米） */
-    @Excel(name = "包裹高度", readConverterExp = "单=位：mm,毫=米")
+    @Excel(name = "包裹高度", readConverterExp = "单位：mm,毫=米")
     private String height;
 
     /** 订单申报物品中文名 */
