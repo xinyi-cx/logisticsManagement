@@ -336,14 +336,15 @@ public class OuterServiceImpl implements IOuterService {
         Map<String, String> errorMap = new HashMap<>();
         for (MbReturnDto dto : mbReturnDtos) {
             customer customer = JSON.parseObject(dto.getCustomer(), customer.class);
+            dto.setCreateBy(userId);
+            dto.setUpdateBy(userId);
             if (!userTokenMap.containsKey(customer.getLogisticsKeys().getWishu().getApi_key())
                     || !userTokenMap.get(customer.getLogisticsKeys().getWishu().getApi_key())
                     .equals(customer.getLogisticsKeys().getWishu().getApi_secret())) {
                 errorFlag = true;
-                StringBuffer errSb = new StringBuffer();
-                errSb.append("customer, api_key: ").append(customer.getLogisticsKeys().getWishu().getApi_key())
-                        .append("不存在, 或者与api_secret不匹配");
-                errorMap.put(dto.getCode(), errSb.toString());
+                String errSb = "customer, api_key: " + customer.getLogisticsKeys().getWishu().getApi_key() +
+                        "不存在, 或者与api_secret不匹配";
+                errorMap.put(dto.getCode(), errSb);
             }
         }
         if (errorFlag) {
@@ -370,12 +371,10 @@ public class OuterServiceImpl implements IOuterService {
         if (CollectionUtils.isEmpty(mbReturnDtos)) {
             return new ArrayList<>();
         }
-        List<Package> returnList = mbReturnDtos.stream().map(item -> {
+        return mbReturnDtos.stream().map(item -> {
             Package pac = !CollectionUtils.isEmpty(codePackageMap) && codePackageMap.containsKey(item.getCode()) ? codePackageMap.get(item.getCode()) : new Package();
             return getPackage(pac, item);
         }).collect(Collectors.toList());
-
-        return returnList;
     }
 
     /**
@@ -387,6 +386,9 @@ public class OuterServiceImpl implements IOuterService {
     @Transactional(rollbackFor = Exception.class)
     public void insertPackages(List<Package> packages) throws Exception {
 
+        if (CollectionUtils.isEmpty(packages)){
+            return;
+        }
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setType("马帮导入");
         batchTaskHistory.setStatus("导入成功");
@@ -456,6 +458,8 @@ public class OuterServiceImpl implements IOuterService {
 
     private Package getPackage(Package pac, MbReturnDto mbReturnDto) {
         pac.setRemark(mbReturnDto.getRemark());
+        pac.setCreateUser(StringUtils.isEmpty(pac.getCreateUser()) ? mbReturnDto.getCreateBy() : pac.getCreateUser());
+        pac.setUpdateUser(StringUtils.isEmpty(pac.getUpdateUser()) ? mbReturnDto.getUpdateBy() : pac.getUpdateUser());
         AddressReceiver addressReceiver =
                 ObjectUtils.isEmpty(pac.getReceiver()) ? new AddressReceiver() : pac.getReceiver();
         Services services =
