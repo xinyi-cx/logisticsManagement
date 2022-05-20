@@ -280,9 +280,10 @@ public class OuterServiceImpl implements IOuterService {
      * @return
      * @throws Exception
      */
-    private void dealNotify(List<String> codes, String notify, String userId) throws Exception {
+    @Transactional
+    public void dealNotify(List<String> codes, String notify, String userId) throws Exception {
         //获取到codes
-        String codeStr = codes.stream().collect(Collectors.joining(","));
+        String codeStr = String.join(",", codes);
         Map<String, String> param = new HashMap<>();
         param.put("codes", codeStr);
         String returnStr = getMbRes("api.biaoju.order.find", param);
@@ -433,9 +434,6 @@ public class OuterServiceImpl implements IOuterService {
             packageVo.setServicesId(services.getId());
             packageVo.setBatchId(batchTaskHistory.getId());
             packageVo.setId(getId(nameMap, "package_seq"));
-//            用户还未确定
-//            packageVo.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-//            packageVo.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
             Parcel parcel = packageVo.getParcels().get(0);
             parcel.setPackId(packageVo.getId());
             parcel.setCreateUser(packageVo.getCreateUser());
