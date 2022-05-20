@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.UserAuthorizationMapper">
     
-    <resultMap type="UserAuthorization" id="UserAuthorizationResult">
+    <resultMap type="UserAuthorizationSys" id="UserAuthorizationResult">
         <result property="userId"    column="user_id"    />
         <result property="userName"    column="user_name"    />
         <result property="userToken"    column="user_token"    />
@@ -20,10 +20,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select user_id, user_name, user_token, is_delete, create_by, create_time, update_by, update_time, remark from user_authorization
     </sql>
 
-    <select id="selectUserAuthorizationList" parameterType="UserAuthorization" resultMap="UserAuthorizationResult">
+    <select id="selectUserAuthorizationList" parameterType="UserAuthorizationSys" resultMap="UserAuthorizationResult">
         <include refid="selectUserAuthorizationVo"/>
         <where>
-            isDelete = 0
+            is_delete = 0
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
             <if test="userToken != null  and userToken != ''"> and user_token = #{userToken}</if>
             <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where user_id = #{userId}
     </select>
         
-    <insert id="insertUserAuthorization" parameterType="UserAuthorization" useGeneratedKeys="true" keyProperty="userId">
+    <insert id="insertUserAuthorization" parameterType="UserAuthorizationSys" useGeneratedKeys="true" keyProperty="userId">
         insert into user_authorization
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userName != null and userName != ''">user_name,</if>
@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateUserAuthorization" parameterType="UserAuthorization">
+    <update id="updateUserAuthorization" parameterType="UserAuthorizationSys">
         update user_authorization
         <trim prefix="SET" suffixOverrides=",">
             <if test="userName != null and userName != ''">user_name = #{userName},</if>
@@ -74,13 +74,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <update id="deleteUserAuthorizationByUserId" parameterType="Long">
         update user_authorization
-         set isDelete = 1
+         set is_delete = 1, update_time = sysdate()
          where user_id = #{userId}
     </update>
 
     <update id="deleteUserAuthorizationByUserIds" parameterType="String">
         update user_authorization
-        set isDelete = 1
+        set is_delete = 1, update_time = sysdate()
          where user_id in
         <foreach item="userId" collection="array" open="(" separator="," close=")">
             #{userId}

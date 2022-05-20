@@ -6,7 +6,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.domain.UserAuthorization;
+import com.ruoyi.system.domain.UserAuthorizationSys;
 import com.ruoyi.system.service.IUserAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,10 +33,10 @@ public class UserAuthorizationController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:authorization:list')")
     @GetMapping("/list")
-    public TableDataInfo list(UserAuthorization userAuthorization)
+    public TableDataInfo list(UserAuthorizationSys userAuthorizationSys)
     {
         startPage();
-        List<UserAuthorization> list = userAuthorizationService.selectUserAuthorizationList(userAuthorization);
+        List<UserAuthorizationSys> list = userAuthorizationService.selectUserAuthorizationList(userAuthorizationSys);
         return getDataTable(list);
     }
 
@@ -46,10 +46,10 @@ public class UserAuthorizationController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:authorization:export')")
     @Log(title = "用户授权信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, UserAuthorization userAuthorization)
+    public void export(HttpServletResponse response, UserAuthorizationSys userAuthorizationSys)
     {
-        List<UserAuthorization> list = userAuthorizationService.selectUserAuthorizationList(userAuthorization);
-        ExcelUtil<UserAuthorization> util = new ExcelUtil<UserAuthorization>(UserAuthorization.class);
+        List<UserAuthorizationSys> list = userAuthorizationService.selectUserAuthorizationList(userAuthorizationSys);
+        ExcelUtil<UserAuthorizationSys> util = new ExcelUtil<UserAuthorizationSys>(UserAuthorizationSys.class);
         util.exportExcel(response, list, "用户授权信息数据");
     }
 
@@ -69,9 +69,9 @@ public class UserAuthorizationController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:authorization:add')")
     @Log(title = "用户授权信息", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody UserAuthorization userAuthorization)
+    public AjaxResult add(@RequestBody UserAuthorizationSys userAuthorizationSys)
     {
-        return toAjax(userAuthorizationService.insertUserAuthorization(userAuthorization));
+        return toAjax(userAuthorizationService.insertUserAuthorization(userAuthorizationSys));
     }
 
     /**
@@ -80,9 +80,9 @@ public class UserAuthorizationController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:authorization:edit')")
     @Log(title = "用户授权信息", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody UserAuthorization userAuthorization)
+    public AjaxResult edit(@RequestBody UserAuthorizationSys userAuthorizationSys)
     {
-        return toAjax(userAuthorizationService.updateUserAuthorization(userAuthorization));
+        return toAjax(userAuthorizationService.updateUserAuthorization(userAuthorizationSys));
     }
 
     /**

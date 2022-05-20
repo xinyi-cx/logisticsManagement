@@ -1,6 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.mb.MbReturnDto;
 import com.ruoyi.system.mapper.MbReturnDtoMapper;
 import com.ruoyi.system.service.IMbReturnDtoService;
@@ -42,6 +43,7 @@ public class MbReturnDtoServiceImpl implements IMbReturnDtoService
     @Override
     public List<MbReturnDto> selectMbReturnDtoList(MbReturnDto mbReturnDto)
     {
+        mbReturnDto.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
         return mbReturnDtoMapper.selectMbReturnDtoList(mbReturnDto);
     }
 

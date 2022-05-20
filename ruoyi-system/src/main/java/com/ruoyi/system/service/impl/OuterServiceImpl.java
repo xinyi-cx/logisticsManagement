@@ -162,7 +162,7 @@ public class OuterServiceImpl implements IOuterService {
         if (StringUtils.isEmpty(res) || res.contains("ErrorCode")) {
             sb.append("马帮接收信息错误");
             if (res.contains("ErrorCode")) {
-                JSONObject jsonObject = JSONObject.parseObject(res);
+                JSONObject jsonObject = JSON.parseObject(res);
                 sb.append(", 错误信息为：")
                         .append(jsonObject.get("Message").toString());
             } else {
@@ -199,7 +199,7 @@ public class OuterServiceImpl implements IOuterService {
         StringBuilder sb = new StringBuilder();
         if (StringUtils.isEmpty(res) || res.contains("ErrorCode")) {
             if (res.contains("ErrorCode")) {
-                JSONObject jsonObject = JSONObject.parseObject(res);
+                JSONObject jsonObject = JSON.parseObject(res);
                 if ("9999".equals(jsonObject.get("ErrorCode").toString())) {
 //                    成功了
                     return res;
@@ -286,7 +286,7 @@ public class OuterServiceImpl implements IOuterService {
         Map<String, String> param = new HashMap<>();
         param.put("codes", codeStr);
         String returnStr = getMbRes("api.biaoju.order.find", param);
-        JSONObject jsonObject = JSONObject.parseObject(JSONObject.parseObject(returnStr).get("Data").toString());
+        JSONObject jsonObject = JSON.parseObject(JSON.parseObject(returnStr).get("Data").toString());
         List<MbReturnDto> mbReturnDtos = JSON.parseArray(jsonObject.get("orders").toString(), MbReturnDto.class);
         if ("orderChange".equals(notify)) {
             List<String> existCodes = mbReturnDtoMapper.selectMbReturnDtoCodeListByCodes(codes);
@@ -294,7 +294,7 @@ public class OuterServiceImpl implements IOuterService {
             List<String> parcelCodesList =
                     CollectionUtils.isEmpty(parcelList) ? new ArrayList<>() : parcelList.stream().map(Parcel::getReference).collect(Collectors.toList());
 
-            mbReturnDtos.stream().forEach(
+            mbReturnDtos.forEach(
                     item ->{
                         item.setAddressBackStr(JSON.toJSONString(item.getAddressBack()));
                         item.setAddressPickupStr(JSON.toJSONString(item.getAddressPickup()));
@@ -334,14 +334,14 @@ public class OuterServiceImpl implements IOuterService {
     }
 
     private boolean checkUser(String userId, List<MbReturnDto> mbReturnDtos) throws Exception {
-        UserAuthorization param = new UserAuthorization();
+        UserAuthorizationSys param = new UserAuthorizationSys();
         param.setCreateBy(userId);
-        List<UserAuthorization> userAuthorizations = userAuthorizationMapper.selectUserAuthorizationList(param);
-        if (CollectionUtils.isEmpty(userAuthorizations)) {
+        List<UserAuthorizationSys> userAuthorizationSys = userAuthorizationMapper.selectUserAuthorizationList(param);
+        if (CollectionUtils.isEmpty(userAuthorizationSys)) {
             throw new Exception("未找到授权用户");
         }
-        Map<String, String> userTokenMap = userAuthorizations.stream().collect(toMap(
-                UserAuthorization::getUserName, UserAuthorization::getUserToken
+        Map<String, String> userTokenMap = userAuthorizationSys.stream().collect(toMap(
+                UserAuthorizationSys::getUserName, UserAuthorizationSys::getUserToken
         ));
         boolean errorFlag = false;
         Map<String, String> errorMap = new HashMap<>();
@@ -498,7 +498,6 @@ public class OuterServiceImpl implements IOuterService {
         addressReceiver.setName(addressReceive.getReceiver());
         addressReceiver.setPhone(StringUtils.isEmpty(addressReceive.getTelephone()) ? addressReceive.getMobile() :addressReceive.getTelephone());
         addressReceiver.setPostalCode(addressReceive.getZipcode());
-//        addressReceiver.setPostalCode();
 
     }
 
@@ -595,7 +594,7 @@ public class OuterServiceImpl implements IOuterService {
         mbAccept.setChangeStatus("accept");
         mbAccept.setExpressChannelCode(pac.getParcels().get(0).getWaybill());
 
-//        ???????
+//        本地现在是二进制文件 怎么传输？
 //        mbAccept.setLabelPDFUrl();
         Map<String, String> encodeParamsMap = new HashMap<>();
         encodeParamsMap.put("changeStatus", "accept");

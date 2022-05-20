@@ -1,6 +1,6 @@
 -- 菜单 SQL
 insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-values('马帮订单信息', '11', '1', 'dto', 'system/dto/index', 1, 0, 'C', '0', '0', 'system:dto:list', '#', 'admin', sysdate(), '', null, '马帮订单信息菜单');
+values('马帮订单信息', '11', '1', 'dto', 'system/dto/index', 1, 0, 'C', '0', '0', 'system:dto:list', 'message', 'admin', sysdate(), '', null, '马帮订单信息菜单');
 
 -- 按钮父菜单ID
 SELECT @parentId := LAST_INSERT_ID();

@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2022-05-18
  */
-public class UserAuthorization extends BaseEntity
+public class UserAuthorizationSys extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 

@@ -2,7 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
-import com.ruoyi.system.domain.UserAuthorization;
+import com.ruoyi.system.domain.UserAuthorizationSys;
 import com.ruoyi.system.mapper.UserAuthorizationMapper;
 import com.ruoyi.system.service.IUserAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class UserAuthorizationServiceImpl implements IUserAuthorizationService
      * @return 用户授权信息
      */
     @Override
-    public UserAuthorization selectUserAuthorizationByUserId(Long userId)
+    public UserAuthorizationSys selectUserAuthorizationByUserId(Long userId)
     {
         return userAuthorizationMapper.selectUserAuthorizationByUserId(userId);
     }
@@ -37,42 +37,42 @@ public class UserAuthorizationServiceImpl implements IUserAuthorizationService
     /**
      * 查询用户授权信息列表
      * 
-     * @param userAuthorization 用户授权信息
+     * @param userAuthorizationSys 用户授权信息
      * @return 用户授权信息
      */
     @Override
-    public List<UserAuthorization> selectUserAuthorizationList(UserAuthorization userAuthorization)
+    public List<UserAuthorizationSys> selectUserAuthorizationList(UserAuthorizationSys userAuthorizationSys)
     {
-        userAuthorization.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
-        return userAuthorizationMapper.selectUserAuthorizationList(userAuthorization);
+        userAuthorizationSys.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        return userAuthorizationMapper.selectUserAuthorizationList(userAuthorizationSys);
     }
 
     /**
      * 新增用户授权信息
      * 
-     * @param userAuthorization 用户授权信息
+     * @param userAuthorizationSys 用户授权信息
      * @return 结果
      */
     @Override
-    public int insertUserAuthorization(UserAuthorization userAuthorization)
+    public int insertUserAuthorization(UserAuthorizationSys userAuthorizationSys)
     {
-        userAuthorization.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
-        userAuthorization.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
-        userAuthorization.setUserToken(IdUtils.fastUUID());
-        return userAuthorizationMapper.insertUserAuthorization(userAuthorization);
+        userAuthorizationSys.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        userAuthorizationSys.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        userAuthorizationSys.setUserToken(IdUtils.fastUUID());
+        return userAuthorizationMapper.insertUserAuthorization(userAuthorizationSys);
     }
 
     /**
      * 修改用户授权信息
      * 
-     * @param userAuthorization 用户授权信息
+     * @param userAuthorizationSys 用户授权信息
      * @return 结果
      */
     @Override
-    public int updateUserAuthorization(UserAuthorization userAuthorization)
+    public int updateUserAuthorization(UserAuthorizationSys userAuthorizationSys)
     {
-        userAuthorization.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
-        return userAuthorizationMapper.updateUserAuthorization(userAuthorization);
+        userAuthorizationSys.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        return userAuthorizationMapper.updateUserAuthorization(userAuthorizationSys);
     }
 
     /**

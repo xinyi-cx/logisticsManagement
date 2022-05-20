@@ -1,6 +1,6 @@
 package com.ruoyi.system.mapper;
 
-import com.ruoyi.system.domain.UserAuthorization;
+import com.ruoyi.system.domain.UserAuthorizationSys;
 
 import java.util.List;
 
@@ -18,31 +18,31 @@ public interface UserAuthorizationMapper
      * @param userId 用户授权信息主键
      * @return 用户授权信息
      */
-    public UserAuthorization selectUserAuthorizationByUserId(Long userId);
+    public UserAuthorizationSys selectUserAuthorizationByUserId(Long userId);
 
     /**
      * 查询用户授权信息列表
      * 
-     * @param userAuthorization 用户授权信息
+     * @param userAuthorizationSys 用户授权信息
      * @return 用户授权信息集合
      */
-    public List<UserAuthorization> selectUserAuthorizationList(UserAuthorization userAuthorization);
+    public List<UserAuthorizationSys> selectUserAuthorizationList(UserAuthorizationSys userAuthorizationSys);
 
     /**
      * 新增用户授权信息
      * 
-     * @param userAuthorization 用户授权信息
+     * @param userAuthorizationSys 用户授权信息
      * @return 结果
      */
-    public int insertUserAuthorization(UserAuthorization userAuthorization);
+    public int insertUserAuthorization(UserAuthorizationSys userAuthorizationSys);
 
     /**
      * 修改用户授权信息
      * 
-     * @param userAuthorization 用户授权信息
+     * @param userAuthorizationSys 用户授权信息
      * @return 结果
      */
-    public int updateUserAuthorization(UserAuthorization userAuthorization);
+    public int updateUserAuthorization(UserAuthorizationSys userAuthorizationSys);
 
     /**
      * 删除用户授权信息

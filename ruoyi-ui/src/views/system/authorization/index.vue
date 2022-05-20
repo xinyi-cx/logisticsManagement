@@ -165,8 +165,6 @@ export default {
         pageNum: 1,
         pageSize: 10,
         userName: null,
-        userToken: null,
-        isDelete: null,
       },
       // 表单参数
       form: {},
