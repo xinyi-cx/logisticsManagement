@@ -111,7 +111,7 @@ public class MbReturnDto extends BaseEntity {
     private String codFlag;
 
     /** cod 订单金额（币种为买家当地币种） */
-    @Excel(name = "cod 订单金额", readConverterExp = "币=种为买家当地币种")
+    @Excel(name = "cod 订单金额", readConverterExp = "币种为买家当地币种")
     private String codValue;
 
     /** 商家税号 */
@@ -141,7 +141,7 @@ public class MbReturnDto extends BaseEntity {
     private addressBack addressBack;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "customer")
     private String customer;
 
     /** 物流产品运单号 */
@@ -153,23 +153,23 @@ public class MbReturnDto extends BaseEntity {
     private String supplierInnerCode;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "expressChannel")
     private String expressChannel;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "myExpressChannel")
     private String myExpressChannel;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "labelHTMLUrl")
     private String labelHTMLUrl;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "extendFieldsStr")
     private String labelPDFUrl;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "extendFieldsStr")
     private String extendFieldsStr;
 
     /** 商品SKU */

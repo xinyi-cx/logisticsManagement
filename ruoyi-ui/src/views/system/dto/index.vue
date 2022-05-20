@@ -8,27 +8,27 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['system:dto:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['system:dto:edit']"
-        >修改</el-button>
-      </el-col>
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          icon="el-icon-plus"-->
+<!--          size="mini"-->
+<!--          @click="handleAdd"-->
+<!--          v-hasPermi="['system:dto:add']"-->
+<!--        >新增</el-button>-->
+<!--      </el-col>-->
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          icon="el-icon-edit"-->
+<!--          size="mini"-->
+<!--          :disabled="single"-->
+<!--          @click="handleUpdate"-->
+<!--          v-hasPermi="['system:dto:edit']"-->
+<!--        >修改</el-button>-->
+<!--      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="danger"
@@ -56,12 +56,12 @@
     <el-table v-loading="loading" :data="dtoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="内部订单号" align="center" prop="code" />
-      <el-table-column label="_e_r_p自定义单号" align="center" prop="customizeCode" />
+      <el-table-column label="ERP自定义单号" align="center" prop="customizeCode" />
       <el-table-column label="平台订单编号：例如ebay,wish 等订单编号" align="center" prop="platformTradeCode" />
       <el-table-column label="订单状态" align="center" prop="status" />
       <el-table-column label="是否有异常" align="center" prop="hasException" />
       <el-table-column label="异常信息，物流供应商处理信息" align="center" prop="processMessage" />
-      <el-table-column label="package _id" align="center" prop="packageId" />
+      <el-table-column label="package_id" align="center" prop="packageId" />
       <el-table-column label="预计订单运费" align="center" prop="priceForcast" />
       <el-table-column label="实际订单运费" align="center" prop="priceReal" />
       <el-table-column label="包裹地址国家代码" align="center" prop="shippingCountryCode" />
@@ -75,11 +75,11 @@
       <el-table-column label="订单申报物品英文名" align="center" prop="productNameEn" />
       <el-table-column label="订单申报价值(US_d)" align="center" prop="productValue" />
       <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label=" 货物数量" align="center" prop="itemListQuantity" />
-      <el-table-column label=" 订单项数量" align="center" prop="itemListCount" />
-      <el-table-column label=" 申报币种" align="center" prop="currencyCode" />
+      <el-table-column label="货物数量" align="center" prop="itemListQuantity" />
+      <el-table-column label="订单项数量" align="center" prop="itemListCount" />
+      <el-table-column label="申报币种" align="center" prop="currencyCode" />
       <el-table-column label="交易平台付款时间" align="center" prop="platformPayTime" />
-      <el-table-column label="{ _vendor_i_d : 澳洲GS_t供应商_i_d\ abnnumber : 税号 }" align="center" prop="ausDetails" />
+      <el-table-column label="AUSDetails" align="center" prop="AUSDetails" />
       <el-table-column label="cod 订单标识  1:是;2:否" align="center" prop="codFlag" />
       <el-table-column label="cod 订单金额" align="center" prop="codValue" />
       <el-table-column label="商家税号" align="center" prop="vatNo" />
@@ -87,14 +87,14 @@
       <el-table-column label="订单是否带电 1.是 2.否" align="center" prop="hasBattery" />
       <el-table-column label="订单是否含磁 1.是 2.否" align="center" prop="hasMagnetic" />
       <el-table-column label="订单是否含粉末 1.是 2.否" align="center" prop="hasPowder" />
-      <el-table-column label="${comment}" align="center" prop="customer" />
+      <el-table-column label="customer" align="center" prop="customer" />
       <el-table-column label="物流产品运单号" align="center" prop="expressChannelCode" />
       <el-table-column label="物流商内部单" align="center" prop="supplierInnerCode" />
-      <el-table-column label="${comment}" align="center" prop="expressChannel" />
-      <el-table-column label="${comment}" align="center" prop="myExpressChannel" />
-      <el-table-column label="${comment}" align="center" prop="labelHtmlUrl" />
-      <el-table-column label="${comment}" align="center" prop="labelPdfUrl" />
-      <el-table-column label="${comment}" align="center" prop="extendFieldsStr" />
+      <el-table-column label="expressChannel" align="center" prop="expressChannel" />
+      <el-table-column label="myExpressChannel" align="center" prop="myExpressChannel" />
+      <el-table-column label="labelHTMLUrl" align="center" prop="labelHTMLUrl" />
+      <el-table-column label="labelPDFUrl" align="center" prop="labelPDFUrl" />
+      <el-table-column label="extendFieldsStr" align="center" prop="extendFieldsStr" />
       <el-table-column label="商品SKU" align="center" prop="itemListStr" />
       <el-table-column label="发件人" align="center" prop="addressPickupStr" />
       <el-table-column label="收件人" align="center" prop="addressReceiveStr" />
@@ -107,7 +107,7 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:dto:edit']"
-          >修改</el-button>
+          >查看详情</el-button>
           <el-button
             size="mini"
             type="text"
@@ -118,7 +118,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -133,7 +133,7 @@
         <el-form-item label="内部订单号" prop="code">
           <el-input v-model="form.code" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="_e_r_p自定义单号" prop="customizeCode">
+        <el-form-item label="ERP自定义单号" prop="customizeCode">
           <el-input v-model="form.customizeCode" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="平台订单编号：例如ebay,wish 等订单编号" prop="platformTradeCode">
@@ -187,20 +187,20 @@
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label=" 货物数量" prop="itemListQuantity">
+        <el-form-item label="货物数量" prop="itemListQuantity">
           <el-input v-model="form.itemListQuantity" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label=" 订单项数量" prop="itemListCount">
+        <el-form-item label="订单项数量" prop="itemListCount">
           <el-input v-model="form.itemListCount" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label=" 申报币种" prop="currencyCode">
+        <el-form-item label="申报币种" prop="currencyCode">
           <el-input v-model="form.currencyCode" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="交易平台付款时间" prop="platformPayTime">
           <el-input v-model="form.platformPayTime" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="{ _vendor_i_d : 澳洲GS_t供应商_i_d\ abnnumber : 税号 }" prop="ausDetails">
-          <el-input v-model="form.ausDetails" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="AUSDetails" prop="AUSDetails">
+          <el-input v-model="form.AUSDetails" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="cod 订单标识  1:是;2:否" prop="codFlag">
           <el-input v-model="form.codFlag" type="textarea" placeholder="请输入内容" />
@@ -220,7 +220,7 @@
         <el-form-item label="订单是否含粉末 1.是 2.否" prop="hasPowder">
           <el-input v-model="form.hasPowder" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="${comment}" prop="customer">
+        <el-form-item label="customer" prop="customer">
           <el-input v-model="form.customer" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="物流产品运单号" prop="expressChannelCode">
@@ -229,19 +229,19 @@
         <el-form-item label="物流商内部单" prop="supplierInnerCode">
           <el-input v-model="form.supplierInnerCode" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="${comment}" prop="expressChannel">
+        <el-form-item label="expressChannel" prop="expressChannel">
           <el-input v-model="form.expressChannel" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="${comment}" prop="myExpressChannel">
+        <el-form-item label="myExpressChannel" prop="myExpressChannel">
           <el-input v-model="form.myExpressChannel" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="${comment}" prop="labelHtmlUrl">
-          <el-input v-model="form.labelHtmlUrl" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="labelHTMLUrl" prop="labelHTMLUrl">
+          <el-input v-model="form.labelHTMLUrl" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="${comment}" prop="labelPdfUrl">
-          <el-input v-model="form.labelPdfUrl" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="labelPDFUrl" prop="labelPDFUrl">
+          <el-input v-model="form.labelPDFUrl" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="${comment}" prop="extendFieldsStr">
+        <el-form-item label="extendFieldsStr" prop="extendFieldsStr">
           <el-input v-model="form.extendFieldsStr" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="商品SKU" prop="itemListStr">
@@ -258,7 +258,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+<!--        <el-button type="primary" @click="submitForm">确 定</el-button>-->
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -266,7 +266,7 @@
 </template>
 
 <script>
-import { listDto, getDto, delDto, addDto, updateDto } from "@/api/system/dto";
+import { listDto, getDto, delDto } from "@/api/system/dto";
 
 export default {
   name: "Dto",
@@ -317,7 +317,7 @@ export default {
         itemListCount: null,
         currencyCode: null,
         platformPayTime: null,
-        ausDetails: null,
+        AUSDetails: null,
         codFlag: null,
         codValue: null,
         vatNo: null,
@@ -330,8 +330,8 @@ export default {
         supplierInnerCode: null,
         expressChannel: null,
         myExpressChannel: null,
-        labelHtmlUrl: null,
-        labelPdfUrl: null,
+        labelHTMLUrl: null,
+        labelPDFUrl: null,
         extendFieldsStr: null,
         itemListStr: null,
         addressPickupStr: null,
@@ -390,7 +390,7 @@ export default {
         itemListCount: null,
         currencyCode: null,
         platformPayTime: null,
-        ausDetails: null,
+        AUSDetails: null,
         codFlag: null,
         codValue: null,
         vatNo: null,
@@ -403,8 +403,8 @@ export default {
         supplierInnerCode: null,
         expressChannel: null,
         myExpressChannel: null,
-        labelHtmlUrl: null,
-        labelPdfUrl: null,
+        labelHTMLUrl: null,
+        labelPDFUrl: null,
         extendFieldsStr: null,
         itemListStr: null,
         addressPickupStr: null,
@@ -437,7 +437,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加马帮订单信息";
+      this.title = "马帮订单信息";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -446,29 +446,29 @@ export default {
       getDto(code).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改马帮订单信息";
+        this.title = "马帮订单信息";
       });
     },
     /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.code != null) {
-            updateDto(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addDto(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
-      });
-    },
+    // submitForm() {
+    //   this.$refs["form"].validate(valid => {
+    //     if (valid) {
+    //       if (this.form.code != null) {
+    //         updateDto(this.form).then(response => {
+    //           this.$modal.msgSuccess("修改成功");
+    //           this.open = false;
+    //           this.getList();
+    //         });
+    //       } else {
+    //         addDto(this.form).then(response => {
+    //           this.$modal.msgSuccess("新增成功");
+    //           this.open = false;
+    //           this.getList();
+    //         });
+    //       }
+    //     }
+    //   });
+    // },
     /** 删除按钮操作 */
     handleDelete(row) {
       const codes = row.code || this.ids;

@@ -10,24 +10,24 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="用户授权token" prop="userToken">
-        <el-input
-          v-model="queryParams.userToken"
-          placeholder="请输入用户授权token"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="是否删除" prop="isDelete">
-        <el-input
-          v-model="queryParams.isDelete"
-          placeholder="请输入是否删除"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="用户授权token" prop="userToken">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.userToken"-->
+<!--          placeholder="请输入用户授权token"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="是否删除" prop="isDelete">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.isDelete"-->
+<!--          placeholder="请输入是否删除"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -85,7 +85,6 @@
       <el-table-column label="用户ID" align="center" prop="userId" />
       <el-table-column label="用户授权账号" align="center" prop="userName" />
       <el-table-column label="用户授权token" align="center" prop="userToken" />
-      <el-table-column label="是否删除" align="center" prop="isDelete" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -106,7 +105,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -121,12 +120,9 @@
         <el-form-item label="用户授权账号" prop="userName">
           <el-input v-model="form.userName" placeholder="请输入用户授权账号" />
         </el-form-item>
-        <el-form-item label="用户授权token" prop="userToken">
-          <el-input v-model="form.userToken" placeholder="请输入用户授权token" />
-        </el-form-item>
-        <el-form-item label="是否删除" prop="isDelete">
-          <el-input v-model="form.isDelete" placeholder="请输入是否删除" />
-        </el-form-item>
+<!--        <el-form-item label="用户授权token" prop="userToken">-->
+<!--          <el-input v-model="form.userToken" placeholder="请输入用户授权token" />-->
+<!--        </el-form-item>-->
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
@@ -179,9 +175,9 @@ export default {
         userName: [
           { required: true, message: "用户授权账号不能为空", trigger: "blur" }
         ],
-        userToken: [
-          { required: true, message: "用户授权token不能为空", trigger: "blur" }
-        ],
+        // userToken: [
+        //   { required: true, message: "用户授权token不能为空", trigger: "blur" }
+        // ],
       }
     };
   },
@@ -208,12 +204,7 @@ export default {
       this.form = {
         userId: null,
         userName: null,
-        userToken: null,
-        isDelete: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
+        // userToken: null,
         remark: null
       };
       this.resetForm("form");

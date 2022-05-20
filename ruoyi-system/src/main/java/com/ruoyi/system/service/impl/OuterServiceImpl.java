@@ -293,6 +293,17 @@ public class OuterServiceImpl implements IOuterService {
             List<Parcel> parcelList = parcelMapper.selectParcelListByReferenceIn(codes);
             List<String> parcelCodesList =
                     CollectionUtils.isEmpty(parcelList) ? new ArrayList<>() : parcelList.stream().map(Parcel::getReference).collect(Collectors.toList());
+
+            mbReturnDtos.stream().forEach(
+                    item ->{
+                        item.setAddressBackStr(JSON.toJSONString(item.getAddressBack()));
+                        item.setAddressPickupStr(JSON.toJSONString(item.getAddressPickup()));
+                        item.setAddressReceiveStr(JSON.toJSONString(item.getAddressReceive()));
+                        item.setExtendFieldsStr(JSON.toJSONString(item.getExtendFields()));
+                        item.setItemListStr(JSON.toJSONString(item.getItemList()));
+                    }
+            );
+
             List<MbReturnDto> insertList = mbReturnDtos.stream().filter(item -> !existCodes.contains(item.getCode())).collect(Collectors.toList());
             List<MbReturnDto> updateList = mbReturnDtos.stream().filter(item -> existCodes.contains(item.getCode())).collect(Collectors.toList());
             List<MbReturnDto> insertDPDList = mbReturnDtos.stream().filter(item -> !parcelCodesList.contains(item.getCode())).collect(Collectors.toList());
@@ -402,7 +413,7 @@ public class OuterServiceImpl implements IOuterService {
          */
         //生成id 并且更新
         Map<String, Sequence> nameMap = getSeqMap(packages.size());
-        AddressSender addressSender = getSender();
+        AddressSender addressSender = getSender(packages.get(0).getCreateUser());
         List<AddressReceiver> addressReceivers = new ArrayList<>();
         List<Services> servicesList = new ArrayList<>();
         List<Parcel> parcels = new ArrayList<>();
@@ -537,10 +548,9 @@ public class OuterServiceImpl implements IOuterService {
      *
      * @return
      */
-    private AddressSender getSender() {
+    private AddressSender getSender(String userId) {
         AddressSender senderParam = new AddressSender();
-        //此处应该根据通知获取到用户信息
-//        senderParam.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        senderParam.setCreateUser(userId);
         return addressSenderMapper.selectAddressSenderList(senderParam).get(0);
     }
 
