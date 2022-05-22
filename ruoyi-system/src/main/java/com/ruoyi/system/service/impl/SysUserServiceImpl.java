@@ -278,8 +278,8 @@ public class SysUserServiceImpl implements ISysUserService
     @Transactional
     public int insertUser(SysUser user)
     {
-        String token = IdUtils.fastUUID();
-        user.setMbToken(token);
+//        String token = IdUtils.fastUUID();
+//        user.setMbToken(token);
         // 新增用户信息
         int rows = userMapper.insertUser(user);
         // 新增用户岗位关联
@@ -322,8 +322,8 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public boolean registerUser(SysUser user)
     {
-        String token = IdUtils.fastUUID();
-        user.setMbToken(token);
+//        String token = IdUtils.fastUUID();
+//        user.setMbToken(token);
         return userMapper.insertUser(user) > 0;
     }
 

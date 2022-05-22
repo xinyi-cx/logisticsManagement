@@ -2,11 +2,13 @@ package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.domain.MbImport;
 import com.ruoyi.system.domain.mb.MbReturnDto;
 import com.ruoyi.system.mapper.MbReturnDtoMapper;
 import com.ruoyi.system.service.IMbReturnDtoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -96,4 +98,10 @@ public class MbReturnDtoServiceImpl implements IMbReturnDtoService
     {
         return mbReturnDtoMapper.deleteMbReturnDtoByCode(code);
     }
+
+    @Override
+    public void importPackage(MultipartFile file, List<MbImport> mbImportList) throws Exception{
+
+    }
+
 }

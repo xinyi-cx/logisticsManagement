@@ -6,11 +6,14 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.MbImport;
 import com.ruoyi.system.domain.mb.MbReturnDto;
+import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.service.IMbReturnDtoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -95,4 +98,27 @@ public class MbReturnDtoController extends BaseController
     {
         return toAjax(mbReturnDtoService.deleteMbReturnDtoByCodes(codes));
     }
+
+    /**
+     * 下载马帮导入模板
+     * @param response
+     */
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<MbImport> util = new ExcelUtil<MbImport>(MbImport.class);
+        util.importTemplateExcel(response, "马帮数据");
+    }
+
+    @Log(title = "马帮导入", businessType = BusinessType.IMPORT)
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file) throws Exception
+    {
+        ExcelUtil<MbImport> util = new ExcelUtil<MbImport>(MbImport.class);
+        List<MbImport> mbImportList = util.importExcel(file.getInputStream());
+        mbReturnDtoService.importPackage(file, mbImportList);
+        return AjaxResult.success("导入成功");
+    }
+
+
 }

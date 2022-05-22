@@ -46,6 +46,9 @@ public class OuterServiceImpl implements IOuterService {
     @Value("${mb.apiKey}")
     private String apiKey;
 
+    @Value("${mb.phone}")
+    private String phone;
+
     @Autowired
     private MbReturnDtoMapper mbReturnDtoMapper;
 
@@ -263,11 +266,11 @@ public class OuterServiceImpl implements IOuterService {
     }
 
     private String getUserId(String sign, String notify, int timestamp) throws Exception {
-        String apiKey = sign.replace(notify,"").replace(String.valueOf(timestamp),"");
+        String apiKey = sign.replace(notify, "").replace(String.valueOf(timestamp), "");
         SysUser user = new SysUser();
         user.setMbToken(apiKey);
         SysUser user1 = userMapper.selectUserByUser(user);
-        if (ObjectUtils.isEmpty(user1)){
+        if (ObjectUtils.isEmpty(user1)) {
             throw new Exception("apiKey系统中未找到匹配用户");
         }
         return user1.getUserId().toString();
@@ -280,7 +283,7 @@ public class OuterServiceImpl implements IOuterService {
      * @return
      * @throws Exception
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void dealNotify(List<String> codes, String notify, String userId) throws Exception {
         //获取到codes
         String codeStr = String.join(",", codes);
@@ -296,7 +299,7 @@ public class OuterServiceImpl implements IOuterService {
                     CollectionUtils.isEmpty(parcelList) ? new ArrayList<>() : parcelList.stream().map(Parcel::getReference).collect(Collectors.toList());
 
             mbReturnDtos.forEach(
-                    item ->{
+                    item -> {
                         item.setAddressBackStr(JSON.toJSONString(item.getAddressBack()));
                         item.setAddressPickupStr(JSON.toJSONString(item.getAddressPickup()));
                         item.setAddressReceiveStr(JSON.toJSONString(item.getAddressReceive()));
@@ -314,62 +317,87 @@ public class OuterServiceImpl implements IOuterService {
             if (!CollectionUtils.isEmpty(updateList)) {
                 mbReturnDtoMapper.batchUpdate(updateList);
             }
+            List<String> errMsgList = new ArrayList<>();
             if (!CollectionUtils.isEmpty(insertDPDList)) {
-                if (checkUser(userId, insertDPDList)) {
+                List<MbReturnDto> checkUserList = checkUser(userId, insertDPDList, errMsgList);
+                List<MbReturnDto> correctList = checkCountryAndZip(checkUserList, errMsgList);
+                if (CollectionUtils.isEmpty(correctList)) {
                     return;
                 }
-                Map<String, String> checkCountryAndZip = checkCountryAndZip(insertDPDList);
-                if (CollectionUtils.isEmpty(checkCountryAndZip)
-                        || checkCountryAndZip.containsValue("NONEXISTING_POSTAL_CODE")
-                        || checkCountryAndZip.containsValue("NONEXISTING_COUNTRY_CODE")
-                        || checkCountryAndZip.containsValue("WRONG_POSTAL_PATTERN")) {
-                    changeStatusToException(checkCountryAndZip);
-                } else {
-                    Map<String, Package> codePackageMap = this.getPackageListByCodes(codes);
-                    List<Package> getPackagesByMbReturnDtos = this.getPackagesByMbReturnDtos(insertDPDList, codePackageMap);
-                    this.insertPackages(getPackagesByMbReturnDtos);
-                    this.changeStatusToAccept(insertDPDList.stream().map(MbReturnDto::getCode).collect(Collectors.toList()));
-                }
+                Map<String, Package> codePackageMap = this.getPackageListByCodes(correctList.stream().map(MbReturnDto::getCode).collect(Collectors.toList()));
+                List<Package> getPackagesByMbReturnDtos = this.getPackagesByMbReturnDtos(correctList, codePackageMap);
+                this.insertPackages(getPackagesByMbReturnDtos);
+                this.changeStatusToAccept(correctList.stream().map(MbReturnDto::getCode).collect(Collectors.toList()));
             }
         }
     }
 
-    private boolean checkUser(String userId, List<MbReturnDto> mbReturnDtos) throws Exception {
+    private List<MbReturnDto> checkUser(String userId, List<MbReturnDto> mbReturnDtos, List<String> errMsgList) {
         UserAuthorizationSys param = new UserAuthorizationSys();
         param.setCreateBy(userId);
         List<UserAuthorizationSys> userAuthorizationSys = userAuthorizationMapper.selectUserAuthorizationList(param);
-        if (CollectionUtils.isEmpty(userAuthorizationSys)) {
-            throw new Exception("未找到授权用户");
-        }
-        Map<String, String> userTokenMap = userAuthorizationSys.stream().collect(toMap(
-                UserAuthorizationSys::getUserName, UserAuthorizationSys::getUserToken
-        ));
+
         boolean errorFlag = false;
         Map<String, String> errorMap = new HashMap<>();
-        for (MbReturnDto dto : mbReturnDtos) {
-            customer customer = JSON.parseObject(dto.getCustomer(), customer.class);
-            dto.setCreateBy(userId);
-            dto.setUpdateBy(userId);
-            if (!userTokenMap.containsKey(customer.getLogisticsKeys().getWishu().getApi_key())
-                    || !userTokenMap.get(customer.getLogisticsKeys().getWishu().getApi_key())
-                    .equals(customer.getLogisticsKeys().getWishu().getApi_secret())) {
+        List<MbReturnDto> correctInsertMbReturnDto = new ArrayList<>();
+
+        if (CollectionUtils.isEmpty(userAuthorizationSys)) {
+            for (MbReturnDto dto : mbReturnDtos) {
+                customer customer = JSON.parseObject(dto.getCustomer(), customer.class);
+                dto.setCreateBy(userId);
+                dto.setUpdateBy(userId);
                 errorFlag = true;
                 String errSb = "customer, api_key: " + customer.getLogisticsKeys().getWishu().getApi_key() +
-                        "不存在, 或者与api_secret不匹配";
+                        "不存在, 或者与api_secret不匹配, 请联系：" + phone;
                 errorMap.put(dto.getCode(), errSb);
+            }
+        } else {
+            Map<String, String> userTokenMap = userAuthorizationSys.stream().collect(toMap(
+                    UserAuthorizationSys::getUserName, UserAuthorizationSys::getUserToken
+            ));
+            for (MbReturnDto dto : mbReturnDtos) {
+                customer customer = JSON.parseObject(dto.getCustomer(), customer.class);
+                dto.setCreateBy(userId);
+                dto.setUpdateBy(userId);
+                if (!userTokenMap.containsKey(customer.getLogisticsKeys().getWishu().getApi_key())
+                        || !userTokenMap.get(customer.getLogisticsKeys().getWishu().getApi_key())
+                        .equals(customer.getLogisticsKeys().getWishu().getApi_secret())) {
+                    errorFlag = true;
+                    String errSb = "customer, api_key: " + customer.getLogisticsKeys().getWishu().getApi_key() +
+                            "不存在, 或者与api_secret不匹配, 请联系：" + phone;
+                    errorMap.put(dto.getCode(), errSb);
+                } else {
+                    correctInsertMbReturnDto.add(dto);
+                }
             }
         }
         if (errorFlag) {
-            changeStatusToException(errorMap);
+            changeStatusToException(errorMap, errMsgList);
         }
-        return errorFlag;
+        return correctInsertMbReturnDto;
     }
 
-    private Map<String, String> checkCountryAndZip(List<MbReturnDto> mbReturnDtos) {
-        return mbReturnDtos.parallelStream().collect(toMap(
+    private List<MbReturnDto> checkCountryAndZip(List<MbReturnDto> mbReturnDtos, List<String> errMsgList) {
+        if (CollectionUtils.isEmpty(mbReturnDtos)) {
+            return new ArrayList<>();
+        }
+        Map<String, String> checkCountryAndZip = mbReturnDtos.parallelStream().collect(toMap(
                 MbReturnDto::getCode,
                 item -> dpdServicesXMLClient.findPostalCode(item.getAddressReceive().getCountryCode(), item.getAddressReceive().getZipcode())
         ));
+        if (CollectionUtils.isEmpty(checkCountryAndZip)
+                || checkCountryAndZip.containsValue("NONEXISTING_POSTAL_CODE")
+                || checkCountryAndZip.containsValue("NONEXISTING_COUNTRY_CODE")
+                || checkCountryAndZip.containsValue("WRONG_POSTAL_PATTERN")) {
+            changeStatusToException(checkCountryAndZip, errMsgList);
+        }
+        List<String> correctCodeList = new ArrayList<>();
+        for (String code : checkCountryAndZip.keySet()) {
+            if ("OK".equals(checkCountryAndZip.get(code))) {
+                correctCodeList.add(code);
+            }
+        }
+        return mbReturnDtos.stream().filter(item -> correctCodeList.contains(item.getCode())).collect(Collectors.toList());
     }
 
     /**
@@ -398,7 +426,7 @@ public class OuterServiceImpl implements IOuterService {
     @Transactional(rollbackFor = Exception.class)
     public void insertPackages(List<Package> packages) throws Exception {
 
-        if (CollectionUtils.isEmpty(packages)){
+        if (CollectionUtils.isEmpty(packages)) {
             return;
         }
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
@@ -491,10 +519,10 @@ public class OuterServiceImpl implements IOuterService {
         addressReceiver.setCountryCode(addressReceive.getCountryCode());
         addressReceiver.setCity(addressReceive.getCity());
         addressReceiver.setAddress(addressReceive.getProvince() + addressReceive.getCity() + addressReceive.getDistrict() + addressReceive.getDoorcode() + addressReceive.getStreet1());
-        addressReceiver.setCompany(StringUtils.isEmpty(addressReceive.getCompanyStreet())?addressReceiver.getAddress():addressReceive.getCompanyStreet());
+        addressReceiver.setCompany(StringUtils.isEmpty(addressReceive.getCompanyStreet()) ? addressReceiver.getAddress() : addressReceive.getCompanyStreet());
         addressReceiver.setEmail(addressReceive.getEmail());
         addressReceiver.setName(addressReceive.getReceiver());
-        addressReceiver.setPhone(StringUtils.isEmpty(addressReceive.getTelephone()) ? addressReceive.getMobile() :addressReceive.getTelephone());
+        addressReceiver.setPhone(StringUtils.isEmpty(addressReceive.getTelephone()) ? addressReceive.getMobile() : addressReceive.getTelephone());
         addressReceiver.setPostalCode(addressReceive.getZipcode());
 
     }
@@ -564,7 +592,7 @@ public class OuterServiceImpl implements IOuterService {
         }
     }
 
-    private void changeStatusToException(Map<String, String> checkCountryAndZip) {
+    private void changeStatusToException(Map<String, String> checkCountryAndZip, List<String> errMsgList) {
         for (String code : checkCountryAndZip.keySet()) {
             if (!"OK".equals(checkCountryAndZip.get(code))) {
                 MbException mbException = new MbException();
@@ -573,8 +601,9 @@ public class OuterServiceImpl implements IOuterService {
                 mbException.setProcessMessage(checkCountryAndZip.get(code));
 
                 Map<String, String> encodeParamsMap = new HashMap<>();
-                encodeParamsMap.put("changeStatus", "accept");
+                encodeParamsMap.put("changeStatus", "exception");
                 String enStr = net.arnx.jsonic.JSON.encode(mbException);
+                errMsgList.add("code: " + code + "导入失败，失败原因：" + checkCountryAndZip.get(code));
                 String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", apiAccountId, apiKey, encodeParamsMap, enStr));
             }
         }
