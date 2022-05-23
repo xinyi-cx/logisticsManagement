@@ -51,6 +51,12 @@
             <el-tab-pane label="修改密码" name="resetPwd">
               <resetPwd :user="user" />
             </el-tab-pane>
+            <el-tab-pane label="绑定马帮" name="mbInfo">
+              <mbInfo :user="user" />
+            </el-tab-pane>
+            <el-tab-pane label="发件信息" name="userSender">
+              <userSender :user="user" />
+            </el-tab-pane>
           </el-tabs>
         </el-card>
       </el-col>
@@ -62,11 +68,14 @@
 import userAvatar from "./userAvatar";
 import userInfo from "./userInfo";
 import resetPwd from "./resetPwd";
+import mbInfo from "./mbInfo";
+import userSender from "./userSender";
+
 import { getUserProfile } from "@/api/system/user";
 
 export default {
   name: "Profile",
-  components: { userAvatar, userInfo, resetPwd },
+  components: { userAvatar, userInfo, resetPwd, mbInfo, userSender },
   data() {
     return {
       user: {},

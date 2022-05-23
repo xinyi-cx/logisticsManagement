@@ -1,7 +1,8 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
 import com.ruoyi.system.domain.AddressSender;
+
+import java.util.List;
 
 /**
  * 发件人信息Service接口
@@ -41,7 +42,7 @@ public interface IAddressSenderService
      * @param addressSender 发件人信息
      * @return 结果
      */
-    public int updateAddressSender(AddressSender addressSender);
+    public int updateAddressSender(AddressSender addressSender) throws Exception;
 
     /**
      * 批量删除发件人信息

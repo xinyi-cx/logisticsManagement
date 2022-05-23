@@ -9,7 +9,7 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.common.utils.uuid.IdUtils;
+import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
 import com.ruoyi.system.domain.AddressSender;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
@@ -63,6 +63,9 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     private AddressSenderMapper addressSenderMapper;
+
+    @Autowired
+    private DPDServicesXMLClient dpdServicesXMLClient;
 
     @Autowired
     private SequenceMapper sequenceMapper;
@@ -276,8 +279,7 @@ public class SysUserServiceImpl implements ISysUserService
      */
     @Override
     @Transactional
-    public int insertUser(SysUser user)
-    {
+    public int insertUser(SysUser user) throws Exception {
 //        String token = IdUtils.fastUUID();
 //        user.setMbToken(token);
         // 新增用户信息
@@ -293,7 +295,7 @@ public class SysUserServiceImpl implements ISysUserService
         return rows;
     }
 
-    private void insertOrUpdateSender(SysUser user){
+    private void insertOrUpdateSender(SysUser user) throws Exception {
         AddressSender paramAddressSender = new AddressSender();
         paramAddressSender.setCreateUser(user.getUserId().toString());
         List<AddressSender> selectAddressSenderList = addressSenderMapper.selectAddressSenderList(paramAddressSender);
@@ -305,11 +307,19 @@ public class SysUserServiceImpl implements ISysUserService
         addressSender.setEmail(user.getSendEmail());
         addressSender.setCreateUser(user.getUserId().toString());
         addressSender.setUpdateUser(user.getUserId().toString());
+        checkCountryZipCode(addressSender);
         if (!CollectionUtils.isEmpty(selectAddressSenderList)){
             addressSenderMapper.updateAddressSender(addressSender);
         }else{
             addressSender.setId(sequenceMapper.selectNextvalByName("send_seq"));
             addressSenderMapper.insertAddressSenderWithId(addressSender);
+        }
+    }
+
+    private void checkCountryZipCode(AddressSender addressSender) throws Exception {
+        String status = dpdServicesXMLClient.findPostalCode(addressSender.getCountryCode(), addressSender.getPostalCode());
+        if (!"OK".equals(status)){
+            throw new Exception(status);
         }
     }
 
@@ -335,8 +345,7 @@ public class SysUserServiceImpl implements ISysUserService
      */
     @Override
     @Transactional
-    public int updateUser(SysUser user)
-    {
+    public int updateUser(SysUser user) throws Exception {
         Long userId = user.getUserId();
         // 删除用户与角色关联
         userRoleMapper.deleteUserRoleByUserId(userId);

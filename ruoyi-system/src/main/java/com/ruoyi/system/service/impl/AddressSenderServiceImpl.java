@@ -1,11 +1,14 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
+import com.ruoyi.system.domain.AddressSender;
+import com.ruoyi.system.mapper.AddressSenderMapper;
+import com.ruoyi.system.service.IAddressSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.AddressSenderMapper;
-import com.ruoyi.system.domain.AddressSender;
-import com.ruoyi.system.service.IAddressSenderService;
+
+import java.util.List;
 
 /**
  * 发件人信息Service业务层处理
@@ -19,6 +22,9 @@ public class AddressSenderServiceImpl implements IAddressSenderService
     @Autowired
     private AddressSenderMapper addressSenderMapper;
 
+    @Autowired
+    private DPDServicesXMLClient dpdServicesXMLClient;
+
     /**
      * 查询发件人信息
      * 
@@ -28,6 +34,12 @@ public class AddressSenderServiceImpl implements IAddressSenderService
     @Override
     public AddressSender selectAddressSenderById(Long id)
     {
+        if (id == 0){
+            AddressSender addressSender = new AddressSender();
+            addressSender.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            List<AddressSender> addressSenders = addressSenderMapper.selectAddressSenderList(addressSender);
+            return addressSenders.get(0);
+        }
         return addressSenderMapper.selectAddressSenderById(id);
     }
 
@@ -62,9 +74,16 @@ public class AddressSenderServiceImpl implements IAddressSenderService
      * @return 结果
      */
     @Override
-    public int updateAddressSender(AddressSender addressSender)
-    {
+    public int updateAddressSender(AddressSender addressSender) throws Exception {
+        checkCountryZipCode(addressSender);
         return addressSenderMapper.updateAddressSender(addressSender);
+    }
+
+    private void checkCountryZipCode(AddressSender addressSender) throws Exception {
+        String status = dpdServicesXMLClient.findPostalCode(addressSender.getCountryCode(), addressSender.getPostalCode());
+        if (!"OK".equals(status)){
+            throw new Exception(status);
+        }
     }
 
     /**

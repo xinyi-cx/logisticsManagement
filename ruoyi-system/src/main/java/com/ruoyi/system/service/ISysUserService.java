@@ -117,7 +117,7 @@ public interface ISysUserService
      * @param user 用户信息
      * @return 结果
      */
-    public int insertUser(SysUser user);
+    public int insertUser(SysUser user) throws Exception;
 
     /**
      * 注册用户信息
@@ -133,7 +133,7 @@ public interface ISysUserService
      * @param user 用户信息
      * @return 结果
      */
-    public int updateUser(SysUser user);
+    public int updateUser(SysUser user) throws Exception;
 
     /**
      * 用户授权角色
