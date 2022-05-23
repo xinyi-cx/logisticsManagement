@@ -85,7 +85,12 @@ public class SysUser extends BaseEntity
     /**
      * 马帮token
      */
-    private String mbToken;
+    private String apiKey;
+
+    /**
+     * 马帮token
+     */
+    private Long apiAccountId;
 
     /** 部门对象 */
     @Excels({
@@ -132,6 +137,14 @@ public class SysUser extends BaseEntity
 
     /** 发件人邮政编码 */
     private String postalCode;
+
+    public Long getApiAccountId() {
+        return apiAccountId;
+    }
+
+    public void setApiAccountId(Long apiAccountId) {
+        this.apiAccountId = apiAccountId;
+    }
 
     public String getAddress() {
         return address;
@@ -433,12 +446,12 @@ public class SysUser extends BaseEntity
         this.country = country;
     }
 
-    public String getMbToken() {
-        return mbToken;
+    public String getApiKey() {
+        return apiKey;
     }
 
-    public void setMbToken(String mbToken) {
-        this.mbToken = mbToken;
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     @Override

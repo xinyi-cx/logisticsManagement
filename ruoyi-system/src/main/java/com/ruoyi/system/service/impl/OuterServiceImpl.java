@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -48,6 +49,9 @@ public class OuterServiceImpl implements IOuterService {
 
     @Value("${mb.phone}")
     private String phone;
+
+    @Value("${mb.postUserFlag}")
+    private Boolean postUserFlag;
 
     @Autowired
     private MbReturnDtoMapper mbReturnDtoMapper;
@@ -189,14 +193,19 @@ public class OuterServiceImpl implements IOuterService {
 //    }
 
     /**
-     * 获取马帮结果
+     * 根据用户绑定的马帮数据  获取马帮结果
      *
-     * @param methodName      方法名称
-     * @param encodeParamsMap 参数
+     * @param methodName
+     * @param encodeParamsMap
+     * @param apiAccountId 用户绑定的apiAccountId
+     * @param apiKey 用户绑定的apiKey
      * @return
      * @throws Exception
      */
-    private String getMbRes(String methodName, Map<String, String> encodeParamsMap) throws Exception {
+    private String getMbRes(String methodName,
+                            Map<String, String> encodeParamsMap,
+                            Long apiAccountId,
+                            String apiKey) throws Exception {
         String enStr = net.arnx.jsonic.JSON.encode(encodeParamsMap);
         String res = HttpUtils.sendPost(url, getParamStr(methodName, apiAccountId, apiKey, encodeParamsMap, enStr));
         StringBuilder sb = new StringBuilder();
@@ -243,7 +252,7 @@ public class OuterServiceImpl implements IOuterService {
     @Override
     public void receiveMb(MbReceiveDto mbReceiveDto) throws Exception {
         String notify = mbReceiveDto.getNotify().replace(" ", "+");
-        String userId = getUserId(mbReceiveDto.getSign(), mbReceiveDto.getNotify(), mbReceiveDto.getTimestamp());
+        SysUser user1 = getUserId(mbReceiveDto.getSign(), mbReceiveDto.getNotify(), mbReceiveDto.getTimestamp());
         String notifyJson = Base64.decryptBASE64(notify);
 //        base64_encode(json_encode(xxx))
         JSONObject jsonObject = JSONObject.parseObject(notifyJson);
@@ -262,18 +271,19 @@ public class OuterServiceImpl implements IOuterService {
         notifyStr = "orderChange";
 //        codes.add("892213414595342");
         codes.add("892213617113432");
-        this.dealNotify(codes, notifyStr, userId);
+        List<String> errMsgList = new ArrayList<>();
+        dealNotify(codes, notifyStr, user1, errMsgList, postUserFlag);
     }
 
-    private String getUserId(String sign, String notify, int timestamp) throws Exception {
+    private SysUser getUserId(String sign, String notify, int timestamp) throws Exception {
         String apiKey = sign.replace(notify, "").replace(String.valueOf(timestamp), "");
         SysUser user = new SysUser();
-        user.setMbToken(apiKey);
+        user.setApiKey(apiKey);
         SysUser user1 = userMapper.selectUserByUser(user);
         if (ObjectUtils.isEmpty(user1)) {
             throw new Exception("apiKey系统中未找到匹配用户");
         }
-        return user1.getUserId().toString();
+        return user1;
     }
 
     /**
@@ -284,12 +294,16 @@ public class OuterServiceImpl implements IOuterService {
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
-    public void dealNotify(List<String> codes, String notify, String userId) throws Exception {
+    public void dealNotify(List<String> codes,
+                           String notify,
+                           SysUser user1,
+                           List<String> errMsgList,
+                           Boolean checkAuthFlag) throws Exception {
         //获取到codes
         String codeStr = String.join(",", codes);
         Map<String, String> param = new HashMap<>();
         param.put("codes", codeStr);
-        String returnStr = getMbRes("api.biaoju.order.find", param);
+        String returnStr = getMbRes("api.biaoju.order.find", param, user1.getApiAccountId(), user1.getApiKey());
         JSONObject jsonObject = JSON.parseObject(JSON.parseObject(returnStr).get("Data").toString());
         List<MbReturnDto> mbReturnDtos = JSON.parseArray(jsonObject.get("orders").toString(), MbReturnDto.class);
         if ("orderChange".equals(notify)) {
@@ -305,6 +319,8 @@ public class OuterServiceImpl implements IOuterService {
                         item.setAddressReceiveStr(JSON.toJSONString(item.getAddressReceive()));
                         item.setExtendFieldsStr(JSON.toJSONString(item.getExtendFields()));
                         item.setItemListStr(JSON.toJSONString(item.getItemList()));
+                        item.setCreateBy(user1.getUserId().toString());
+                        item.setUpdateBy(user1.getUserId().toString());
                     }
             );
 
@@ -317,24 +333,28 @@ public class OuterServiceImpl implements IOuterService {
             if (!CollectionUtils.isEmpty(updateList)) {
                 mbReturnDtoMapper.batchUpdate(updateList);
             }
-            List<String> errMsgList = new ArrayList<>();
             if (!CollectionUtils.isEmpty(insertDPDList)) {
-                List<MbReturnDto> checkUserList = checkUser(userId, insertDPDList, errMsgList);
-                List<MbReturnDto> correctList = checkCountryAndZip(checkUserList, errMsgList);
+                List<MbReturnDto> checkUserList;
+                if (checkAuthFlag){
+                    checkUserList = checkUser(user1, insertDPDList, errMsgList);
+                } else {
+                    checkUserList = insertDPDList;
+                }
+                List<MbReturnDto> correctList = checkCountryAndZip(user1, checkUserList, errMsgList);
                 if (CollectionUtils.isEmpty(correctList)) {
                     return;
                 }
                 Map<String, Package> codePackageMap = this.getPackageListByCodes(correctList.stream().map(MbReturnDto::getCode).collect(Collectors.toList()));
                 List<Package> getPackagesByMbReturnDtos = this.getPackagesByMbReturnDtos(correctList, codePackageMap);
                 this.insertPackages(getPackagesByMbReturnDtos);
-                this.changeStatusToAccept(correctList.stream().map(MbReturnDto::getCode).collect(Collectors.toList()));
+                this.changeStatusToAccept(correctList.stream().map(MbReturnDto::getCode).collect(Collectors.toList()), user1);
             }
         }
     }
 
-    private List<MbReturnDto> checkUser(String userId, List<MbReturnDto> mbReturnDtos, List<String> errMsgList) {
+    private List<MbReturnDto> checkUser(SysUser user1, List<MbReturnDto> mbReturnDtos, List<String> errMsgList) {
         UserAuthorizationSys param = new UserAuthorizationSys();
-        param.setCreateBy(userId);
+        param.setCreateBy(user1.getUserId().toString());
         List<UserAuthorizationSys> userAuthorizationSys = userAuthorizationMapper.selectUserAuthorizationList(param);
 
         boolean errorFlag = false;
@@ -344,8 +364,6 @@ public class OuterServiceImpl implements IOuterService {
         if (CollectionUtils.isEmpty(userAuthorizationSys)) {
             for (MbReturnDto dto : mbReturnDtos) {
                 customer customer = JSON.parseObject(dto.getCustomer(), customer.class);
-                dto.setCreateBy(userId);
-                dto.setUpdateBy(userId);
                 errorFlag = true;
                 String errSb = "customer, api_key: " + customer.getLogisticsKeys().getWishu().getApi_key() +
                         "不存在, 或者与api_secret不匹配, 请联系：" + phone;
@@ -357,8 +375,6 @@ public class OuterServiceImpl implements IOuterService {
             ));
             for (MbReturnDto dto : mbReturnDtos) {
                 customer customer = JSON.parseObject(dto.getCustomer(), customer.class);
-                dto.setCreateBy(userId);
-                dto.setUpdateBy(userId);
                 if (!userTokenMap.containsKey(customer.getLogisticsKeys().getWishu().getApi_key())
                         || !userTokenMap.get(customer.getLogisticsKeys().getWishu().getApi_key())
                         .equals(customer.getLogisticsKeys().getWishu().getApi_secret())) {
@@ -372,12 +388,12 @@ public class OuterServiceImpl implements IOuterService {
             }
         }
         if (errorFlag) {
-            changeStatusToException(errorMap, errMsgList);
+            changeStatusToException(errorMap, errMsgList, user1);
         }
         return correctInsertMbReturnDto;
     }
 
-    private List<MbReturnDto> checkCountryAndZip(List<MbReturnDto> mbReturnDtos, List<String> errMsgList) {
+    private List<MbReturnDto> checkCountryAndZip(SysUser user1, List<MbReturnDto> mbReturnDtos, List<String> errMsgList) {
         if (CollectionUtils.isEmpty(mbReturnDtos)) {
             return new ArrayList<>();
         }
@@ -389,7 +405,7 @@ public class OuterServiceImpl implements IOuterService {
                 || checkCountryAndZip.containsValue("NONEXISTING_POSTAL_CODE")
                 || checkCountryAndZip.containsValue("NONEXISTING_COUNTRY_CODE")
                 || checkCountryAndZip.containsValue("WRONG_POSTAL_PATTERN")) {
-            changeStatusToException(checkCountryAndZip, errMsgList);
+            changeStatusToException(checkCountryAndZip, errMsgList, user1);
         }
         List<String> correctCodeList = new ArrayList<>();
         for (String code : checkCountryAndZip.keySet()) {
@@ -584,15 +600,17 @@ public class OuterServiceImpl implements IOuterService {
      *
      * @param codes
      */
-    private void changeStatusToAccept(List<String> codes) {
+    private void changeStatusToAccept(List<String> codes, SysUser user) {
         //查询更新后的数据
         Map<String, Package> codePackageMap = this.getPackageListByCodes(codes);
         for (String code : codePackageMap.keySet()) {
-//            this.changeOne(code, codePackageMap.get(code));
+//            changeOne(code, codePackageMap.get(code), user);
         }
     }
 
-    private void changeStatusToException(Map<String, String> checkCountryAndZip, List<String> errMsgList) {
+    private void changeStatusToException(Map<String, String> checkCountryAndZip,
+                                         List<String> errMsgList,
+                                         SysUser user) {
         for (String code : checkCountryAndZip.keySet()) {
             if (!"OK".equals(checkCountryAndZip.get(code))) {
                 MbException mbException = new MbException();
@@ -604,7 +622,7 @@ public class OuterServiceImpl implements IOuterService {
                 encodeParamsMap.put("changeStatus", "exception");
                 String enStr = net.arnx.jsonic.JSON.encode(mbException);
                 errMsgList.add("code: " + code + "导入失败，失败原因：" + checkCountryAndZip.get(code));
-                String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", apiAccountId, apiKey, encodeParamsMap, enStr));
+                String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", user.getApiAccountId(), user.getApiKey(), encodeParamsMap, enStr));
             }
         }
     }
@@ -615,7 +633,7 @@ public class OuterServiceImpl implements IOuterService {
      * @param code
      * @param pac
      */
-    private void changeOne(String code, Package pac) {
+    private void changeOne(String code, Package pac, SysUser user) {
         MbAccept mbAccept = new MbAccept();
         mbAccept.setCode(code);
         mbAccept.setChangeStatus("accept");
@@ -626,9 +644,21 @@ public class OuterServiceImpl implements IOuterService {
         Map<String, String> encodeParamsMap = new HashMap<>();
         encodeParamsMap.put("changeStatus", "accept");
         String enStr = net.arnx.jsonic.JSON.encode(mbAccept);
-        String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", apiAccountId, apiKey, encodeParamsMap, enStr));
+        String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", user.getApiAccountId(), user.getApiKey(), encodeParamsMap, enStr));
         //校验
 
+    }
+
+    @Override
+    public List<String> importPackage(MultipartFile file, List<MbImport> mbImportList, SysUser sysUser, Boolean userFlag) throws Exception{
+        if (CollectionUtils.isEmpty(mbImportList)){
+            return Arrays.asList("导入数据不能为空");
+        }
+        List<String> codes = mbImportList.stream().map(MbImport::getCode).collect(Collectors.toList());
+
+        List<String> errMsgList = new ArrayList<>();
+        dealNotify(codes, "orderChange", sysUser, errMsgList, userFlag);
+        return errMsgList;
     }
 
 }

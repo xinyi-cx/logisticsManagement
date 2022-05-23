@@ -1,4 +1,11 @@
-alter table sys_user add column mb_token varchar(100) default null;
+alter table sys_user add column api_key varchar(100) default null;
+alter table sys_user add column api_account_id bigint(20) default null;
+update sys_user
+set
+api_account_id = 29689,
+api_key = '2675166dc4b2242bf88c3ea25a452b3f'
+where user_id = 1;
+
 
 drop table if exists mb_return_dto;
 create table mb_return_dto

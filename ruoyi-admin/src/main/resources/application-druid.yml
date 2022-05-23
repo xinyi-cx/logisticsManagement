@@ -71,3 +71,6 @@ mb:
     url: https://www.i8956.com/interface/index.php
     apiAccountId: 29689
     apiKey: 2675166dc4b2242bf88c3ea25a452b3f
+    phone: 13888888888
+    importUserFlag: false
+    postUserFlag: true
