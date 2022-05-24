@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import javax.annotation.PostConstruct;
+import java.io.*;
 import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +52,11 @@ public class DPDServicesXMLClient {
     private long parcelId;
     private long packageId;
 
-//    @PostConstruct
+    @PostConstruct
     public void runExamples() {
-        findPostalCode();
+        Documents document = documentsMapper.selectDocumentsById((long) 119);
+        saveFileToLocal(document);
+//        findPostalCode();
     }
 
     private void findPostalCode() {
@@ -357,6 +359,24 @@ public class DPDServicesXMLClient {
             copy.close();
         }
         return byteArrayOutputStream.toByteArray();
+    }
+
+    private void saveFileToLocal(Documents document) {
+        //保存文件到本地
+        FileOutputStream fileOutputStream = null;
+        try {
+            String path = "src/main/webapp/PDF/";        //绝对路径
+            File file = new File(path);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            fileOutputStream = new FileOutputStream(path + document.getDisplayName());
+            fileOutputStream.write(document.getFileData());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static String[] SEQ_NAMES = {"pack_gen_seq"};

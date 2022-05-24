@@ -62,7 +62,9 @@
     <select id="selectMbReturnDtoList" parameterType="MbReturnDto" resultMap="MbReturnDtoResult">
         <include refid="selectMbReturnDtoVo"/>
         <where>
-            <if test="code != null  and code != ''">and code = #{code}</if>
+            <if test="code != null  and code != ''">and code
+                like concat('%', #{code}, '%')
+            </if>
             <if test="customizeCode != null  and customizeCode != ''">and customize_code = #{customizeCode}</if>
             <if test="platformTradeCode != null  and platformTradeCode != ''">and platform_trade_code =
                 #{platformTradeCode}
@@ -101,8 +103,8 @@
             <if test="hasMagnetic != null  and hasMagnetic != ''">and has_magnetic = #{hasMagnetic}</if>
             <if test="hasPowder != null  and hasPowder != ''">and has_powder = #{hasPowder}</if>
             <if test="customer != null  and customer != ''">and customer = #{customer}</if>
-            <if test="expressChannelCode != null  and expressChannelCode != ''">and express_channel_code =
-                #{expressChannelCode}
+            <if test="expressChannelCode != null  and expressChannelCode != ''">and express_channel_code
+                like concat('%', #{expressChannelCode}, '%')
             </if>
             <if test="supplierInnerCode != null  and supplierInnerCode != ''">and supplier_inner_code =
                 #{supplierInnerCode}
@@ -119,10 +121,16 @@
             <if test="addressPickupStr != null  and addressPickupStr != ''">and address_pickup_str =
                 #{addressPickupStr}
             </if>
-            <if test="addressReceiveStr != null  and addressReceiveStr != ''">and address_receive_str =
-                #{addressReceiveStr}
+            <if test="addressReceiveStr != null  and addressReceiveStr != ''">and address_receive_str
+                like concat('%', #{addressReceiveStr}, '%')
             </if>
             <if test="addressBackStr != null  and addressBackStr != ''">and address_back_str = #{addressBackStr}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
         </where>
     </select>
 

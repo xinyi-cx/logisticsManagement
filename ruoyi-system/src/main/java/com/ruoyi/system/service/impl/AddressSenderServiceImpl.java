@@ -81,8 +81,8 @@ public class AddressSenderServiceImpl implements IAddressSenderService
 
     private void checkCountryZipCode(AddressSender addressSender) throws Exception {
         String status = dpdServicesXMLClient.findPostalCode(addressSender.getCountryCode(), addressSender.getPostalCode());
-        if (!"OK".equals(status)){
-            throw new Exception(status);
+        if (!"OK".equals(status)) {
+            throw new Exception("邮编错误：" + status);
         }
     }
 

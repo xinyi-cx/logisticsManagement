@@ -120,7 +120,12 @@ export default {
       statistics(this.paramDte).then(response => {
         this.echartsData.xAxisData = response.data.xAxisData;
         this.echartsData.seriesData = response.data.seriesData;
-        let barSize= response.data.xAxisData.length;
+        let barSize;
+        if (response.data.xAxisData === undefined){
+          barSize = undefined;
+        }else {
+          barSize= response.data.xAxisData.length;
+        }
         this.drawLine(barSize);
       });
     },
@@ -128,7 +133,12 @@ export default {
       statistics(this.paramMonth).then(response => {
         this.monthEchartsData.xAxisData = response.data.xAxisData;
         this.monthEchartsData.seriesData = response.data.seriesData;
-        let barSize = response.data.xAxisData.length;
+        let barSize;
+        if (response.data.xAxisData === undefined){
+          barSize = undefined;
+        }else {
+          barSize= response.data.xAxisData.length;
+        }
         this.drawMonthLine(barSize);
       });
     },

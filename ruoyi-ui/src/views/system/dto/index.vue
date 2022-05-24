@@ -1,6 +1,51 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="内部订单号" prop="code">
+        <el-input
+          v-model="queryParams.code"
+          placeholder="请输入内部订单号"
+          clearable
+          size="small"
+          style="width: 240px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
+      <el-form-item label="物流产品运单号" prop="expressChannelCode">
+        <el-input
+          v-model="queryParams.expressChannelCode"
+          placeholder="请输入物流产品运单号"
+          clearable
+          size="small"
+          style="width: 240px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
+      <el-form-item label="收件人信息" prop="addressReceiveStr">
+        <el-input
+          v-model="queryParams.addressReceiveStr"
+          placeholder="请输入收件人信息"
+          clearable
+          size="small"
+          style="width: 240px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
+      <el-form-item label="创建时间">
+        <el-date-picker
+          v-model="daterangeCreateTime"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -342,6 +387,8 @@ export default {
         // 上传的地址
         url: process.env.VUE_APP_BASE_API + "/system/dto/importData"
       },
+      // 退件人时间范围
+      daterangeCreateTime: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -404,6 +451,11 @@ export default {
     /** 查询马帮订单信息列表 */
     getList() {
       this.loading = true;
+      this.queryParams.params = {};
+      if (null != this.daterangeCreateTime && '' != this.daterangeCreateTime) {
+        this.queryParams.params["beginTime"] = this.daterangeCreateTime[0];
+        this.queryParams.params["endTime"] = this.daterangeCreateTime[1];
+      }
       listDto(this.queryParams).then(response => {
         this.dtoList = response.rows;
         this.total = response.total;
