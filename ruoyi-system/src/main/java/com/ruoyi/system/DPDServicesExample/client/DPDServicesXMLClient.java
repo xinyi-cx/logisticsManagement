@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.*;
 import java.lang.Exception;
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class DPDServicesXMLClient {
     private long parcelId;
     private long packageId;
 
-    @PostConstruct
+//    @PostConstruct
     public void runExamples() {
         Documents document = documentsMapper.selectDocumentsById((long) 119);
         saveFileToLocal(document);

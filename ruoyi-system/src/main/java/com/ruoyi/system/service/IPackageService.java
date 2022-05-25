@@ -32,6 +32,8 @@ public interface IPackageService
      */
     public Map getStatistics(String dateStr);
 
+    public Map getStatisticsAllUser(String dateStr);
+
     /**
      * 获取物流状态的echarts数据
      * @param dateStr

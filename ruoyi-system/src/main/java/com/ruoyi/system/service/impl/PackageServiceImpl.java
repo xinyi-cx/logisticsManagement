@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -72,6 +73,9 @@ public class PackageServiceImpl implements IPackageService {
 
     @Autowired
     private LogisticsInfoMapper logisticsInfoMapper;
+
+    @Autowired
+    private SysUserMapper sysUserMapper;
 
     /**
      * 查询面单
@@ -157,6 +161,57 @@ public class PackageServiceImpl implements IPackageService {
         }
         returnList.put("xAxisData", xAxisData);
         returnList.put("seriesData", seriesData);
+        return returnList;
+    }
+
+    @Override
+    public Map getStatisticsAllUser(String dateStr){
+        Date paramDate = new Date();
+        if (!StringUtils.isEmpty(dateStr) && !"null".equals(dateStr) && dateStr.length() == 8) {
+            paramDate = DateUtils.dateTime(DateUtils.YYYYMMDD, dateStr);
+        }
+
+        Package paramPackage = new Package();
+        if (!StringUtils.isEmpty(dateStr) && !"null".equals(dateStr) && dateStr.length() == 6){
+            //按照月度统计
+            paramPackage.setParamMonth(dateStr);
+        }else {
+            paramPackage.setCreatedTime(paramDate);
+        }
+        //查看所有用户的
+//        paramPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        List<Package> packages = packageMapper.selectPackageList(paramPackage);
+        if (CollectionUtils.isEmpty(packages)) {
+            return new HashMap();
+        }
+        List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
+        if (CollectionUtils.isEmpty(parcels)) {
+            return new HashMap();
+        }
+        Map<String, Long> collect = parcels.stream().collect(Collectors.groupingBy(Parcel::getStatus, Collectors.counting()));
+        Map<String, Long> userCountMap = parcels.stream().collect(Collectors.groupingBy(Parcel::getCreateUser, Collectors.counting()));
+        List<SysUser> allUsers = sysUserMapper.selectUserList(new SysUser());
+        Map<String, String> idNameMap = allUsers.stream().collect(toMap(item -> item.getUserId().toString(), SysUser::getName));
+
+        Map<String, List<String>> returnList = new HashMap<>();
+        List<String> xAxisData = new ArrayList<>();
+        List<String> seriesData = new ArrayList<>();
+        for (String key : collect.keySet()) {
+            xAxisData.add(key);
+            seriesData.add(collect.get(key).toString());
+        }
+        returnList.put("xAxisData", xAxisData);
+        returnList.put("seriesData", seriesData);
+
+        List<String> userXAxisData = new ArrayList<>();
+        List<String> userSeriesData = new ArrayList<>();
+        for (String key : userCountMap.keySet()) {
+            userXAxisData.add(idNameMap.get(key));
+            userSeriesData.add(collect.get(key).toString());
+        }
+        returnList.put("userXAxisData", userXAxisData);
+        returnList.put("userSeriesData", userSeriesData);
+
         return returnList;
     }
 

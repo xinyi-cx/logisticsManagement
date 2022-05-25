@@ -103,6 +103,17 @@ public class PackageController extends BaseController
     }
 
     /**
+     * 根据批次
+     * @param dateStr
+     * @return
+     */
+    @GetMapping(value = "/statisticsAllUser/{dateStr}")
+    public AjaxResult getStatisticsAllUser(@PathVariable("dateStr") String dateStr)
+    {
+        return AjaxResult.success(packageService.getStatisticsAllUser(dateStr));
+    }
+
+    /**
      * 获取面单详细信息
      */
     @PreAuthorize("@ss.hasPermi('system:package:query')")
