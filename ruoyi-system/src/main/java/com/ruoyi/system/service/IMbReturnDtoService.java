@@ -1,9 +1,6 @@
 package com.ruoyi.system.service;
 
-import com.ruoyi.system.domain.MbImport;
 import com.ruoyi.system.domain.mb.MbReturnDto;
-import com.ruoyi.system.domain.vo.PackageVo;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -63,5 +60,4 @@ public interface IMbReturnDtoService
      */
     public int deleteMbReturnDtoByCode(String code);
 
-    public void importPackage(MultipartFile file, List<MbImport> mbImportList) throws Exception;
 }

@@ -221,8 +221,6 @@ public class DPDServicesXMLClient {
             addressReceiver.setPhone(receiver.getPhone());
             addressReceiver.setPostalCode(receiver.getPostalCode());
             pkg.setReceiver(addressReceiver);
-//            pkg.setRef1(StringUtils.isEmpty(aPackage.getRef1())?"5h163K1": aPackage.getRef1());
-//            pkg.setRef2(StringUtils.isEmpty(aPackage.getRef2())?"FV/2017/12/1234": aPackage.getRef2());
 
             ServicesOpenUMLFeV4 services = new ServicesOpenUMLFeV4();
             ServiceCODOpenUMLFeV1 cod = new ServiceCODOpenUMLFeV1();

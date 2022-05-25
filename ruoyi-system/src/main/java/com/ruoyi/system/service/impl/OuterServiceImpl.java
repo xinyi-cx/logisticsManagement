@@ -272,7 +272,7 @@ public class OuterServiceImpl implements IOuterService {
 //        codes.add("892213414595342");
         codes.add("892213617113432");
         List<String> errMsgList = new ArrayList<>();
-        dealNotify(codes, notifyStr, user1, errMsgList, postUserFlag);
+        dealNotify(codes, notifyStr, user1, errMsgList, postUserFlag, "马帮主动通知");
     }
 
     private SysUser getUserId(String sign, String notify, int timestamp) throws Exception {
@@ -298,7 +298,8 @@ public class OuterServiceImpl implements IOuterService {
                            String notify,
                            SysUser user1,
                            List<String> errMsgList,
-                           Boolean checkAuthFlag) throws Exception {
+                           Boolean checkAuthFlag,
+                           String typeStr) throws Exception {
         //获取到codes
         String codeStr = String.join(",", codes);
         Map<String, String> param = new HashMap<>();
@@ -346,7 +347,7 @@ public class OuterServiceImpl implements IOuterService {
                 }
                 Map<String, Package> codePackageMap = this.getPackageListByCodes(correctList.stream().map(MbReturnDto::getCode).collect(Collectors.toList()));
                 List<Package> getPackagesByMbReturnDtos = this.getPackagesByMbReturnDtos(correctList, codePackageMap);
-                this.insertPackages(getPackagesByMbReturnDtos);
+                this.insertPackages(getPackagesByMbReturnDtos, typeStr);
                 this.changeStatusToAccept(correctList.stream().map(MbReturnDto::getCode).collect(Collectors.toList()), user1);
             }
         }
@@ -440,13 +441,13 @@ public class OuterServiceImpl implements IOuterService {
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
-    public void insertPackages(List<Package> packages) throws Exception {
+    public void insertPackages(List<Package> packages, String typeStr) throws Exception {
 
         if (CollectionUtils.isEmpty(packages)) {
             return;
         }
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
-        batchTaskHistory.setType("马帮导入");
+        batchTaskHistory.setType(typeStr);
         batchTaskHistory.setStatus("导入成功");
 //        batchTaskHistory.setExcelUrl(documents.getId().toString());
         batchTaskHistory.setCreateUser(packages.get(0).getCreateUser());
@@ -657,7 +658,7 @@ public class OuterServiceImpl implements IOuterService {
         List<String> codes = mbImportList.stream().map(MbImport::getCode).collect(Collectors.toList());
 
         List<String> errMsgList = new ArrayList<>();
-        dealNotify(codes, "orderChange", sysUser, errMsgList, userFlag);
+        dealNotify(codes, "orderChange", sysUser, errMsgList, userFlag, "用户导入马帮信息");
         return errMsgList;
     }
 
