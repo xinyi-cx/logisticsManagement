@@ -78,3 +78,20 @@ create table user_authorization
 ) engine = innodb
   CHARSET = utf8
   auto_increment = 100 comment = '用户授权信息表';
+
+drop table if exists mb_msg;
+create table mb_msg
+(
+    code     varchar(30)   default null  comment 'code',
+    msg_code   varchar(30)  default null comment '返回值',
+    msg  TEXT default null comment '信息',
+    is_delete   tinyint(1)   DEFAULT '0' comment '是否删除',
+    create_by   varchar(64)  default '' comment '创建者',
+    create_time datetime comment '创建时间',
+    update_by   varchar(64)  default '' comment '更新者',
+    update_time datetime comment '更新时间',
+    remark      varchar(500) default null comment '备注',
+    primary key (user_id)
+) engine = innodb
+  CHARSET = utf8
+  auto_increment = 100 comment = '马帮信息';

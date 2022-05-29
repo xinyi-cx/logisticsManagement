@@ -5,6 +5,7 @@ import com.ruoyi.system.domain.MbImport;
 import com.ruoyi.system.domain.mb.MbReceiveDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -23,6 +24,10 @@ public interface IOuterService
      * @throws Exception
      */
     public void receiveMb(MbReceiveDto mbReceiveDto) throws Exception;
+
+    public void changeAccept(MbImport mbImport);
+
+    public void getPDF(String pdfUrl, HttpServletResponse response);
 
     public List<String> importPackage(MultipartFile file, List<MbImport> mbImportList, SysUser sysUser, Boolean userFlag) throws Exception;
 

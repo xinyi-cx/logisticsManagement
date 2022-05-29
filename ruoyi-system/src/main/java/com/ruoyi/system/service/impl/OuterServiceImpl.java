@@ -22,6 +22,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -46,6 +49,9 @@ public class OuterServiceImpl implements IOuterService {
 
     @Value("${mb.apiKey}")
     private String apiKey;
+
+    @Value("${frontPath}")
+    private String frontPath;
 
     @Value("${mb.phone}")
     private String phone;
@@ -91,6 +97,18 @@ public class OuterServiceImpl implements IOuterService {
 
     @Autowired
     private UserAuthorizationMapper userAuthorizationMapper;
+
+    @Autowired
+    private MbMsgMapper mbMsgMapper;
+
+    private void saveMbMsg(String code,String msgCode, String msg, String remark){
+        MbMsg mbMsg = new MbMsg();
+        mbMsg.setCode(code);
+        mbMsg.setMsgCode(msgCode);
+        mbMsg.setMsg(msg);
+        mbMsg.setRemark(remark);
+        mbMsgMapper.insertMbMsg(mbMsg);
+    }
 
     private Map<String, Package> getPackageListByCodes(List<String> codes) {
         List<Parcel> parcelList = parcelMapper.selectParcelListByReferenceIn(codes);
@@ -212,6 +230,7 @@ public class OuterServiceImpl implements IOuterService {
         if (StringUtils.isEmpty(res) || res.contains("ErrorCode")) {
             if (res.contains("ErrorCode")) {
                 JSONObject jsonObject = JSON.parseObject(res);
+                saveMbMsg("find", jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(),"主动查找");
                 if ("9999".equals(jsonObject.get("ErrorCode").toString())) {
 //                    成功了
                     return res;
@@ -252,7 +271,7 @@ public class OuterServiceImpl implements IOuterService {
     @Override
     public void receiveMb(MbReceiveDto mbReceiveDto) throws Exception {
         String notify = mbReceiveDto.getNotify().replace(" ", "+");
-        SysUser user1 = getUserId(mbReceiveDto.getSign(), mbReceiveDto.getNotify(), mbReceiveDto.getTimestamp());
+//        SysUser user1 = getUserId(mbReceiveDto.getSign(), mbReceiveDto.getNotify(), mbReceiveDto.getTimestamp());
         String notifyJson = Base64.decryptBASE64(notify);
 //        base64_encode(json_encode(xxx))
         JSONObject jsonObject = JSONObject.parseObject(notifyJson);
@@ -270,13 +289,26 @@ public class OuterServiceImpl implements IOuterService {
         List<String> codes = JSON.parseArray(JSONObject.parseObject(jsonObject.get("orderInfo").toString()).get("codes").toString(), String.class);
         notifyStr = "orderChange";
 //        codes.add("892213414595342");
-        codes.add("892213617113432");
+        codes.add("892214828719791");
         List<String> errMsgList = new ArrayList<>();
-        dealNotify(codes, notifyStr, user1, errMsgList, postUserFlag, "马帮主动通知");
+        if (!postUserFlag){
+            SysUser user1 = userMapper.selectUserById(1L);
+            dealNotify(codes, notifyStr, user1, errMsgList, postUserFlag, "马帮主动通知");
+        }else{
+            dealNotify(codes, notifyStr, null, errMsgList, postUserFlag, "马帮主动通知");
+        }
+    }
+
+    @Override
+    public void changeAccept(MbImport mbImport){
+        List<String> codes = new ArrayList<>();
+        codes.add(mbImport.getCode());
+        SysUser sysUser = userMapper.selectUserById(1L);
+        changeStatusToAccept(codes, sysUser);
     }
 
     private SysUser getUserId(String sign, String notify, int timestamp) throws Exception {
-        String apiKey = sign.replace(notify, "").replace(String.valueOf(timestamp), "");
+        String apiKey = convertMD5(sign).replace("notify="+notify, "").replace("&timestamp="+ timestamp, "");
         SysUser user = new SysUser();
         user.setApiKey(apiKey);
         SysUser user1 = userMapper.selectUserByUser(user);
@@ -284,6 +316,20 @@ public class OuterServiceImpl implements IOuterService {
             throw new Exception("apiKey系统中未找到匹配用户");
         }
         return user1;
+    }
+
+    /**
+     * 加密解密算法 执行一次加密，两次解密
+     */
+    public static String convertMD5(String inStr){
+
+        char[] a = inStr.toCharArray();
+        for (int i = 0; i < a.length; i++){
+            a[i] = (char) (a[i] ^ 't');
+        }
+        String s = new String(a);
+        return s;
+
     }
 
     /**
@@ -304,7 +350,8 @@ public class OuterServiceImpl implements IOuterService {
         String codeStr = String.join(",", codes);
         Map<String, String> param = new HashMap<>();
         param.put("codes", codeStr);
-        String returnStr = getMbRes("api.biaoju.order.find", param, user1.getApiAccountId(), user1.getApiKey());
+        String returnStr = getMbRes("api.biaoju.order.find", param,
+                null == user1 ? apiAccountId : user1.getApiAccountId(), null == user1 ? apiKey : user1.getApiKey());
         JSONObject jsonObject = JSON.parseObject(JSON.parseObject(returnStr).get("Data").toString());
         List<MbReturnDto> mbReturnDtos = JSON.parseArray(jsonObject.get("orders").toString(), MbReturnDto.class);
         if ("orderChange".equals(notify)) {
@@ -320,8 +367,10 @@ public class OuterServiceImpl implements IOuterService {
                         item.setAddressReceiveStr(JSON.toJSONString(item.getAddressReceive()));
                         item.setExtendFieldsStr(JSON.toJSONString(item.getExtendFields()));
                         item.setItemListStr(JSON.toJSONString(item.getItemList()));
-                        item.setCreateBy(user1.getUserId().toString());
-                        item.setUpdateBy(user1.getUserId().toString());
+                        if (null != user1) {
+                            item.setCreateBy(user1.getUserId().toString());
+                            item.setUpdateBy(user1.getUserId().toString());
+                        }
                     }
             );
 
@@ -355,7 +404,6 @@ public class OuterServiceImpl implements IOuterService {
 
     private List<MbReturnDto> checkUser(SysUser user1, List<MbReturnDto> mbReturnDtos, List<String> errMsgList) {
         UserAuthorizationSys param = new UserAuthorizationSys();
-        param.setCreateBy(user1.getUserId().toString());
         List<UserAuthorizationSys> userAuthorizationSys = userAuthorizationMapper.selectUserAuthorizationList(param);
 
         boolean errorFlag = false;
@@ -371,19 +419,21 @@ public class OuterServiceImpl implements IOuterService {
                 errorMap.put(dto.getCode(), errSb);
             }
         } else {
-            Map<String, String> userTokenMap = userAuthorizationSys.stream().collect(toMap(
-                    UserAuthorizationSys::getUserName, UserAuthorizationSys::getUserToken
+            Map<String, UserAuthorizationSys> userTokenMap = userAuthorizationSys.stream().collect(toMap(
+                    UserAuthorizationSys::getUserName, Function.identity()
             ));
             for (MbReturnDto dto : mbReturnDtos) {
                 customer customer = JSON.parseObject(dto.getCustomer(), customer.class);
                 if (!userTokenMap.containsKey(customer.getLogisticsKeys().getWishu().getApi_key())
-                        || !userTokenMap.get(customer.getLogisticsKeys().getWishu().getApi_key())
+                        || !userTokenMap.get(customer.getLogisticsKeys().getWishu().getApi_key()).getUserToken()
                         .equals(customer.getLogisticsKeys().getWishu().getApi_secret())) {
                     errorFlag = true;
                     String errSb = "customer, api_key: " + customer.getLogisticsKeys().getWishu().getApi_key() +
                             "不存在, 或者与api_secret不匹配, 请联系：" + phone;
                     errorMap.put(dto.getCode(), errSb);
                 } else {
+                    dto.setCreateBy(userTokenMap.get(customer.getLogisticsKeys().getWishu().getApi_key()).getCreateBy());
+                    dto.setUpdateBy(userTokenMap.get(customer.getLogisticsKeys().getWishu().getApi_key()).getCreateBy());
                     correctInsertMbReturnDto.add(dto);
                 }
             }
@@ -605,7 +655,7 @@ public class OuterServiceImpl implements IOuterService {
         //查询更新后的数据
         Map<String, Package> codePackageMap = this.getPackageListByCodes(codes);
         for (String code : codePackageMap.keySet()) {
-//            changeOne(code, codePackageMap.get(code), user);
+            changeOne(code, codePackageMap.get(code), user);
         }
     }
 
@@ -616,14 +666,16 @@ public class OuterServiceImpl implements IOuterService {
             if (!"OK".equals(checkCountryAndZip.get(code))) {
                 MbException mbException = new MbException();
                 mbException.setCode(code);
-                mbException.setChangeStatus("changeStatus");
+                mbException.setChangeStatus("exception");
                 mbException.setProcessMessage(checkCountryAndZip.get(code));
 
                 Map<String, String> encodeParamsMap = new HashMap<>();
                 encodeParamsMap.put("changeStatus", "exception");
                 String enStr = net.arnx.jsonic.JSON.encode(mbException);
                 errMsgList.add("code: " + code + "导入失败，失败原因：" + checkCountryAndZip.get(code));
-                String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", user.getApiAccountId(), user.getApiKey(), encodeParamsMap, enStr));
+                String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", null == user ? apiAccountId : user.getApiAccountId(), null == user ? apiKey : user.getApiKey(), encodeParamsMap, enStr));
+                JSONObject jsonObject = JSON.parseObject(res);
+                saveMbMsg(code + "exception", jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(), mbException.toString());
             }
         }
     }
@@ -639,15 +691,17 @@ public class OuterServiceImpl implements IOuterService {
         mbAccept.setCode(code);
         mbAccept.setChangeStatus("accept");
         mbAccept.setExpressChannelCode(pac.getParcels().get(0).getWaybill());
+        mbAccept.setSupplierInnerCode(pac.getParcels().get(0).getWaybill());
 
 //        本地现在是二进制文件 怎么传输？
 //        mbAccept.setLabelPDFUrl();
+        //不为空就可以 用来拼接参数确定的
         Map<String, String> encodeParamsMap = new HashMap<>();
         encodeParamsMap.put("changeStatus", "accept");
         String enStr = net.arnx.jsonic.JSON.encode(mbAccept);
-        String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", user.getApiAccountId(), user.getApiKey(), encodeParamsMap, enStr));
-        //校验
-
+        String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", null == user ? apiAccountId : user.getApiAccountId(), null == user ? apiKey : user.getApiKey(), encodeParamsMap, enStr));
+        JSONObject jsonObject = JSON.parseObject(res);
+        saveMbMsg(code+"accept", jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(), mbAccept.toString());
     }
 
     @Override
@@ -660,6 +714,22 @@ public class OuterServiceImpl implements IOuterService {
         List<String> errMsgList = new ArrayList<>();
         dealNotify(codes, "orderChange", sysUser, errMsgList, userFlag, "用户导入马帮信息");
         return errMsgList;
+    }
+
+    @Override
+    public void getPDF(String pdfUrl, HttpServletResponse response) {
+        String filePath = frontPath + "/" + pdfUrl;
+        File file = new File(filePath);
+        byte[] data = null;
+        try {
+            FileInputStream input = new FileInputStream(file);
+            data = new byte[input.available()];
+            input.read(data);
+            response.getOutputStream().write(data);
+            input.close();
+        }catch (Exception e){
+            System.out.println("pdf文件错误");
+        }
     }
 
 }

@@ -8,6 +8,16 @@ public class MbImport {
     @Excel(name = "马帮内部订单号")
     private String code;
 
+    private String pdfUrl;
+
+    public String getPdfUrl() {
+        return pdfUrl;
+    }
+
+    public void setPdfUrl(String pdfUrl) {
+        this.pdfUrl = pdfUrl;
+    }
+
     public String getCode() {
         return code;
     }

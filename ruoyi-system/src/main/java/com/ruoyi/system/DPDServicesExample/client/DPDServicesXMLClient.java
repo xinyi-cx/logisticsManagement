@@ -325,6 +325,9 @@ public class DPDServicesXMLClient {
             documentsOne.setUpdateUser(packages.get(0).getUpdateUser());
             documentsList.add(documentsOne);
         }
+        for (Documents documents : documentsList) {
+            saveFileToLocal(documents);
+        }
         documentsMapper.batchInsert(documentsList);
         return returnResponses;
     }
@@ -358,11 +361,15 @@ public class DPDServicesXMLClient {
         return byteArrayOutputStream.toByteArray();
     }
 
+    @Value("${frontPath}")
+    private String frontPath;
+
     private void saveFileToLocal(Documents document) {
         //保存文件到本地
         FileOutputStream fileOutputStream = null;
         try {
-            String path = "src/main/webapp/PDF/";        //绝对路径
+            String path = frontPath;
+            //绝对路径
             File file = new File(path);
             if (!file.exists()) {
                 file.mkdirs();
