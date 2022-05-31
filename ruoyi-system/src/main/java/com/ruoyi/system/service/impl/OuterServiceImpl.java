@@ -101,7 +101,7 @@ public class OuterServiceImpl implements IOuterService {
     @Autowired
     private MbMsgMapper mbMsgMapper;
 
-    private void saveMbMsg(String code,String msgCode, String msg, String remark){
+    private void saveMbMsg(String code, String msgCode, String msg, String remark) {
         MbMsg mbMsg = new MbMsg();
         mbMsg.setCode(code);
         mbMsg.setMsgCode(msgCode);
@@ -215,8 +215,8 @@ public class OuterServiceImpl implements IOuterService {
      *
      * @param methodName
      * @param encodeParamsMap
-     * @param apiAccountId 用户绑定的apiAccountId
-     * @param apiKey 用户绑定的apiKey
+     * @param apiAccountId    用户绑定的apiAccountId
+     * @param apiKey          用户绑定的apiKey
      * @return
      * @throws Exception
      */
@@ -230,7 +230,7 @@ public class OuterServiceImpl implements IOuterService {
         if (StringUtils.isEmpty(res) || res.contains("ErrorCode")) {
             if (res.contains("ErrorCode")) {
                 JSONObject jsonObject = JSON.parseObject(res);
-                saveMbMsg("find", jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(),"主动查找");
+                saveMbMsg("find", jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(), "主动查找");
                 if ("9999".equals(jsonObject.get("ErrorCode").toString())) {
 //                    成功了
                     return res;
@@ -291,24 +291,33 @@ public class OuterServiceImpl implements IOuterService {
 //        codes.add("892213414595342");
         codes.add("892214828719791");
         List<String> errMsgList = new ArrayList<>();
-        if (!postUserFlag){
+        if (!postUserFlag) {
             SysUser user1 = userMapper.selectUserById(1L);
             dealNotify(codes, notifyStr, user1, errMsgList, postUserFlag, "马帮主动通知");
-        }else{
+        } else {
             dealNotify(codes, notifyStr, null, errMsgList, postUserFlag, "马帮主动通知");
         }
     }
 
     @Override
-    public void changeAccept(MbImport mbImport){
+    public void changeAccept(MbImport mbImport) {
         List<String> codes = new ArrayList<>();
         codes.add(mbImport.getCode());
         SysUser sysUser = userMapper.selectUserById(1L);
         changeStatusToAccept(codes, sysUser);
     }
 
+    /**
+     * 废弃- 因为md5加密无法解密
+     *
+     * @param sign
+     * @param notify
+     * @param timestamp
+     * @return
+     * @throws Exception
+     */
     private SysUser getUserId(String sign, String notify, int timestamp) throws Exception {
-        String apiKey = convertMD5(sign).replace("notify="+notify, "").replace("&timestamp="+ timestamp, "");
+        String apiKey = sign.replace("notify=" + notify, "").replace("&timestamp=" + timestamp, "");
         SysUser user = new SysUser();
         user.setApiKey(apiKey);
         SysUser user1 = userMapper.selectUserByUser(user);
@@ -319,24 +328,14 @@ public class OuterServiceImpl implements IOuterService {
     }
 
     /**
-     * 加密解密算法 执行一次加密，两次解密
-     */
-    public static String convertMD5(String inStr){
-
-        char[] a = inStr.toCharArray();
-        for (int i = 0; i < a.length; i++){
-            a[i] = (char) (a[i] ^ 't');
-        }
-        String s = new String(a);
-        return s;
-
-    }
-
-    /**
      * 02当有待处理订单提交到镖局物流平时，触发此通知
      *
      * @param codes
-     * @return
+     * @param notify
+     * @param user1
+     * @param errMsgList
+     * @param checkAuthFlag
+     * @param typeStr
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
@@ -385,7 +384,7 @@ public class OuterServiceImpl implements IOuterService {
             }
             if (!CollectionUtils.isEmpty(insertDPDList)) {
                 List<MbReturnDto> checkUserList;
-                if (checkAuthFlag){
+                if (checkAuthFlag) {
                     checkUserList = checkUser(user1, insertDPDList, errMsgList);
                 } else {
                     checkUserList = insertDPDList;
@@ -402,6 +401,14 @@ public class OuterServiceImpl implements IOuterService {
         }
     }
 
+    /**
+     * 校验里面的customer数据 是否是咱们系统的客户
+     *
+     * @param user1
+     * @param mbReturnDtos
+     * @param errMsgList
+     * @return
+     */
     private List<MbReturnDto> checkUser(SysUser user1, List<MbReturnDto> mbReturnDtos, List<String> errMsgList) {
         UserAuthorizationSys param = new UserAuthorizationSys();
         List<UserAuthorizationSys> userAuthorizationSys = userAuthorizationMapper.selectUserAuthorizationList(param);
@@ -701,12 +708,15 @@ public class OuterServiceImpl implements IOuterService {
         String enStr = net.arnx.jsonic.JSON.encode(mbAccept);
         String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", null == user ? apiAccountId : user.getApiAccountId(), null == user ? apiKey : user.getApiKey(), encodeParamsMap, enStr));
         JSONObject jsonObject = JSON.parseObject(res);
-        saveMbMsg(code+"accept", jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(), mbAccept.toString());
+        saveMbMsg(code + "accept", jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(), mbAccept.toString());
     }
 
     @Override
-    public List<String> importPackage(MultipartFile file, List<MbImport> mbImportList, SysUser sysUser, Boolean userFlag) throws Exception{
-        if (CollectionUtils.isEmpty(mbImportList)){
+    public List<String> importPackage(MultipartFile file,
+                                      List<MbImport> mbImportList,
+                                      SysUser sysUser,
+                                      Boolean userFlag) throws Exception {
+        if (CollectionUtils.isEmpty(mbImportList)) {
             return Arrays.asList("导入数据不能为空");
         }
         List<String> codes = mbImportList.stream().map(MbImport::getCode).collect(Collectors.toList());
@@ -720,14 +730,14 @@ public class OuterServiceImpl implements IOuterService {
     public void getPDF(String pdfUrl, HttpServletResponse response) {
         String filePath = frontPath + "/" + pdfUrl;
         File file = new File(filePath);
-        byte[] data = null;
+        byte[] data;
         try {
             FileInputStream input = new FileInputStream(file);
             data = new byte[input.available()];
             input.read(data);
             response.getOutputStream().write(data);
             input.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("pdf文件错误");
         }
     }
