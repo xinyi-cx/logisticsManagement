@@ -54,7 +54,7 @@
             <el-tab-pane label="绑定马帮" name="mbInfo">
               <mbInfo :user="user" />
             </el-tab-pane>
-            <el-tab-pane label="发件信息" name="userSender">
+            <el-tab-pane label="发件人信息" name="userSender">
               <userSender :user="user" />
             </el-tab-pane>
           </el-tabs>

@@ -1,19 +1,19 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="分类1" prop="ref1">
+      <el-form-item label="备注1" prop="ref1">
         <el-input
           v-model="queryParams.ref1"
-          placeholder="请输入分类1"
+          placeholder="请输入备注1的内容"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="分类2" prop="ref2">
+      <el-form-item label="备注2" prop="ref2">
         <el-input
           v-model="queryParams.ref2"
-          placeholder="请输入分类2"
+          placeholder="请输入备注2的内容"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -28,10 +28,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="邮政编码" prop="postalCode">
+      <el-form-item label="邮编" prop="postalCode">
         <el-input
           v-model="queryParams.postalCode"
-          placeholder="请输入邮政编码"
+          placeholder="请输入邮编"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -137,7 +137,7 @@
         </template>
         </el-table-column>
       <!-- 收货人全名 -->
-      <el-table-column label="收货人全名" align="center" prop="receiverName" />
+      <el-table-column label="收货人姓名" width="180" align="center" prop="receiverName" />
       <!-- 国家 -->
       <el-table-column label="国家" align="center" prop="receiverCountryCode" >
         <template slot-scope="scope">
@@ -151,19 +151,19 @@
       <!-- 重量(kg) -->
       <el-table-column label="重量(kg)" align="center" prop="weight" />
       <!-- 邮码 -->
-      <el-table-column label="邮码" align="center" prop="receiverPostalCode" />
+      <el-table-column label="邮编" align="center" prop="receiverPostalCode" />
       <!-- 手机号码 -->
       <el-table-column label="手机号码" align="center" prop="receiverPhone" />
       <!-- 内部引用号 -->
-      <el-table-column label="内部引用号" align="center" prop="reference" />
-      <!-- 备注 -->
-      <el-table-column label="备注" align="center" prop="content" />
+      <el-table-column label="内部单号" align="center" prop="reference" />
+      <!-- 物品类型-description -->
+      <el-table-column label="物品类型" align="center" prop="content" />
       <!-- 下载次数 -->
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
-      <!-- 分类 -->
-      <el-table-column label="分类" align="center" prop="ref1" />
-      <!-- 分类2 -->
-      <el-table-column label="分类2" align="center" prop="ref2" />
+      <!-- 备注1 -->
+      <el-table-column label="备注1" align="center" prop="ref1" />
+      <!-- 备注2 -->
+      <el-table-column label="备注2" align="center" prop="ref2" />
       <!-- 操作 -->
       <el-table-column label="操作" align="center" prop="id">
          <template slot-scope="scope">
@@ -263,8 +263,8 @@
         </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="收货人全名" prop="receiverName">
-            <el-input v-model="form.receiverName" placeholder="请输入收获人全名" />
+          <el-form-item label="收货人姓名" prop="receiverName">
+            <el-input v-model="form.receiverName" placeholder="请输入收获人姓名" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -296,7 +296,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="邮政编码" prop="receiverPostalCode">
+          <el-form-item label="邮编" prop="receiverPostalCode">
             <el-input v-model="form.receiverPostalCode" placeholder="请输入邮政编码" maxlength="30" />
           </el-form-item>
         </el-col>
@@ -322,6 +322,7 @@
         <h3 class="headline">其他</h3>
       </el-row>
       <el-row>
+        <!-- 内部引用号和order到底是不是一回事儿？Order:328532-00001442 -->
         <el-col :span="12">
           <el-form-item label="内部引用号" prop="reference">
             <el-input v-model="form.reference" placeholder="请输入内部引用号" maxlength="30" />

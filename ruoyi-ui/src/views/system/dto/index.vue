@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="内部订单号" prop="code">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="90px">
+      <el-form-item label="ERP订单号" prop="code">
         <el-input
-          v-model="queryParams.code"
-          placeholder="请输入内部订单号"
+          v-model="queryParams.customizeCode"
+          placeholder="请输入ERP订单号"
           clearable
           size="small"
           style="width: 240px"
@@ -12,7 +12,7 @@
         />
       </el-form-item>
 
-      <el-form-item label="物流产品运单号" prop="expressChannelCode">
+      <el-form-item label="运单号" prop="expressChannelCode">
         <el-input
           v-model="queryParams.expressChannelCode"
           placeholder="请输入物流产品运单号"
@@ -110,6 +110,47 @@
 
     <el-table v-loading="loading" :data="dtoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <!--   ERP订单号   -->
+      <el-table-column label="ERP订单号" align="center" prop="customizeCode" />
+      <!--   运单号   -->
+      <el-table-column label="运单号" align="center" prop="expressChannelCode" />
+      <!--   客户名称   -->
+      <el-table-column label="客户名称" align="center" prop="customer" />
+      <el-table-column label="订单生成时间" align="center" prop="timeCreated" />
+      <!--   物流渠道   -->
+      <el-table-column label="物流渠道" align="center" prop="expressChannel" />
+      <el-table-column label="发件人" align="center" prop="addressPickupStr" />
+      <el-table-column label="收件人" align="center" prop="addressReceiveStr" />
+      <el-table-column label="退件人" align="center" prop="addressBackStr" />
+<!--      <el-table-column label="cod 订单金额" align="center" prop="codValue" />-->
+      <el-table-column label="COD" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.codFlag == 1">scope.row.codValue</span>
+          <span v-else>——</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['system:dto:edit']"
+          >查看详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['system:dto:remove']"
+          >删除</el-button>
+        </template>
+      </el-table-column>
+
+
+
+      <!--
       <el-table-column label="内部订单号" align="center" prop="code" />
       <el-table-column label="ERP自定义单号" align="center" prop="customizeCode" />
       <el-table-column label="平台订单编号：例如ebay,wish 等订单编号" align="center" prop="platformTradeCode" />
@@ -172,8 +213,9 @@
           >删除</el-button>
         </template>
       </el-table-column>
-    </el-table>
 
+-->
+    </el-table>
     <pagination
       v-show="total>0"
       :total="total"

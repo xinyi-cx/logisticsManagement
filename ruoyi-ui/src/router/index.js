@@ -203,7 +203,21 @@ export const dynamicRoutes = [
         meta: { title: '数据看板', activeMenu: '/dashboard' }
       }
     ]
-  }
+  },
+  {
+    path: '/system/show',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:pdf:list'],
+    children: [
+      {
+        path: 'index/:id(\\d+)',
+        component: () => import('@/views/system/showpdf/index'),
+        name: 'ShowPdf',
+        meta: { title: 'pdf查看页面', activeMenu: '/system/show' }
+      }
+    ]
+  },
   // {
   //   path: '/tool/failure',
   //   component: Layout,

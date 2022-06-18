@@ -1,19 +1,19 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="分类1" prop="ref1">
+      <el-form-item label="备注1" prop="ref1">
         <el-input
           v-model="queryParams.ref1"
-          placeholder="请输入分类1"
+          placeholder="请输入备注1的内容"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="分类2" prop="ref2">
+      <el-form-item label="备注2" prop="ref2">
         <el-input
           v-model="queryParams.ref2"
-          placeholder="请输入分类2"
+          placeholder="请输入备注2的内容"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -28,7 +28,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="邮政编码" prop="postalCode">
+      <el-form-item label="邮编" prop="postalCode">
         <el-input
           v-model="queryParams.postalCode"
           placeholder="请输入邮政编码"
@@ -135,7 +135,7 @@
         </template>
         </el-table-column>
       <!-- 收货人全名 -->
-      <el-table-column label="收货人全名" align="center" prop="receiverName" />
+      <el-table-column label="收货人姓名" width="120" align="center" prop="receiverName" />
       <!-- 国家 -->
       <el-table-column label="国家" align="center" prop="receiverCountryCode" >
         <template slot-scope="scope">
@@ -144,24 +144,24 @@
       </el-table-column>
       <!-- 城市 -->
       <el-table-column label="城市" align="center" prop="receiverCity" />
+      <!-- 邮编 -->
+      <el-table-column label="邮编" align="center" prop="receiverPostalCode" />
+      <!-- 手机号码 -->
+      <el-table-column label="手机号码" align="center" prop="receiverPhone" />
       <!-- 货物金额(pln) -->
       <el-table-column label="货物金额(pln)" align="center" prop="pln" width="180"/>
       <!-- 重量(kg) -->
       <el-table-column label="重量(kg)" align="center" prop="weight" />
-      <!-- 邮码 -->
-      <el-table-column label="邮码" align="center" prop="receiverPostalCode" />
-      <!-- 手机号码 -->
-      <el-table-column label="手机号码" align="center" prop="receiverPhone" />
       <!-- 内部引用号 -->
-      <el-table-column label="内部引用号" align="center" prop="reference" />
-      <!-- 备注 -->
-      <el-table-column label="备注" align="center" prop="content" />
+      <el-table-column label="内部单号" align="center" prop="reference" />
+      <!-- 货品名称-description -->
+      <el-table-column label="物品类型" align="center" prop="content" />
       <!-- 下载次数 -->
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
-      <!-- 分类 -->
-      <el-table-column label="分类" align="center" prop="ref1" />
-      <!-- 分类2 -->
-      <el-table-column label="分类2" align="center" prop="ref2" />
+      <!-- 备注1 reference1 -->
+      <el-table-column label="备注1" show-overflow-tooltip align="center" prop="ref1" />
+      <!-- 备注2 reference2 -->
+      <el-table-column label="备注2" show-overflow-tooltip align="center" prop="ref2" />
       <!-- 操作 -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
          <template slot-scope="scope">
