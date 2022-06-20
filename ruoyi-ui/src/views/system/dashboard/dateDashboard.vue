@@ -1,6 +1,4 @@
 <template>
-
-
   <div class="app-container">
     <div class="day-dashboard" v-show="dayShow">
       <el-form ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
@@ -55,7 +53,7 @@ import echarts from 'echarts';
 require('echarts/theme/macarons') // echarts theme
 
 export default {
-  name: 'dashboard',
+  name: 'dateDashboard',
   data() {
     return {
       dayShow: true,
