@@ -9,7 +9,7 @@ ruoyi:
   # 实例演示开关
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: D:/ruoyi/uploadPath
+  profile: C:/ruoyi/uploadPath
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数组计算 char 字符验证
@@ -49,7 +49,7 @@ spring:
       master:
         url: jdbc:mysql://127.0.0.1:3306/business?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
         username: root
-        password: dev
+        password: 1234
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
@@ -188,3 +188,13 @@ dpdservices:
     login: 33368701
     password: lZIVxoSrtWSZhhPJ
     channel: 333687
+
+mb:
+  url: https://www.i8956.com/interface/index.php
+  apiAccountId: 29689
+  apiKey: 2675166dc4b2242bf88c3ea25a452b3f
+  phone: 13888888888
+  importUserFlag: false
+  postUserFlag: false
+frontPath: C:/ruoyi/uploadPath/packagePdf/
+localIp: http://118.195.237.144/dev-api/profile/packagePdf

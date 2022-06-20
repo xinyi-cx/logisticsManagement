@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.lang.Exception;
 import java.util.ArrayList;
@@ -53,9 +54,9 @@ public class DPDServicesXMLClient {
 
 //    @PostConstruct
     public void runExamples() {
-        Documents document = documentsMapper.selectDocumentsById((long) 119);
-        saveFileToLocal(document);
-//        findPostalCode();
+//        Documents document = documentsMapper.selectDocumentsById((long) 119);
+//        saveFileToLocal(document);
+        findPostalCode();
     }
 
     private void findPostalCode() {
@@ -63,7 +64,7 @@ public class DPDServicesXMLClient {
 
         generatePackagesNumber(authData);
 ////        generateSpedLabels2(authData);
-//        generateSpedLabelsBySessionId(sessionId);
+        generateSpedLabelsBySessionId(sessionId);
 //
 //        generateProtocol(authData);
 
@@ -130,7 +131,7 @@ public class DPDServicesXMLClient {
         DocumentGenerationResponseV1 ret = new DocumentGenerationResponseV1();
         try {
             ret = xmlServices.generateSpedLabelsV4(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.LBL_PRINTER, OutputLabelTypeEnumV1.BIC_3, "", authData);
-//            saveFile(sessionId, ret);
+            saveFile(sessionId, ret);
             System.out.println("test");
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
@@ -177,6 +178,8 @@ public class DPDServicesXMLClient {
         documentsInsert.setFileName("file");
         documentsInsert.setDisplayName(id.toString() + ".pdf");
         documentsMapper.insertDocuments(documentsInsert);
+
+        saveFileToLocal(documentsInsert);
     }
 
     /**

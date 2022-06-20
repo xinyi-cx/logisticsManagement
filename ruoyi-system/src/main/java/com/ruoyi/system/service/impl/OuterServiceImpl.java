@@ -287,9 +287,9 @@ public class OuterServiceImpl implements IOuterService {
 //        }
         String notifyStr = jsonObject.get("notify").toString();
         List<String> codes = JSON.parseArray(JSONObject.parseObject(jsonObject.get("orderInfo").toString()).get("codes").toString(), String.class);
-        notifyStr = "orderChange";
+//        notifyStr = "orderChange";
 //        codes.add("892213414595342");
-        codes.add("892214828719791");
+//        codes.add("892214828719791");
         List<String> errMsgList = new ArrayList<>();
         if (!postUserFlag) {
             SysUser user1 = userMapper.selectUserById(1L);
@@ -687,6 +687,9 @@ public class OuterServiceImpl implements IOuterService {
         }
     }
 
+    @Value("${localIp}")
+    private String localIp;
+
     /**
      * 会发送多次post请求
      *
@@ -699,9 +702,8 @@ public class OuterServiceImpl implements IOuterService {
         mbAccept.setChangeStatus("accept");
         mbAccept.setExpressChannelCode(pac.getParcels().get(0).getWaybill());
         mbAccept.setSupplierInnerCode(pac.getParcels().get(0).getWaybill());
+        mbAccept.setLabelPDFUrl(localIp + pac.getParcels().get(0).getPackageId().toString() + ".pdf");
 
-//        本地现在是二进制文件 怎么传输？
-//        mbAccept.setLabelPDFUrl();
         //不为空就可以 用来拼接参数确定的
         Map<String, String> encodeParamsMap = new HashMap<>();
         encodeParamsMap.put("changeStatus", "accept");
