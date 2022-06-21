@@ -680,6 +680,7 @@ public class OuterServiceImpl implements IOuterService {
                 encodeParamsMap.put("changeStatus", "exception");
                 String enStr = net.arnx.jsonic.JSON.encode(mbException);
                 errMsgList.add("code: " + code + "导入失败，失败原因：" + checkCountryAndZip.get(code));
+                saveMbMsg(code + "sendBefore", "mbException", mbException.toString(), "");
                 String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update", null == user ? apiAccountId : user.getApiAccountId(), null == user ? apiKey : user.getApiKey(), encodeParamsMap, enStr));
                 JSONObject jsonObject = JSON.parseObject(res);
                 saveMbMsg(code + "exception", jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(), mbException.toString());
@@ -703,6 +704,8 @@ public class OuterServiceImpl implements IOuterService {
         mbAccept.setExpressChannelCode(pac.getParcels().get(0).getWaybill());
         mbAccept.setSupplierInnerCode(pac.getParcels().get(0).getWaybill());
         mbAccept.setLabelPDFUrl(localIp + pac.getParcels().get(0).getPackageId().toString() + ".pdf");
+
+        saveMbMsg(code + "sendBefore", "mbAccept", mbAccept.toString(), "");
 
         //不为空就可以 用来拼接参数确定的
         Map<String, String> encodeParamsMap = new HashMap<>();

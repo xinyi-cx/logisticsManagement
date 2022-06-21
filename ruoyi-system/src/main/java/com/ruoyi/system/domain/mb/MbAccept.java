@@ -1,5 +1,8 @@
 package com.ruoyi.system.domain.mb;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MbAccept {
 
     private String code;//内部订单号
@@ -81,6 +84,23 @@ public class MbAccept {
     }
 
     public void setLabelPDFUrl(String labelPDFUrl) {
-        this.labelPDFUrl = labelPDFUrl;
+        Map<String, Object> labelPDFUrlMap = new HashMap<>();
+        Map<String, Object> b10_10 = new HashMap<>();
+        b10_10.put("a", "");
+        b10_10.put("c", "");
+        b10_10.put("p", "");
+        b10_10.put("i", "");
+        b10_10.put("ac", "");
+        labelPDFUrlMap.put("b10_10", b10_10);
+
+        Map<String, Object> a4 = new HashMap<>();
+        a4.put("a", "");
+        a4.put("c", "");
+        a4.put("p", "");
+        a4.put("i", "");
+        a4.put("ac", labelPDFUrl);
+        labelPDFUrlMap.put("a4", a4);
+
+        this.labelPDFUrl = labelPDFUrlMap.toString();
     }
 }
