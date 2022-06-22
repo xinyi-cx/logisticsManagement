@@ -1,5 +1,6 @@
 package com.ruoyi.system.DPDServicesExample.client;
 
+import com.alibaba.fastjson.JSONObject;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
@@ -12,12 +13,13 @@ import com.ruoyi.system.dpdservices.*;
 import com.ruoyi.system.mapper.DocumentsMapper;
 import com.ruoyi.system.mapper.SequenceMapper;
 import org.apache.commons.lang3.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.*;
 import java.lang.Exception;
 import java.util.ArrayList;
@@ -182,6 +184,8 @@ public class DPDServicesXMLClient {
         saveFileToLocal(documentsInsert);
     }
 
+    private static final Logger log = LoggerFactory.getLogger(DPDServicesXMLClient.class);
+
     /**
      * 生成返回值
      * @param packages
@@ -268,6 +272,7 @@ public class DPDServicesXMLClient {
 
         PackagesGenerationResponseV2 documentGenerationResponse = null;
         try {
+            log.info("gen DPD" + JSONObject.toJSONString(umlf));
             //生成返回值
             documentGenerationResponse = xmlServices.generatePackagesNumbersV4(umlf, PkgNumsGenerationPolicyV1.IGNORE_ERRORS, "PL", authData);
         } catch (DPDServiceException_Exception e) {
@@ -276,6 +281,7 @@ public class DPDServicesXMLClient {
 
         if (ObjectUtils.isEmpty(documentGenerationResponse.getSessionId())){
             //失败处理？
+            log.error("DPD DATA ERROR: "+ documentGenerationResponse.getStatus());
             throw new Exception(documentGenerationResponse.getStatus());
         }
 

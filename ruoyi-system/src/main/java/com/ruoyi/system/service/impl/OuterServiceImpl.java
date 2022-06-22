@@ -362,7 +362,7 @@ public class OuterServiceImpl implements IOuterService {
             mbReturnDtos.forEach(
                     item -> {
                         addressReceive addressReceive = item.getAddressReceive();
-                        addressReceive.setZipcode(addressReceive.getZipcode().replace("-",""));
+                        addressReceive.setZipcode(addressReceive.getZipcode().replace("-", ""));
                         item.setAddressBackStr(JSON.toJSONString(item.getAddressBack()));
                         item.setAddressPickupStr(JSON.toJSONString(item.getAddressPickup()));
                         item.setAddressReceiveStr(JSON.toJSONString(item.getAddressReceive()));
@@ -518,6 +518,7 @@ public class OuterServiceImpl implements IOuterService {
          */
         //生成id 并且更新
         Map<String, Sequence> nameMap = getSeqMap(packages.size());
+        //sender是用自己的还是他们填写的？
         AddressSender addressSender = getSender(packages.get(0).getCreateUser());
         List<AddressReceiver> addressReceivers = new ArrayList<>();
         List<Services> servicesList = new ArrayList<>();
@@ -575,10 +576,14 @@ public class OuterServiceImpl implements IOuterService {
         pac.setUpdateUser(StringUtils.isEmpty(pac.getUpdateUser()) ? mbReturnDto.getUpdateBy() : pac.getUpdateUser());
         AddressReceiver addressReceiver =
                 ObjectUtils.isEmpty(pac.getReceiver()) ? new AddressReceiver() : pac.getReceiver();
+//        AddressSender addressSender =
+//                ObjectUtils.isEmpty(pac.getSender()) ? new AddressSender() : pac.getSender();
         Services services =
                 ObjectUtils.isEmpty(pac.getService()) ? new Services() : pac.getService();
         Parcel parcel =
                 CollectionUtils.isEmpty(pac.getParcels()) ? new Parcel() : pac.getParcels().get(0);
+
+//        getAddressSender(addressSender, mbReturnDto.getAddressPickup());
         getAddressReceiver(addressReceiver, mbReturnDto.getAddressReceive());
         getParcel(parcel, mbReturnDto);
         getServices(services, mbReturnDto);
@@ -601,6 +606,17 @@ public class OuterServiceImpl implements IOuterService {
         addressReceiver.setPhone(StringUtils.isEmpty(addressReceive.getTelephone()) ? addressReceive.getMobile() : addressReceive.getTelephone());
         addressReceiver.setPostalCode(addressReceive.getZipcode());
 
+    }
+
+    private void getAddressSender(AddressSender addressSender, addressPickup addressPickup) {
+        addressSender.setCountryCode(addressPickup.getCountryCode());
+        addressSender.setCity(addressPickup.getCity());
+        addressSender.setAddress(addressPickup.getProvince() + addressPickup.getCity() + addressPickup.getArea() + addressPickup.getAddress());
+        addressSender.setCompany(addressPickup.getCompanyName());
+        addressSender.setName(addressPickup.getContact());
+        addressSender.setPhone(StringUtils.isEmpty(addressPickup.getTelephone()) ? addressPickup.getMobile() : addressPickup.getTelephone());
+        addressSender.setPostalCode(addressPickup.getZipcode());
+        addressSender.setFid((long) 1495);
     }
 
     private void getParcel(Parcel parcel, MbReturnDto mbReturnDto) {
