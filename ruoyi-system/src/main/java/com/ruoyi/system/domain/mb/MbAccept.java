@@ -13,7 +13,7 @@ public class MbAccept {
     private String extetionb;//扩展字段 2 转单号等
     private String flowCode;//扩展字段 3 流向码等
     private String labelHTMLUrl;
-    private String labelPDFUrl;
+    private Map<String, Object> labelPDFUrl;
 
     public String getCode() {
         return code;
@@ -79,7 +79,7 @@ public class MbAccept {
         this.labelHTMLUrl = labelHTMLUrl;
     }
 
-    public String getLabelPDFUrl() {
+    public Map<String, Object> getLabelPDFUrl() {
         return labelPDFUrl;
     }
 
@@ -101,6 +101,6 @@ public class MbAccept {
         a4.put("ac", labelPDFUrl);
         labelPDFUrlMap.put("a4", a4);
 
-        this.labelPDFUrl = labelPDFUrlMap.toString();
+        this.labelPDFUrl = labelPDFUrlMap;
     }
 }
