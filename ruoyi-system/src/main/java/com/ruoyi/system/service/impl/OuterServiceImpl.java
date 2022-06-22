@@ -361,6 +361,8 @@ public class OuterServiceImpl implements IOuterService {
 
             mbReturnDtos.forEach(
                     item -> {
+                        addressReceive addressReceive = item.getAddressReceive();
+                        addressReceive.setZipcode(addressReceive.getZipcode().replace("-",""));
                         item.setAddressBackStr(JSON.toJSONString(item.getAddressBack()));
                         item.setAddressPickupStr(JSON.toJSONString(item.getAddressPickup()));
                         item.setAddressReceiveStr(JSON.toJSONString(item.getAddressReceive()));
