@@ -178,7 +178,7 @@ public class OuterServiceImpl implements IOuterService {
         return DigestUtils.md5Hex(sb.toString());
     }
 
-    private void test() throws Exception {
+    private void test2() throws Exception {
         String url = "http://www.sandbox.i8956.com/interface/index.php";
         Map<String, String> encodeParamsMap = new HashMap<>();
         String enStr = net.arnx.jsonic.JSON.encode(encodeParamsMap);
@@ -769,4 +769,14 @@ public class OuterServiceImpl implements IOuterService {
         }
     }
 
+    @Autowired
+    private DpdMsgMapper dpdMsgMapper;
+
+    @Override
+    public void test(){
+        DpdMsg dpdMsg = new DpdMsg();
+        dpdMsg.setStatus("test");
+        dpdMsg.setMsg("aaaaaaaa");
+        dpdMsgMapper.insertDpdMsg(dpdMsg);
+    }
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.DpdMsgMapper">
+    
+    <resultMap type="DpdMsg" id="DpdMsgResult">
+        <result property="id"    column="id"    />
+        <result property="status"    column="status"    />
+        <result property="msg"    column="msg"    />
+        <result property="isDelete"    column="is_delete"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectDpdMsgVo">
+        select id, status, msg, is_delete, create_by, create_time, update_by, update_time, remark from dpd_msg
+    </sql>
+
+    <select id="selectDpdMsgList" parameterType="DpdMsg" resultMap="DpdMsgResult">
+        <include refid="selectDpdMsgVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="msg != null  and msg != ''"> and msg = #{msg}</if>
+            <if test="isDelete != null "> and is_delete = #{isDelete}</if>
+        </where>
+    </select>
+    
+    <select id="selectDpdMsgById" parameterType="Long" resultMap="DpdMsgResult">
+        <include refid="selectDpdMsgVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDpdMsg" parameterType="DpdMsg" useGeneratedKeys="true" keyProperty="id">
+        insert into dpd_msg
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="status != null">status,</if>
+            <if test="msg != null">msg,</if>
+            <if test="createBy != null">create_by,</if>
+            create_time,
+            <if test="updateBy != null">update_by,</if>
+            update_time,
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="status != null">#{status},</if>
+            <if test="msg != null">#{msg},</if>
+            <if test="createBy != null">#{createBy},</if>
+            sysdate(),
+            <if test="updateBy != null">#{updateBy},</if>
+            sysdate(),
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDpdMsg" parameterType="DpdMsg">
+        update dpd_msg
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="msg != null">msg = #{msg},</if>
+            <if test="isDelete != null">is_delete = #{isDelete},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDpdMsgById" parameterType="Long">
+        delete from dpd_msg where id = #{id}
+    </delete>
+
+    <delete id="deleteDpdMsgByIds" parameterType="String">
+        delete from dpd_msg where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

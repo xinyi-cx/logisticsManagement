@@ -11,6 +11,7 @@ import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.dpdservices.*;
 import com.ruoyi.system.mapper.DocumentsMapper;
+import com.ruoyi.system.mapper.DpdMsgMapper;
 import com.ruoyi.system.mapper.SequenceMapper;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -49,6 +50,9 @@ public class DPDServicesXMLClient {
 
     @Autowired
     private DocumentsMapper documentsMapper;
+
+    @Autowired
+    private DpdMsgMapper dpdMsgMapper;
 
     private long sessionId;
     private long parcelId;
@@ -280,6 +284,11 @@ public class DPDServicesXMLClient {
         } catch (DPDServiceException_Exception e) {
             e.printStackTrace();
         }
+
+        DpdMsg dpdMsg = new DpdMsg();
+        dpdMsg.setStatus(documentGenerationResponse.getStatus());
+        dpdMsg.setMsg(JSONObject.toJSONString(documentGenerationResponse));
+        dpdMsgMapper.insertDpdMsg(dpdMsg);
 
         if (ObjectUtils.isEmpty(documentGenerationResponse.getSessionId())) {
             //失败处理？

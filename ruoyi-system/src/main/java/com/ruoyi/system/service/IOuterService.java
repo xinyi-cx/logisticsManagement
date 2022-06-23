@@ -17,6 +17,8 @@ import java.util.List;
 public interface IOuterService
 {
 
+    public void test();
+
     /**
      * 接收马帮的主动通知
      *
