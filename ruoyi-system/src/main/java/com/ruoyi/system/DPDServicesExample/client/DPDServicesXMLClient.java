@@ -54,7 +54,7 @@ public class DPDServicesXMLClient {
     private long parcelId;
     private long packageId;
 
-//    @PostConstruct
+    //    @PostConstruct
     public void runExamples() {
 //        Documents document = documentsMapper.selectDocumentsById((long) 119);
 //        saveFileToLocal(document);
@@ -95,6 +95,7 @@ public class DPDServicesXMLClient {
 
     /**
      * 生成pdf文件
+     *
      * @param paramPackageId
      */
     public DocumentGenerationResponseV1 generateProtocolByPackageId(long paramPackageId) {
@@ -152,7 +153,7 @@ public class DPDServicesXMLClient {
         ParcelDSPV2 parcelDSPV2 = new ParcelDSPV2();
         parcelDSPV2.setParcelId(parcelIdT);
         PackageDSPV2.Parcels parcels = new PackageDSPV2.Parcels();
-        parcels.getParcel().add  (parcelDSPV2);
+        parcels.getParcel().add(parcelDSPV2);
         packageDSPV2.setParcels(parcels);
         SessionDSPV2.Packages packages = new SessionDSPV2.Packages();
         packages.getPackage().add(packageDSPV2);
@@ -169,7 +170,7 @@ public class DPDServicesXMLClient {
 
     }
 
-    private void saveFile(Long id, DocumentGenerationResponseV1 ret){
+    private void saveFile(Long id, DocumentGenerationResponseV1 ret) {
         Documents documentsInsert = new Documents();
         documentsInsert.setId(sequenceMapper.selectNextvalByName("doc_seq"));
         documentsInsert.setPackageId(id);
@@ -188,6 +189,7 @@ public class DPDServicesXMLClient {
 
     /**
      * 生成返回值
+     *
      * @param packages
      * @return
      */
@@ -234,7 +236,7 @@ public class DPDServicesXMLClient {
             cod.setAmount(ser.getCodAmount());
 //            if (ObjectUtils.isEmpty(ser.getCodCurrency())) {
             //只能是PLN否则报错
-                ser.setCodCurrency("PLN");
+            ser.setCodCurrency("PLN");
 //            }
             cod.setCurrency(ServiceCurrencyEnum.fromValue(ser.getCodCurrency()));
             services.setCod(cod);
@@ -264,7 +266,7 @@ public class DPDServicesXMLClient {
                 parcel1.setContent(parcel.getContent());//id
                 parcel1.setCustomerData1(parcel.getCustomerData1());//id
                 parcel1.setReference(parcel.getReference()); //parametr opcjonalny
-                parcel1.setWeight(Double.valueOf(parcel.getWeight().toString()));
+                parcel1.setWeight((0 == Double.parseDouble(parcel.getWeight().toString())) ? 1 : Double.parseDouble(parcel.getWeight().toString()));
                 pkg.getParcels().add(parcel1);
             }
             umlf.getPackages().add(pkg);
@@ -279,9 +281,9 @@ public class DPDServicesXMLClient {
             e.printStackTrace();
         }
 
-        if (ObjectUtils.isEmpty(documentGenerationResponse.getSessionId())){
+        if (ObjectUtils.isEmpty(documentGenerationResponse.getSessionId())) {
             //失败处理？
-            log.error("DPD DATA ERROR: "+ documentGenerationResponse.getStatus());
+            log.error("DPD DATA ERROR: " + documentGenerationResponse.getStatus());
             throw new Exception(documentGenerationResponse.getStatus());
         }
 
@@ -417,11 +419,12 @@ public class DPDServicesXMLClient {
 
     /**
      * 处理返回值
+     *
      * @param sourse
      * @param targetPackage
      * @param targetPackagesGenerationResponse
      */
-    private void mapResult(PackagePGRV2 sourse, Package targetPackage, PackagesGenerationResponse targetPackagesGenerationResponse){
+    private void mapResult(PackagePGRV2 sourse, Package targetPackage, PackagesGenerationResponse targetPackagesGenerationResponse) {
         // 处理 PackagesGenerationResponse
         targetPackagesGenerationResponse.setPackageId(sourse.getPackageId());
         targetPackagesGenerationResponse.setPackId(targetPackage.getId());

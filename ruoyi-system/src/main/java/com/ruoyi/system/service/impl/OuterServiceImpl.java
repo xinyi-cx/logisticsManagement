@@ -624,7 +624,8 @@ public class OuterServiceImpl implements IOuterService {
         parcel.setSizeX(Integer.valueOf(mbReturnDto.getLength()));
         parcel.setSizeY(Integer.valueOf(mbReturnDto.getWidth()));
         parcel.setSizeZ(Integer.valueOf(mbReturnDto.getHeight()));
-        parcel.setWeight(new BigDecimal(mbReturnDto.getWeightReal()).divide(new BigDecimal(1000)).setScale(2, BigDecimal.ROUND_HALF_UP));
+        String weight = (StringUtils.isEmpty(mbReturnDto.getWeightReal()) || "0".equals(mbReturnDto.getWeightReal())) ? mbReturnDto.getWeightForcast() : mbReturnDto.getWeightReal();
+        parcel.setWeight(new BigDecimal(weight).divide(new BigDecimal(1000)).setScale(2, BigDecimal.ROUND_HALF_UP));
         parcel.setCustomerData1(mbReturnDto.getProductNameEn());
         parcel.setReference(mbReturnDto.getCode());
 //        waybill 运货单 ???
