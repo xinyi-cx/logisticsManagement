@@ -599,7 +599,7 @@ public class OuterServiceImpl implements IOuterService {
     private void getAddressReceiver(AddressReceiver addressReceiver, addressReceive addressReceive) {
         addressReceiver.setCountryCode(addressReceive.getCountryCode());
         addressReceiver.setCity(addressReceive.getCity());
-        addressReceiver.setAddress(addressReceive.getProvince() + addressReceive.getCity() + addressReceive.getDistrict() + addressReceive.getDoorcode() + addressReceive.getStreet1());
+        addressReceiver.setAddress(addressReceive.getStreet1());
         addressReceiver.setCompany(StringUtils.isEmpty(addressReceive.getCompanyStreet()) ? addressReceiver.getAddress() : addressReceive.getCompanyStreet());
         addressReceiver.setEmail(addressReceive.getEmail());
         addressReceiver.setName(addressReceive.getReceiver());

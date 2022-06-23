@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -140,7 +141,7 @@ public class PackageController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:package:add')")
     @Log(title = "面单", businessType = BusinessType.INSERT)
     @PostMapping(value = "/addAll")
-    public AjaxResult addAll(@RequestBody PackageVo pkg) throws Exception
+    public AjaxResult addAll(@RequestBody @Valid PackageVo pkg) throws Exception
     {
         return toAjax(packageService.insertPackage(pkg));
     }

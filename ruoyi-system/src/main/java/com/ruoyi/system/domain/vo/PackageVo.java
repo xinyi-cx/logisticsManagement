@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -54,6 +55,7 @@ public class PackageVo extends BaseEntity
 
     /** 货物金额 */
     @Excel(name = "COD Amount")
+    @NotEmpty(message = "pln不能为空")
     private BigDecimal pln;
 
     /** 分类1 */
@@ -110,10 +112,12 @@ public class PackageVo extends BaseEntity
 
     /** 收件人地址 */
     @Excel(name = "Street")
+    @NotEmpty(message = "收件人信息不能为空")
     private String receiverAddress;
 
     /** 收件人城市 */
     @Excel(name = "City")
+    @NotEmpty(message = "收件人信息不能为空")
     private String receiverCity;
 
     /** 收件人公司 */
@@ -122,6 +126,7 @@ public class PackageVo extends BaseEntity
 
     /** 收件人国家编码 */
     @Excel(name = "Country")
+    @NotEmpty(message = "收件人信息不能为空")
     private String receiverCountryCode;
 
     /** 收件人邮件 */
@@ -130,14 +135,17 @@ public class PackageVo extends BaseEntity
 
     /** 收件人姓名 */
     @Excel(name = "Name")
+    @NotEmpty(message = "收件人信息不能为空")
     private String receiverName;
 
     /** 收件人手机号码 */
     @Excel(name = "Phone")
+    @NotEmpty(message = "收件人信息不能为空")
     private String receiverPhone;
 
     /** 收件人邮政编码 */
     @Excel(name = "Zip code")
+    @NotEmpty(message = "收件人信息不能为空")
     private String receiverPostalCode;
 
     /** 长 */
