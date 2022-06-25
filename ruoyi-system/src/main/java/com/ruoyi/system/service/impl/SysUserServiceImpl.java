@@ -288,7 +288,7 @@ public class SysUserServiceImpl implements ISysUserService
         insertUserPost(user);
         // 新增用户与角色管理
         insertUserRole(user);
-        if (StringUtils.isNotEmpty(user.getAddress())){
+        if (StringUtils.isNotEmpty(user.getCountryCode())){
             // 新增发件信息
             insertOrUpdateSender(user);
         }
@@ -355,7 +355,7 @@ public class SysUserServiceImpl implements ISysUserService
         userPostMapper.deleteUserPostByUserId(userId);
         // 新增用户与岗位管理
         insertUserPost(user);
-        if (StringUtils.isNotEmpty(user.getAddress())){
+        if (null != user.getFid()) {
             // 新增发件信息
             insertOrUpdateSender(user);
         }

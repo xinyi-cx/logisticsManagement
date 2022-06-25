@@ -58,7 +58,7 @@ public class DPDServicesXMLClient {
     private long parcelId;
     private long packageId;
 
-    //    @PostConstruct
+//    @PostConstruct
     public void runExamples() {
 //        Documents document = documentsMapper.selectDocumentsById((long) 119);
 //        saveFileToLocal(document);
@@ -198,7 +198,7 @@ public class DPDServicesXMLClient {
      * @return
      */
     public List<PackagesGenerationResponse> generatePackagesNumberByBusiness(List<Package> packages) throws Exception {
-        AuthDataV1 authData = getAuthData();
+        Integer methodFid = null;
         OpenUMLFeV3 umlf = new OpenUMLFeV3(); // Ilość przesyłek
         for (Package aPackage : packages) {
             AddressReceiver receiver = aPackage.getReceiver();
@@ -219,6 +219,7 @@ public class DPDServicesXMLClient {
             addressSender.setCountryCode(sender.getCountryCode());
             addressSender.setEmail(sender.getEmail());
             addressSender.setFid(Integer.valueOf(sender.getFid().toString()));
+            methodFid = Integer.valueOf(sender.getFid().toString());
             addressSender.setName(sender.getName());
             addressSender.setPhone(sender.getPhone());
             addressSender.setPostalCode(sender.getPostalCode());
@@ -275,7 +276,7 @@ public class DPDServicesXMLClient {
             }
             umlf.getPackages().add(pkg);
         }
-
+        AuthDataV1 authData = getAuthDataByFid(methodFid);
         PackagesGenerationResponseV2 documentGenerationResponse = null;
         try {
             log.info("gen DPD" + JSONObject.toJSONString(umlf));
@@ -590,6 +591,14 @@ public class DPDServicesXMLClient {
     }
 
     private AuthDataV1 getAuthData() {
+        AuthDataV1 authDataV1 = new AuthDataV1();
+        authDataV1.setLogin(login);
+        authDataV1.setPassword(password);
+        authDataV1.setMasterFid(fid);
+        return authDataV1;
+    }
+
+    private AuthDataV1 getAuthDataByFid(Integer fid) {
         AuthDataV1 authDataV1 = new AuthDataV1();
         authDataV1.setLogin(login);
         authDataV1.setPassword(password);

@@ -55,7 +55,6 @@ public class PackageVo extends BaseEntity
 
     /** 货物金额 */
     @Excel(name = "COD Amount")
-    @NotEmpty(message = "pln不能为空")
     private BigDecimal pln;
 
     /** 分类1 */

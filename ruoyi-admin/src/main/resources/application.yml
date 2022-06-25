@@ -49,7 +49,7 @@ spring:
       master:
         url: jdbc:mysql://127.0.0.1:3306/business?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
         username: root
-        password: 1234
+        password: dev
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
@@ -178,12 +178,13 @@ xss:
   urlPatterns: /system/*,/monitor/*,/tool/*
 
 dpdservices:
-  address: https://dpdservicesdemo.dpd.com.pl/DPDPackageObjServicesService/DPDPackageObjServices
+  address: https://dpdservices.dpd.com.pl/DPDPackageObjServicesService/DPDPackageObjServices
+#  address: https://dpdservicesdemo.dpd.com.pl/DPDPackageObjServicesService/DPDPackageObjServices
   addressInfo: https://dpdinfoservices.dpd.com.pl/DPDInfoServicesObjEventsService/DPDInfoServicesObjEvents
   authdata:
-    login: test
-    password: thetu4Ee
-    fid: 1495
+    login: 33368701
+    password: lZIVxoSrtWSZhhPJ
+    fid: 334936
   authdataV1:
     login: 33368701
     password: lZIVxoSrtWSZhhPJ
