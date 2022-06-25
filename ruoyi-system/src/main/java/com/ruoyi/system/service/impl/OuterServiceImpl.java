@@ -453,6 +453,14 @@ public class OuterServiceImpl implements IOuterService {
         return correctInsertMbReturnDto;
     }
 
+    /**
+     * 马帮邮编校验
+     *
+     * @param user1
+     * @param mbReturnDtos
+     * @param errMsgList
+     * @return
+     */
     private List<MbReturnDto> checkCountryAndZip(SysUser user1, List<MbReturnDto> mbReturnDtos, List<String> errMsgList) {
         if (CollectionUtils.isEmpty(mbReturnDtos)) {
             return new ArrayList<>();
@@ -625,7 +633,7 @@ public class OuterServiceImpl implements IOuterService {
         parcel.setSizeY(Integer.valueOf(mbReturnDto.getWidth()));
         parcel.setSizeZ(Integer.valueOf(mbReturnDto.getHeight()));
         String weight = (StringUtils.isEmpty(mbReturnDto.getWeightReal()) || "0".equals(mbReturnDto.getWeightReal())) ? mbReturnDto.getWeightForcast() : mbReturnDto.getWeightReal();
-        if (StringUtils.isEmpty(weight)){
+        if (StringUtils.isEmpty(weight)) {
             weight = "1000";
         }
         parcel.setWeight(new BigDecimal(weight).divide(new BigDecimal(1000)).setScale(2, BigDecimal.ROUND_HALF_UP));
@@ -773,7 +781,7 @@ public class OuterServiceImpl implements IOuterService {
     private DpdMsgMapper dpdMsgMapper;
 
     @Override
-    public void test(){
+    public void test() {
         DpdMsg dpdMsg = new DpdMsg();
         dpdMsg.setStatus("test");
         dpdMsg.setMsg("aaaaaaaa");

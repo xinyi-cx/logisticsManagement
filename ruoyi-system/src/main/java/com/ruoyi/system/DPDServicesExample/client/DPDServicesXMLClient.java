@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.lang.Exception;
 import java.util.ArrayList;
@@ -58,11 +59,12 @@ public class DPDServicesXMLClient {
     private long parcelId;
     private long packageId;
 
-//    @PostConstruct
+    //    @PostConstruct
     public void runExamples() {
 //        Documents document = documentsMapper.selectDocumentsById((long) 119);
 //        saveFileToLocal(document);
-        findPostalCode();
+        findPostalCode("PL", "02274");
+        findPostalCode("PL", "64500");
     }
 
     private void findPostalCode() {
@@ -236,6 +238,9 @@ public class DPDServicesXMLClient {
             addressReceiver.setPostalCode(receiver.getPostalCode());
             pkg.setReceiver(addressReceiver);
 
+            pkg.setRef1(aPackage.getRef1());
+            pkg.setRef2(aPackage.getRef2());
+
             ServicesOpenUMLFeV4 services = new ServicesOpenUMLFeV4();
             ServiceCODOpenUMLFeV1 cod = new ServiceCODOpenUMLFeV1();
             cod.setAmount(ser.getCodAmount());
@@ -253,9 +258,9 @@ public class DPDServicesXMLClient {
 
             for (Parcel parcel : parcels) {
                 ParcelOpenUMLFeV1 parcel1 = new ParcelOpenUMLFeV1();
-                parcel1.setSizeX(0 == parcel.getSizeX() ? 1 : parcel.getSizeX());
-                parcel1.setSizeY(0 == parcel.getSizeY() ? 1 : parcel.getSizeY());
-                parcel1.setSizeZ(0 == parcel.getSizeZ() ? 1 : parcel.getSizeZ());
+                parcel1.setSizeX(null == parcel.getSizeX() || 0 == parcel.getSizeX() ? 1 : parcel.getSizeX());
+                parcel1.setSizeY(null == parcel.getSizeY() || 0 == parcel.getSizeY() ? 1 : parcel.getSizeY());
+                parcel1.setSizeZ(null == parcel.getSizeZ() || 0 == parcel.getSizeZ() ? 1 : parcel.getSizeZ());
                 if (ObjectUtils.isEmpty(parcel.getContent())) {
                     String uuid = IdUtils.fastSimpleUUID();
                     parcel.setContent(uuid);

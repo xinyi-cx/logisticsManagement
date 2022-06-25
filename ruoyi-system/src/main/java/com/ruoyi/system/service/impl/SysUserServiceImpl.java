@@ -316,6 +316,11 @@ public class SysUserServiceImpl implements ISysUserService
         }
     }
 
+    /**
+     * 发件人邮编校验
+     * @param addressSender
+     * @throws Exception
+     */
     private void checkCountryZipCode(AddressSender addressSender) throws Exception {
         String status = dpdServicesXMLClient.findPostalCode(addressSender.getCountryCode(), addressSender.getPostalCode());
         if (!"OK".equals(status)){

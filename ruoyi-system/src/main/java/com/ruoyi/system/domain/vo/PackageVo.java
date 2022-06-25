@@ -10,12 +10,11 @@ import java.util.Date;
 
 /**
  * 面单对象 package
- * 
+ *
  * @author ruoyi
  * @date 2022-01-02
  */
-public class PackageVo extends BaseEntity
-{
+public class PackageVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     private String hisParam;
@@ -38,156 +37,164 @@ public class PackageVo extends BaseEntity
         this.hisParam = hisParam;
     }
 
-    /** 面单主键 */
+    /**
+     * 面单主键
+     */
     private Long id;
 
-    /** 付款人类型 */
-//    @Excel(name = "付款人类型")
-    private String payerType;
+    @Excel(name = "Sender Name")
+    private String showSenderName;
 
-    /** 发件人id */
-//    @Excel(name = "发件人id")
-    private Long senderId;
-
-    /** 收货人id */
-//    @Excel(name = "收货人id")
-    private Long receiverId;
-
-    /** 货物金额 */
-    @Excel(name = "COD Amount")
-    private BigDecimal pln;
-
-    /** 分类1 */
-    @Excel(name = "Category")
-    private String ref1;
-
-    /** 分类2 */
-    @Excel(name = "Category_2")
-    private String ref2;
-
-    /** 服务id */
-//    @Excel(name = "服务id")
-    private Long servicesId;
-
-    /** 手机号码 */
-//    @Excel(name = "手机号码")
-    private String phone;
-
-    /** 邮政编码 */
-//    @Excel(name = "邮政编码")
-    private String postalCode;
-
-    /** 创建人 */
-//    @Excel(name = "创建人")
-    private String createUser;
-
-    /** 更新人 */
-//    @Excel(name = "更新人")
-    private String updateUser;
-
-    /** 创建时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-//    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date createdTime;
-
-    /** 更新时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-//    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date updatedTime;
-
-    /** 下载次数 */
-//    @Excel(name = "下载次数")
-    private Integer downloadNum;
-
-    public void setDownloadNum(Integer downloadNum)
-    {
-        this.downloadNum = downloadNum;
-    }
-
-    public Integer getDownloadNum()
-    {
-        return downloadNum;
-    }
-
-    /** 收件人地址 */
-    @Excel(name = "Street")
-    @NotEmpty(message = "收件人信息不能为空")
-    private String receiverAddress;
-
-    /** 收件人城市 */
-    @Excel(name = "City")
-    @NotEmpty(message = "收件人信息不能为空")
-    private String receiverCity;
-
-    /** 收件人公司 */
-//    @Excel(name = "收件人公司")
-    private String receiverCompany;
-
-    /** 收件人国家编码 */
-    @Excel(name = "Country")
-    @NotEmpty(message = "收件人信息不能为空")
-    private String receiverCountryCode;
-
-    /** 收件人邮件 */
-    @Excel(name = "e-mail/Contact")
-    private String receiverEmail;
-
-    /** 收件人姓名 */
-    @Excel(name = "Name")
+    /**
+     * 收件人姓名
+     */
+    @Excel(name = "Recipient Name")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverName;
 
-    /** 收件人手机号码 */
-    @Excel(name = "Phone")
+    /**
+     * 收件人地址
+     */
+    @Excel(name = "Recipient Street")
     @NotEmpty(message = "收件人信息不能为空")
-    private String receiverPhone;
+    private String receiverAddress;
 
-    /** 收件人邮政编码 */
-    @Excel(name = "Zip code")
+    /**
+     * 收件人邮政编码
+     */
+    @Excel(name = "Recipient Postal code")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverPostalCode;
 
-    /** 长 */
-//    @Excel(name = "长")
-    private Integer sizeX;
+    /**
+     * 收件人城市
+     */
+    @Excel(name = "Recipient City")
+    @NotEmpty(message = "收件人信息不能为空")
+    private String receiverCity;
 
-    /** 宽 */
-//    @Excel(name = "宽")
-    private Integer sizeY;
+    /**
+     * 收件人国家编码
+     */
+    @Excel(name = "Recipient Country")
+//    @NotEmpty(message = "收件人信息不能为空")
+    private String receiverCountryCode;
 
-    /** 高 */
-//    @Excel(name = "高")
-    private Integer sizeZ;
+    /**
+     * 收件人手机号码
+     */
+    @Excel(name = "Recipient phone")
+    @NotEmpty(message = "收件人信息不能为空")
+    private String receiverPhone;
 
-    /** 备注 */
-    @Excel(name = "Note")
+    /**
+     * 收件人邮箱
+     */
+    @Excel(name = "Recipient E-mail")
+    private String receiverEmail;
+    /**
+     * 重量（单位kg）
+     * 规则：
+     * 1、小于1kg的按1kg算，dpd会取体积和重量中的较大值进行计算；
+     * 2、大于10kg的要提示，不能大于10kg.
+     */
+    @Excel(name = "Weight kg")
+    private BigDecimal weight;
+
+    /**
+     * 包裹里物件的数量
+     */
+    @Excel(name = "Qty packages")
+    private String qtyPackages;
+
+    /**
+     * 备注 商品描述
+     */
+    @Excel(name = "Description")
     private String content;
 
-    /** 客户数据1 */
+    /**
+     * 内部引用号
+     */
+    @Excel(name = "Order")
+    private String reference;
+
+    /**
+     * 分类1（售后电话）
+     */
+    @Excel(name = "Reference 1")
+    private String ref1;
+
+    /**
+     * 分类2（售后邮箱）
+     */
+    @Excel(name = "Reference 2")
+    private String ref2;
+
+    /**
+     * 货物金额
+     */
+    @Excel(name = "COD")
+    private BigDecimal pln;
+
+    /**
+     * 付款人类型
+     */
+//    @Excel(name = "付款人类型")
+    private String payerType;
+
+    /**
+     * 收件人公司
+     */
+//    @Excel(name = "收件人公司")
+    private String receiverCompany;
+
+    /**
+     * 客户数据1
+     */
 //    @Excel(name = "客户数据1")
     private String customerData1;
 
-    /** 内部引用号 */
-    @Excel(name = "code")
-    private String reference;
 
-    /** 重量 */
-    @Excel(name = "Weight")
-    private BigDecimal weight;
+    /**
+     * 长
+     */
+//    @Excel(name = "长")
+    private Integer sizeX;
 
-    /** pack_id */
+    /**
+     * 宽
+     */
+//    @Excel(name = "宽")
+    private Integer sizeY;
+
+    /**
+     * 高
+     */
+//    @Excel(name = "高")
+    private Integer sizeZ;
+
+    /**
+     * pack_id
+     */
 //    @Excel(name = "pack_id")
     private Long packId;
 
-    /** waybill 运货单 */
+    /**
+     * waybill 运货单
+     */
 //    @Excel(name = "waybill 运货单")
     private String waybill;
 
-    /** 包裹状态 */
+    /**
+     * 包裹状态
+     */
 //    @Excel(name = "包裹状态")
     private String status;
 
-    /** package_id */
+    /**
+     * package_id
+     */
 //    @Excel(name = "package_id")
     private Long packageId;
 
@@ -201,13 +208,88 @@ public class PackageVo extends BaseEntity
 
     private String pkgStatus;
 
-    /** 原面单主键 */
+    /**
+     * 发件人id
+     */
+//    @Excel(name = "发件人id")
+    private Long senderId;
+
+    /**
+     * 收货人id
+     */
+//    @Excel(name = "收货人id")
+    private Long receiverId;
+
+    /**
+     * 原面单主键
+     */
 //    @Excel(name = "原面单主键")
     private Long originalId;
 
-    /** 原面单主键 */
+    /**
+     * 原面单主键
+     */
 //    @Excel(name = "原面单物流单号")
     private String originalWaybill;
+
+
+    /**
+     * 服务id
+     */
+//    @Excel(name = "服务id")
+    private Long servicesId;
+
+    /**
+     * 手机号码
+     */
+//    @Excel(name = "手机号码")
+    private String phone;
+
+    /**
+     * 邮政编码
+     */
+//    @Excel(name = "邮政编码")
+    private String postalCode;
+
+    /**
+     * 创建人
+     */
+//    @Excel(name = "创建人")
+    private String createUser;
+
+    /**
+     * 更新人
+     */
+//    @Excel(name = "更新人")
+    private String updateUser;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date createdTime;
+
+    /**
+     * 更新时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date updatedTime;
+
+    /**
+     * 下载次数
+     */
+//    @Excel(name = "下载次数")
+    private Integer downloadNum;
+
+    public void setDownloadNum(Integer downloadNum) {
+        this.downloadNum = downloadNum;
+    }
+
+    public Integer getDownloadNum() {
+        return downloadNum;
+    }
 
     public String getOriginalWaybill() {
         return originalWaybill;
@@ -273,121 +355,107 @@ public class PackageVo extends BaseEntity
         this.pln = pln;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() 
-    {
+    public Long getId() {
         return id;
     }
-    public void setPayerType(String payerType) 
-    {
+
+    public void setPayerType(String payerType) {
         this.payerType = payerType;
     }
 
-    public String getPayerType() 
-    {
+    public String getPayerType() {
         return payerType;
     }
-    public void setSenderId(Long senderId) 
-    {
+
+    public void setSenderId(Long senderId) {
         this.senderId = senderId;
     }
 
-    public Long getSenderId() 
-    {
+    public Long getSenderId() {
         return senderId;
     }
-    public void setReceiverId(Long receiverId) 
-    {
+
+    public void setReceiverId(Long receiverId) {
         this.receiverId = receiverId;
     }
 
-    public Long getReceiverId() 
-    {
+    public Long getReceiverId() {
         return receiverId;
     }
-    public void setRef1(String ref1) 
-    {
+
+    public void setRef1(String ref1) {
         this.ref1 = ref1;
     }
 
-    public String getRef1() 
-    {
+    public String getRef1() {
         return ref1;
     }
-    public void setRef2(String ref2) 
-    {
+
+    public void setRef2(String ref2) {
         this.ref2 = ref2;
     }
 
-    public String getRef2() 
-    {
+    public String getRef2() {
         return ref2;
     }
-    public void setServicesId(Long servicesId) 
-    {
+
+    public void setServicesId(Long servicesId) {
         this.servicesId = servicesId;
     }
 
-    public Long getServicesId() 
-    {
+    public Long getServicesId() {
         return servicesId;
     }
-    public void setPhone(String phone) 
-    {
+
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public String getPhone() 
-    {
+    public String getPhone() {
         return phone;
     }
-    public void setPostalCode(String postalCode) 
-    {
+
+    public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 
-    public String getPostalCode() 
-    {
+    public String getPostalCode() {
         return postalCode;
     }
-    public void setCreateUser(String createUser) 
-    {
+
+    public void setCreateUser(String createUser) {
         this.createUser = createUser;
     }
 
-    public String getCreateUser() 
-    {
+    public String getCreateUser() {
         return createUser;
     }
-    public void setUpdateUser(String updateUser) 
-    {
+
+    public void setUpdateUser(String updateUser) {
         this.updateUser = updateUser;
     }
 
-    public String getUpdateUser() 
-    {
+    public String getUpdateUser() {
         return updateUser;
     }
-    public void setCreatedTime(Date createdTime) 
-    {
+
+    public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
 
-    public Date getCreatedTime() 
-    {
+    public Date getCreatedTime() {
         return createdTime;
     }
-    public void setUpdatedTime(Date updatedTime) 
-    {
+
+    public void setUpdatedTime(Date updatedTime) {
         this.updatedTime = updatedTime;
     }
 
-    public Date getUpdatedTime() 
-    {
+    public Date getUpdatedTime() {
         return updatedTime;
     }
 
@@ -546,5 +614,21 @@ public class PackageVo extends BaseEntity
 
     public void setPackageId(Long packageId) {
         this.packageId = packageId;
+    }
+
+    public String getShowSenderName() {
+        return showSenderName;
+    }
+
+    public void setShowSenderName(String showSenderName) {
+        this.showSenderName = showSenderName;
+    }
+
+    public String getQtyPackages() {
+        return qtyPackages;
+    }
+
+    public void setQtyPackages(String qtyPackages) {
+        this.qtyPackages = qtyPackages;
     }
 }
