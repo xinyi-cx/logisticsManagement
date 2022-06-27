@@ -202,7 +202,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             parcel_id = #{item.parcelId},
             create_user = #{item.createUser},
             update_user = #{item.updateUser},
-            updated_time = sysdate(),
+            updated_time = sysdate()
         where id = #{item.id}
         </foreach>
     </update>

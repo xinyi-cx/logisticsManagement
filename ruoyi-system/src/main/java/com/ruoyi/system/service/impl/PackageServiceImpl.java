@@ -116,7 +116,9 @@ public class PackageServiceImpl implements IPackageService {
         }else {
             paramPackage.setCreatedTime(paramDate);
         }
-        paramPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+            paramPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        }
         List<Package> packages = packageMapper.selectPackageList(paramPackage);
         if (CollectionUtils.isEmpty(packages)) {
             return new HashMap();
@@ -336,7 +338,9 @@ public class PackageServiceImpl implements IPackageService {
         Package pkg = new Package();
         BeanUtils.copyProperties(packageVo, pkg);
         pkg.setBatchId(hisId);
-        pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+            pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        }
         if (StringUtils.isNotEmpty(packageVo.getStatus())){
             Date paramDate = new Date();
             if (!StringUtils.isEmpty(packageVo.getDatStr()) && !"null".equals(packageVo.getDatStr()) && packageVo.getDatStr().length() == 8 ) {
@@ -570,20 +574,20 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
 
-        Map<String, String> checkCountryAndZip = checkCountryAndZip(packageVos);
+        List<String> checkCountryAndZip = checkCountryAndZip(packageVos);
         if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)
-                || checkCountryAndZip.containsValue("NONEXISTING_POSTAL_CODE")
-                || checkCountryAndZip.containsValue("NONEXISTING_COUNTRY_CODE")
-                || checkCountryAndZip.containsValue("WRONG_POSTAL_PATTERN")) {
-            if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)){
+                || checkCountryAndZip.contains("NONEXISTING_POSTAL_CODE")
+                || checkCountryAndZip.contains("NONEXISTING_COUNTRY_CODE")
+                || checkCountryAndZip.contains("WRONG_POSTAL_PATTERN")) {
+//            if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)){
                 throw new Exception("邮编或国家代码验证失败");
-            }
-            StringBuilder sb = new StringBuilder();
-            for (String key : checkCountryAndZip.keySet()) {
-                sb.append("code: ").append(key)
-                        .append(", 邮编或国家代码验证失败, 失败信息为: ").append(checkCountryAndZip.get(key)).append("\n");
-            }
-            throw new Exception(sb.toString());
+//            }
+//            StringBuilder sb = new StringBuilder();
+//            for (String key : checkCountryAndZip.keySet()) {
+//                sb.append("code: ").append(key)
+//                        .append(", 邮编或国家代码验证失败, 失败信息为: ").append(checkCountryAndZip.get(key)).append("\n");
+//            }
+//            throw new Exception(sb.toString());
         }
 
         Boolean checkWeight = checkWeight(packageVos);
@@ -679,11 +683,10 @@ public class PackageServiceImpl implements IPackageService {
         }
     }
 
-    private Map<String, String> checkCountryAndZip(List<PackageVo> packageVos){
-        return packageVos.parallelStream().collect(toMap(
-                PackageVo::getReference,
-                item -> dpdServicesXMLClient.findPostalCode(item.getReceiverCountryCode(), item.getPostalCode())
-        ));
+    private List<String> checkCountryAndZip(List<PackageVo> packageVos){
+        return packageVos.parallelStream()
+                .map(item -> dpdServicesXMLClient.findPostalCode(item.getReceiverCountryCode(), item.getReceiverPostalCode()))
+                .collect(toList());
     }
 
     private Boolean checkWeight(List<PackageVo> packageVos){

@@ -31,12 +31,15 @@
           size="small"
           style="width: 240px"
         >
-          <el-option
-            v-for="dict in dict.type.sys_bat_status"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
+<!--          <el-option-->
+<!--            v-for="dict in dict.type.sys_bat_status"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+          <el-option label="上传成功" value="上传成功"/>
+          <el-option label="上传失败" value="上传失败"/>
+
         </el-select>
       </el-form-item>
       <!--
@@ -110,16 +113,16 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleImport"
-          v-hasPermi="['system:package:add']"
-        >导入</el-button>
-      </el-col>
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          icon="el-icon-plus"-->
+<!--          size="mini"-->
+<!--          @click="handleImport"-->
+<!--          v-hasPermi="['system:package:add']"-->
+<!--        >导入</el-button>-->
+<!--      </el-col>-->
 <!--      <el-col :span="1.5">-->
 <!--        <el-button-->
 <!--          type="success"-->
@@ -142,22 +145,23 @@
 <!--          v-hasPermi="['system:history:remove']"-->
 <!--        >删除</el-button>-->
 <!--      </el-col>-->
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['system:history:export']"
-        >导出</el-button>
-      </el-col>
+
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="warning"-->
+<!--          plain-->
+<!--          icon="el-icon-download"-->
+<!--          size="mini"-->
+<!--          @click="handleExport"-->
+<!--          v-hasPermi="['system:history:export']"-->
+<!--        >导出</el-button>-->
+<!--      </el-col>-->
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="historyList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
+<!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="创建时间" align="center" prop="createdTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
@@ -205,16 +209,17 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
+            v-show="scope.row.type === '面单导入'"
             size="mini"
             type="text"
-            icon="el-icon-edit"
+            icon="el-icon-view"
             @click="handleDownload(scope.row)"
             v-hasPermi="['system:history:edit']"
           >查看excel</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
+            icon="el-icon-view"
             @click="handleDownloadPDF(scope.row)"
             v-hasPermi="['system:history:edit']"
           >查看批量面单</el-button>

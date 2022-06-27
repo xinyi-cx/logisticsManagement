@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -17,42 +18,105 @@ public class REPackageVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    private String hisParam;
-
-    public String getHisParam() {
-        return hisParam;
-    }
-
-    public void setHisParam(String hisParam) {
-        this.hisParam = hisParam;
-    }
-
     /** 面单主键 */
     private Long id;
 
-    /** 付款人类型 */
-//    @Excel(name = "付款人类型")
-    private String payerType;
+    /** 原面单主键 */
+    @Excel(name = "原面单物流单号")
+    private String originalWaybill;
 
-    /** 发件人id */
-//    @Excel(name = "发件人id")
-    private Long senderId;
+    @Excel(name = "Sender Name")
+    private String showSenderName;
 
-    /** 收货人id */
-//    @Excel(name = "收货人id")
-    private Long receiverId;
+    /** 收件人姓名 */
+    @Excel(name = "Recipient Name")
+    @NotEmpty(message = "收件人信息不能为空")
+    private String receiverName;
 
-    /** 货物金额 */
-    @Excel(name = "COD Amount")
-    private BigDecimal pln;
+    /**
+     * 收件人地址
+     */
+    @Excel(name = "Recipient Street")
+    @NotEmpty(message = "收件人信息不能为空")
+    private String receiverAddress;
 
-    /** 分类1 */
-    @Excel(name = "Category")
+    /**
+     * 收件人邮政编码
+     */
+    @Excel(name = "Recipient Postal code")
+    @NotEmpty(message = "收件人信息不能为空")
+    private String receiverPostalCode;
+
+    /**
+     * 收件人城市
+     */
+    @Excel(name = "Recipient City")
+    @NotEmpty(message = "收件人信息不能为空")
+    private String receiverCity;
+
+    /**
+     * 收件人国家编码
+     */
+    @Excel(name = "Recipient Country")
+//    @NotEmpty(message = "收件人信息不能为空")
+    private String receiverCountryCode;
+
+    /**
+     * 收件人手机号码
+     */
+    @Excel(name = "Recipient phone")
+    @NotEmpty(message = "收件人信息不能为空")
+    private String receiverPhone;
+
+    /**
+     * 收件人邮箱
+     */
+    @Excel(name = "Recipient E-mail")
+    private String receiverEmail;
+    /**
+     * 重量（单位kg）
+     * 规则：
+     * 1、小于1kg的按1kg算，dpd会取体积和重量中的较大值进行计算；
+     * 2、大于10kg的要提示，不能大于10kg.
+     */
+    @Excel(name = "Weight kg")
+    private BigDecimal weight;
+
+    /**
+     * 包裹里物件的数量
+     */
+    @Excel(name = "Qty packages")
+    private String qtyPackages;
+
+    /**
+     * 备注 商品描述
+     */
+    @Excel(name = "Description")
+    private String content;
+
+    /**
+     * 内部引用号
+     */
+    @Excel(name = "Order")
+    private String reference;
+
+    /**
+     * 分类1（售后电话）
+     */
+    @Excel(name = "Reference 1")
     private String ref1;
 
-    /** 分类2 */
-    @Excel(name = "Category_2")
+    /**
+     * 分类2（售后邮箱）
+     */
+    @Excel(name = "Reference 2")
     private String ref2;
+
+    /**
+     * 货物金额
+     */
+    @Excel(name = "COD")
+    private BigDecimal pln;
 
     /** 服务id */
 //    @Excel(name = "服务id")
@@ -88,47 +152,9 @@ public class REPackageVo extends BaseEntity
 //    @Excel(name = "下载次数")
     private Integer downloadNum;
 
-    public void setDownloadNum(Integer downloadNum)
-    {
-        this.downloadNum = downloadNum;
-    }
-
-    public Integer getDownloadNum()
-    {
-        return downloadNum;
-    }
-
-    /** 收件人地址 */
-    @Excel(name = "Street")
-    private String receiverAddress;
-
-    /** 收件人城市 */
-    @Excel(name = "City")
-    private String receiverCity;
-
     /** 收件人公司 */
 //    @Excel(name = "收件人公司")
     private String receiverCompany;
-
-    /** 收件人国家编码 */
-    @Excel(name = "Country")
-    private String receiverCountryCode;
-
-    /** 收件人邮件 */
-    @Excel(name = "e-mail/Contact")
-    private String receiverEmail;
-
-    /** 收件人姓名 */
-    @Excel(name = "Name")
-    private String receiverName;
-
-    /** 收件人手机号码 */
-    @Excel(name = "Phone")
-    private String receiverPhone;
-
-    /** 收件人邮政编码 */
-    @Excel(name = "Zip code")
-    private String receiverPostalCode;
 
     /** 长 */
 //    @Excel(name = "长")
@@ -142,21 +168,9 @@ public class REPackageVo extends BaseEntity
 //    @Excel(name = "高")
     private Integer sizeZ;
 
-    /** 备注 */
-    @Excel(name = "Note")
-    private String content;
-
     /** 客户数据1 */
 //    @Excel(name = "客户数据1")
     private String customerData1;
-
-    /** 内部引用号 */
-    @Excel(name = "Reference")
-    private String reference;
-
-    /** 重量 */
-    @Excel(name = "Weight")
-    private BigDecimal weight;
 
     /** pack_id */
 //    @Excel(name = "pack_id")
@@ -188,9 +202,53 @@ public class REPackageVo extends BaseEntity
 //    @Excel(name = "原面单id")
     private Long originalId;
 
-    /** 原面单主键 */
-    @Excel(name = "原面单物流单号")
-    private String originalWaybill;
+    /** 付款人类型 */
+//    @Excel(name = "付款人类型")
+    private String payerType;
+
+    /** 发件人id */
+//    @Excel(name = "发件人id")
+    private Long senderId;
+
+    /** 收货人id */
+//    @Excel(name = "收货人id")
+    private Long receiverId;
+
+    private String hisParam;
+
+    public String getQtyPackages() {
+        return qtyPackages;
+    }
+
+    public void setQtyPackages(String qtyPackages) {
+        this.qtyPackages = qtyPackages;
+    }
+
+    public void setDownloadNum(Integer downloadNum)
+    {
+        this.downloadNum = downloadNum;
+    }
+
+    public Integer getDownloadNum()
+    {
+        return downloadNum;
+    }
+
+    public String getShowSenderName() {
+        return showSenderName;
+    }
+
+    public void setShowSenderName(String showSenderName) {
+        this.showSenderName = showSenderName;
+    }
+
+    public String getHisParam() {
+        return hisParam;
+    }
+
+    public void setHisParam(String hisParam) {
+        this.hisParam = hisParam;
+    }
 
     public String getOriginalWaybill() {
         return originalWaybill;

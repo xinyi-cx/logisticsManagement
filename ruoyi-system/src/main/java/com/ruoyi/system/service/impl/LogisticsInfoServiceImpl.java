@@ -52,7 +52,10 @@ public class LogisticsInfoServiceImpl implements ILogisticsInfoService
     @Override
     public List<LogisticsInfo> selectLogisticsInfoList(LogisticsInfo logisticsInfo)
     {
-        logisticsInfo.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+            logisticsInfo.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        }
+
         return logisticsInfoMapper.selectLogisticsInfoList(logisticsInfo);
     }
 
