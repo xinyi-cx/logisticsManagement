@@ -59,6 +59,9 @@ public class OuterServiceImpl implements IOuterService {
     @Value("${mb.postUserFlag}")
     private Boolean postUserFlag;
 
+    @Value("${mb.senderUserId}")
+    private Long senderUserId;
+
     @Autowired
     private MbReturnDtoMapper mbReturnDtoMapper;
 
@@ -291,19 +294,19 @@ public class OuterServiceImpl implements IOuterService {
 //        codes.add("892213414595342");
 //        codes.add("892214828719791");
         List<String> errMsgList = new ArrayList<>();
-        if (!postUserFlag) {
-            SysUser user1 = userMapper.selectUserById(1L);
+        SysUser user1 = userMapper.selectUserById(senderUserId);
+//        if (!postUserFlag) {
             dealNotify(codes, notifyStr, user1, errMsgList, postUserFlag, "马帮主动通知");
-        } else {
-            dealNotify(codes, notifyStr, null, errMsgList, postUserFlag, "马帮主动通知");
-        }
+//        } else {
+//            dealNotify(codes, notifyStr, null, errMsgList, postUserFlag, "马帮主动通知");
+//        }
     }
 
     @Override
     public void changeAccept(MbImport mbImport) {
         List<String> codes = new ArrayList<>();
         codes.add(mbImport.getCode());
-        SysUser sysUser = userMapper.selectUserById(1L);
+        SysUser sysUser = userMapper.selectUserById(senderUserId);
         changeStatusToAccept(codes, sysUser);
     }
 

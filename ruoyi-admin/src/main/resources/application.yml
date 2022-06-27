@@ -197,5 +197,6 @@ mb:
   phone: 13888888888
   importUserFlag: false
   postUserFlag: false
+  senderUserId: 1
 frontPath: C:/ruoyi/uploadPath/packagePdf/
 localIp: http://118.195.237.144/dev-api/profile/packagePdf
