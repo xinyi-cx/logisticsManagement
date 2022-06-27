@@ -61,7 +61,9 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     @Override
     public List<BatchTaskHistory> selectBatchTaskHistoryList(BatchTaskHistoryVo batchTaskHistoryVo)
     {
-        batchTaskHistoryVo.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+            batchTaskHistoryVo.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        }
         return batchTaskHistoryMapper.selectBatchTaskHistoryList(batchTaskHistoryVo);
     }
 

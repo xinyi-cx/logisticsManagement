@@ -99,8 +99,10 @@ public class DPDInfoXMLClient {
             } else {
                 status = "ERROR";
             }
-            parcel.setStatus(status);
-            logisticsInfo.setStatus(status);
+            if(StringUtils.isNotEmpty(status)){
+                parcel.setStatus(status);
+                logisticsInfo.setStatus(status);
+            }
             logisticsInfo.setLastTime(customerEventV3.getEventTime());
 
             List<String> waybills = new ArrayList<>();

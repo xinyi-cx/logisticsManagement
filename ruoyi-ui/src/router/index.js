@@ -178,7 +178,7 @@ export const dynamicRoutes = [
       {
         path: 'index/:hisParam(\\d+)',
         component: () => import('@/views/system/package/index'),
-        name: 'Data',
+        name: 'DataPackage',//name 重复2
         meta: { title: '面单列表', activeMenu: '/system/history' }
       },
       {
@@ -199,22 +199,8 @@ export const dynamicRoutes = [
       {
         path: '',
         component: () => import('@/views/system/dashboard/index'),
-        name: 'Data',
+        name: 'DataDashBoard', //name 重复1
         meta: { title: '数据看板', activeMenu: '/dashboard' }
-      }
-    ]
-  },
-  {
-    path: '/system/show',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:pdf:list'],
-    children: [
-      {
-        path: 'index/:id(\\d+)',
-        component: () => import('@/views/system/showpdf/index'),
-        name: 'ShowPdf',
-        meta: { title: 'pdf查看页面', activeMenu: '/system/show' }
       }
     ]
   },

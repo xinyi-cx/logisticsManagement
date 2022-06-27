@@ -17,26 +17,6 @@ import java.util.Date;
 public class PackageVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    private String hisParam;
-
-    private String datStr;
-
-    public String getDatStr() {
-        return datStr;
-    }
-
-    public void setDatStr(String datStr) {
-        this.datStr = datStr;
-    }
-
-    public String getHisParam() {
-        return hisParam;
-    }
-
-    public void setHisParam(String hisParam) {
-        this.hisParam = hisParam;
-    }
-
     /**
      * 面单主键
      */
@@ -282,6 +262,26 @@ public class PackageVo extends BaseEntity {
      */
 //    @Excel(name = "下载次数")
     private Integer downloadNum;
+
+    private String hisParam;
+
+    private String datStr;
+
+    public String getDatStr() {
+        return datStr;
+    }
+
+    public void setDatStr(String datStr) {
+        this.datStr = datStr;
+    }
+
+    public String getHisParam() {
+        return hisParam;
+    }
+
+    public void setHisParam(String hisParam) {
+        this.hisParam = hisParam;
+    }
 
     public void setDownloadNum(Integer downloadNum) {
         this.downloadNum = downloadNum;

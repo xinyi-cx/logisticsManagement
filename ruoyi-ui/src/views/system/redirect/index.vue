@@ -1,19 +1,19 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="备注1" prop="ref1">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="78px">
+      <el-form-item label="reference1" prop="ref1">
         <el-input
           v-model="queryParams.ref1"
-          placeholder="请输入备注1的内容"
+          placeholder="请输入ref1的内容"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="备注2" prop="ref2">
+      <el-form-item label="reference2" prop="ref2">
         <el-input
           v-model="queryParams.ref2"
-          placeholder="请输入备注2的内容"
+          placeholder="请输入ref2的内容"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -126,18 +126,20 @@
     <el-table v-loading="loading" :data="packageList" @selection-change="handleSelectionChange">
       <!-- 多选 -->
       <el-table-column type="selection" width="55" align="center" />
-      <!-- 物流单号 -->
-      <el-table-column label="物流单号" align="center" prop="waybill" />
       <!-- 原面单ID -->
       <el-table-column label="原面单ID" align="center" prop="originalId" />
+      <!-- 物流单号 -->
+      <el-table-column label="物流单号" align="center" prop="waybill" />
       <!-- 创建时间 -->
       <el-table-column label="创建时间" align="center" prop="createdTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
         </template>
         </el-table-column>
+      <!-- 内部引用号 -->
+      <el-table-column label="内部单号" align="center" prop="reference" />
       <!-- 收货人全名 -->
-      <el-table-column label="收货人姓名" width="180" align="center" prop="receiverName" />
+      <el-table-column label="收件人" width="100" show-overflow-tooltip align="center" prop="receiverName" />
       <!-- 国家 -->
       <el-table-column label="国家" align="center" prop="receiverCountryCode" >
         <template slot-scope="scope">
@@ -145,25 +147,23 @@
         </template>
       </el-table-column>
       <!-- 城市 -->
-      <el-table-column label="城市" align="center" prop="receiverCity" />
-      <!-- 货物金额(pln) -->
-      <el-table-column label="货物金额(pln)" align="center" prop="pln" width="180"/>
-      <!-- 重量(kg) -->
-      <el-table-column label="重量(kg)" align="center" prop="weight" />
-      <!-- 邮码 -->
+      <el-table-column label="城市" align="center" prop="receiverCity" show-overflow-tooltip />
+      <!-- 邮编 -->
       <el-table-column label="邮编" align="center" prop="receiverPostalCode" />
       <!-- 手机号码 -->
       <el-table-column label="手机号码" align="center" prop="receiverPhone" />
-      <!-- 内部引用号 -->
-      <el-table-column label="内部单号" align="center" prop="reference" />
+      <!-- 货物金额(pln) -->
+      <el-table-column label="COD(pln)" align="center" prop="pln" width="180"/>
+      <!-- 重量(kg) -->
+      <el-table-column label="重量(kg)" align="center" prop="weight" />
       <!-- 物品类型-description -->
-      <el-table-column label="物品类型" align="center" prop="content" />
+      <el-table-column label="物品类型" align="center" show-overflow-tooltip prop="content" />
       <!-- 下载次数 -->
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
       <!-- 备注1 -->
-      <el-table-column label="备注1" align="center" prop="ref1" />
+      <el-table-column label="reference1" align="center" prop="ref1" />
       <!-- 备注2 -->
-      <el-table-column label="备注2" align="center" prop="ref2" />
+      <el-table-column label="reference2" align="center" prop="ref2" />
       <!-- 操作 -->
       <el-table-column label="操作" align="center" prop="id">
          <template slot-scope="scope">
@@ -244,12 +244,12 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改面单对话框 -->
+    <!-- 新增或修改转寄面单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="106px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
-          <el-col :span="24">
-            <el-form-item label="原面单物流单号" prop="originalId">
+          <el-col :span="18">
+            <el-form-item label="原面单物流单号" prop="originalId" label-width="120px">
               <el-select v-model="form.originalId" placeholder="请选择">
                 <el-option
                   v-for="dict in allPackage"
@@ -261,17 +261,18 @@
             </el-form-item>
           </el-col>
         </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="收货人姓名" prop="receiverName">
-            <el-input v-model="form.receiverName" placeholder="请输入收获人姓名" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
+        <el-row>
+          <h3 class="headline">收件人信息</h3>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="receiverName">
+              <el-input v-model="form.receiverName" placeholder="请输入收件人全名" />
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
             <el-form-item label="国家" prop="receiverCountryCode">
-              <el-select v-model="form.receiverCountryCode" placeholder="请选择">
+              <el-select v-model="form.receiverCountryCode" placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="dict in dict.type.sys_country"
                   :key="dict.value"
@@ -281,124 +282,79 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="城市" prop="receiverCity">
               <el-input v-model="form.receiverCity" placeholder="请输入城市名" maxlength="30" />
             </el-form-item>
           </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="街道" prop="receiverAddress">
-            <el-input v-model="form.receiverAddress" placeholder="请输入街道信息" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="邮编" prop="receiverPostalCode">
-            <el-input v-model="form.receiverPostalCode" placeholder="请输入邮政编码" maxlength="30" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="手机号码" prop="receiverPhone">
-            <el-input v-model.number="form.receiverPhone" placeholder="请输入手机号码" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="邮件/联系方式" prop="receiverEmail">
-            <el-input v-model="form.receiverEmail" placeholder="请输入邮件/联系方式" maxlength="30" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="货物金额(PLN)" prop="pln">
-            <el-input v-model.number="form.pln" placeholder="max:6000" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <h3 class="headline">其他</h3>
-      </el-row>
-      <el-row>
-        <!-- 内部引用号和order到底是不是一回事儿？Order:328532-00001442 -->
-        <el-col :span="12">
-          <el-form-item label="内部引用号" prop="reference">
-            <el-input v-model="form.reference" placeholder="请输入内部引用号" maxlength="30" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="重量(KG)" prop="weight">
-            <el-input v-model="form.weight" placeholder="max(National:31.5,International:40)" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="分类" prop="ref1">
-            <el-input v-model="form.ref1" placeholder="请输入分类" maxlength="30" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="分类2" prop="ref2">
-            <el-input v-model="form.ref2" placeholder="请输入分类2" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="备注" prop="content">
-            <el-input v-model="form.content" placeholder="请输入邮政备注" maxlength="30" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <!--
-        <el-form-item label="发件人id" prop="senderId">
-          <el-input v-model="form.senderId" placeholder="请输入发件人id" />
-        </el-form-item>
-        <el-form-item label="收货人id" prop="receiverId">
-          <el-input v-model="form.receiverId" placeholder="请输入收货人id" />
-        </el-form-item>
-        <el-form-item label="分类1" prop="ref1">
-          <el-input v-model="form.ref1" placeholder="请输入分类1" />
-        </el-form-item>
-        <el-form-item label="分类2" prop="ref2">
-          <el-input v-model="form.ref2" placeholder="请输入分类2" />
-        </el-form-item>
-        <el-form-item label="服务id" prop="servicesId">
-          <el-input v-model="form.servicesId" placeholder="请输入服务id" />
-        </el-form-item>
-        <el-form-item label="手机号码" prop="phone">
-          <el-input v-model="form.phone" placeholder="请输入手机号码" />
-        </el-form-item>
-        <el-form-item label="邮政编码" prop="postalCode">
-          <el-input v-model="form.postalCode" placeholder="请输入邮政编码" />
-        </el-form-item>
-        <el-form-item label="创建人" prop="createUser">
-          <el-input v-model="form.createUser" placeholder="请输入创建人" />
-        </el-form-item>
-        <el-form-item label="更新人" prop="updateUser">
-          <el-input v-model="form.updateUser" placeholder="请输入更新人" />
-        </el-form-item>
-        <el-form-item label="创建时间" prop="createdTime">
-          <el-date-picker clearable size="small"
-            v-model="form.createdTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择创建时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="更新时间" prop="updatedTime">
-          <el-date-picker clearable size="small"
-            v-model="form.updatedTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择更新时间">
-          </el-date-picker>
-        </el-form-item>
-        -->
+          <el-col :span="12">
+            <el-form-item label="街道" prop="receiverAddress">
+              <el-input v-model="form.receiverAddress" placeholder="请输入街道信息" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="邮编" prop="receiverPostalCode">
+              <el-input v-model.number="form.receiverPostalCode" placeholder="请输入5位数的邮政编码" maxlength="30" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号" prop="receiverPhone">
+              <el-input v-model="form.receiverPhone" placeholder="请输入手机号码" maxlength="30" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="receiverEmail">
+              <el-input v-model="form.receiverEmail" placeholder="请输入邮箱信息" maxlength="30" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="COD(pln)" prop="pln" label-width="90px">
+              <el-input v-model.number="form.pln" placeholder="max:6000" maxlength="30" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <h3 class="headline">其他</h3>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="Order" prop="reference">
+              <el-input v-model="form.reference" placeholder="请输入内部引用号" maxlength="30" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="重量(KG)" prop="weight">
+              <el-input v-model.number="form.weight" placeholder="不足1kg按1kg计算，不能大于10kg" maxlength="30" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="售后电话" prop="ref1">
+              <el-input v-model="form.ref1" placeholder="请输入售后电话" maxlength="30" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="售后邮箱" prop="ref2">
+              <el-input v-model="form.ref2" placeholder="请输入售后邮箱" maxlength="30" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="商品描述" prop="content">
+              <el-input v-model="form.content" placeholder="请输入商品描述信息" maxlength="30" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
@@ -444,6 +400,42 @@ export default {
   name: "Package",
   dicts: ['sys_country'],
   data() {
+    // 重量校验（不能大于10Kg）
+    let checkWeight = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('重量不能为空'));
+      }
+      setTimeout(() => {
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入数字值'));
+        } else {
+          if (value < 1) {
+            callback(new Error('重量须大于等于1kg'));
+          } else if(value > 10) {
+            callback(new Error('重量不能超过10kg'));
+          } else {
+            callback();
+          }
+        }
+      }, 1000);
+    };
+    // cod校验（不能大于 6000）
+    let checkPln = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('COD金额不能为空'));
+      }
+      setTimeout(() => {
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入数字值'));
+        } else {
+          if (value >6000) {
+            callback(new Error('COD金额不能超过6000'));
+          } else {
+            callback();
+          }
+        }
+      }, 1000);
+    };
     return {
       allPackage: [],
       // 遮罩层
@@ -497,6 +489,46 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        originalId: [
+          { required: true, message: "原面单物流号不能为空", trigger: "blur" },
+        ],
+        receiverName: [
+          { required: true, message: "请输入收件人全名", trigger: "blur" },
+          // { min: 2, max: 20, message: '用户名长度必须介于 2 和 20 之间', trigger: 'blur' }
+        ],
+        receiverCountryCode:[
+          { required: true, message: "请选择所在国家", trigger: "blur" }
+        ],
+        receiverCity: [
+          { required: true, message: "请输入收件人所在城市", trigger: "blur" },
+          // 这块需要校验么？
+        ],
+        receiverAddress: [
+          { required: true, message: "请输入收件人详细地址", trigger: "blur" }
+        ],
+        receiverPostalCode: [
+          { required: true, message: "请输入邮政编码", trigger: "blur" },
+          { min: 5, max: 6, message: '请输入正确的邮政编码', trigger: 'blur' }
+        ],
+        pln: [
+          { required: true, message: "请输入COD", trigger: "blur" },
+          { validator: checkPln, trigger: "blur"}
+        ],
+        receiverEmail: [
+          { required: true, message: "邮箱信息不能为空", trigger: "blur"},
+          { type: "email", message: "请输入正确的邮箱地址", trigger: ["blur", "change"] }
+        ],
+        receiverPhone: [
+          { required: true, message: "手机号不能为空", trigger: "blur"},
+          // { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: "请输入正确的手机号码", trigger: "blur" }
+        ],
+        reference: [
+          { required: true, message: "请输入内部引用号", trigger: "blur" }
+        ],
+        weight: [
+          { required: true, message: "请输入重量信息", trigger: "blur" },
+          { validator: checkWeight, trigger: "blur"}
+        ],
       }
     };
   },
@@ -567,7 +599,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加面单";
+      this.title = "新增转寄面单";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -576,7 +608,7 @@ export default {
       getPackage(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改面单";
+        this.title = "修改转寄面单";
       });
     },
     /** 导入按钮操作 */

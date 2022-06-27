@@ -116,7 +116,9 @@ public class PackageServiceImpl implements IPackageService {
         }else {
             paramPackage.setCreatedTime(paramDate);
         }
-        paramPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+            paramPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        }
         List<Package> packages = packageMapper.selectPackageList(paramPackage);
         if (CollectionUtils.isEmpty(packages)) {
             return new HashMap();
@@ -336,7 +338,9 @@ public class PackageServiceImpl implements IPackageService {
         Package pkg = new Package();
         BeanUtils.copyProperties(packageVo, pkg);
         pkg.setBatchId(hisId);
-        pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+            pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        }
         if (StringUtils.isNotEmpty(packageVo.getStatus())){
             Date paramDate = new Date();
             if (!StringUtils.isEmpty(packageVo.getDatStr()) && !"null".equals(packageVo.getDatStr()) && packageVo.getDatStr().length() == 8 ) {
