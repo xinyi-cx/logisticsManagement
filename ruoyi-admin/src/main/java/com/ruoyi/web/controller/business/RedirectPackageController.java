@@ -6,17 +6,21 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.vo.ExportPackageVo;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.domain.vo.REPackageVo;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -54,8 +58,20 @@ public class RedirectPackageController extends BaseController
     public void export(HttpServletResponse response, PackageVo pkg)
     {
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
-        ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
-        util.exportExcel(response, list, "转寄面单原面单关联关系数据");
+        List<ExportPackageVo> exportPackageVos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(list)){
+            packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
+
+            exportPackageVos = list.stream().map(item ->
+                    {
+                        ExportPackageVo packageVo = new ExportPackageVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        }
+        ExcelUtil<ExportPackageVo> util = new ExcelUtil<ExportPackageVo>(ExportPackageVo.class);
+        util.exportExcel(response, exportPackageVos, "转寄面单原面单关联关系数据");
     }
 
     /**
