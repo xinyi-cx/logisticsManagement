@@ -90,7 +90,7 @@ public class MbAccept {
         b10_10.put("c", "");
         b10_10.put("p", "");
         b10_10.put("i", "");
-        b10_10.put("ac", "");
+        b10_10.put("ac", labelPDFUrl);
         labelPDFUrlMap.put("b10_10", b10_10);
 
         Map<String, Object> a4 = new HashMap<>();

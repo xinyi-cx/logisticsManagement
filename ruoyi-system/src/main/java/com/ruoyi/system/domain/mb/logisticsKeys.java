@@ -1,15 +1,15 @@
 package com.ruoyi.system.domain.mb;
 
 public class logisticsKeys {
-    private wishu wishu;
+    private grand_qingyi grand_qingyi;
     private bub bub;
 
-    public com.ruoyi.system.domain.mb.wishu getWishu() {
-        return wishu;
+    public com.ruoyi.system.domain.mb.grand_qingyi getGrand_qingyi() {
+        return grand_qingyi;
     }
 
-    public void setWishu(com.ruoyi.system.domain.mb.wishu wishu) {
-        this.wishu = wishu;
+    public void setGrand_qingyi(com.ruoyi.system.domain.mb.grand_qingyi grand_qingyi) {
+        this.grand_qingyi = grand_qingyi;
     }
 
     public com.ruoyi.system.domain.mb.bub getBub() {

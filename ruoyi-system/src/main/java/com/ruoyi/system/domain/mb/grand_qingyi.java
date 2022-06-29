@@ -1,6 +1,6 @@
 package com.ruoyi.system.domain.mb;
 
-public class wishu {
+public class grand_qingyi {
     private String api_key;//物流令牌
     private String api_secret;//物流秘钥  //如果物流授权参数只有一个，则接口只有api_key 一个参数。
 

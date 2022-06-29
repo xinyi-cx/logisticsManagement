@@ -47,9 +47,9 @@ public class OuterController extends BaseController {
         outerService.getPDF(mbImport.getPdfUrl(), response);
     }
 
-    @PostMapping("/changeAccept")
-    public void changeAccept(MbImport mbImport) {
-        outerService.changeAccept(mbImport);
-    }
+//    @PostMapping("/changeAccept")
+//    public void changeAccept(MbImport mbImport) {
+//        outerService.changeAccept(mbImport);
+//    }
 
 }
