@@ -91,7 +91,7 @@ public class PackageVo extends BaseEntity {
      * 备注 商品描述
      */
     @Excel(name = "Description")
-    private String content;
+    private String customerData1;
 
     /**
      * 内部引用号
@@ -133,7 +133,7 @@ public class PackageVo extends BaseEntity {
      * 客户数据1
      */
 //    @Excel(name = "客户数据1")
-    private String customerData1;
+    private String content;
 
 
     /**

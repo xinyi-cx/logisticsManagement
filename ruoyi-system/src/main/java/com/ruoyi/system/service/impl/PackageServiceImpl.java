@@ -755,7 +755,7 @@ public class PackageServiceImpl implements IPackageService {
         AddressReceiver addressReceiver = new AddressReceiver();
         addressReceiver.setAddress(pkg.getReceiverAddress());
         addressReceiver.setCity(pkg.getReceiverCity());
-        addressReceiver.setCompany(pkg.getReceiverCompany());
+        addressReceiver.setCompany(pkg.getReceiverName());
         addressReceiver.setCountryCode(pkg.getReceiverCountryCode());
         addressReceiver.setEmail(pkg.getReceiverEmail());
         addressReceiver.setName(pkg.getReceiverName());

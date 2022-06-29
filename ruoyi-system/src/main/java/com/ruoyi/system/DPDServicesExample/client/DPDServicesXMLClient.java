@@ -261,10 +261,10 @@ public class DPDServicesXMLClient {
                 parcel1.setSizeX(null == parcel.getSizeX() || 0 == parcel.getSizeX() ? 1 : parcel.getSizeX());
                 parcel1.setSizeY(null == parcel.getSizeY() || 0 == parcel.getSizeY() ? 1 : parcel.getSizeY());
                 parcel1.setSizeZ(null == parcel.getSizeZ() || 0 == parcel.getSizeZ() ? 1 : parcel.getSizeZ());
-                if (ObjectUtils.isEmpty(parcel.getContent())) {
-                    String uuid = IdUtils.fastSimpleUUID();
-                    parcel.setContent(uuid);
-                }
+//                if (ObjectUtils.isEmpty(parcel.getContent())) {
+//                    String uuid = IdUtils.fastSimpleUUID();
+//                    parcel.setContent(uuid);
+//                }
                 if (ObjectUtils.isEmpty(parcel.getCustomerData1())) {
                     String uuid = IdUtils.fastSimpleUUID();
                     parcel.setCustomerData1(uuid);
@@ -273,7 +273,7 @@ public class DPDServicesXMLClient {
                     String uuid = IdUtils.fastSimpleUUID();
                     parcel.setReference(uuid);
                 }
-                parcel1.setContent(parcel.getContent());//id
+                parcel1.setContent(parcel.getReference());//id
                 parcel1.setCustomerData1(parcel.getCustomerData1());//id
                 parcel1.setReference(parcel.getReference()); //parametr opcjonalny
                 parcel1.setWeight((0 == Double.parseDouble(parcel.getWeight().toString())) ? 1 : Double.parseDouble(parcel.getWeight().toString()));
