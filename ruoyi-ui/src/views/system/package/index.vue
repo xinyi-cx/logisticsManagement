@@ -17,42 +17,42 @@
                         placeholder="选择更新时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="邮编" prop="postalCode">
+      <el-form-item label="物流单号" prop="waybill">
         <el-input
-          v-model="queryParams.postalCode"
-          placeholder="请输入邮政编码"
+          v-model="queryParams.waybill"
+          placeholder="请输入物流单号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="售后电话" prop="ref1">
-        <el-input
-          v-model="queryParams.ref1"
-          placeholder="请输入售后电话"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="售后邮箱" prop="ref2">
-        <el-input
-          v-model="queryParams.ref2"
-          placeholder="请输入售后邮箱"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="手机号码" prop="phone">
-        <el-input
-          v-model="queryParams.phone"
-          placeholder="请输入手机号码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="售后电话" prop="ref1">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.ref1"-->
+<!--          placeholder="请输入售后电话"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="售后邮箱" prop="ref2">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.ref2"-->
+<!--          placeholder="请输入售后邮箱"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="手机号码" prop="phone">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.phone"-->
+<!--          placeholder="请输入手机号码"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
 
 <!--      <el-form-item label="创建人" prop="createUser">-->
 <!--        <el-input-->
@@ -158,7 +158,7 @@
       <el-table-column label="重量(kg)" align="center" prop="weight" />
 
       <!-- 货品名称-description -->
-      <el-table-column label="物品类型" align="center" prop="content" width="120" show-overflow-tooltip/>
+      <el-table-column label="物品类型" align="center" prop="customer_data1" width="120" show-overflow-tooltip/>
       <!-- 下载次数 -->
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
       <!-- 备注1 reference1 -->
@@ -334,7 +334,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm" :disabled="disabled">确 定</el-button>
+        <el-button type="primary" @click="submitForm" :disabled="submitDisabled">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -362,7 +362,7 @@
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button type="primary" @click="submitFileForm" :disabled="submitDisabled">确 定</el-button>
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -434,6 +434,8 @@ export default {
       // 是否显示弹出层
       open: false,
       disabled: false,
+      // 导入时点击确定后置灰，避免重复点击
+      submitDisabled: false,
       // 导入参数
       upload: {
         // 是否显示弹出层（导入）
@@ -574,9 +576,11 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length!==1;
+      this.multiple = !selection.length;
+      // TO-DO 根据选中数据进行导出，将数组传给导出接口即可。
+      //console.log(this.ids);
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -600,6 +604,7 @@ export default {
     handleImport() {
       this.upload.title = "批量导入";
       this.upload.open = true;
+      this.submitDisabled = false;
     },
     /** 下载模板操作 */
     importTemplate() {
@@ -630,6 +635,7 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
+      this.submitDisabled = true;
     },
     /** 提交按钮 */
     submitForm() {
