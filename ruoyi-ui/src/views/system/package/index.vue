@@ -334,7 +334,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm" :disabled="submitDisabled">确 定</el-button>
+        <el-button type="primary" @click="submitForm" :disabled="disabled">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -433,6 +433,7 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 新增面单，提交后置灰吧？
       disabled: false,
       // 导入时点击确定后置灰，避免重复点击
       submitDisabled: false,

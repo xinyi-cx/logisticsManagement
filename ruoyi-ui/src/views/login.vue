@@ -85,12 +85,9 @@ export default {
       codeUrl: "",
       countryList: [],
       loginForm: {
-        // country: "CN",
-        // username: "admin",
-        // password: "admin123",
-        country: "PL",
-        username: "wolin",
-        password: "",
+        country: "CN",
+        username: "admin",
+        password: "admin123",
         rememberMe: false,
         code: "",
         uuid: ""
