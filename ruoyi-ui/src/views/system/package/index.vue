@@ -131,7 +131,7 @@
       <!-- 物流单号 -->
       <el-table-column label="物流单号" align="center" width="150" prop="waybill" />
       <!-- 创建时间 -->
-      <el-table-column label="创建时间" align="center" prop="id">
+      <el-table-column label="创建时间" align="center" width="150" prop="id">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
         </template>
