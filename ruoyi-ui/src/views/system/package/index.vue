@@ -158,7 +158,7 @@
       <el-table-column label="重量(kg)" align="center" prop="weight" />
 
       <!-- 货品名称-description -->
-      <el-table-column label="物品类型" align="center" prop="customer_data1" width="120" show-overflow-tooltip/>
+      <el-table-column label="物品类型" align="center" prop="customerData1" width="120" show-overflow-tooltip/>
       <!-- 下载次数 -->
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
       <!-- 备注1 reference1 -->
