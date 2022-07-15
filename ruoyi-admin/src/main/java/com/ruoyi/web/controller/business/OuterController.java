@@ -1,16 +1,20 @@
 package com.ruoyi.web.controller.business;
 
 import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.system.domain.MbImport;
 import com.ruoyi.system.domain.mb.MbReceiveDto;
 import com.ruoyi.system.service.IOuterService;
+import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/receiveMb")
@@ -18,9 +22,11 @@ public class OuterController extends BaseController {
     @Autowired
     private IOuterService outerService;
 
+    @Autowired
+    private ISysUserService userService;
+
     /**
      * test
-     *
      */
     @GetMapping("/test")
     public void test() {
@@ -40,6 +46,7 @@ public class OuterController extends BaseController {
 
     /**
      * 接收马帮的主动通知
+     *
      * @return
      */
     @PostMapping("/getPDF")
@@ -51,5 +58,14 @@ public class OuterController extends BaseController {
 //    public void changeAccept(MbImport mbImport) {
 //        outerService.changeAccept(mbImport);
 //    }
+
+    /**
+     * 获取用户列表
+     */
+    @PostMapping("/getUser")
+    public AjaxResult getUserForLogin(@RequestBody SysUser user) {
+        List<SysUser> list = userService.getUserForLogin(user);
+        return AjaxResult.success(CollectionUtils.isEmpty(list) ? new ArrayList<>() : list.stream().map(SysUser::getCountry).collect(Collectors.toList()));
+    }
 
 }

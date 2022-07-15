@@ -2,6 +2,15 @@ import request from '@/utils/request'
 import { praseStrEmpty } from "@/utils/ruoyi";
 
 // 查询用户列表
+export function listUserForLogin(query) {
+  return request({
+    url: '/receiveMb/getUser',
+    method: 'post',
+    params: query
+  })
+}
+
+// 查询用户列表
 export function listUser(query) {
   return request({
     url: '/system/user/list',
