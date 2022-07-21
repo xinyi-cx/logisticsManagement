@@ -267,6 +267,16 @@ public class PackageVo extends BaseEntity {
 
     private String datStr;
 
+    private String source;
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     public String getDatStr() {
         return datStr;
     }

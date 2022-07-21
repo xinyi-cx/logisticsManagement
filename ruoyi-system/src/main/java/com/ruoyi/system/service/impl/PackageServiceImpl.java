@@ -95,7 +95,7 @@ public class PackageServiceImpl implements IPackageService {
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(Collections.singletonList(pkg.getId()));
         Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
 
-        return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap);
+        return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap, new HashMap<>());
     }
 
     /**
@@ -377,7 +377,15 @@ public class PackageServiceImpl implements IPackageService {
 
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
         Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
-        List<PackageVo> resultList = packages.stream().map(item -> this.getPackageVo(packageVo, item, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap)).filter(Objects::nonNull).collect(Collectors.toList());
+
+        List<BatchTaskHistory> batchTaskHistories = batchTaskHistoryMapper.selectBatchTaskHistoryByIdIn(packages.stream().map(Package::getBatchId).filter(Objects::nonNull).collect(toList()));
+        Map<Long, BatchTaskHistory> batchTaskHistoryMap = null;
+        if (CollectionUtils.isNotEmpty(batchTaskHistories)){
+            batchTaskHistoryMap = batchTaskHistories.stream().collect(toMap(BatchTaskHistory::getId, Function.identity()));
+        }
+        Map<Long, BatchTaskHistory> finalBatchTaskHistoryMap = batchTaskHistoryMap;
+        List<PackageVo> resultList = packages.stream().map(item -> this.getPackageVo(packageVo, item, addressSenderMap,
+                addressReceiverMap, parcels, packagesGenerationResponseMap, finalBatchTaskHistoryMap)).filter(Objects::nonNull).collect(Collectors.toList());
         if (null == sucFlag) {
             return resultList;
         }
@@ -393,7 +401,8 @@ public class PackageServiceImpl implements IPackageService {
                                    Map<Long, AddressSender> addressSenderMap,
                                    Map<Long, AddressReceiver> addressReceiverMap,
                                    List<Parcel> parcels,
-                                   Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap) {
+                                   Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap,
+                                   Map<Long, BatchTaskHistory> batchTaskHistoryMap) {
         PackageVo packageVo = new PackageVo();
         BeanUtils.copyProperties(pac, packageVo);
 
@@ -422,6 +431,14 @@ public class PackageServiceImpl implements IPackageService {
             BeanUtils.copyProperties(packagesGenerationResponse, packageVo, "id", "createdTime", "updatedTime", "createUser", "updateUser", "status", "packId");
             packageVo.setPackagesGenerationResponseStatus(packagesGenerationResponse.getStatus());
         }
+
+        BatchTaskHistory batchTaskHistory = batchTaskHistoryMap.get(pac.getBatchId());
+        if (ObjectUtils.isNotEmpty(batchTaskHistory)){
+            packageVo.setSource(batchTaskHistory.getType());
+        }else{
+            packageVo.setSource("新增");
+        }
+
         return packageVo;
     }
 

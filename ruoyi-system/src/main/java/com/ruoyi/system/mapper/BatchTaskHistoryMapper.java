@@ -21,6 +21,8 @@ public interface BatchTaskHistoryMapper
      */
     public BatchTaskHistory selectBatchTaskHistoryById(Long id);
 
+    public List<BatchTaskHistory> selectBatchTaskHistoryByIdIn(List<Long> ids);
+
     /**
      * 查询批量任务历史列表
      * 

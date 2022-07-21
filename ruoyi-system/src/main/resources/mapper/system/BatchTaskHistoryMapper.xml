@@ -49,7 +49,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectBatchTaskHistoryVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectBatchTaskHistoryByIdIn" resultMap="BatchTaskHistoryResult" parameterType="list">
+        <include refid="selectBatchTaskHistoryVo"/>
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <insert id="insertBatchTaskHistoryWithId" parameterType="BatchTaskHistory" >
         insert into batch_task_history
         <trim prefix="(" suffix=")" suffixOverrides=",">
