@@ -661,7 +661,7 @@ public class OuterServiceImpl implements IOuterService {
     }
 
     private void getServices(Services services, MbReturnDto mbReturnDto) {
-        services.setCodAmount(mbReturnDto.getProductValue());
+        services.setCodAmount(mbReturnDto.getCodValue());
         services.setCodCurrency(mbReturnDto.getCurrencyCode());
     }
 
