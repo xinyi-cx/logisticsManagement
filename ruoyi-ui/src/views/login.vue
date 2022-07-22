@@ -2,7 +2,17 @@
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
       <h3 class="title">DPD物流管理系统</h3>
-      <!-- 国家下拉选择框 -->
+      <el-form-item prop="username">
+        <el-input
+          v-model="loginForm.username"
+          type="text"
+          auto-complete="off"
+          placeholder="用户名"
+          @blur="getUserCountryList()"
+        >
+          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+        </el-input>
+      </el-form-item>
       <el-form-item>
         <el-select v-model="loginForm.country" placeholder="请选择国家" style="width: 100%" clearable filterable>
           <el-option
@@ -10,19 +20,9 @@
             :key="item.dictValue"
             :label="item.dictLabel"
             :value="item.dictValue"
-            ></el-option>
+          ></el-option>
           <svg-icon slot="prefix" icon-class="country" class="el-input__icon input-icon" />
         </el-select>
-      </el-form-item>
-      <el-form-item prop="username">
-        <el-input
-          v-model="loginForm.username"
-          type="text"
-          auto-complete="off"
-          placeholder="账号"
-        >
-          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
-        </el-input>
       </el-form-item>
       <el-form-item prop="password">
         <el-input
@@ -75,6 +75,7 @@
 <script>
 import axios from 'axios';
 import { getCodeImg,getCountryList } from "@/api/login";
+import { listUserForLogin} from "@/api/system/user"
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 
@@ -83,6 +84,7 @@ export default {
   data() {
     return {
       codeUrl: "",
+      countryListCode: {},
       countryList: [],
       loginForm: {
         // country: "CN",
@@ -100,7 +102,7 @@ export default {
           { required: true, trigger: "blur", message: "请选择所在国家" }
         ],
         username: [
-          { required: true, trigger: "blur", message: "请输入您的账号" }
+          { required: true, trigger: "blur", message: "请输入您的用户名" }
         ],
         password: [
           { required: true, trigger: "blur", message: "请输入您的密码" }
@@ -124,16 +126,34 @@ export default {
     }
   },
   created() {
-    this.getCountryList();
     this.getCode();
     this.getCookie();
   },
   methods: {
+    getUserCountryList() {
+      let userName = { "userName": this.loginForm.username};
+      listUserForLogin(userName).then(res => {
+        if(res.msg == '操作成功') {
+          if(res.data.countyyDate.length >= 1) {
+            this.countryListCode = res.data.countyyDate;
+            this.getCountryList();
+          } else {
+            this.$message({
+              showClose: true,
+              message: '当前用户名无对应国家信息',
+              type: 'warning'
+            });
+          }
+        }
+      })
+    },
     getCountryList() {
       axios.get(`/data/countryList.json`).then(res =>  {
-        console.log('获取json');
         const data = res.data;
-        this.countryList = data.data;
+        let countryListData = data.data;
+        let counstyCodes = this.countryListCode;
+        // 过滤掉
+        this.countryList = countryListData.filter(obj => counstyCodes.some(obj1 => obj1 == obj.dictValue));
       }).catch(err => {
         console.log('报错了');
       })
@@ -151,7 +171,7 @@ export default {
       const country = Cookies.get("country");
       const username = Cookies.get("username");
       const password = Cookies.get("password");
-      const rememberMe = Cookies.get('rememberMe')
+      const rememberMe = Cookies.get('rememberMe');
       this.loginForm = {
         country: country === undefined ? this.loginForm.country : country,
         username: username === undefined ? this.loginForm.username : username,
@@ -163,6 +183,8 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
+          localStorage.setItem("username", this.loginForm.username);
+          localStorage.setItem("password", this.loginForm.password);
           if (this.loginForm.rememberMe) {
             Cookies.set("country", this.loginForm.country, {expires: 30 });
             Cookies.set("username", this.loginForm.username, { expires: 30 });

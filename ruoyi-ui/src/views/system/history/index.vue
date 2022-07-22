@@ -164,7 +164,7 @@
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="创建时间" align="center" prop="createdTime">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.createdTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="类型" align="center" prop="type" />
@@ -438,6 +438,8 @@ export default {
     handleDownload(row) {
       this.reset();
       const id = row.id;
+      console.log(row);
+      let fileName = `Original`;
       this.download('system/package/downloadFile/'+ id, {
       }, `batch_task_${new Date().getTime()}.xlsx`)
     },

@@ -7,6 +7,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 面单对象 package
@@ -246,14 +247,14 @@ public class PackageVo extends BaseEntity {
     /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 //    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date createdTime;
 
     /**
      * 更新时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 //    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
 
@@ -275,6 +276,16 @@ public class PackageVo extends BaseEntity {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    private List<Long> ids;
+
+    public List<Long> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
     }
 
     public String getDatStr() {

@@ -403,6 +403,9 @@ public class PackageServiceImpl implements IPackageService {
                                    List<Parcel> parcels,
                                    Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap,
                                    Map<Long, BatchTaskHistory> batchTaskHistoryMap) {
+        if (CollectionUtils.isNotEmpty(paramPackageVo.getIds()) && !paramPackageVo.getIds().contains(pac.getId())){
+            return null;
+        }
         PackageVo packageVo = new PackageVo();
         BeanUtils.copyProperties(pac, packageVo);
 
@@ -415,6 +418,8 @@ public class PackageServiceImpl implements IPackageService {
         packageVo.setReceiverPhone(addressReceiverMap.get(pac.getReceiverId()).getPhone());
         packageVo.setReceiverPostalCode(addressReceiverMap.get(pac.getReceiverId()).getPostalCode());
         packageVo.setPln(addressReceiverMap.get(pac.getReceiverId()).getPln());
+
+        packageVo.setShowSenderName(addressSenderMap.get(pac.getSenderId()).getName());
 
         List<Parcel> parcelList = parcels.stream().filter(item -> item.getPackId().equals(pac.getId())).collect(toList());
         if (CollectionUtils.isNotEmpty(parcelList)) {

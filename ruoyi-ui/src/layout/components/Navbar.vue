@@ -26,6 +26,9 @@
           <router-link to="/user/profile">
             <el-dropdown-item>个人中心</el-dropdown-item>
           </router-link>
+          <el-dropdown-item @click.native="toggleCountryInfo">
+            <span>切换账号</span>
+          </el-dropdown-item>
           <el-dropdown-item @click.native="setting = true">
             <span>布局设置</span>
           </el-dropdown-item>
@@ -35,13 +38,16 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <toggle-account ref="account"></toggle-account>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import Cookies from "js-cookie";
 import Breadcrumb from '@/components/Breadcrumb'
 import TopNav from '@/components/TopNav'
+import ToggleAccount from '@/components/ToggleAccount'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
@@ -58,7 +64,13 @@ export default {
     SizeSelect,
     Search,
     RuoYiGit,
-    RuoYiDoc
+    RuoYiDoc,
+    ToggleAccount
+  },
+  data() {
+    return {
+      toggleAccountVisible: false,
+    }
   },
   computed: {
     ...mapGetters([
@@ -86,6 +98,15 @@ export default {
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
+    },
+    toggleCountryInfo() {
+      this.toggleAccountVisible = true;
+      this.$refs.account.openDialog(this.toggleAccountVisible);
+      debugger;
+      let userName = localStorage.getItem('username');
+      let password = localStorage.getItem("password");
+      console.log('userName' + ' ' + userName);
+      console.log('password'+ ' ' + password);
     },
     async logout() {
       this.$confirm('确定注销并退出系统吗？', '提示', {

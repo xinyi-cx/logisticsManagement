@@ -275,7 +275,7 @@ public class DPDServicesXMLClient {
                 }
                 parcel1.setContent(parcel.getReference());//id
                 parcel1.setCustomerData1(parcel.getCustomerData1());//id
-                parcel1.setReference(parcel.getReference()); //parametr opcjonalny
+//                parcel1.setReference(parcel.getReference()); //parametr opcjonalny
                 parcel1.setWeight((0 == Double.parseDouble(parcel.getWeight().toString())) ? 1 : Double.parseDouble(parcel.getWeight().toString()));
                 pkg.getParcels().add(parcel1);
             }

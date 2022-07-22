@@ -362,7 +362,7 @@
             <if test="addressPickupStr != null">address_pickup_str = #{addressPickupStr},</if>
             <if test="addressReceiveStr != null">address_receive_str = #{addressReceiveStr},</if>
             <if test="addressBackStr != null">address_back_str = #{addressBackStr},</if>
-            <if test="updateTime != null">update_time = sysdate(),</if>
+            update_time = sysdate(),
         </trim>
         where code = #{code}
     </update>

@@ -131,13 +131,15 @@
       <!-- 物流单号 -->
       <el-table-column label="物流单号" align="center" width="150" prop="waybill" />
       <!-- 创建时间 -->
-      <el-table-column label="创建时间" align="center" width="150" prop="id">
+      <el-table-column label="创建时间" align="center" prop="createdTime" width="160">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.createdTime) }}</span>
         </template>
         </el-table-column>
       <!-- 内部引用号 -->
       <el-table-column label="内部单号" align="center" width="150" show-overflow-tooltip prop="reference" />
+      <!-- 发件人全名 -->
+      <el-table-column label="发件人" width="100" show-overflow-tooltip align="center" prop="senderName" />
       <!-- 收货人全名 -->
       <el-table-column label="收件人" width="100" show-overflow-tooltip align="center" prop="receiverName" />
       <!-- 国家 -->
@@ -533,6 +535,8 @@ export default {
       this.loading = true;
       listPackageAll(this.queryParams).then(response => {
         this.packageList = response.rows;
+        debugger;
+        console.log(this.packageList);
         this.total = response.total;
         this.loading = false;
       });
@@ -581,7 +585,7 @@ export default {
       this.single = selection.length!==1;
       this.multiple = !selection.length;
       // TO-DO 根据选中数据进行导出，将数组传给导出接口即可。
-      //console.log(this.ids);
+      console.log(this.ids);
     },
     /** 新增按钮操作 */
     handleAdd() {
