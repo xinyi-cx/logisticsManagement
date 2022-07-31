@@ -14,7 +14,7 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="loginForm.country" placeholder="请选择国家" style="width: 100%" clearable filterable>
+        <el-select v-model="loginForm.country" placeholder="请选择国家" style="width: 100%;" clearable filterable>
           <el-option
             v-for="item in countryList"
             :key="item.dictValue"
@@ -134,10 +134,13 @@ export default {
       let userName = { "userName": this.loginForm.username};
       listUserForLogin(userName).then(res => {
         if(res.msg == '操作成功') {
-          if(res.data.countyyDate.length >= 1) {
-            this.countryListCode = res.data.countyyDate;
+          if(res.data.length >= 1) {
+            this.countryListCode = res.data;
             this.getCountryList();
           } else {
+            // 如果没有值 需要将列表情况，表单值清空。
+            this.countryList = [];
+            this.loginForm.country = '';
             this.$message({
               showClose: true,
               message: '当前用户名无对应国家信息',
@@ -183,8 +186,8 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
-          localStorage.setItem("username", this.loginForm.username);
-          localStorage.setItem("password", this.loginForm.password);
+            localStorage.setItem("username", this.loginForm.username);
+            localStorage.setItem("password", this.loginForm.password);
           if (this.loginForm.rememberMe) {
             Cookies.set("country", this.loginForm.country, {expires: 30 });
             Cookies.set("username", this.loginForm.username, { expires: 30 });

@@ -26,6 +26,13 @@ public class ExportPackageVo extends BaseEntity {
     private String showSenderName;
 
     /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date createdTime;
+
+    /**
      * waybill 运货单
      */
     @Excel(name = "waybill")
@@ -242,13 +249,6 @@ public class ExportPackageVo extends BaseEntity {
      */
 //    @Excel(name = "更新人")
     private String updateUser;
-
-    /**
-     * 创建时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-//    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date createdTime;
 
     /**
      * 更新时间
