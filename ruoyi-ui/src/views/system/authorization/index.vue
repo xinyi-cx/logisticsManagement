@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="96px">
       <el-form-item label="用户授权账号" prop="userName">
         <el-input
           v-model="queryParams.userName"
@@ -83,8 +83,8 @@
     <el-table v-loading="loading" :data="authorizationList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="用户ID" align="center" prop="userId" />
-      <el-table-column label="用户授权账号" align="center" prop="userName" />
-      <el-table-column label="用户授权token" align="center" prop="userToken" />
+      <el-table-column label="授权账号" align="center" prop="userName" />
+      <el-table-column label="授权token" align="center" prop="userToken" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -115,8 +115,8 @@
     />
 
     <!-- 添加或修改用户授权信息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="106px">
         <el-form-item label="用户授权账号" prop="userName">
           <el-input v-model="form.userName" placeholder="请输入用户授权账号" />
         </el-form-item>
@@ -278,3 +278,8 @@ export default {
   }
 };
 </script>
+<style rel="stylesheet/scss" lang="scss">
+  .el-dialog__title {
+    font-weight: bold;
+  }
+</style>

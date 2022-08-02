@@ -194,8 +194,6 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
-            localStorage.setItem("username", this.loginForm.username);
-            localStorage.setItem("password", this.loginForm.password);
           if (this.loginForm.rememberMe) {
             Cookies.set("country", this.loginForm.country, {expires: 30 });
             Cookies.set("username", this.loginForm.username, { expires: 30 });
