@@ -126,19 +126,27 @@ export default {
     }
   },
   created() {
+    this.init();
     this.getCode();
     this.getCookie();
   },
   methods: {
+    // 应该有一个初始化函数，判断当前Username是否为空，不为空的话应该执行一遍获取国家列表的信息；
+    init() {
+      let user = this.loginForm.username;
+      if(user.trim() !== '') {
+        this.getUserCountryList();
+      }
+    },
     getUserCountryList() {
-      let userName = { "userName": this.loginForm.username};
+      let userName = { "userName": this.loginForm.username };
       listUserForLogin(userName).then(res => {
         if(res.msg == '操作成功') {
           if(res.data.length >= 1) {
             this.countryListCode = res.data;
             this.getCountryList();
           } else {
-            // 如果没有值 需要将列表情况，表单值清空。
+            // 如果没有值 需要将列表清空，表单值清空。
             this.countryList = [];
             this.loginForm.country = '';
             this.$message({
