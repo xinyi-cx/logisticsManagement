@@ -1,15 +1,6 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-<!--     <el-form-item label="创建时间" prop="createdTime">-->
-<!--        <el-date-picker clearable size="small"-->
-<!--          v-model="queryParams.createdTime"-->
-<!--          type="date"-->
-<!--          value-format="yyyy-MM-dd"-->
-<!--          placeholder="选择创建时间">-->
-<!--        </el-date-picker>-->
-<!--      </el-form-item>-->
-
       <el-form-item label="创建时间">
         <el-date-picker
           v-model="dateRange"
@@ -23,9 +14,9 @@
         ></el-date-picker>
       </el-form-item>
 
-      <el-form-item label="状态" prop="status">
+      <el-form-item label="类型" prop="type">
         <el-select
-          v-model="queryParams.status"
+          v-model="queryParams.type"
           placeholder="批量任务状态"
           clearable
           size="small"
@@ -37,8 +28,8 @@
 <!--            :label="dict.label"-->
 <!--            :value="dict.value"-->
 <!--          />-->
-          <el-option label="上传成功" value="上传成功"/>
-          <el-option label="上传失败" value="上传失败"/>
+          <el-option label="马帮主动通知" value="马帮主动通知"/>
+          <el-option label="面单导入" value="面单导入"/>
 
         </el-select>
       </el-form-item>
@@ -317,6 +308,7 @@
 
 <script>
 import { listHistory, getHistory, delHistory, addHistory, updateHistory } from "@/api/system/history";
+import { getUser } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 
 export default {
@@ -371,7 +363,8 @@ export default {
       form: {},
       // 表单校验
       rules: {
-      }
+      },
+      userInfo: {}
     };
   },
   created() {
@@ -449,8 +442,17 @@ export default {
     handleDownloadPDF(row) {
       this.reset();
       const id = row.id;
+      const userId = parseInt(row.updateUser);
+      getUser(userId).then(response => {
+        if(response.code == 200) {
+          this.userInfo = response.data;
+        } else {
+          // 给出相应提示
+        }
+      });
+      let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export labels`;
       this.download('system/package/getPDFByBatchId/'+ id, {
-      }, `batch_package_${new Date().getTime()}.pdf`)
+      }, `${fileName}.pdf`)
     },
     /** 导入按钮操作 */
     handleImport() {

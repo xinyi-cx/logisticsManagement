@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="96px">
-      <el-form-item label="用户授权账号" prop="userName">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="80px">
+      <el-form-item label="授权账号" prop="userName">
         <el-input
           v-model="queryParams.userName"
-          placeholder="请输入用户授权账号"
+          placeholder="请输入授权账号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -116,8 +116,8 @@
 
     <!-- 添加或修改用户授权信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="106px">
-        <el-form-item label="用户授权账号" prop="userName">
+      <el-form ref="form" :model="form" :rules="rules" label-width="96px">
+        <el-form-item label="授权账号" prop="userName">
           <el-input v-model="form.userName" placeholder="请输入用户授权账号" />
         </el-form-item>
 <!--        <el-form-item label="用户授权token" prop="userToken">-->

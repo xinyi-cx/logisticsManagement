@@ -26,53 +26,15 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-<!--      <el-form-item label="售后电话" prop="ref1">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.ref1"-->
-<!--          placeholder="请输入售后电话"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="售后邮箱" prop="ref2">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.ref2"-->
-<!--          placeholder="请输入售后邮箱"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="手机号码" prop="phone">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.phone"-->
-<!--          placeholder="请输入手机号码"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-
-<!--      <el-form-item label="创建人" prop="createUser">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.createUser"-->
-<!--          placeholder="请输入创建人"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="更新人" prop="updateUser">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.updateUser"-->
-<!--          placeholder="请输入更新人"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-
+      <el-form-item label="发件人" prop="senderName">
+        <el-input
+          v-model="queryParams.senderName"
+          placeholder="请输入发件人信息"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
