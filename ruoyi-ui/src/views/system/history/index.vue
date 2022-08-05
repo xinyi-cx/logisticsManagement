@@ -364,6 +364,9 @@ export default {
         type: undefined,
         status: undefined
       },
+      packParams:{
+        hisParam : null
+      },
       // 表单参数
       form: {},
       // 表单校验
@@ -511,6 +514,13 @@ export default {
       this.download('system/history/export', {
         ...this.queryParams
       }, `history_${new Date().getTime()}.xlsx`)
+    },
+    /** 导出按钮操作 */
+    handlePacExport(id) {
+      this.packParams.hisParam = id;
+      this.download('system/package/export', {
+        ...this.packParams
+      }, `package_${new Date().getTime()}.xlsx`)
     }
   }
 };
