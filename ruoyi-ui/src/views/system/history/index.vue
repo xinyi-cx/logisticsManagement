@@ -517,7 +517,7 @@ export default {
     },
     /** 导出按钮操作 */
     handlePacExport(id) {
-      this.packParams.hisParam = id;
+      this.packParams.hisParam = '000' + id;
       this.download('system/package/export', {
         ...this.packParams
       }, `package_${new Date().getTime()}.xlsx`)
