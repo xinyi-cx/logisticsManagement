@@ -1,10 +1,12 @@
 package com.ruoyi.system.domain;
 
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.system.dpdservices.ValidationInfoPGRV2;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 面单返回值对象 packages_generation_response
@@ -40,7 +42,27 @@ public class PackagesGenerationResponse extends BaseEntity
 
     private Integer isDelete;
 
-    public void setId(Long id) 
+    private String msg;
+
+    private List<ValidationInfoPGRV2> validationInfoPGRV2List;
+
+    public List<ValidationInfoPGRV2> getValidationInfoPGRV2List() {
+        return validationInfoPGRV2List;
+    }
+
+    public void setValidationInfoPGRV2List(List<ValidationInfoPGRV2> validationInfoPGRV2List) {
+        this.validationInfoPGRV2List = validationInfoPGRV2List;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

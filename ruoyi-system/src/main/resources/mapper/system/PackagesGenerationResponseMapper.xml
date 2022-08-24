@@ -16,10 +16,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateUser"    column="update_user"    />
         <result property="createdTime"    column="created_time"    />
         <result property="updatedTime"    column="updated_time"    />
+        <result property="msg"    column="msg"    />
     </resultMap>
 
     <sql id="selectPackagesGenerationResponseVo">
-        select id, session_id, package_id, status, pkg_reference, pkg_status, pack_id, create_user, update_user, created_time, updated_time, is_delete from packages_generation_response
+        select id, session_id, package_id, status, pkg_reference, pkg_status, pack_id, create_user, update_user, created_time, updated_time, is_delete, msg from packages_generation_response
     </sql>
 
     <select id="selectPackagesGenerationResponseList" parameterType="PackagesGenerationResponse" resultMap="PackagesGenerationResponseResult">
@@ -74,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packId != null">pack_id,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
+            <if test="msg != null">msg,</if>
             created_time,
             updated_time,
          </trim>
@@ -86,13 +88,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packId != null">#{packId},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
+            <if test="msg != null">#{msg},</if>
             sysdate(),
             sysdate(),
          </trim>
     </insert>
 
     <insert id="batchInsert" >
-        insert into packages_generation_response (id, session_id, package_id, status, pkg_reference, pkg_status, pack_id, create_user, update_user, created_time, updated_time)
+        insert into packages_generation_response (id, session_id, package_id, status, pkg_reference, pkg_status, pack_id, create_user, update_user, created_time, updated_time, msg)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
@@ -106,7 +109,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.createUser},
             #{item.updateUser},
             sysdate(),
-            sysdate())
+            sysdate(),
+            #{item.msg})
         </foreach>
     </insert>
 
@@ -121,6 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packId != null">pack_id = #{packId},</if>
             <if test="createUser != null">create_user = #{createUser},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="msg != null">msg = #{msg},</if>
             updated_time = sysdate(),
         </trim>
         where id = #{id}

@@ -679,6 +679,12 @@ export default {
       this.download('system/package/export', {
         ...this.queryParams
       }, `package_${new Date().getTime()}.xlsx`)
+    },
+    /** 导出按钮操作 */
+    handleExportTwo() {
+      this.download('system/package/exportTwo', {
+        ...this.queryParams
+      }, `package_${new Date().getTime()}.xlsx`)
     }
   }
 };

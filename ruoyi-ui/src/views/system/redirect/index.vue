@@ -101,6 +101,17 @@
 
       <el-col :span="1.5">
         <el-button
+          type="success"
+          plain
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleImportForRel"
+          v-hasPermi="['system:package:add']"
+        >导入关联关系</el-button>
+      </el-col>
+
+      <el-col :span="1.5">
+        <el-button
           type="warning"
           plain
           icon="el-icon-download"
@@ -387,6 +398,32 @@
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
+    <!--    导入关联关系对话框-->
+    <el-dialog :title="uploadRel.title" :visible.sync="uploadRel.open" width="400px" append-to-body>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="uploadRel.headers"
+        :action="uploadRel.url"
+        :disabled="uploadRel.isUploading"
+        :on-progress="handleFileUploadProgressForRel"
+        :on-success="handleFileSuccessForRel"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplateForRel">下载模板</el-link>
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileFormForRel">确 定</el-button>
+        <el-button @click="uploadRel.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -468,6 +505,19 @@ export default {
         headers: { Authorization: "Bearer " + getToken() },
         // 上传的地址
         url: process.env.VUE_APP_BASE_API + "/system/redirect/importData"
+      },
+      // 导入关联关系参数
+      uploadRel: {
+        // 是否显示弹出层（导入）
+        open: false,
+        // 弹出层标题（导入）
+        title: "",
+        // 是否禁用上传
+        isUploading: false,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/system/redirectrel/importData"
       },
       // 查询参数
       queryParams: {
@@ -637,6 +687,34 @@ export default {
     submitFileForm() {
       this.$refs.upload.submit();
     },
+
+    /** 导入关联关系按钮操作 */
+    handleImportForRel() {
+      this.uploadRel.title = "批量导入关联关系";
+      this.uploadRel.open = true;
+    },
+    /** 下载关联关系模板操作 */
+    importTemplateForRel() {
+      this.download('system/redirectrel/importTemplate', {
+      }, `package_template_${new Date().getTime()}.xlsx`)
+    },
+    // 文件关联关系上传中处理
+    handleFileUploadProgressForRel(event, file, fileList) {
+      this.uploadRel.isUploading = true;
+    },
+    // 文件关联关系上传成功处理
+    handleFileSuccessForRel(response, file, fileList) {
+      this.uploadRel.open = false;
+      this.uploadRel.isUploading = false;
+      this.$refs.upload.clearFiles();
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
+      this.getList();
+    },
+    // 提交关联关系上传文件
+    submitFileFormForRel() {
+      this.$refs.upload.submit();
+    },
+
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {

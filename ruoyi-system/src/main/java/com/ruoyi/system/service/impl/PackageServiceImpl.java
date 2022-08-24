@@ -4,11 +4,16 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.email.EmailUtil;
+import com.ruoyi.common.utils.file.FileUtils;
+import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
+import com.ruoyi.system.domain.vo.ExportTwoPackageVo;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.dpdservices.DocumentGenerationResponseV1;
+import com.ruoyi.system.dpdservices.ValidationInfoPGRV2;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IPackageService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -16,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,8 +33,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 /**
  * 面单Service业务层处理
@@ -77,6 +82,12 @@ public class PackageServiceImpl implements IPackageService {
     @Autowired
     private SysUserMapper sysUserMapper;
 
+    @Autowired
+    private PackageDpdMappingMapper packageDpdMappingMapper;
+
+    @Autowired
+    private RedirectRelMapper redirectRelMapper;
+
     /**
      * 查询面单
      *
@@ -95,7 +106,7 @@ public class PackageServiceImpl implements IPackageService {
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(Collections.singletonList(pkg.getId()));
         Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
 
-        return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap, new HashMap<>());
+        return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap, new HashMap<>(), new HashMap<>());
     }
 
     /**
@@ -267,6 +278,14 @@ public class PackageServiceImpl implements IPackageService {
         System.out.println("test");
     }
 
+    @Value("${frontPath}")
+    private String frontPath;
+
+    @Override
+    public void getTxtById(HttpServletResponse response, Long id) throws IOException {
+        FileUtils.writeBytes(frontPath + "/error/" + id + ".txt", response.getOutputStream());
+    }
+
     @Override
     public void getPDFById(HttpServletResponse response, Long pkgId) throws IOException {
         //查看pdf路径暂未知晓
@@ -355,6 +374,7 @@ public class PackageServiceImpl implements IPackageService {
         }
         List<Package> packagesAll = packageMapper.selectPackageList(pkg);
         List<Package> packages = new ArrayList<>();
+        //查询转寄
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())) {
             RedirectPackage redirectPackage = new RedirectPackage();
             redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
@@ -384,8 +404,13 @@ public class PackageServiceImpl implements IPackageService {
             batchTaskHistoryMap = batchTaskHistories.stream().collect(toMap(BatchTaskHistory::getId, Function.identity()));
         }
         Map<Long, BatchTaskHistory> finalBatchTaskHistoryMap = batchTaskHistoryMap;
+        Map<String, List<RedirectRel>> orderListMap = new HashMap<>();
+        if (null != sucFlag && CollectionUtils.isNotEmpty(parcels)) {
+            orderListMap = getRedirectRel(parcels.stream().map(Parcel::getReference).collect(Collectors.toList()));
+        }
+        Map<String, List<RedirectRel>> finalOrderListMap = orderListMap;
         List<PackageVo> resultList = packages.stream().map(item -> this.getPackageVo(packageVo, item, addressSenderMap,
-                addressReceiverMap, parcels, packagesGenerationResponseMap, finalBatchTaskHistoryMap)).filter(Objects::nonNull).collect(Collectors.toList());
+                addressReceiverMap, parcels, packagesGenerationResponseMap, finalBatchTaskHistoryMap, finalOrderListMap)).filter(Objects::nonNull).collect(Collectors.toList());
         if (null == sucFlag) {
             return resultList;
         }
@@ -402,7 +427,8 @@ public class PackageServiceImpl implements IPackageService {
                                    Map<Long, AddressReceiver> addressReceiverMap,
                                    List<Parcel> parcels,
                                    Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap,
-                                   Map<Long, BatchTaskHistory> batchTaskHistoryMap) {
+                                   Map<Long, BatchTaskHistory> batchTaskHistoryMap,
+                                   Map<String, List<RedirectRel>> orderListMap) {
         if (CollectionUtils.isNotEmpty(paramPackageVo.getIds()) && !paramPackageVo.getIds().contains(pac.getId())){
             return null;
         }
@@ -442,6 +468,14 @@ public class PackageServiceImpl implements IPackageService {
             packageVo.setSource(batchTaskHistory.getType());
         }else{
             packageVo.setSource("新增");
+        }
+
+        if (null != orderListMap &&  orderListMap.containsKey(packageVo.getReference())){
+            List<RedirectRel> redirectRelList = orderListMap.get(packageVo.getReference());
+            List<String> backOrders = redirectRelList.stream().map(RedirectRel::getBackOrder).distinct().collect(toList());
+            packageVo.setBackOrder(String.join("&", backOrders));
+            packageVo.setNewOrder(packageVo.getReference());
+            packageVo.setNewWaybill(packageVo.getWaybill());
         }
 
         return packageVo;
@@ -586,7 +620,7 @@ public class PackageServiceImpl implements IPackageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception {
+    public String importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception {
         Documents documents = getDocuments(file);
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setType("面单导入");
@@ -596,21 +630,22 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
 
-        List<String> checkCountryAndZip = checkCountryAndZip(packageVos);
-        if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)
-                || checkCountryAndZip.contains("NONEXISTING_POSTAL_CODE")
-                || checkCountryAndZip.contains("NONEXISTING_COUNTRY_CODE")
-                || checkCountryAndZip.contains("WRONG_POSTAL_PATTERN")) {
-//            if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)){
-                throw new Exception("邮编或国家代码验证失败");
-//            }
-//            StringBuilder sb = new StringBuilder();
-//            for (String key : checkCountryAndZip.keySet()) {
-//                sb.append("code: ").append(key)
-//                        .append(", 邮编或国家代码验证失败, 失败信息为: ").append(checkCountryAndZip.get(key)).append("\n");
-//            }
-//            throw new Exception(sb.toString());
-        }
+        //国家邮编校验
+//        List<String> checkCountryAndZip = checkCountryAndZip(packageVos);
+//        if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)
+//                || checkCountryAndZip.contains("NONEXISTING_POSTAL_CODE")
+//                || checkCountryAndZip.contains("NONEXISTING_COUNTRY_CODE")
+//                || checkCountryAndZip.contains("WRONG_POSTAL_PATTERN")) {
+////            if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)){
+//                throw new Exception("邮编或国家代码验证失败");
+////            }
+////            StringBuilder sb = new StringBuilder();
+////            for (String key : checkCountryAndZip.keySet()) {
+////                sb.append("code: ").append(key)
+////                        .append(", 邮编或国家代码验证失败, 失败信息为: ").append(checkCountryAndZip.get(key)).append("\n");
+////            }
+////            throw new Exception(sb.toString());
+//        }
 
         Boolean checkWeight = checkWeight(packageVos);
         if (checkWeight){
@@ -687,7 +722,7 @@ public class PackageServiceImpl implements IPackageService {
             batchTaskHistory.setSessionId(returnResponses.get(0).getSessionId());
             batchTaskHistory.setSuccessNum((int) returnResponses.stream().filter(item -> "OK".equals(item.getPkgStatus())).count());
             batchTaskHistory.setFailNum((int) returnResponses.stream().filter(item -> !"OK".equals(item.getPkgStatus())).count());
-            batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
+
             packageMapper.batchInsert(packages);
             addressReceiverMapper.batchInsert(addressReceivers);
             servicesMapper.batchInsert(servicesList);
@@ -697,12 +732,59 @@ public class PackageServiceImpl implements IPackageService {
                 dealForRedirect(new ArrayList<String>(originalWaybills));
                 redirectPackageMapper.batchInsert(redirectPackages);
             }
+            StringBuilder returnStrBuf = new StringBuilder();
+            returnStrBuf.append("面单导入成功，成功")
+                    .append(batchTaskHistory.getSuccessNum()).append("条，失败")
+                    .append(batchTaskHistory.getFailNum()).append("条。\n");
+            boolean errFlag = false;
+            Map<String, String> fileNameMap = getFileNameMap("PL");
+            List<String> errorMsgList = new ArrayList<>();
+            for (int i = 0; i < returnResponses.size(); i++) {
+                //错误信息处理
+                if (!"OK".equals(returnResponses.get(i).getPkgStatus())){
+                    errFlag = true;
+                    StringBuilder errorStrBuf = new StringBuilder();
+                    errorStrBuf.append("第").append(i+1).append("条失败，失败原因：");
+                    List<ValidationInfoPGRV2> validationInfoPGRV2s = returnResponses.get(i).getValidationInfoPGRV2List();
+                    for (int validNum = 0; validNum < validationInfoPGRV2s.size(); validNum++) {
+                        ValidationInfoPGRV2 valid = validationInfoPGRV2s.get(validNum);
+                        if (StringUtils.isNotEmpty(valid.getInfo())){
+                            errorStrBuf.append(validNum+1);
+                            if (StringUtils.isNotEmpty(valid.getFieldNames()) && fileNameMap.containsKey(valid.getFieldNames())){
+                                errorStrBuf.append("字段：").append(fileNameMap.get(valid.getFieldNames())).append("。");
+                            }
+                            if (!errorStrBuf.toString().contains(valid.getInfo())){
+                                errorStrBuf.append("原因：").append(valid.getInfo());
+                            }
+                        }
+                    }
+                    errorMsgList.add(errorStrBuf.toString());
+                }
+            }
+            if (errFlag){
+//                returnStrBuf.append(errorStrBuf);
+//                下载文件前端也需要处理
+                returnStrBuf.append("失败原因请点击：").append(batchTaskHistory.getId());
+                FileUtils.createTxtFile(errorMsgList, frontPath + "/error/", batchTaskHistory.getId().toString());
+            }
+            return returnStrBuf.toString();
         }catch (Exception e){
             batchTaskHistory.setStatus("上传失败");
-            batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
             e.printStackTrace();
             throw new Exception("上传失败");
+        }finally {
+            batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
         }
+    }
+
+    private Map<String, String> getFileNameMap(String countryCode) {
+        PackageDpdMapping packageDpdMapping = new PackageDpdMapping();
+        packageDpdMapping.setCountryCode(countryCode);
+        List<PackageDpdMapping> packageDpdMappings = packageDpdMappingMapper.selectPackageDpdMappingList(packageDpdMapping);
+        if (CollectionUtils.isEmpty(packageDpdMappings)) {
+            return new HashMap<>();
+        }
+        return packageDpdMappings.stream().collect(toMap(PackageDpdMapping::getDpdField, PackageDpdMapping::getImportName));
     }
 
     private List<String> checkCountryAndZip(List<PackageVo> packageVos){
@@ -859,4 +941,91 @@ public class PackageServiceImpl implements IPackageService {
     public int deletePackageById(Long id) {
         return packageMapper.deletePackageById(id);
     }
+
+    private Map<String, List<RedirectRel>> getRedirectRel(List<String> orders){
+        List<RedirectRel> redirectRelList = redirectRelMapper.selectByNewOrderIn(orders);
+        if (CollectionUtils.isNotEmpty(redirectRelList)){
+            return redirectRelList.stream().collect(groupingBy(RedirectRel::getNewOrder));
+        }
+        return new HashMap<>();
+    }
+
+    @Autowired
+    private EmailUtil emailUtil;
+
+    @Value("#{'${dpd.email.to}'.split(',')}")
+    private List<String> to;
+
+    @Value("#{'${dpd.email.cc}'.split(',')}")
+    private List<String> cc;
+
+    @Override
+    public void testSendEmailFile(){
+        // 测试文本邮件发送（无附件）
+//        String to = "1097700731@qq.com"; // 这是个假邮箱，写成你自己的邮箱地址就可以
+        String title = "文本邮件发送测试";
+        String content = "文本邮件发送测试";
+        PackageVo packageVo = new PackageVo();
+        packageVo.setNewWaybill("aaaaa");
+        File file = sendEmail("test.xlsx", Arrays.asList(packageVo));
+        emailUtil.sendMessageCarryFile(to.toArray(new String[0]), cc.toArray(new String[0]), title, content, file);
+    }
+
+    private File getPdfForEmail(BatchTaskHistory batchTaskHistory) throws IOException {
+        Documents documentsExcel = documentsMapper.selectDocumentsById(Long.valueOf(batchTaskHistory.getExcelUrl()));
+        StringBuilder pdfNameSb = new StringBuilder();
+        pdfNameSb.append(documentsExcel.getDisplayName().replace(".xlsx","")
+                .replace(".xls", ""));
+//        Resenging request: 20220815  Wolin to CZech 12 parcels【need box】;
+        boolean boxFlag = pdfNameSb.toString().contains("box");
+        StringBuilder titleSb = new StringBuilder();
+        titleSb.append("Resenging request:").append(
+                pdfNameSb.toString().replace("export", "parcels")
+                        .replace("box", ""));
+        if (boxFlag){
+            titleSb.append("【need box】");
+        }
+        Documents documents = documentsMapper.selectDocumentsBySessionId(batchTaskHistory.getSessionId());
+
+        return getFileByDocuments(pdfNameSb.toString() + " labels.pdf", documents);
+    }
+
+    private File getFileByDocuments(String fileUrl, Documents document) throws IOException {
+        String filePath = frontPath + "/" + fileUrl;
+        File file = new File(filePath);
+        InputStream fis = null;
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        try {
+            byte[] documentByte = document.getFileData();
+            fis = new ByteArrayInputStream(documentByte);
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+
+            fileOutputStream.write(buffer);
+            fileOutputStream.flush();
+            return file;
+        } finally {
+            IOUtils.closeQuietly(fis);
+            fileOutputStream.close();
+        }
+    }
+
+    private File sendEmail(String fileUrl, List<PackageVo> packageVos){
+        String filePath = frontPath + "/" + fileUrl;
+        File file = new File(filePath);
+        List<ExportTwoPackageVo> exportPackageVos = null;
+        if (CollectionUtils.isNotEmpty(packageVos)){
+            exportPackageVos = packageVos.stream().map(item ->
+                    {
+                        ExportTwoPackageVo packageVo = new ExportTwoPackageVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        }
+        ExcelUtil<ExportTwoPackageVo> util = new ExcelUtil<ExportTwoPackageVo>(ExportTwoPackageVo.class);
+        util.exportExcel(file, exportPackageVos, "面单数据");
+        return file;
+    }
+
 }

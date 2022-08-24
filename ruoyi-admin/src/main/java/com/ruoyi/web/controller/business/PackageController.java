@@ -8,6 +8,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.ExportPackageVo;
+import com.ruoyi.system.domain.vo.ExportTwoPackageVo;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.beans.BeanUtils;
@@ -107,6 +108,31 @@ public class PackageController extends BaseController
     }
 
     /**
+     * 导出面单列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:package:export')")
+    @Log(title = "面单", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportTwo")
+    public void exportTwo(HttpServletResponse response, PackageVo pkg)
+    {
+        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<ExportTwoPackageVo> exportPackageVos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(list)){
+            packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
+
+            exportPackageVos = list.stream().map(item ->
+                    {
+                        ExportTwoPackageVo packageVo = new ExportTwoPackageVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        }
+        ExcelUtil<ExportTwoPackageVo> util = new ExcelUtil<ExportTwoPackageVo>(ExportTwoPackageVo.class);
+        util.exportExcel(response, exportPackageVos, "面单数据");
+    }
+
+    /**
      * 根据批次
      * @param dateStr
      * @return
@@ -180,8 +206,18 @@ public class PackageController extends BaseController
      */
     @PostMapping("/getPDFById/{id}")
     public void getPDFById(HttpServletResponse response, @PathVariable("id") Long id) throws IOException {
-//        pkgId
         packageService.getPDFById(response, id);
+    }
+
+    /**
+     * 下载导入错误信息
+     * @param response
+     * @param id
+     * @throws IOException
+     */
+    @PostMapping("/getTxtById/{id}")
+    public void getTxtById(HttpServletResponse response, @PathVariable("id") Long id) throws IOException {
+        packageService.getTxtById(response, id);
     }
 
     /**
@@ -202,8 +238,7 @@ public class PackageController extends BaseController
     {
         ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
         List<PackageVo> packageVos = util.importExcel(file.getInputStream());
-        packageService.importPackage(file, packageVos);
-        return AjaxResult.success("导入成功");
+        return AjaxResult.success(packageService.importPackage(file, packageVos));
     }
 
     /**

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.email.EmailUtil;
 import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.common.utils.sign.Base64;
 import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
@@ -105,6 +106,24 @@ public class OuterServiceImpl implements IOuterService {
 
     @Autowired
     private MbMsgMapper mbMsgMapper;
+
+    @Autowired
+    private EmailUtil emailUtil;
+
+    @Value("#{'${dpd.email.to}'.split(',')}")
+    private List<String> to;
+
+    @Value("#{'${dpd.email.cc}'.split(',')}")
+    private List<String> cc;
+
+    @Override
+    public void testSendEmail(){
+        // 测试文本邮件发送（无附件）
+//        String to = "1097700731@qq.com"; // 这是个假邮箱，写成你自己的邮箱地址就可以
+        String title = "文本邮件发送测试";
+        String content = "文本邮件发送测试";
+        emailUtil.sendMessage(to.toArray(new String[0]), cc.toArray(new String[0]), title, content);
+    }
 
     private void saveMbMsg(String code, String msgCode, String msg, String remark) {
         MbMsg mbMsg = new MbMsg();

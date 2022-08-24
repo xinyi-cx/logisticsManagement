@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RedirectRelMapper">
+    
+    <resultMap type="RedirectRel" id="RedirectRelResult">
+        <result property="id"    column="id"    />
+        <result property="oldWaybill"    column="old_waybill"    />
+        <result property="backOrder"    column="back_order"    />
+        <result property="newOrder"    column="new_order"    />
+        <result property="newWaybill"    column="new_waybill"    />
+        <result property="countryCode"    column="country_code"    />
+        <result property="remark"    column="remark"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+        <result property="isDelete"    column="is_delete"    />
+    </resultMap>
+
+    <sql id="selectRedirectRelVo">
+        select id, old_waybill, back_order, new_order, new_waybill, country_code, remark, create_user, update_user, created_time, updated_time, is_delete from redirect_rel
+    </sql>
+
+    <select id="selectRedirectRelList" parameterType="RedirectRel" resultMap="RedirectRelResult">
+        <include refid="selectRedirectRelVo"/>
+        <where>  
+            <if test="oldWaybill != null  and oldWaybill != ''"> and old_waybill = #{oldWaybill}</if>
+            <if test="backOrder != null  and backOrder != ''"> and back_order = #{backOrder}</if>
+            <if test="newOrder != null  and newOrder != ''"> and new_order = #{newOrder}</if>
+            <if test="newWaybill != null  and newWaybill != ''"> and new_waybill = #{newWaybill}</if>
+            <if test="countryCode != null  and countryCode != ''"> and country_code = #{countryCode}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+            <if test="isDelete != null "> and is_delete = #{isDelete}</if>
+        </where>
+    </select>
+    
+    <select id="selectRedirectRelById" parameterType="Long" resultMap="RedirectRelResult">
+        <include refid="selectRedirectRelVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRedirectRel" parameterType="RedirectRel" useGeneratedKeys="true" keyProperty="id">
+        insert into redirect_rel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="oldWaybill != null">old_waybill,</if>
+            <if test="backOrder != null">back_order,</if>
+            <if test="newOrder != null">new_order,</if>
+            <if test="newWaybill != null">new_waybill,</if>
+            <if test="countryCode != null">country_code,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            created_time,
+            updated_time,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="oldWaybill != null">#{oldWaybill},</if>
+            <if test="backOrder != null">#{backOrder},</if>
+            <if test="newOrder != null">#{newOrder},</if>
+            <if test="newWaybill != null">#{newWaybill},</if>
+            <if test="countryCode != null">#{countryCode},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            sysdate(),
+            sysdate(),
+         </trim>
+    </insert>
+
+    <insert id="batchInsert" useGeneratedKeys="true" keyProperty="id">
+        insert into redirect_rel (old_waybill, back_order, new_order, new_waybill, country_code, remark, create_user, update_user, created_time, updated_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.oldWaybill},
+            #{item.backOrder},
+            #{item.newOrder},
+            #{item.newWaybill},
+            #{item.countryCode},
+            #{item.remark},
+            #{item.createUser},
+            #{item.updateUser},
+            sysdate(),
+            sysdate())
+        </foreach>
+    </insert>
+
+    <select id="selectByNewOrderIn" resultMap="RedirectRelResult" parameterType="list">
+        <include refid="selectRedirectRelVo"/>
+        where new_order in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectByOldWaybillIn" resultMap="RedirectRelResult" parameterType="list">
+        <include refid="selectRedirectRelVo"/>
+        where old_waybill in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <update id="updateRedirectRel" parameterType="RedirectRel">
+        update redirect_rel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="oldWaybill != null">old_waybill = #{oldWaybill},</if>
+            <if test="backOrder != null">back_order = #{backOrder},</if>
+            <if test="newOrder != null">new_order = #{newOrder},</if>
+            <if test="newWaybill != null">new_waybill = #{newWaybill},</if>
+            <if test="countryCode != null">country_code = #{countryCode},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            updated_time = sysdate(),
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRedirectRelById" parameterType="Long">
+        delete from redirect_rel where id = #{id}
+    </delete>
+
+    <delete id="deleteRedirectRelByIds" parameterType="String">
+        delete from redirect_rel where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

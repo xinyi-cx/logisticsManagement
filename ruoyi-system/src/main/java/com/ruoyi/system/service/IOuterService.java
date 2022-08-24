@@ -17,6 +17,8 @@ import java.util.List;
 public interface IOuterService
 {
 
+    public void testSendEmail();
+
     public void test();
 
     /**

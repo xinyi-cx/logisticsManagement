@@ -52,6 +52,14 @@ public interface IPackageService
     public void getResponse(Long pkgId) throws IOException;
 
     /**
+     * 下载导入错误信息
+     * @param response
+     * @param id
+     * @throws IOException
+     */
+    public void getTxtById(HttpServletResponse response, Long id) throws IOException;
+
+    /**
      * 下载pdf
      * @param response
      * @param pkgId
@@ -104,7 +112,7 @@ public interface IPackageService
      * @param packageVos 面单
      * @return 结果
      */
-    public void importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception;
+    public String importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception;
 
     /**
      * 修改面单
@@ -129,4 +137,6 @@ public interface IPackageService
      * @return 结果
      */
     public int deletePackageById(Long id);
+
+    public void testSendEmailFile();
 }

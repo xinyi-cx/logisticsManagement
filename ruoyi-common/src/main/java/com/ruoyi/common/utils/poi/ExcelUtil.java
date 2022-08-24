@@ -1,66 +1,5 @@
 package com.ruoyi.common.utils.poi;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFPicture;
-import org.apache.poi.hssf.usermodel.HSSFPictureData;
-import org.apache.poi.hssf.usermodel.HSSFShape;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ooxml.POIXMLDocumentPart;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.PictureData;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.util.IOUtils;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFDataValidation;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
-import org.apache.poi.xssf.usermodel.XSSFPicture;
-import org.apache.poi.xssf.usermodel.XSSFShape;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.annotation.Excel.Type;
@@ -76,6 +15,26 @@ import com.ruoyi.common.utils.file.FileTypeUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.file.ImageUtils;
 import com.ruoyi.common.utils.reflect.ReflectUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ooxml.POIXMLDocumentPart;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
+import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Excel相关处理
@@ -438,6 +397,20 @@ public class ExcelUtil<T>
 
     /**
      * 对list数据源将其里面的数据导入到excel表单
+     *
+     * @param file 文件
+     * @param list 导出数据集合
+     * @param sheetName 工作表的名称
+     * @return 结果
+     * @throws IOException
+     */
+    public void exportExcel(File file, List<T> list, String sheetName)
+    {
+        exportExcel(file, list, sheetName, StringUtils.EMPTY);
+    }
+
+    /**
+     * 对list数据源将其里面的数据导入到excel表单
      * 
      * @param response 返回数据
      * @param list 导出数据集合
@@ -452,6 +425,22 @@ public class ExcelUtil<T>
         response.setCharacterEncoding("utf-8");
         this.init(list, sheetName, title, Type.EXPORT);
         exportExcel(response);
+    }
+
+    /**
+     * 对list数据源将其里面的数据导入到excel表单
+     *
+     * @param file 文件
+     * @param list 导出数据集合
+     * @param sheetName 工作表的名称
+     * @param title 标题
+     * @return 结果
+     * @throws IOException
+     */
+    public void exportExcel(File file, List<T> list, String sheetName, String title)
+    {
+        this.init(list, sheetName, title, Type.EXPORT);
+        exportExcel(file);
     }
 
     /**
@@ -515,6 +504,24 @@ public class ExcelUtil<T>
         {
             writeSheet();
             wb.write(response.getOutputStream());
+        }
+        catch (Exception e)
+        {
+            log.error("导出Excel异常{}", e.getMessage());
+        }
+        finally
+        {
+            IOUtils.closeQuietly(wb);
+        }
+    }
+
+    public void exportExcel(File file)
+    {
+        try
+        {
+            writeSheet();
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            wb.write(fileOutputStream);
         }
         catch (Exception e)
         {

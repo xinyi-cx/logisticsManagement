@@ -7,15 +7,14 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
- * 面单对象 package
+ * 导出 面单对象 package
  *
  * @author ruoyi
  * @date 2022-01-02
  */
-public class PackageVo extends BaseEntity {
+public class ExportTwoPackageVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -25,6 +24,19 @@ public class PackageVo extends BaseEntity {
 
     @Excel(name = "Sender Name")
     private String showSenderName;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date createdTime;
+
+    /**
+     * waybill 运货单
+     */
+    @Excel(name = "waybill")
+    private String waybill;
 
     /**
      * 收件人姓名
@@ -85,7 +97,7 @@ public class PackageVo extends BaseEntity {
     /**
      * 包裹里物件的数量
      */
-    @Excel(name = "Qty packages")
+//    @Excel(name = "Qty packages")
     private String qtyPackages;
 
     /**
@@ -210,12 +222,6 @@ public class PackageVo extends BaseEntity {
     private Long packId;
 
     /**
-     * waybill 运货单
-     */
-//    @Excel(name = "waybill 运货单")
-    private String waybill;
-
-    /**
      * 包裹状态
      */
 //    @Excel(name = "包裹状态")
@@ -293,16 +299,9 @@ public class PackageVo extends BaseEntity {
     private String updateUser;
 
     /**
-     * 创建时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date createdTime;
-
-    /**
      * 更新时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
 //    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
 
@@ -315,26 +314,6 @@ public class PackageVo extends BaseEntity {
     private String hisParam;
 
     private String datStr;
-
-    private String source;
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    private List<Long> ids;
-
-    public List<Long> getIds() {
-        return ids;
-    }
-
-    public void setIds(List<Long> ids) {
-        this.ids = ids;
-    }
 
     public String getDatStr() {
         return datStr;

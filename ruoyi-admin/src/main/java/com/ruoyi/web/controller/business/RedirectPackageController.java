@@ -131,8 +131,7 @@ public class RedirectPackageController extends BaseController
                     return packageVo;
                 }
         ).collect(toList());
-        packageService.importPackage(file, packageVos);
-        return AjaxResult.success("导入成功");
+        return AjaxResult.success(packageService.importPackage(file, packageVos));
     }
 
     @PostMapping("/importTemplate")

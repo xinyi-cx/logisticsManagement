@@ -60,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDocumentsBySessionId" parameterType="Long" resultMap="DocumentsResult">
         <include refid="selectDocumentsVo"/>
         where session_id = #{sessionId}
+        and package_id is null
     </select>
 
     <select id="selectDocumentsByPackageId" parameterType="Long" resultMap="DocumentsResult">

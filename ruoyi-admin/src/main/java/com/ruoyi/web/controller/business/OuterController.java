@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.system.domain.MbImport;
 import com.ruoyi.system.domain.mb.MbReceiveDto;
 import com.ruoyi.system.service.IOuterService;
+import com.ruoyi.system.service.IPackageService;
 import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -25,12 +26,20 @@ public class OuterController extends BaseController {
     @Autowired
     private ISysUserService userService;
 
+    @Autowired
+    private IPackageService packageService;
+
     /**
      * test
      */
     @GetMapping("/test")
     public void test() {
         outerService.test();
+    }
+
+    @GetMapping("/testSendEmail")
+    public void testSendEmail() {
+        packageService.testSendEmailFile();
     }
 
     /**
