@@ -24,6 +24,12 @@ CREATE TABLE `package_dpd_mapping`
 alter table packages_generation_response add column msg TEXT default null;
 
 INSERT INTO package_dpd_mapping (package_field, dpd_field, import_field, import_name, country_code, table_name, back_up_field, remark, create_user, update_user, created_time, updated_time, is_delete) VALUES ('postalCode', 'ReceiverPostalCode', 'receiverPostalCode', 'Recipient Postal code', 'PL', 'AddressReceiver', null, null, null, null, null, null, 0);
+INSERT INTO package_dpd_mapping (package_field, dpd_field, import_field, import_name, country_code, table_name, back_up_field, remark, create_user, update_user, created_time, updated_time, is_delete) VALUES ( 'postalCode', 'ReceiverPostalCode', 'receiverPostalCode', 'Recipient Postal code', 'PL', 'AddressReceiver', null, null, null, null, null, null, 0);
+INSERT INTO package_dpd_mapping (package_field, dpd_field, import_field, import_name, country_code, table_name, back_up_field, remark, create_user, update_user, created_time, updated_time, is_delete) VALUES ( 'reference', 'ParcelContent', 'reference', 'Order', 'PL', 'Order', null, null, null, null, null, null, 0);
+INSERT INTO package_dpd_mapping (package_field, dpd_field, import_field, import_name, country_code, table_name, back_up_field, remark, create_user, update_user, created_time, updated_time, is_delete) VALUES ( 'customerData1', 'ParcelCustomerData1', 'customerData1', 'Description', 'PL', 'Description', null, null, null, null, null, null, 0);
+INSERT INTO package_dpd_mapping (package_field, dpd_field, import_field, import_name, country_code, table_name, back_up_field, remark, create_user, update_user, created_time, updated_time, is_delete) VALUES ( 'postalCode', 'ReceiverPostalCode', 'receiverPostalCode', 'Recipient Postal code', 'CZ', 'AddressReceiver', null, null, null, null, null, null, 0);
+INSERT INTO package_dpd_mapping (package_field, dpd_field, import_field, import_name, country_code, table_name, back_up_field, remark, create_user, update_user, created_time, updated_time, is_delete) VALUES ( 'reference', 'ParcelContent', 'reference', 'Order', 'CZ', 'Order', null, null, null, null, null, null, 0);
+INSERT INTO package_dpd_mapping (package_field, dpd_field, import_field, import_name, country_code, table_name, back_up_field, remark, create_user, update_user, created_time, updated_time, is_delete) VALUES ( 'customerData1', 'ParcelCustomerData1', 'customerData1', 'Description', 'CZ', 'Description', null, null, null, null, null, null, 0);
 
 
 drop table if exists redirect_rel;

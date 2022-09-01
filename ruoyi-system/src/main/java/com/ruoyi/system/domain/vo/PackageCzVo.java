@@ -15,7 +15,7 @@ import java.util.List;
  * @author ruoyi
  * @date 2022-01-02
  */
-public class PackageVo extends BaseEntity {
+public class PackageCzVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -43,7 +43,7 @@ public class PackageVo extends BaseEntity {
     /**
      * 收件人邮政编码
      */
-    @Excel(name = "Recipient Postal code")
+    @Excel(name = "RecipientPostalcode")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverPostalCode;
 
@@ -57,14 +57,14 @@ public class PackageVo extends BaseEntity {
     /**
      * 收件人国家编码
      */
-    @Excel(name = "Recipient Country")
+    @Excel(name = "Recipient country")
 //    @NotEmpty(message = "收件人信息不能为空")
     private String receiverCountryCode;
 
     /**
      * 收件人手机号码
      */
-    @Excel(name = "Recipient phone")
+    @Excel(name = "Recipientphone")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverPhone;
 

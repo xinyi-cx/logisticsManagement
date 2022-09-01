@@ -7,9 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.Package;
-import com.ruoyi.system.domain.vo.ExportPackageVo;
-import com.ruoyi.system.domain.vo.ExportTwoPackageVo;
-import com.ruoyi.system.domain.vo.PackageVo;
+import com.ruoyi.system.domain.vo.*;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +131,31 @@ public class PackageController extends BaseController
     }
 
     /**
+     * 导出面单列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:package:export')")
+    @Log(title = "面单", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportCz")
+    public void exportCz(HttpServletResponse response, PackageVo pkg)
+    {
+        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<ExportPackageCzVo> exportPackageVos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(list)){
+            packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
+
+            exportPackageVos = list.stream().map(item ->
+                    {
+                        ExportPackageCzVo packageVo = new ExportPackageCzVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        }
+        ExcelUtil<ExportPackageCzVo> util = new ExcelUtil<ExportPackageCzVo>(ExportPackageCzVo.class);
+        util.exportExcel(response, exportPackageVos, "面单数据");
+    }
+
+    /**
      * 根据批次
      * @param dateStr
      * @return
@@ -193,8 +216,15 @@ public class PackageController extends BaseController
         util.importTemplateExcel(response, "面单数据");
     }
 
+    @PostMapping("/importTemplateCz")
+    public void importTemplateCz(HttpServletResponse response)
+    {
+        ExcelUtil<PackageCzVo> util = new ExcelUtil<PackageCzVo>(PackageCzVo.class);
+        util.importTemplateExcel(response, "面单数据");
+    }
+
     @PostMapping("/downloadFile/{id}")
-    public void importTemplate(HttpServletResponse response, @PathVariable("id") Long id) throws Exception {
+    public void downloadFile(HttpServletResponse response, @PathVariable("id") Long id) throws Exception {
         packageService.writeFile(response, id);
     }
 
@@ -238,6 +268,18 @@ public class PackageController extends BaseController
     {
         ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
         List<PackageVo> packageVos = util.importExcel(file.getInputStream());
+        return AjaxResult.success(packageService.importPackage(file, packageVos));
+    }
+
+    @Log(title = "面单导入", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('system:package:add')")
+    @PostMapping("/importDataCz")
+    public AjaxResult importDataCz(MultipartFile file) throws Exception
+    {
+        ExcelUtil<PackageCzVo> util = new ExcelUtil<PackageCzVo>(PackageCzVo.class);
+        List<PackageCzVo> packageCzVoList = util.importExcel(file.getInputStream());
+        List<PackageVo> packageVos = new ArrayList<>();
+        BeanUtils.copyProperties(packageVos, packageCzVoList);
         return AjaxResult.success(packageService.importPackage(file, packageVos));
     }
 

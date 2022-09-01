@@ -7,15 +7,14 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
- * 面单对象 package
+ * 导出 面单对象 package
  *
  * @author ruoyi
  * @date 2022-01-02
  */
-public class PackageVo extends BaseEntity {
+public class ExportPackageCzVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -25,6 +24,19 @@ public class PackageVo extends BaseEntity {
 
     @Excel(name = "Sender Name")
     private String showSenderName;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date createdTime;
+
+    /**
+     * waybill 运货单
+     */
+    @Excel(name = "waybill")
+    private String waybill;
 
     /**
      * 收件人姓名
@@ -43,7 +55,7 @@ public class PackageVo extends BaseEntity {
     /**
      * 收件人邮政编码
      */
-    @Excel(name = "Recipient Postal code")
+    @Excel(name = "RecipientPostalcode")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverPostalCode;
 
@@ -57,14 +69,14 @@ public class PackageVo extends BaseEntity {
     /**
      * 收件人国家编码
      */
-    @Excel(name = "Recipient Country")
+    @Excel(name = "Recipient country")
 //    @NotEmpty(message = "收件人信息不能为空")
     private String receiverCountryCode;
 
     /**
      * 收件人手机号码
      */
-    @Excel(name = "Recipient phone")
+    @Excel(name = "Recipientphone")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverPhone;
 
@@ -123,15 +135,15 @@ public class PackageVo extends BaseEntity {
     private String oldWaybill;
 
     /** 新的单号 */
-//    @Excel(name = "Order number")
+    @Excel(name = "Order number")
     private String newOrder;
 
     /** 回退单号 */
-//    @Excel(name = "Old return number")
+    @Excel(name = "Old return number")
     private String backOrder;
 
     /** 新物流单号 */
-//    @Excel(name = "New Waybill")
+    @Excel(name = "New Waybill")
     private String newWaybill;
 
     public String getOldWaybill() {
@@ -208,12 +220,6 @@ public class PackageVo extends BaseEntity {
      */
 //    @Excel(name = "pack_id")
     private Long packId;
-
-    /**
-     * waybill 运货单
-     */
-//    @Excel(name = "waybill 运货单")
-    private String waybill;
 
     /**
      * 包裹状态
@@ -293,16 +299,9 @@ public class PackageVo extends BaseEntity {
     private String updateUser;
 
     /**
-     * 创建时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date createdTime;
-
-    /**
      * 更新时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
 //    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
 
@@ -315,26 +314,6 @@ public class PackageVo extends BaseEntity {
     private String hisParam;
 
     private String datStr;
-
-    private String source;
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    private List<Long> ids;
-
-    public List<Long> getIds() {
-        return ids;
-    }
-
-    public void setIds(List<Long> ids) {
-        this.ids = ids;
-    }
 
     public String getDatStr() {
         return datStr;

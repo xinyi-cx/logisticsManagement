@@ -13,6 +13,7 @@ import com.ruoyi.system.domain.*;
 import com.ruoyi.system.dpdservices.*;
 import com.ruoyi.system.mapper.DocumentsMapper;
 import com.ruoyi.system.mapper.DpdMsgMapper;
+import com.ruoyi.system.mapper.PackageDpdMappingMapper;
 import com.ruoyi.system.mapper.SequenceMapper;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 import java.io.*;
 import java.lang.Exception;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -55,6 +57,9 @@ public class DPDServicesXMLClient {
 
     @Autowired
     private DpdMsgMapper dpdMsgMapper;
+
+    @Autowired
+    private PackageDpdMappingMapper packageDpdMappingMapper;
 
     private long sessionId;
     private long parcelId;
@@ -195,6 +200,16 @@ public class DPDServicesXMLClient {
 
     private static final Logger log = LoggerFactory.getLogger(DPDServicesXMLClient.class);
 
+    private Map<String, String> getPackageDpdMap(String countryCode){
+        PackageDpdMapping packageDpdMapping = new PackageDpdMapping();
+        packageDpdMapping.setCountryCode(countryCode);
+        List<PackageDpdMapping> packageDpdMappings = packageDpdMappingMapper.selectPackageDpdMappingList(packageDpdMapping);
+        if (org.apache.commons.collections4.CollectionUtils.isEmpty(packageDpdMappings)) {
+            return new HashMap<>();
+        }
+        return packageDpdMappings.stream().collect(toMap(PackageDpdMapping::getDpdField, PackageDpdMapping::getPackageField));
+    }
+
     /**
      * 生成返回值
      *
@@ -204,6 +219,7 @@ public class DPDServicesXMLClient {
     public List<PackagesGenerationResponse> generatePackagesNumberByBusiness(List<Package> packages) throws Exception {
         Integer methodFid = null;
         OpenUMLFeV3 umlf = new OpenUMLFeV3(); // Ilość przesyłek
+        Map<String, String> dpdPackageMap = getPackageDpdMap(packages.get(0).getSender().getCountryCode());
         for (Package aPackage : packages) {
             AddressReceiver receiver = aPackage.getReceiver();
             AddressSender sender = aPackage.getSender();
@@ -246,10 +262,11 @@ public class DPDServicesXMLClient {
             ServicesOpenUMLFeV4 services = new ServicesOpenUMLFeV4();
             ServiceCODOpenUMLFeV1 cod = new ServiceCODOpenUMLFeV1();
             cod.setAmount(ser.getCodAmount());
-//            if (ObjectUtils.isEmpty(ser.getCodCurrency())) {
+//            sender.getCountryCode()  CZK
+            if (ObjectUtils.isEmpty(ser.getCodCurrency())) {
             //只能是PLN否则报错
-            ser.setCodCurrency("PLN");
-//            }
+                ser.setCodCurrency("PLN");
+            }
             cod.setCurrency(ServiceCurrencyEnum.fromValue(ser.getCodCurrency()));
             services.setCod(cod);
 
@@ -259,27 +276,7 @@ public class DPDServicesXMLClient {
             pkg.setServices(services);
 
             for (Parcel parcel : parcels) {
-                ParcelOpenUMLFeV1 parcel1 = new ParcelOpenUMLFeV1();
-                parcel1.setSizeX(null == parcel.getSizeX() || 0 == parcel.getSizeX() ? 1 : parcel.getSizeX());
-                parcel1.setSizeY(null == parcel.getSizeY() || 0 == parcel.getSizeY() ? 1 : parcel.getSizeY());
-                parcel1.setSizeZ(null == parcel.getSizeZ() || 0 == parcel.getSizeZ() ? 1 : parcel.getSizeZ());
-//                if (ObjectUtils.isEmpty(parcel.getContent())) {
-//                    String uuid = IdUtils.fastSimpleUUID();
-//                    parcel.setContent(uuid);
-//                }
-                if (ObjectUtils.isEmpty(parcel.getCustomerData1())) {
-                    String uuid = IdUtils.fastSimpleUUID();
-                    parcel.setCustomerData1(uuid);
-                }
-                if (ObjectUtils.isEmpty(parcel.getReference())) {
-                    String uuid = IdUtils.fastSimpleUUID();
-                    parcel.setReference(uuid);
-                }
-                parcel1.setContent(parcel.getReference());//id
-                parcel1.setCustomerData1(parcel.getCustomerData1());//id
-//                parcel1.setReference(parcel.getReference()); //parametr opcjonalny
-                parcel1.setWeight((0 == Double.parseDouble(parcel.getWeight().toString())) ? 1 : Double.parseDouble(parcel.getWeight().toString()));
-                pkg.getParcels().add(parcel1);
+                setParcel(pkg, parcel, dpdPackageMap);
             }
             umlf.getPackages().add(pkg);
         }
@@ -362,6 +359,37 @@ public class DPDServicesXMLClient {
         }
         documentsMapper.batchInsert(documentsList);
         return returnResponses;
+    }
+
+    private void setParcel(PackageOpenUMLFeV3 pkg, Parcel parcel, Map<String, String> dpdPackageMap) {
+        boolean notEmpty = !CollectionUtils.isEmpty(dpdPackageMap);
+        ParcelOpenUMLFeV1 parcel1 = new ParcelOpenUMLFeV1();
+        parcel1.setSizeX(null == parcel.getSizeX() || 0 == parcel.getSizeX() ? 1 : parcel.getSizeX());
+        parcel1.setSizeY(null == parcel.getSizeY() || 0 == parcel.getSizeY() ? 1 : parcel.getSizeY());
+        parcel1.setSizeZ(null == parcel.getSizeZ() || 0 == parcel.getSizeZ() ? 1 : parcel.getSizeZ());
+        if (ObjectUtils.isEmpty(parcel.getContent())) {
+            String uuid = IdUtils.fastSimpleUUID();
+            parcel.setContent(uuid);
+        }
+        if (ObjectUtils.isEmpty(parcel.getCustomerData1())) {
+            String uuid = IdUtils.fastSimpleUUID();
+            parcel.setCustomerData1(uuid);
+        }
+        if (ObjectUtils.isEmpty(parcel.getReference())) {
+            String uuid = IdUtils.fastSimpleUUID();
+            parcel.setReference(uuid);
+        }
+        if (notEmpty && dpdPackageMap.containsKey("ParcelContent")){
+            parcel1.setContent(com.ruoyi.common.utils.bean.BeanUtils.getAttribute(parcel, dpdPackageMap.get("ParcelContent")));//id
+        }
+
+        if (notEmpty && dpdPackageMap.containsKey("ParcelCustomerData1")){
+            parcel1.setCustomerData1(com.ruoyi.common.utils.bean.BeanUtils.getAttribute(parcel, dpdPackageMap.get("ParcelCustomerData1")));//id
+        }
+
+//                parcel1.setReference(parcel.getReference()); //parametr opcjonalny
+        parcel1.setWeight((0 == Double.parseDouble(parcel.getWeight().toString())) ? 1 : Double.parseDouble(parcel.getWeight().toString()));
+        pkg.getParcels().add(parcel1);
     }
 
     private byte[] getOnePagePDFFile(Documents documents, int pageNum) {

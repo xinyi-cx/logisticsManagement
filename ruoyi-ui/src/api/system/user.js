@@ -134,3 +134,10 @@ export function updateAuthRole(data) {
     params: data
   })
 }
+
+export function userCountry() {
+  return request({
+    url: '/system/user/country',
+    method: 'get'
+  })
+}

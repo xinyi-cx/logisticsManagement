@@ -90,7 +90,7 @@
           v-hasPermi="['system:package:add']"
         >新增</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <el-col :span="1.5" v-if="countryCodePlFlag">
         <el-button
           type="success"
           plain
@@ -101,7 +101,7 @@
         >导入</el-button>
       </el-col>
 
-      <el-col :span="1.5">
+      <el-col :span="1.5" v-if="countryCodePlFlag">
         <el-button
           type="warning"
           plain
@@ -111,6 +111,30 @@
           v-hasPermi="['system:package:export']"
         >导出</el-button>
       </el-col>
+
+<!--      导入导出 捷克-->
+      <el-col :span="1.5" v-if="countryCodeCzFlag">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleImportForCz"
+          v-hasPermi="['system:package:add']"
+        >导入</el-button>
+      </el-col>
+
+      <el-col :span="1.5" v-if="countryCodeCzFlag">
+        <el-button
+          type="warning"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExportForCz"
+          v-hasPermi="['system:package:export']"
+        >导出</el-button>
+      </el-col>
+
       <el-col :span="1.5">
         <el-button
           type="danger"
@@ -341,7 +365,7 @@
       </div>
     </el-dialog>
 
-<!--    导入对话框-->
+<!--    导入波兰对话框-->
     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
       <el-upload
         ref="upload"
@@ -369,11 +393,40 @@
       </div>
     </el-dialog>
 
+<!--    导入捷克对话框-->
+    <el-dialog :title="uploadCz.title" :visible.sync="uploadCz.open" width="400px" append-to-body>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="uploadCz.headers"
+        :action="uploadCz.url"
+        :disabled="uploadCz.isUploading"
+        :on-progress="handleFileUploadProgressForCz"
+        :on-success="handleFileSuccessForCz"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplateForCz">下载模板</el-link>
+          <!--          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplatePDF">下载测试数据</el-link>-->
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileFormForCz" :disabled="submitDisabled">确 定</el-button>
+        <el-button @click="uploadCz.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { listPackageAll, getPackage, delPackage, updatePackage, addPackageAll } from "@/api/shippingOrder/package";
+import { userCountry } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 
 export default {
@@ -417,6 +470,8 @@ export default {
       }, 1000);
     };
     return {
+      countryCodePlFlag: true,
+      countryCodeCzFlag: false,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -451,6 +506,19 @@ export default {
         headers: { Authorization: "Bearer " + getToken() },
         // 上传的地址
         url: process.env.VUE_APP_BASE_API + "/system/package/importData"
+      },
+      // 导入参数
+      uploadCz: {
+        // 是否显示弹出层（导入）
+        open: false,
+        // 弹出层标题（导入）
+        title: "",
+        // 是否禁用上传
+        isUploading: false,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/system/package/importDataCz"
       },
       // 查询参数
       queryParams: {
@@ -527,15 +595,27 @@ export default {
     if (datStr){
       this.queryParams.datStr = datStr;
     }
+    this.getCountry();
     this.getList();
   },
   methods: {
+    getCountry() {
+      userCountry().then(response => {
+        let UCountry = response.msg;
+        if ("PL" == UCountry){
+          this.countryCodePlFlag = true;
+        }
+        if ("CZ" == UCountry){
+          this.countryCodePlFlag = false;
+          this.countryCodeCzFlag = true;
+        }
+      });
+    },
     /** 查询面单列表 */
     getList() {
       this.loading = true;
       listPackageAll(this.queryParams).then(response => {
         this.packageList = response.rows;
-        debugger;
         console.log(this.packageList);
         this.total = response.total;
         this.loading = false;
@@ -611,9 +691,18 @@ export default {
       this.upload.open = true;
       this.submitDisabled = false;
     },
+    handleImportForCz() {
+      this.uploadCz.title = "批量导入";
+      this.uploadCz.open = true;
+      this.submitDisabled = false;
+    },
     /** 下载模板操作 */
     importTemplate() {
       this.download('system/package/importTemplate', {
+      }, `package_template_${new Date().getTime()}.xlsx`)
+    },
+    importTemplateForCz() {
+      this.download('system/package/importTemplateCz', {
       }, `package_template_${new Date().getTime()}.xlsx`)
     },
     importTemplate2(){
@@ -639,6 +728,23 @@ export default {
     },
     // 提交上传文件
     submitFileForm() {
+      this.$refs.upload.submit();
+      this.submitDisabled = true;
+    },
+    // 文件上传中处理
+    handleFileUploadProgressForCz(event, file, fileList) {
+      this.uploadCz.isUploading = true;
+    },
+    // 文件上传成功处理
+    handleFileSuccessForCz(response, file, fileList) {
+      this.uploadCz.open = false;
+      this.uploadCz.isUploading = false;
+      this.$refs.upload.clearFiles();
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
+      this.getList();
+    },
+    // 提交上传文件
+    submitFileFormForCz() {
       this.$refs.upload.submit();
       this.submitDisabled = true;
     },
@@ -677,6 +783,12 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.download('system/package/export', {
+        ...this.queryParams
+      }, `package_${new Date().getTime()}.xlsx`)
+    },
+    /** 捷克导出按钮操作 */
+    handleExportForCz() {
+      this.download('system/package/exportCz', {
         ...this.queryParams
       }, `package_${new Date().getTime()}.xlsx`)
     },

@@ -633,4 +633,11 @@ public class SysUserServiceImpl implements ISysUserService
         }
         return successMsg.toString();
     }
+
+    @Override
+    public String getCurrentCountry(){
+        SysUser currentUser = SecurityUtils.getLoginUser().getUser();
+        return currentUser.getCountry();
+    }
+
 }
