@@ -206,7 +206,13 @@
             icon="el-icon-view"
             @click="handleDownload(scope.row)"
             v-hasPermi="['system:history:edit']"
-          >查看excel</el-button>
+          >查看原始excel</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="downloadGeneratedExcel(scope.row)"
+          >查看批量excel</el-button>
           <el-button
             size="mini"
             type="text"
@@ -380,6 +386,16 @@ export default {
         this.loading = false;
       });
     },
+    /** 获取对应用户信息*/
+    getUserInfo(userId) {
+      getUser(userId).then(response => {
+        if (response.code == 200) {
+          this.userInfo = response.data;
+        } else {
+          // 给出相应提示
+        }
+      });
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -412,7 +428,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -436,23 +452,15 @@ export default {
       const id = row.id;
       console.log(row);
       let fileName = `Original`;
-      this.download('system/package/downloadFile/'+ id, {
-      }, `batch_task_${new Date().getTime()}.xlsx`)
+      this.download('system/package/downloadFile/' + id, {}, `batch_task_${new Date().getTime()}.xlsx`)
     },
     handleDownloadPDF(row) {
       this.reset();
       const id = row.id;
       const userId = parseInt(row.updateUser);
-      getUser(userId).then(response => {
-        if(response.code == 200) {
-          this.userInfo = response.data;
-        } else {
-          // 给出相应提示
-        }
-      });
+      this.getUserInfo(userId);
       let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export labels`;
-      this.download('system/package/getPDFByBatchId/'+ id, {
-      }, `${fileName}.pdf`)
+      this.download('system/package/getPDFByBatchId/' + id, {}, `${fileName}.pdf`)
     },
     /** 导入按钮操作 */
     handleImport() {
@@ -461,8 +469,7 @@ export default {
     },
     /** 下载模板操作 */
     importTemplate() {
-      this.download('system/package/importTemplate', {
-      }, `package_template_${new Date().getTime()}.xlsx`)
+      this.download('system/package/importTemplate', {}, `package_template_${new Date().getTime()}.xlsx`)
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {
@@ -473,7 +480,7 @@ export default {
       this.upload.open = false;
       this.upload.isUploading = false;
       this.$refs.upload.clearFiles();
-      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", {dangerouslyUseHTMLString: true});
       this.getList();
     },
     // 提交上传文件
@@ -504,12 +511,13 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除批量任务历史编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除批量任务历史编号为"' + ids + '"的数据项？').then(function () {
         return delHistory(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => {
+      });
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -520,9 +528,16 @@ export default {
     /** 导出按钮操作 */
     handlePacExport(id) {
       this.packParams.hisParam = '000' + id;
+    },
+
+    downloadGeneratedExcel(row) {
+      this.packParams.hisParam = row.id;
+      const userId = parseInt(row.updateUser);
+      this.getUserInfo(userId);
+      let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export xls`;
       this.download('system/package/export', {
         ...this.packParams
-      }, `package_${new Date().getTime()}.xlsx`)
+      }, `${fileName}.xlsx`);
     }
   }
 };
