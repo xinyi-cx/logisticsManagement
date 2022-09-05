@@ -77,6 +77,14 @@ public interface IPackageService
     public List<PackageVo> selectPackageVoList(PackageVo packageVo);
 
     /**
+     * 查询面单列表
+     *
+     * @param packageVo 面单
+     * @return 面单集合
+     */
+    public long selectPackageVoListTotal(PackageVo packageVo);
+
+    /**
      * 更细下载数量
      * @param ids
      * @return

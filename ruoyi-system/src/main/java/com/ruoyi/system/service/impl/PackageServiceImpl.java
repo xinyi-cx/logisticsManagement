@@ -101,12 +101,14 @@ public class PackageServiceImpl implements IPackageService {
         Map<Long, AddressSender> addressSenderMap = addressSenders.stream().collect(toMap(AddressSender::getId, Function.identity()));
         List<AddressReceiver> addressReceivers = addressReceiverMapper.selectAddressReceiverByIdIn(Collections.singletonList(pkg.getReceiverId()));
         Map<Long, AddressReceiver> addressReceiverMap = addressReceivers.stream().collect(toMap(AddressReceiver::getId, Function.identity()));
+        List<Services> servicesList = servicesMapper.selectServicesListByIdIn(Collections.singletonList(pkg.getServicesId()));
+        Map<Long, Services> idServicesMap = servicesList.stream().collect(toMap(Services::getId, Function.identity()));
         List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(Collections.singletonList(pkg.getId()));
 
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(Collections.singletonList(pkg.getId()));
         Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
 
-        return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, parcels, packagesGenerationResponseMap, new HashMap<>(), new HashMap<>());
+        return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, idServicesMap, parcels, packagesGenerationResponseMap, new HashMap<>(), new HashMap<>());
     }
 
     /**
@@ -340,6 +342,38 @@ public class PackageServiceImpl implements IPackageService {
         getFileByDocuments(documents, response);
     }
 
+    @Override
+    public long selectPackageVoListTotal(PackageVo packageVo){
+        Long hisId = null;
+        if (ObjectUtils.isNotEmpty(packageVo.getHisParam())) {
+            hisId = Long.valueOf(packageVo.getHisParam().substring(3));
+        }
+        Package pkg = new Package();
+        BeanUtils.copyProperties(packageVo, pkg);
+        pkg.setBatchId(hisId);
+        if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+            pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        }
+        if (StringUtils.isNotEmpty(packageVo.getStatus())){
+            Date paramDate = new Date();
+            if (!StringUtils.isEmpty(packageVo.getDatStr()) && !"null".equals(packageVo.getDatStr()) && packageVo.getDatStr().length() == 8 ) {
+                paramDate = DateUtils.dateTime(DateUtils.YYYYMMDD, packageVo.getDatStr());
+            }
+            if (!StringUtils.isEmpty(packageVo.getDatStr()) && !"null".equals(packageVo.getDatStr()) && packageVo.getDatStr().length() == 6){
+                //按照月度统计
+                pkg.setParamMonth(packageVo.getDatStr());
+            }else {
+                pkg.setCreatedTime(paramDate);
+            }
+        }
+        List<Package> packagesAll = packageMapper.selectPackageList(pkg);
+
+        if (CollectionUtils.isEmpty(packagesAll)){
+            return 0;
+        }
+        return packagesAll.size();
+    }
+
     /**
      * 查询面单列表
      *
@@ -393,6 +427,8 @@ public class PackageServiceImpl implements IPackageService {
         Map<Long, AddressSender> addressSenderMap = addressSenders.stream().collect(toMap(AddressSender::getId, Function.identity()));
         List<AddressReceiver> addressReceivers = addressReceiverMapper.selectAddressReceiverByIdIn(packages.stream().map(Package::getReceiverId).collect(Collectors.toList()));
         Map<Long, AddressReceiver> addressReceiverMap = addressReceivers.stream().collect(toMap(AddressReceiver::getId, Function.identity()));
+        List<Services> servicesList = servicesMapper.selectServicesListByIdIn(packages.stream().map(Package::getServicesId).collect(Collectors.toList()));
+        Map<Long, Services> idServicesMap = servicesList.stream().collect(toMap(Services::getId, Function.identity()));
         List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
 
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
@@ -410,7 +446,9 @@ public class PackageServiceImpl implements IPackageService {
         }
         Map<String, List<RedirectRel>> finalOrderListMap = orderListMap;
         List<PackageVo> resultList = packages.stream().map(item -> this.getPackageVo(packageVo, item, addressSenderMap,
-                addressReceiverMap, parcels, packagesGenerationResponseMap, finalBatchTaskHistoryMap, finalOrderListMap)).filter(Objects::nonNull).collect(Collectors.toList());
+                addressReceiverMap, idServicesMap, parcels, packagesGenerationResponseMap, finalBatchTaskHistoryMap, finalOrderListMap))
+                .filter(Objects::nonNull).collect(Collectors.toList());
+
         if (null == sucFlag) {
             return resultList;
         }
@@ -425,6 +463,7 @@ public class PackageServiceImpl implements IPackageService {
                                    Package pac,
                                    Map<Long, AddressSender> addressSenderMap,
                                    Map<Long, AddressReceiver> addressReceiverMap,
+                                   Map<Long, Services> idServicesMap,
                                    List<Parcel> parcels,
                                    Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap,
                                    Map<Long, BatchTaskHistory> batchTaskHistoryMap,
@@ -446,6 +485,10 @@ public class PackageServiceImpl implements IPackageService {
         packageVo.setPln(addressReceiverMap.get(pac.getReceiverId()).getPln());
 
         packageVo.setShowSenderName(addressSenderMap.get(pac.getSenderId()).getName());
+
+        if (idServicesMap.containsKey(pac.getServicesId())){
+            packageVo.setPln(new BigDecimal(idServicesMap.get(pac.getServicesId()).getCodAmount()));
+        }
 
         List<Parcel> parcelList = parcels.stream().filter(item -> item.getPackId().equals(pac.getId())).collect(toList());
         if (CollectionUtils.isNotEmpty(parcelList)) {

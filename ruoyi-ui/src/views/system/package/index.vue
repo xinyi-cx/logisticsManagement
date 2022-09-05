@@ -125,7 +125,7 @@
       <!-- 内部引用号 -->
       <el-table-column label="内部单号" align="center" width="150" show-overflow-tooltip prop="reference" />
       <!-- 发件人全名 -->
-      <el-table-column label="发件人" width="100" show-overflow-tooltip align="center" prop="senderName" />
+      <el-table-column label="发件人" width="100" show-overflow-tooltip align="center" prop="showSenderName" />
       <!-- 收货人全名 -->
       <el-table-column label="收件人" width="100" show-overflow-tooltip align="center" prop="receiverName" />
       <!-- 国家 -->

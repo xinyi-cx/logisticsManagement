@@ -67,7 +67,7 @@ public class PackageController extends BaseController
     {
         startPage();
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
-        return getDataTable(list);
+        return getDataTable(list, packageService.selectPackageVoListTotal(pkg));
     }
 
     /**
