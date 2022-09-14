@@ -78,26 +78,26 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['system:package:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-upload2"
-          size="mini"
-          @click="handleImport"
-          v-hasPermi="['system:package:add']"
-        >导入</el-button>
-      </el-col>
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          icon="el-icon-plus"-->
+<!--          size="mini"-->
+<!--          @click="handleAdd"-->
+<!--          v-hasPermi="['system:package:add']"-->
+<!--        >新增</el-button>-->
+<!--      </el-col>-->
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          icon="el-icon-upload2"-->
+<!--          size="mini"-->
+<!--          @click="handleImport"-->
+<!--          v-hasPermi="['system:package:add']"-->
+<!--        >导入</el-button>-->
+<!--      </el-col>-->
 
       <el-col :span="1.5">
         <el-button
@@ -110,27 +110,49 @@
         >导入关联关系</el-button>
       </el-col>
 
-      <el-col :span="1.5">
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="warning"-->
+<!--          plain-->
+<!--          icon="el-icon-download"-->
+<!--          size="mini"-->
+<!--          @click="handleExport"-->
+<!--          v-hasPermi="['system:package:export']"-->
+<!--        >导出</el-button>-->
+<!--      </el-col>-->
+      <el-col :span="1.5" v-if="countryCodePlFlag">
         <el-button
           type="warning"
           plain
           icon="el-icon-download"
           size="mini"
-          @click="handleExport"
+          @click="handleExportRe"
           v-hasPermi="['system:package:export']"
-        >导出</el-button>
+        >导出（附加原来信息）</el-button>
       </el-col>
-      <el-col :span="1.5">
+
+      <el-col :span="1.5" v-if="countryCodeCzFlag">
         <el-button
-          type="danger"
+          type="warning"
           plain
-          icon="el-icon-delete"
+          icon="el-icon-download"
           size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:package:remove']"
-        >删除</el-button>
+          @click="handleExportReCz"
+          v-hasPermi="['system:package:export']"
+        >导出（附加原来信息）</el-button>
       </el-col>
+
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="danger"-->
+<!--          plain-->
+<!--          icon="el-icon-delete"-->
+<!--          size="mini"-->
+<!--          :disabled="multiple"-->
+<!--          @click="handleDelete"-->
+<!--          v-hasPermi="['system:package:remove']"-->
+<!--        >删除</el-button>-->
+<!--      </el-col>-->
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
      <!-- 列表 -->
@@ -138,7 +160,7 @@
       <!-- 多选 -->
       <el-table-column type="selection" width="55" align="center" />
       <!-- 原面单ID -->
-      <el-table-column label="原面单ID" align="center" prop="originalId" />
+<!--      <el-table-column label="原面单ID" align="center" prop="originalId" />-->
       <!-- 物流单号 -->
       <el-table-column label="物流单号" align="center" prop="waybill" />
       <!-- 创建时间 -->
@@ -172,9 +194,9 @@
       <!-- 下载次数 -->
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
       <!-- 备注1 -->
-      <el-table-column label="reference1" align="center" prop="ref1" />
+      <el-table-column label="售后电话" align="center" prop="ref1" />
       <!-- 备注2 -->
-      <el-table-column label="reference2" align="center" prop="ref2" />
+      <el-table-column label="售后邮箱" align="center" prop="ref2" />
       <!-- 操作 -->
       <el-table-column label="操作" align="center" prop="id">
          <template slot-scope="scope">
@@ -373,31 +395,31 @@
     </el-dialog>
 
 <!--    导入对话框-->
-    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
-      <el-upload
-        ref="upload"
-        :limit="1"
-        accept=".xlsx, .xls"
-        :headers="upload.headers"
-        :action="upload.url"
-        :disabled="upload.isUploading"
-        :on-progress="handleFileUploadProgress"
-        :on-success="handleFileSuccess"
-        :auto-upload="false"
-        drag
-      >
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip text-center" slot="tip">
-          <span>仅允许导入xls、xlsx格式文件。</span>
-          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
-        </div>
-      </el-upload>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitFileForm">确 定</el-button>
-        <el-button @click="upload.open = false">取 消</el-button>
-      </div>
-    </el-dialog>
+<!--    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>-->
+<!--      <el-upload-->
+<!--        ref="upload"-->
+<!--        :limit="1"-->
+<!--        accept=".xlsx, .xls"-->
+<!--        :headers="upload.headers"-->
+<!--        :action="upload.url"-->
+<!--        :disabled="upload.isUploading"-->
+<!--        :on-progress="handleFileUploadProgress"-->
+<!--        :on-success="handleFileSuccess"-->
+<!--        :auto-upload="false"-->
+<!--        drag-->
+<!--      >-->
+<!--        <i class="el-icon-upload"></i>-->
+<!--        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
+<!--        <div class="el-upload__tip text-center" slot="tip">-->
+<!--          <span>仅允许导入xls、xlsx格式文件。</span>-->
+<!--          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>-->
+<!--        </div>-->
+<!--      </el-upload>-->
+<!--      <div slot="footer" class="dialog-footer">-->
+<!--        <el-button type="primary" @click="submitFileForm">确 定</el-button>-->
+<!--        <el-button @click="upload.open = false">取 消</el-button>-->
+<!--      </div>-->
+<!--    </el-dialog>-->
     <!--    导入关联关系对话框-->
     <el-dialog :title="uploadRel.title" :visible.sync="uploadRel.open" width="400px" append-to-body>
       <el-upload
@@ -431,6 +453,7 @@
 <script>
 import { listPackageAll, getPackage, delPackage, updatePackage, addPackageAll, packageAll } from "@/api/shippingOrder/package";
 // import { listRedirect } from "@/api/shippingOrder/redirect";
+import { userCountry } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 
 export default {
@@ -474,6 +497,8 @@ export default {
       }, 1000);
     };
     return {
+      countryCodePlFlag: true,
+      countryCodeCzFlag: false,
       allPackage: [],
       // 遮罩层
       loading: true,
@@ -587,6 +612,18 @@ export default {
     this.getList();
   },
   methods: {
+    getCountry() {
+      userCountry().then(response => {
+        let UCountry = response.msg;
+        if ("PL" == UCountry){
+          this.countryCodePlFlag = true;
+        }
+        if ("CZ" == UCountry){
+          this.countryCodePlFlag = false;
+          this.countryCodeCzFlag = true;
+        }
+      });
+    },
     getAll(){
       packageAll(null).then(response => {
         this.allPackage = response;
@@ -748,6 +785,18 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.download('system/package/export', {
+        ...this.queryParams
+      }, `package_${new Date().getTime()}.xlsx`)
+    },
+    /** 导出按钮操作 */
+    handleExportRe() {
+      this.download('system/package/exportRe', {
+        ...this.queryParams
+      }, `package_${new Date().getTime()}.xlsx`)
+    },
+    /** 导出按钮操作 */
+    handleExportReCz() {
+      this.download('system/package/exportReCz', {
         ...this.queryParams
       }, `package_${new Date().getTime()}.xlsx`)
     }

@@ -14,7 +14,7 @@ import java.util.Date;
  * @author ruoyi
  * @date 2022-01-02
  */
-public class ExportPackageVo extends BaseEntity {
+public class ExportRePackageVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -135,15 +135,15 @@ public class ExportPackageVo extends BaseEntity {
     private String oldWaybill;
 
     /** 新的单号 */
-//    @Excel(name = "Order number")
+    @Excel(name = "Order number")
     private String newOrder;
 
     /** 回退单号 */
-//    @Excel(name = "Old return number")
+    @Excel(name = "Old return number")
     private String backOrder;
 
     /** 新物流单号 */
-//    @Excel(name = "New Waybill")
+    @Excel(name = "New Waybill")
     private String newWaybill;
 
     public String getOldWaybill() {

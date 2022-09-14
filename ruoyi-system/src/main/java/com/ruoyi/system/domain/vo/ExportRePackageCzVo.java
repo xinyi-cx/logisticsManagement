@@ -14,7 +14,7 @@ import java.util.Date;
  * @author ruoyi
  * @date 2022-01-02
  */
-public class ExportPackageVo extends BaseEntity {
+public class ExportRePackageCzVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -55,7 +55,7 @@ public class ExportPackageVo extends BaseEntity {
     /**
      * 收件人邮政编码
      */
-    @Excel(name = "Recipient Postal code")
+    @Excel(name = "RecipientPostalcode")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverPostalCode;
 
@@ -69,14 +69,14 @@ public class ExportPackageVo extends BaseEntity {
     /**
      * 收件人国家编码
      */
-    @Excel(name = "Recipient Country")
+    @Excel(name = "Recipient country")
 //    @NotEmpty(message = "收件人信息不能为空")
     private String receiverCountryCode;
 
     /**
      * 收件人手机号码
      */
-    @Excel(name = "Recipient phone")
+    @Excel(name = "Recipientphone")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverPhone;
 
@@ -97,7 +97,7 @@ public class ExportPackageVo extends BaseEntity {
     /**
      * 包裹里物件的数量
      */
-//    @Excel(name = "Qty packages")
+    @Excel(name = "Qty packages")
     private String qtyPackages;
 
     /**
@@ -135,15 +135,15 @@ public class ExportPackageVo extends BaseEntity {
     private String oldWaybill;
 
     /** 新的单号 */
-//    @Excel(name = "Order number")
+    @Excel(name = "Order number")
     private String newOrder;
 
     /** 回退单号 */
-//    @Excel(name = "Old return number")
+    @Excel(name = "Old return number")
     private String backOrder;
 
     /** 新物流单号 */
-//    @Excel(name = "New Waybill")
+    @Excel(name = "New Waybill")
     private String newWaybill;
 
     public String getOldWaybill() {

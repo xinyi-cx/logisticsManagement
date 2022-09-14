@@ -154,6 +154,57 @@ public class PackageController extends BaseController
         ExcelUtil<ExportPackageCzVo> util = new ExcelUtil<ExportPackageCzVo>(ExportPackageCzVo.class);
         util.exportExcel(response, exportPackageVos, "面单数据");
     }
+//    ExportRePackageVo
+
+    /**
+     * 导出面单列表+关联关系
+     */
+    @PreAuthorize("@ss.hasPermi('system:package:export')")
+    @Log(title = "面单", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportRe")
+    public void exportRe(HttpServletResponse response, PackageVo pkg)
+    {
+        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<ExportRePackageVo> exportPackageVos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(list)){
+            packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
+
+            exportPackageVos = list.stream().map(item ->
+                    {
+                        ExportRePackageVo packageVo = new ExportRePackageVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        }
+        ExcelUtil<ExportRePackageVo> util = new ExcelUtil<ExportRePackageVo>(ExportRePackageVo.class);
+        util.exportExcel(response, exportPackageVos, "面单数据");
+    }
+
+    /**
+     * 导出面单列表+关联关系
+     */
+    @PreAuthorize("@ss.hasPermi('system:package:export')")
+    @Log(title = "面单", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportReCz")
+    public void exportReCz(HttpServletResponse response, PackageVo pkg)
+    {
+        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<ExportRePackageCzVo> exportPackageVos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(list)){
+            packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
+
+            exportPackageVos = list.stream().map(item ->
+                    {
+                        ExportRePackageCzVo packageVo = new ExportRePackageCzVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        }
+        ExcelUtil<ExportRePackageCzVo> util = new ExcelUtil<ExportRePackageCzVo>(ExportRePackageCzVo.class);
+        util.exportExcel(response, exportPackageVos, "面单数据");
+    }
 
     /**
      * 根据批次

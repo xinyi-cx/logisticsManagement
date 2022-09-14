@@ -157,6 +157,8 @@ public class RedirectRelServiceImpl implements IRedirectRelService {
             if (orderParcelMap.containsKey(redirectRel.getNewOrder())) {
                 redirectRel.setCountryCode("PL");
                 redirectRel.setNewWaybill(orderParcelMap.get(redirectRel.getNewOrder()).getWaybill());
+                redirectRel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+                redirectRel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
                 insertRedirectRelList.add(redirectRel);
             } else {
                 errFlag = true;
