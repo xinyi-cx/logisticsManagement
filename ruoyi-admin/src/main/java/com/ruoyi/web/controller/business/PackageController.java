@@ -312,6 +312,22 @@ public class PackageController extends BaseController
         packageService.getPDFByBatchId(response, id);
     }
 
+    @Log(title = "面单导入不生成dpd", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('system:package:add')")
+    @PostMapping("/importPackageForNoGen")
+    public AjaxResult importPackageForNoGen(MultipartFile file) throws Exception
+    {
+        ExcelUtil<PackageNoGenVo> util = new ExcelUtil<PackageNoGenVo>(PackageNoGenVo.class);
+        List<PackageNoGenVo> packageCzVoList = util.importExcel(file.getInputStream());
+        List<PackageVo> packageVos = new ArrayList<>();
+        for (PackageNoGenVo packageNoGenVo : packageCzVoList) {
+            PackageVo packageVo = new PackageVo();
+            BeanUtils.copyProperties(packageNoGenVo, packageVo);
+            packageVos.add(packageVo);
+        }
+        return AjaxResult.success(packageService.importPackageForNoGen(file, packageVos));
+    }
+
     @Log(title = "面单导入", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPermi('system:package:add')")
     @PostMapping("/importData")
@@ -330,7 +346,11 @@ public class PackageController extends BaseController
         ExcelUtil<PackageCzVo> util = new ExcelUtil<PackageCzVo>(PackageCzVo.class);
         List<PackageCzVo> packageCzVoList = util.importExcel(file.getInputStream());
         List<PackageVo> packageVos = new ArrayList<>();
-        BeanUtils.copyProperties(packageVos, packageCzVoList);
+        for (PackageCzVo packageNoGenVo : packageCzVoList) {
+            PackageVo packageVo = new PackageVo();
+            BeanUtils.copyProperties(packageNoGenVo, packageVo);
+            packageVos.add(packageVo);
+        }
         return AjaxResult.success(packageService.importPackage(file, packageVos));
     }
 

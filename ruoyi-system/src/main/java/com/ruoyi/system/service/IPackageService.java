@@ -122,6 +122,8 @@ public interface IPackageService
      */
     public String importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception;
 
+    public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVos) throws Exception;
+
     /**
      * 修改面单
      * 

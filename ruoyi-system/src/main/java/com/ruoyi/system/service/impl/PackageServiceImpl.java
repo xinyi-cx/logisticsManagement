@@ -875,6 +875,82 @@ public class PackageServiceImpl implements IPackageService {
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVos) throws Exception {
+        Documents documents = getDocuments(file);
+        BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
+        batchTaskHistory.setType("面单导入");
+        batchTaskHistory.setStatus("上传成功");
+        batchTaskHistory.setExcelUrl(documents.getId().toString());
+        batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
+
+        /**
+         * 一系列处理
+         */
+        //生成id 并且更新
+        Map<String, Sequence> nameMap = getSeqMap(packageVos.size());
+        AddressSender addressSender = getSender();
+        List<Package> packages = new ArrayList<>();
+        List<RedirectPackage> redirectPackages = new ArrayList<>();
+        for (PackageVo packageVo : packageVos) {
+            AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
+            Services services = getServices(packageVo, getId(nameMap, "services_seq"));
+
+            Package pac = new Package();
+            BeanUtils.copyProperties(packageVo, pac);
+            pac.setReceiverId(addressReceiver.getId());
+            pac.setSenderId(addressSender.getId());
+            pac.setServicesId(services.getId());
+            pac.setBatchId(batchTaskHistory.getId());
+            pac.setId(getId(nameMap, "package_seq"));
+            pac.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            pac.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            Parcel parcel = new Parcel();
+            BeanUtils.copyProperties(packageVo, parcel);
+            parcel.setPackId(pac.getId());
+            parcel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            parcel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+
+            pac.setService(services);
+            pac.setReceiver(addressReceiver);
+            List<Parcel> parcels1 = new ArrayList<>();
+            parcels1.add(parcel);
+            pac.setParcels(parcels1);
+            pac.setSender(addressSender);
+            packages.add(pac);
+        }
+        try {
+
+            List<AddressReceiver> addressReceivers = new ArrayList<>();
+            List<Services> servicesList = new ArrayList<>();
+            List<Parcel> parcels = new ArrayList<>();
+            for (Package pac : packages) {
+                addressReceivers.add(pac.getReceiver());
+                servicesList.add(pac.getService());
+                parcels.addAll(pac.getParcels());
+            }
+
+            packageMapper.batchInsert(packages);
+            addressReceiverMapper.batchInsert(addressReceivers);
+            servicesMapper.batchInsert(servicesList);
+            parcelMapper.batchInsert(parcels);
+            StringBuilder returnStrBuf = new StringBuilder();
+            returnStrBuf.append("面单导入成功，成功")
+                    .append(batchTaskHistory.getSuccessNum()).append("条，失败")
+                    .append(batchTaskHistory.getFailNum()).append("条。\n");
+            return returnStrBuf.toString();
+        }catch (Exception e){
+            batchTaskHistory.setStatus("上传失败");
+            e.printStackTrace();
+            throw new Exception("上传失败");
+        }finally {
+            batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
+        }
+    }
+
     private Map<String, String> getFileNameMap(String countryCode) {
         PackageDpdMapping packageDpdMapping = new PackageDpdMapping();
         packageDpdMapping.setCountryCode(countryCode);
@@ -974,7 +1050,7 @@ public class PackageServiceImpl implements IPackageService {
 
     private Services getServices(PackageVo pkg, Long id) {
         Services services = new Services();
-        services.setCodAmount(pkg.getPln().toString());
+        services.setCodAmount(ObjectUtils.isEmpty(pkg.getPln()) ? "0" : pkg.getPln().toString());
         services.setCodCurrency("PLN");
         if (ObjectUtils.isNotEmpty(id)) {
             services.setId(id);

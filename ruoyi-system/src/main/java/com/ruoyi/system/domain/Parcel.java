@@ -3,6 +3,7 @@ package com.ruoyi.system.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -190,10 +191,14 @@ public class Parcel extends BaseEntity {
     }
 
     public void setWeight(BigDecimal weight) {
-        if (weight.compareTo(BigDecimal.valueOf(1)) < 1) {
+        if (ObjectUtils.isEmpty(weight)){
             this.weight = BigDecimal.valueOf(1);
         } else {
-            this.weight = weight;
+            if (weight.compareTo(BigDecimal.valueOf(1)) < 1) {
+                this.weight = BigDecimal.valueOf(1);
+            } else {
+                this.weight = weight;
+            }
         }
     }
 

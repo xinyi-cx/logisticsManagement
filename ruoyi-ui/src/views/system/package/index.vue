@@ -96,7 +96,18 @@
           v-hasPermi="['system:package:export']"
         >导出</el-button>
       </el-col>
-
+<!--no-->
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleImportForNo"
+          v-hasPermi="['system:package:add']"
+        >导入</el-button>
+      </el-col>
+<!--      no-->
       <el-col :span="1.5">
         <el-button
           type="danger"
@@ -383,6 +394,35 @@
       </div>
     </el-dialog>
 
+    <!--    导入匹配 importPackageForNoGen-->
+    <el-dialog :title="uploadNo.title" :visible.sync="uploadNo.open" width="400px" append-to-body>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="uploadNo.headers"
+        :action="uploadNo.url"
+        :disabled="uploadNo.isUploading"
+        :on-progress="handleFileUploadProgressForNo"
+        :on-success="handleFileSuccessForNo"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplateForNo">下载模板</el-link>
+          <!--          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplatePDF">下载测试数据</el-link>-->
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileFormForNo" :disabled="submitDisabled">确 定</el-button>
+        <el-button @click="uploadNo.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
+<!--    importPackageForNoGen-->
+
   </div>
 </template>
 
@@ -481,6 +521,18 @@ export default {
         headers: { Authorization: "Bearer " + getToken() },
         // 上传的地址
         url: process.env.VUE_APP_BASE_API + "/system/package/importDataCz"
+      },
+      uploadNo: {
+        // 是否显示弹出层（导入）
+        open: false,
+        // 弹出层标题（导入）
+        title: "",
+        // 是否禁用上传
+        isUploading: false,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/system/package/importPackageForNoGen"
       },
       // 查询参数
       queryParams: {
@@ -658,12 +710,21 @@ export default {
       this.uploadCz.open = true;
       this.submitDisabled = false;
     },
+    handleImportForNo() {
+      this.uploadNo.title = "批量导入";
+      this.uploadNo.open = true;
+      this.submitDisabled = false;
+    },
     /** 下载模板操作 */
     importTemplate() {
       this.download('system/package/importTemplate', {
       }, `package_template_${new Date().getTime()}.xlsx`)
     },
     importTemplateForCz() {
+      this.download('system/package/importTemplateCz', {
+      }, `package_template_${new Date().getTime()}.xlsx`)
+    },
+    importTemplateForNo() {
       this.download('system/package/importTemplateCz', {
       }, `package_template_${new Date().getTime()}.xlsx`)
     },
@@ -707,6 +768,23 @@ export default {
     },
     // 提交上传文件
     submitFileFormForCz() {
+      this.$refs.upload.submit();
+      this.submitDisabled = true;
+    },
+    // 文件上传中处理
+    handleFileUploadProgressForNo(event, file, fileList) {
+      this.uploadNo.isUploading = true;
+    },
+    // 文件上传成功处理
+    handleFileSuccessForNo(response, file, fileList) {
+      this.uploadNo.open = false;
+      this.uploadNo.isUploading = false;
+      this.$refs.upload.clearFiles();
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
+      this.getList();
+    },
+    // 提交上传文件
+    submitFileFormForNo() {
       this.$refs.upload.submit();
       this.submitDisabled = true;
     },

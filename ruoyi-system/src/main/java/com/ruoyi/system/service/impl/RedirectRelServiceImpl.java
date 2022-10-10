@@ -153,6 +153,7 @@ public class RedirectRelServiceImpl implements IRedirectRelService {
 
         List<RedirectRel> insertRedirectRelList = new ArrayList<>();
         boolean errFlag = false;
+        List<String> errorList = new ArrayList<>();
         for (RedirectRel redirectRel : redirectRelList) {
             if (orderParcelMap.containsKey(redirectRel.getNewOrder())) {
                 redirectRel.setCountryCode("PL");
@@ -161,6 +162,7 @@ public class RedirectRelServiceImpl implements IRedirectRelService {
                 redirectRel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
                 insertRedirectRelList.add(redirectRel);
             } else {
+                errorList.add(redirectRel.getNewOrder());
                 errFlag = true;
             }
         }
@@ -173,7 +175,7 @@ public class RedirectRelServiceImpl implements IRedirectRelService {
                     .append(result)
                     .append("条");
             if (errFlag) {
-                sb.append("导入失败原因：未找到新物流单号");
+                sb.append("导入失败原因：未找到新物流单号：").append(String.join("，", errorList));
             }
             batchTaskHistory.setRemark(sb.toString());
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
