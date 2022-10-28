@@ -189,6 +189,20 @@ export const dynamicRoutes = [
       }
     ]
   },
+  {
+    path: '/system/info',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:package:list'],
+    children: [
+      {
+        path: 'index/:hisParam(\\d+)',
+        component: () => import('@/views/system/info/index'),
+        name: 'DataInfo',//name 重复2
+        meta: { title: '物流信息', activeMenu: '/system/history' }
+      }
+    ]
+  },
   // 数据看板
   {
     path: '/dashboard',

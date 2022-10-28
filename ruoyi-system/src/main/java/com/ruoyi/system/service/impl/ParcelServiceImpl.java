@@ -1,10 +1,13 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.DPDServicesExample.client.DPDInfoXMLClient;
+import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.Parcel;
+import com.ruoyi.system.mapper.LogisticsInfoMapper;
 import com.ruoyi.system.mapper.ParcelMapper;
 import com.ruoyi.system.service.IParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +23,9 @@ public class ParcelServiceImpl implements IParcelService
 {
     @Autowired
     private ParcelMapper parcelMapper;
+
+    @Autowired
+    private LogisticsInfoMapper logisticsInfoMapper;
 
     @Autowired
     private DPDInfoXMLClient dpdInfoXMLClient;
@@ -97,15 +103,40 @@ public class ParcelServiceImpl implements IParcelService
     }
 
     @Override
-    public void getParcelMsg(){
+    @Async
+    public void getParcelMsg(Parcel parcel){
         System.out.println("getParcelMsg start");
-        Parcel parcel = new Parcel();
         List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);
-        parcels.parallelStream().forEach(item ->{
-            dpdInfoXMLClient.getEventsForOneWaybill(item);
-                }
-        );
+        parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
         System.out.println("getParcelMsg end");
+    }
+
+    @Override
+    @Async
+    public void getParcelMsgByLogisticsInfo(LogisticsInfo param){
+        System.out.println("getParcelMsgByLogisticsInfo start");
+        List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListNeedDeal(param);
+        logisticsInfos.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsByLogisticsInfo(item));
+        System.out.println("getParcelMsgByLogisticsInfo end");
+    }
+
+    @Override
+    public void getParcelMsgById(Long id) {
+        Parcel parcel = parcelMapper.selectParcelById(id);
+        dpdInfoXMLClient.getEventsForOneWaybill(parcel);
+    }
+
+    @Override
+    public void getParcelMsgByLogisticsInfoId(Long id) {
+        LogisticsInfo logisticsInfo = logisticsInfoMapper.selectLogisticsInfoById(id);
+        dpdInfoXMLClient.getEventsByLogisticsInfo(logisticsInfo);
+    }
+
+    @Override
+    public void getAllParcelMsgByLogisticsInfo(List<LogisticsInfo> logisticsInfos) {
+        for (LogisticsInfo logisticsInfo : logisticsInfos) {
+            dpdInfoXMLClient.getEventsByLogisticsInfo(logisticsInfo);
+        }
     }
 
     @Override

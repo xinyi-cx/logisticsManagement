@@ -18,10 +18,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateUser"    column="update_user"    />
         <result property="createdTime"    column="created_time"    />
         <result property="updatedTime"    column="updated_time"    />
+        <result property="fileName"    column="file_name"    />
     </resultMap>
 
     <sql id="selectBatchTaskHistoryVo">
-        select id, session_id, type, status, success_num, fail_num, download_num, excel_url, excel_content, create_user, update_user, created_time, updated_time from batch_task_history
+        select id, session_id, type, status, success_num, fail_num, download_num, excel_url,
+        excel_content, create_user, update_user, created_time, updated_time, file_name from batch_task_history
     </sql>
 
     <select id="selectBatchTaskHistoryList" parameterType="BatchTaskHistoryVo" resultMap="BatchTaskHistoryResult">
@@ -70,6 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="downloadNum != null">download_num,</if>
             <if test="excelUrl != null">excel_url,</if>
             <if test="excelContent != null">excel_content,</if>
+            <if test="fileName != null">file_name,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
             created_time,
@@ -85,6 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="downloadNum != null">#{downloadNum},</if>
             <if test="excelUrl != null">#{excelUrl},</if>
             <if test="excelContent != null">#{excelContent},</if>
+            <if test="fileName != null">#{fileName},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
             sysdate(),
@@ -103,6 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="downloadNum != null">download_num = #{downloadNum},</if>
             <if test="excelUrl != null">excel_url = #{excelUrl},</if>
             <if test="excelContent != null">excel_content = #{excelContent},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
             <if test="createUser != null">create_user = #{createUser},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
             updated_time = sysdate(),

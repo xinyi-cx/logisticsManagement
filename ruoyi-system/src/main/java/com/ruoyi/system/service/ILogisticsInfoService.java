@@ -61,4 +61,7 @@ public interface ILogisticsInfoService
      * @return 结果
      */
     public int deleteLogisticsInfoById(Long id);
+
+    public List<LogisticsInfo> selectLogisticsInfoListByWaybillIn(List<String> waybills);
+
 }

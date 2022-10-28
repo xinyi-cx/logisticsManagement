@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 物流信息对象 logistics_info
@@ -17,6 +18,26 @@ import java.util.Date;
 public class LogisticsInfo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
+
+    private Long hisParam;
+
+    private List<Long> ids;
+
+    public List<Long> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
+    }
+
+    public Long getHisParam() {
+        return hisParam;
+    }
+
+    public void setHisParam(Long hisParam) {
+        this.hisParam = hisParam;
+    }
 
     /** 主键 */
     private Long id;

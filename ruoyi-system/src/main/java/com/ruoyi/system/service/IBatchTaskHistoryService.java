@@ -70,5 +70,6 @@ public interface IBatchTaskHistoryService
      */
     public void getPDFById(HttpServletResponse response, Long id) throws IOException;
 
+    public List<String> getWaybillsByBatchTaskHistoryId(Long id);
 
 }

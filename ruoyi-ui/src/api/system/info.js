@@ -9,6 +9,21 @@ export function listInfo(query) {
   })
 }
 
+export function refreshInfo(query) {
+  return request({
+    url: '/system/info/refresh',
+    method: 'get',
+    params: query
+  })
+}
+
+export function refreshOneInfo(id) {
+  return request({
+    url: '/system/info/refreshById/' + id,
+    method: 'get'
+  })
+}
+
 // 查询物流信息详细
 export function getInfo(id) {
   return request({

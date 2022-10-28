@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.Parcel;
 
 import java.util.List;
@@ -63,7 +64,18 @@ public interface IParcelService
     /**
      * 获取物流信息。 调用接口是调用的每次获取一个物流信息
      */
-    public void getParcelMsg();
+    public void getParcelMsg(Parcel parcel);
+
+    public void getParcelMsgByLogisticsInfo(LogisticsInfo param);
+
+    /**
+     * 获取物流信息。 调用接口是调用的每次获取一个物流信息
+     */
+    public void getParcelMsgById(Long id);
+
+    public void getParcelMsgByLogisticsInfoId(Long id);
+
+    public void getAllParcelMsgByLogisticsInfo(List<LogisticsInfo> logisticsInfos);
 
     /**
      * 获取物流信息。 调用接口是调用的获取所有物流信息

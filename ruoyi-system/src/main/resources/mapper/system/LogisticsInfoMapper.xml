@@ -41,6 +41,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectLogisticsInfoVo"/>
         <where>
             is_delete = 0
+            <if test="ids!= null and ids.size()>0" >
+                and id in
+                <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                    #{item}
+                </foreach>
+            </if>
             <if test="company != null  and company != ''"> and company = #{company}</if>
             <if test="deliveryTime != null and deliveryTime != ''"> and delivery_time = #{deliveryTime}</if>
             <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
@@ -65,7 +71,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by updated_time desc
     </select>
-    
+
+    <select id="selectLogisticsInfoListNeedDeal" parameterType="LogisticsInfo" resultMap="LogisticsInfoResult">
+        <include refid="selectLogisticsInfoVo"/>
+        <where>
+            is_delete = 0
+            and status != '3'
+            and status != '4'
+            and status != '5'
+            and status != '6'
+            <if test="ids!= null and ids.size()>0" >
+                and id in
+                <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                    #{item}
+                </foreach>
+            </if>
+            <if test="company != null  and company != ''"> and company = #{company}</if>
+            <if test="deliveryTime != null and deliveryTime != ''"> and delivery_time = #{deliveryTime}</if>
+            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="lastTime != null and lastTime != ''"> and last_time = #{lastTime}</if>
+            <if test="lastMsg != null  and lastMsg != ''"> and last_msg = #{lastMsg}</if>
+            <if test="repMsg != null  and repMsg != ''"> and rep_msg = #{repMsg}</if>
+            <if test="failureMsg != null  and failureMsg != ''"> and failure_msg = #{failureMsg}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="reference != null  and reference != ''"> and reference = #{reference}</if>
+            <if test="packageReference != null  and packageReference != ''"> and package_reference = #{packageReference}</if>
+            <if test="depot != null  and depot != ''"> and depot = #{depot}</if>
+            <if test="packId != null "> and pack_id = #{packId}</if>
+            <if test="secPackId != null "> and sec_pack_id = #{secPackId}</if>
+            <if test="waybill != null  and waybill != ''"> and waybill = #{waybill}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="packageId != null "> and package_id = #{packageId}</if>
+            <if test="parcelId != null "> and parcel_id = #{parcelId}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="createdTime != null"> and date_format(created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
+            <if test="updatedTime != null"> and date_format(updated_time,'%Y-%m-%d') = date_format(#{updatedTime},'%Y-%m-%d')</if>
+        </where>
+        order by updated_time desc
+    </select>
+
     <select id="selectLogisticsInfoById" parameterType="Long" resultMap="LogisticsInfoResult">
         <include refid="selectLogisticsInfoVo"/>
         where id = #{id}

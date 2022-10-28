@@ -132,6 +132,7 @@ public class RedirectRelServiceImpl implements IRedirectRelService {
         batchTaskHistory.setType("转寄关联关系导入");
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
+        batchTaskHistory.setFileName(documents.getFileName());
         batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));

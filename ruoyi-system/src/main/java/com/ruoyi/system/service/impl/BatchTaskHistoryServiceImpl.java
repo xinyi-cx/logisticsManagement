@@ -2,22 +2,23 @@ package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
-import com.ruoyi.system.domain.BatchTaskHistory;
-import com.ruoyi.system.domain.Documents;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.BatchTaskHistoryVo;
 import com.ruoyi.system.dpdservices.DocumentGenerationResponseV1;
-import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
-import com.ruoyi.system.mapper.DocumentsMapper;
-import com.ruoyi.system.mapper.SequenceMapper;
+import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IBatchTaskHistoryService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 批量任务历史Service业务层处理
@@ -30,6 +31,15 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
 {
     @Autowired
     private BatchTaskHistoryMapper batchTaskHistoryMapper;
+
+    @Autowired
+    private LogisticsInfoMapper logisticsInfoMapper;
+
+    @Autowired
+    private PackageMapper packageMapper;
+
+    @Autowired
+    private ParcelMapper parcelMapper;
 
     @Autowired
     private DocumentsMapper documentsMapper;
@@ -157,6 +167,24 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
             IOUtils.closeQuietly(fis);
             IOUtils.closeQuietly(toClient);
         }
+    }
+
+    @Override
+    public List<String> getWaybillsByBatchTaskHistoryId(Long id){
+        BatchTaskHistory batchTaskHistory = batchTaskHistoryMapper.selectBatchTaskHistoryById(id);
+
+        Package param = new Package();
+        param.setBatchId(batchTaskHistory.getId());
+        List<Package> packages = packageMapper.selectPackageList(param);
+        if (CollectionUtils.isEmpty(packages)){
+            return new ArrayList<>();
+        }
+        List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(packages.stream().map(Package::getId).collect(Collectors.toList()));
+        if (CollectionUtils.isEmpty(parcels)){
+            return new ArrayList<>();
+        }
+
+        return (parcels.stream().map(Parcel::getWaybill).collect(Collectors.toList()));
     }
 
 }

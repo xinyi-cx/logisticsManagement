@@ -197,6 +197,14 @@
         </template>
       </el-table-column>
       -->
+      <el-table-column label="导入文件名称" align="center" prop="fileName" />
+      <el-table-column label="查看物流信息" align="center">
+        <template slot-scope="scope">
+          <router-link :to="'/system/info/index/' + scope.row.id" class="link-type">
+            <span>查看物流信息</span>
+          </router-link>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button

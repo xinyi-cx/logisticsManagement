@@ -44,15 +44,22 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-<!--      <el-form-item label="package_id" prop="packageId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.packageId"-->
-<!--          placeholder="请输入package_id"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <el-form-item label="物流状态" prop="status">
+        <el-select
+          v-model="queryParams.status"
+          placeholder="物流状态"
+          clearable
+          size="small"
+          style="width: 240px"
+        >
+          <el-option
+            v-for="dict in dict.type.sys_waybill"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
 <!--      <el-form-item label="parcel_id" prop="parcelId">-->
 <!--        <el-input-->
 <!--          v-model="queryParams.parcelId"-->
@@ -80,6 +87,7 @@
 <!--      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="refreshList">获取最新物流信息</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -157,7 +165,11 @@
       <el-table-column label="内部引用号" align="center" prop="reference" width="200" />
 <!--      <el-table-column label="pack_id" align="center" prop="packId" />-->
 <!--      <el-table-column label="转寄pack_id" align="center" prop="secPackId" />-->
-      <el-table-column label="包裹状态" align="center" prop="status" />
+      <el-table-column label="包裹状态" align="center" prop="status">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_waybill" :value="scope.row.status"/>
+        </template>
+      </el-table-column>
 <!--      <el-table-column label="package_id" align="center" prop="packageId" />-->
 <!--      <el-table-column label="parcel_id" align="center" prop="parcelId" />-->
 <!--      <el-table-column label="创建人" align="center" prop="createUser" />-->
@@ -182,6 +194,12 @@
 <!--            @click="handleUpdate(scope.row)"-->
 <!--            v-hasPermi="['system:info:edit']"-->
 <!--          >修改</el-button>-->
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleRefreshOne(scope.row)"
+          >获取最新物流信息</el-button>
           <el-button
             size="mini"
             type="text"
@@ -291,10 +309,11 @@
 </template>
 
 <script>
-import { listInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/system/info";
+import { refreshInfo, listInfo, refreshOneInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/system/info";
 
 export default {
   name: "Info",
+  dicts: ['sys_waybill'],
   data() {
     return {
       // 遮罩层
@@ -338,7 +357,7 @@ export default {
         updateUser: null,
         createdTime: null,
         updatedTime: null,
-        isDelete: null
+        hisParam: null
       },
       // 表单参数
       form: {},
@@ -348,6 +367,9 @@ export default {
     };
   },
   created() {
+    const hisParam = this.$route.params && this.$route.params.hisParam;
+    debugger;
+    this.queryParams.hisParam = hisParam;
     this.getList();
   },
   methods: {
@@ -358,6 +380,20 @@ export default {
         this.infoList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+    },
+    refreshList() {
+      this.loading = true;
+      refreshInfo(this.queryParams).then(response => {
+        this.$modal.msgSuccess(response);
+        this.getList();
+      });
+    },
+    handleRefreshOne(row) {
+      const id = row.id || this.ids;
+      refreshOneInfo(id).then(response => {
+        this.$modal.msgSuccess(response);
+        this.getList();
       });
     },
     // 取消按钮

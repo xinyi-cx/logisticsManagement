@@ -26,6 +26,18 @@ public class BatchTaskHistory extends BaseEntity
         this.updatedTime = new Date();
     }
 
+    /** 类型 */
+    @Excel(name = "文件名称")
+    private String fileName;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     /** 主键 */
     private Long id;
 

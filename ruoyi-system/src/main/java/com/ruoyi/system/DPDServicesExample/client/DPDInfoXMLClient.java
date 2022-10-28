@@ -1,5 +1,6 @@
 package com.ruoyi.system.DPDServicesExample.client;
 
+import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.*;
 import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.Parcel;
@@ -18,11 +19,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
 import java.lang.Exception;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -66,6 +64,62 @@ public class DPDInfoXMLClient {
         getEventsForWaybills();
     }
 
+    /**
+     * 根据物流获取信息
+     * @param logisticsInfo
+     */
+    @Async
+    @Transactional(rollbackFor = Exception.class)
+    public void getEventsByLogisticsInfo(LogisticsInfo logisticsInfo) {
+        AuthDataV1 authData = getAuthData();
+
+        WaybillLRel waybillLRel = new WaybillLRel();
+        waybillLRel.setWaybill(logisticsInfo.getWaybill());
+        List<WaybillLRel> waybillLRelList = waybillLRelMapper.selectWaybillLRelList(waybillLRel);
+
+        try {
+            if (!CollectionUtils.isEmpty(waybillLRelList)){
+                dealForWaybillL(new Parcel(), waybillLRelList, logisticsInfo);
+                return;
+            }
+
+            List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
+            CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(logisticsInfo.getWaybill(), EventsSelectTypeEnum.ALL, "EN", authData);
+            List<CustomerEventV3> customerEventV3s = ret.getEventsList();
+//            Parcel delivered
+//            Parcel not delivered - refusal  + l  拒收
+//            Parcel delivered      Registered parcel data, parcel not dispatched yet  -未激活
+//           Parcel not delivered - recipient not available -> Parcel return 0000018734275L  推荐？
+//            改派 - Parcel not delivered - wrong address  +  Parcel return  0000020184525L
+            if (CollectionUtils.isEmpty(customerEventV3s)){
+                return;
+            }
+            customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
+
+            CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
+            logisticsInfo.setLastMsg(customerEventV3.getDescription());
+            //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
+            List<WaybillLRel> waybillLRels = getRL(logisticsInfo.getWaybill(), allEventDataList);
+            String status = getStatus(customerEventV3s);
+            if(StringUtils.isNotEmpty(status)){
+                logisticsInfo.setStatus(status);
+            }
+
+            List<String> waybills = new ArrayList<>();
+            waybills.add(logisticsInfo.getWaybill());
+            List<LogisticsInfo> logisticsInfos = new ArrayList<>();
+            if (!customerEventV3.getEventTime().equals(logisticsInfo.getLastTime())){
+                logisticsInfo.setLastTime(customerEventV3.getEventTime());
+                logisticsInfos.add(logisticsInfo);
+            }
+            List<Parcel> parcels = new ArrayList<>();
+            dealWlData(waybills, logisticsInfos, parcels, waybillLRels);
+
+        } catch (Exception_Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Async
     @Transactional(rollbackFor = Exception.class)
     public void getEventsForOneWaybill(Parcel parcel) {
@@ -79,11 +133,27 @@ public class DPDInfoXMLClient {
         logisticsInfo.setUpdateUser(parcel.getUpdateUser());
         logisticsInfo.setWaybill(parcel.getWaybill());
         logisticsInfo.setCompany("DPD");
-        List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
+
+        WaybillLRel waybillLRel = new WaybillLRel();
+        waybillLRel.setWaybill(parcel.getWaybill());
+        List<WaybillLRel> waybillLRelList = waybillLRelMapper.selectWaybillLRelList(waybillLRel);
+
         try {
+            if (!CollectionUtils.isEmpty(waybillLRelList)){
+                dealForWaybillL(parcel, waybillLRelList, logisticsInfo);
+                return;
+            }
+
+            List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
+            List<LogisticsInfo> logisticsInfos = new ArrayList<>();
+
             CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(parcel.getWaybill(), EventsSelectTypeEnum.ALL, "EN", authData);
             List<CustomerEventV3> customerEventV3s = ret.getEventsList();
-
+//            Parcel return    Parcel readdressed according to instructions
+//            Parcel not delivered - refusal  + l  拒收
+//            Parcel delivered      Registered parcel data, parcel not dispatched yet  -未激活
+//           Parcel not delivered - recipient not available -> Parcel return 0000018734275L  推荐？
+//            改派 - Parcel not delivered - wrong address  +  Parcel return  0000020184525L
             if (CollectionUtils.isEmpty(customerEventV3s)){
                 return;
             }
@@ -93,12 +163,19 @@ public class DPDInfoXMLClient {
             logisticsInfo.setLastMsg(customerEventV3.getDescription());
             //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
             List<WaybillLRel> waybillLRels = getRL(parcel.getWaybill(), allEventDataList);
-            String status;
-            if (CollectionUtils.isEmpty(waybillLRels)) {
-                status = getStatus(allEventDataList);
-            } else {
-                status = "ERROR";
+
+            for (WaybillLRel lRel : waybillLRels) {
+                List<LogisticsInfo> logisticsInfos1 = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(Collections.singletonList(lRel.getWaybillL()));
+                if (CollectionUtils.isEmpty(logisticsInfos1)){
+                    LogisticsInfo logisticsInfoL = new LogisticsInfo();
+                    BeanUtils.copyProperties(logisticsInfo, logisticsInfoL);
+                    logisticsInfoL.setWaybill(lRel.getWaybillL());
+                    logisticsInfoL.setStatus(SysWaybill.WJH.getCode());
+                    logisticsInfos.add(logisticsInfoL);
+                }
             }
+
+            String status = getStatus(customerEventV3s);
             if(StringUtils.isNotEmpty(status)){
                 parcel.setStatus(status);
                 logisticsInfo.setStatus(status);
@@ -107,8 +184,9 @@ public class DPDInfoXMLClient {
 
             List<String> waybills = new ArrayList<>();
             waybills.add(parcel.getWaybill());
-            List<LogisticsInfo> logisticsInfos = new ArrayList<>();
+
             logisticsInfos.add(logisticsInfo);
+
             List<Parcel> parcels = new ArrayList<>();
             parcels.add(parcel);
             dealWlData(waybills, logisticsInfos, parcels, waybillLRels);
@@ -118,10 +196,34 @@ public class DPDInfoXMLClient {
         }
     }
 
+    /**
+     * 带L单号查询，拒收或者改派 后查询
+     */
+    private void dealForWaybillL(Parcel parcel, List<WaybillLRel> waybillLRels, LogisticsInfo logisticsInfo) throws Exception_Exception {
+        AuthDataV1 authData = getAuthData();
+        WaybillLRel waybillLRel = waybillLRels.get(0);
+        CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
+        List<CustomerEventV3> customerEventV3s = ret.getEventsList();
+        String status = getStatus(customerEventV3s);
+        parcel.setStatus(status);
+        logisticsInfo.setStatus(status);
+        logisticsInfo.setWaybill(waybillLRel.getWaybillL());
+        logisticsInfo.setLastMsg(customerEventV3s.get(0).getDescription());
+        logisticsInfo.setLastTime(customerEventV3s.get(0).getEventTime());
+
+        List<String> waybills = new ArrayList<>();
+        waybills.add(waybillLRel.getWaybillL());
+        List<LogisticsInfo> logisticsInfos = new ArrayList<>();
+        logisticsInfos.add(logisticsInfo);
+        logisticsInfo.setId(null);
+        dealWlData(waybills, logisticsInfos);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public void dealWlData(List<String> waybills, List<LogisticsInfo> logisticsInfos, List<Parcel> parcels, List<WaybillLRel> waybillLRels) {
-        logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
         if (!CollectionUtils.isEmpty(logisticsInfos)) {
+            logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
+            logisticsInfos.forEach(item -> item.setId(null));
             logisticsInfoMapper.batchInsert(logisticsInfos);
         }
         if (!CollectionUtils.isEmpty(parcels)) {
@@ -132,17 +234,34 @@ public class DPDInfoXMLClient {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void dealWlData(List<String> waybills, List<LogisticsInfo> logisticsInfos) {
+        if (!CollectionUtils.isEmpty(logisticsInfos)) {
+            logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
+            logisticsInfos.forEach(item -> item.setId(null));
+            logisticsInfoMapper.batchInsert(logisticsInfos);
+        }
+    }
+
     private List<WaybillLRel> getRL(String waybill, List<CustomerEventDataV3> allEventDataList) {
         if (CollectionUtils.isEmpty(allEventDataList)) {
             return new ArrayList<>();
         }
-        return allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && item.getValue().endsWith("L"))
-                .map(item -> {
-                    WaybillLRel waybillLRel = new WaybillLRel();
-                    waybillLRel.setWaybill(waybill);
-                    waybillLRel.setWaybillL(item.getValue());
-                    return waybillLRel;
-                }).collect(Collectors.toList());
+        List<WaybillLRel> returnList = new ArrayList<>();
+        List<CustomerEventDataV3> customerEventDataV3sL =
+                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && item.getValue().endsWith("L")).collect(Collectors.toList());
+        List<String> lStrings = new ArrayList<>();
+        for (CustomerEventDataV3 item : customerEventDataV3sL) {
+            if (lStrings.contains(item.getValue())) {
+                break;
+            }
+            WaybillLRel waybillLRel = new WaybillLRel();
+            waybillLRel.setWaybill(waybill);
+            waybillLRel.setWaybillL(item.getValue());
+            returnList.add(waybillLRel);
+            lStrings.add(item.getValue());
+        }
+        return returnList;
     }
 
     private List<WaybillLRel> getRLV2(String waybill, CustomerEventV2 customerEventV2) {
@@ -163,15 +282,41 @@ public class DPDInfoXMLClient {
                 }).collect(Collectors.toList());
     }
 
-    private String getStatus(List<CustomerEventDataV3> allEventDataList) {
-        if (CollectionUtils.isEmpty(allEventDataList)) {
+    /**
+     * //            Parcel delivered
+     * //            Parcel not delivered - refusal  + l  拒收
+     * //            Parcel delivered      Registered parcel data, parcel not dispatched yet  -未激活
+     * //           Parcel not delivered - recipient not available -> Parcel return 0000018734275L  推荐？
+     * //            改派 - Parcel not delivered - wrong address  +  Parcel return  0000020184525L
+     * @param customerEventV3s
+     * @return
+     */
+    private String getStatus(List<CustomerEventV3> customerEventV3s) {
+        if (CollectionUtils.isEmpty(customerEventV3s)) {
             return "";
         }
-        List<CustomerEventDataV3> returnList = allEventDataList.stream().filter(item -> isStatus(item.getValue())).collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(returnList)) {
-            return "";
+        if (customerEventV3s.size() == 1 && customerEventV3s.get(0).getBusinessCode().equals("030103")) {
+            return SysWaybill.WJH.getCode();
         }
-        return returnList.get(0).getValue();
+        if (listContain(customerEventV3s, "190101")){
+            return SysWaybill.YQS.getCode();
+        }
+        if (listContain(customerEventV3s, "230403")){
+            return SysWaybill.YTJ.getCode();
+        }
+        if (listContain(customerEventV3s, "230402")){
+            return SysWaybill.GP.getCode();
+        }
+        return SysWaybill.YSZ.getCode();
+    }
+
+    private boolean listContain(List<CustomerEventV3> customerEventV3s, String key){
+        for (CustomerEventV3 customerEventV3 : customerEventV3s) {
+            if (customerEventV3.getBusinessCode().contains(key)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private static final String upper = "^[A-Z]+$";

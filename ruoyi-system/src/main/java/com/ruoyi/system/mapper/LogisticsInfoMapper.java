@@ -28,6 +28,8 @@ public interface LogisticsInfoMapper
      */
     public List<LogisticsInfo> selectLogisticsInfoList(LogisticsInfo logisticsInfo);
 
+    public List<LogisticsInfo> selectLogisticsInfoListNeedDeal(LogisticsInfo logisticsInfo);
+
     /**
      * 新增物流信息
      * 

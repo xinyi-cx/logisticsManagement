@@ -9,7 +9,9 @@ import com.ruoyi.system.service.ILogisticsInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -143,4 +145,13 @@ public class LogisticsInfoServiceImpl implements ILogisticsInfoService
     {
         return logisticsInfoMapper.deleteLogisticsInfoById(id);
     }
+
+    @Override
+    public List<LogisticsInfo> selectLogisticsInfoListByWaybillIn(List<String> waybills){
+        if (CollectionUtils.isEmpty(waybills)){
+            return new ArrayList<>();
+        }
+        return logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(waybills);
+    }
+
 }

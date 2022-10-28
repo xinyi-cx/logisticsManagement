@@ -7,6 +7,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
+import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
@@ -487,7 +488,8 @@ public class DPDServicesXMLClient {
             Parcel parcel = parcels.get(i);
             ParcelPGRV2 parcelPGRV2 = parcelPGRV2s.get(i);
             parcel.setWaybill(parcelPGRV2.getWaybill());
-            parcel.setStatus(parcelPGRV2.getStatus());
+//            parcel.setStatus(parcelPGRV2.getStatus());
+            parcel.setStatus(SysWaybill.WJH.getCode());
             parcel.setPackageId(sourse.getPackageId());
             parcel.setParcelId(parcelPGRV2.getParcelId());
         }

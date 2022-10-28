@@ -7,6 +7,7 @@ import com.ruoyi.system.domain.MbImport;
 import com.ruoyi.system.domain.mb.MbReceiveDto;
 import com.ruoyi.system.service.IOuterService;
 import com.ruoyi.system.service.IPackageService;
+import com.ruoyi.system.service.IParcelService;
 import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +29,9 @@ public class OuterController extends BaseController {
 
     @Autowired
     private IPackageService packageService;
+
+    @Autowired
+    private IParcelService parcelService;
 
     /**
      * test
@@ -75,6 +79,16 @@ public class OuterController extends BaseController {
     public AjaxResult getUserForLogin(@RequestBody SysUser user) {
         List<SysUser> list = userService.getUserForLogin(user);
         return AjaxResult.success(CollectionUtils.isEmpty(list) ? new ArrayList<>() : list.stream().map(SysUser::getCountry).collect(Collectors.toList()));
+    }
+
+    @GetMapping(value = "/getParcelMsgById/{id}")
+    public void getParcelMsgById(@PathVariable("id") Long id) {
+        parcelService.getParcelMsgById(id);
+    }
+
+    @GetMapping(value = "/getParcelMsgByLogisticsInfoId/{id}")
+    public void getParcelMsgByLogisticsInfoId(@PathVariable("id") Long id) {
+        parcelService.getParcelMsgByLogisticsInfoId(id);
     }
 
 }

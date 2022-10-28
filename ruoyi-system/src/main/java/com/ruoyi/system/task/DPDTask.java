@@ -1,6 +1,7 @@
 package com.ruoyi.system.task;
 
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.Parcel;
 import com.ruoyi.system.service.IParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class DPDTask
     public void dpdTaskGetParcelMsg()
     {
         System.out.println("获取物流信息");
-        parcelService.getParcelMsg();
+        parcelService.getParcelMsg(new Parcel());
     }
 
     public void dpdTaskGetAllParcelMsg()

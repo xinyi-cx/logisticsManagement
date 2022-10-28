@@ -724,6 +724,7 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setType("面单导入");
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
+        batchTaskHistory.setFileName(documents.getFileName());
         batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
@@ -883,6 +884,7 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setType("面单导入");
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
+        batchTaskHistory.setFileName(documents.getFileName());
         batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
@@ -913,6 +915,7 @@ public class PackageServiceImpl implements IPackageService {
             parcel.setPackId(pac.getId());
             parcel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
             parcel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            parcel.setStatus("1");
 
             pac.setService(services);
             pac.setReceiver(addressReceiver);
