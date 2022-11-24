@@ -346,9 +346,9 @@ public class PackageController extends BaseController
         ExcelUtil<PackageCzVo> util = new ExcelUtil<PackageCzVo>(PackageCzVo.class);
         List<PackageCzVo> packageCzVoList = util.importExcel(file.getInputStream());
         List<PackageVo> packageVos = new ArrayList<>();
-        for (PackageCzVo packageNoGenVo : packageCzVoList) {
+        for (PackageCzVo packageCzVo : packageCzVoList) {
             PackageVo packageVo = new PackageVo();
-            BeanUtils.copyProperties(packageNoGenVo, packageVo);
+            BeanUtils.copyProperties(packageCzVo, packageVo);
             packageVos.add(packageVo);
         }
         return AjaxResult.success(packageService.importPackage(file, packageVos));

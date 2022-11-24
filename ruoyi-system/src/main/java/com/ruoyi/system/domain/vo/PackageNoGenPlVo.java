@@ -15,173 +15,19 @@ import java.util.List;
  * @author ruoyi
  * @date 2022-01-02
  */
-public class PackageVo extends BaseEntity {
+public class PackageNoGenPlVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
-
-    /** CLIENT */
-//    @Excel(name = "CLIENT")
-    private String client;
-
-    /** Country */
-//    @Excel(name = "Country")
-    private String country;
-
-    /** Type */
-//    @Excel(name = "Type")
-    private String importType;
-
-    /** LoginID */
-//    @Excel(name = "LoginID")
-    private String loginid;
-
-    /** New waybill */
-//    @Excel(name = "New waybill")
-//    private String newWaybill;
-
-    /** Order number */
-//    @Excel(name = "Order number")
-    private String orderNumber;
-
-    /** value PLN (COD) */
-//    @Excel(name = "value PLN (COD)")
-    private String valuePlnCod;
-
-    /** Weight kg */
-//    @Excel(name = "Weight kg")
-    private String weightKg;
-
-    /** recipient name */
-//    @Excel(name = "recipient name")
-    private String recipientName;
-
-    /** Recipient phone */
-//    @Excel(name = "Recipient phone")
-    private String recipientPhone;
-
-    /** Recipient E-mail */
-//    @Excel(name = "Recipient E-mail")
-    private String recipientEmail;
-
-    /** Description */
-//    @Excel(name = "Description")
-    private String description;
-
-    /** Need box */
-//    @Excel(name = "Need box")
-    private String needBox;
-
-    /** Create Date */
-//    @Excel(name = "Create Date")
-    private String createDate;
-
-    public String getClient() {
-        return client;
-    }
-
-    public void setClient(String client) {
-        this.client = client;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getImportType() {
-        return importType;
-    }
-
-    public void setImportType(String importType) {
-        this.importType = importType;
-    }
-
-    public String getLoginid() {
-        return loginid;
-    }
-
-    public void setLoginid(String loginid) {
-        this.loginid = loginid;
-    }
-
-    public String getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-    public String getValuePlnCod() {
-        return valuePlnCod;
-    }
-
-    public void setValuePlnCod(String valuePlnCod) {
-        this.valuePlnCod = valuePlnCod;
-    }
-
-    public String getWeightKg() {
-        return weightKg;
-    }
-
-    public void setWeightKg(String weightKg) {
-        this.weightKg = weightKg;
-    }
-
-    public String getRecipientName() {
-        return recipientName;
-    }
-
-    public void setRecipientName(String recipientName) {
-        this.recipientName = recipientName;
-    }
-
-    public String getRecipientPhone() {
-        return recipientPhone;
-    }
-
-    public void setRecipientPhone(String recipientPhone) {
-        this.recipientPhone = recipientPhone;
-    }
-
-    public String getRecipientEmail() {
-        return recipientEmail;
-    }
-
-    public void setRecipientEmail(String recipientEmail) {
-        this.recipientEmail = recipientEmail;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getNeedBox() {
-        return needBox;
-    }
-
-    public void setNeedBox(String needBox) {
-        this.needBox = needBox;
-    }
-
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
-    }
 
     /**
      * 面单主键
      */
     private Long id;
+
+    /**
+     * waybill 运货单
+     */
+    @Excel(name = "waybill")
+    private String waybill;
 
     @Excel(name = "Sender Name")
     private String showSenderName;
@@ -368,12 +214,6 @@ public class PackageVo extends BaseEntity {
      */
 //    @Excel(name = "pack_id")
     private Long packId;
-
-    /**
-     * waybill 运货单
-     */
-//    @Excel(name = "waybill 运货单")
-    private String waybill;
 
     /**
      * 包裹状态

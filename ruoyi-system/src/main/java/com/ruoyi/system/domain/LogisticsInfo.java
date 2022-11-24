@@ -42,6 +42,10 @@ public class LogisticsInfo extends BaseEntity
     /** 主键 */
     private Long id;
 
+    /** 最新物流时间 */
+    @Excel(name = "激活时间")
+    private String activationTime;
+
     /** 物流公司 */
     @Excel(name = "物流公司")
     private String company;
@@ -130,6 +134,14 @@ public class LogisticsInfo extends BaseEntity
     /** 内部引用号 */
     @Excel(name = "内部引用号")
     private String depot;
+
+    public String getActivationTime() {
+        return activationTime;
+    }
+
+    public void setActivationTime(String activationTime) {
+        this.activationTime = activationTime;
+    }
 
     public String getPackageReference() {
         return packageReference;

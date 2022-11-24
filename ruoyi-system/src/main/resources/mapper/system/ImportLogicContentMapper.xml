@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ImportLogicContentMapper">
+    
+    <resultMap type="ImportLogicContent" id="ImportLogicContentResult">
+        <result property="id"    column="id"    />
+        <result property="documentFileId"    column="document_file_id"    />
+        <result property="packId"    column="pack_id"    />
+        <result property="batchId"    column="batch_id"    />
+        <result property="logicId"    column="logic_id"    />
+        <result property="client"    column="client"    />
+        <result property="country"    column="country"    />
+        <result property="importType"    column="import_type"    />
+        <result property="loginid"    column="loginId"    />
+        <result property="newWaybill"    column="new_waybill"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="valuePlnCod"    column="value_pln_cod"    />
+        <result property="weightKg"    column="weight_kg"    />
+        <result property="recipientName"    column="recipient_name"    />
+        <result property="recipientPhone"    column="recipient_phone"    />
+        <result property="recipientEmail"    column="recipient_email"    />
+        <result property="description"    column="description"    />
+        <result property="needBox"    column="need_box"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="remark2"    column="remark2"    />
+        <result property="remark3"    column="remark3"    />
+        <result property="remark4"    column="remark4"    />
+        <result property="remark5"    column="remark5"    />
+        <result property="isDelete"    column="is_delete"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectImportLogicContentVo">
+        select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type, loginId, new_waybill, order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone, recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5, is_delete, create_by, create_time, update_by, update_time from import_logic_content
+    </sql>
+
+    <select id="selectImportLogicContentList" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult">
+        <include refid="selectImportLogicContentVo"/>
+        <where>  
+            <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
+            <if test="packId != null "> and pack_id = #{packId}</if>
+            <if test="batchId != null "> and batch_id = #{batchId}</if>
+            <if test="logicId != null "> and logic_id = #{logicId}</if>
+            <if test="client != null  and client != ''"> and client = #{client}</if>
+            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="importType != null  and importType != ''"> and import_type = #{importType}</if>
+            <if test="loginid != null  and loginid != ''"> and loginId = #{loginid}</if>
+            <if test="newWaybill != null  and newWaybill != ''"> and new_waybill = #{newWaybill}</if>
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="valuePlnCod != null  and valuePlnCod != ''"> and value_pln_cod = #{valuePlnCod}</if>
+            <if test="weightKg != null  and weightKg != ''"> and weight_kg = #{weightKg}</if>
+            <if test="recipientName != null  and recipientName != ''"> and recipient_name like concat('%', #{recipientName}, '%')</if>
+            <if test="recipientPhone != null  and recipientPhone != ''"> and recipient_phone = #{recipientPhone}</if>
+            <if test="recipientEmail != null  and recipientEmail != ''"> and recipient_email = #{recipientEmail}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="needBox != null  and needBox != ''"> and need_box = #{needBox}</if>
+            <if test="createDate != null  and createDate != ''"> and create_date = #{createDate}</if>
+            <if test="remark2 != null  and remark2 != ''"> and remark2 = #{remark2}</if>
+            <if test="remark3 != null  and remark3 != ''"> and remark3 = #{remark3}</if>
+            <if test="remark4 != null  and remark4 != ''"> and remark4 = #{remark4}</if>
+            <if test="remark5 != null  and remark5 != ''"> and remark5 = #{remark5}</if>
+            <if test="isDelete != null "> and is_delete = #{isDelete}</if>
+        </where>
+    </select>
+    
+    <select id="selectImportLogicContentById" parameterType="Long" resultMap="ImportLogicContentResult">
+        <include refid="selectImportLogicContentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertImportLogicContent" parameterType="ImportLogicContent" useGeneratedKeys="true" keyProperty="id">
+        insert into import_logic_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="documentFileId != null">document_file_id,</if>
+            <if test="packId != null">pack_id,</if>
+            <if test="batchId != null">batch_id,</if>
+            <if test="logicId != null">logic_id,</if>
+            <if test="client != null">client,</if>
+            <if test="country != null">country,</if>
+            <if test="importType != null">import_type,</if>
+            <if test="loginid != null">loginId,</if>
+            <if test="newWaybill != null">new_waybill,</if>
+            <if test="orderNumber != null">order_number,</if>
+            <if test="valuePlnCod != null">value_pln_cod,</if>
+            <if test="weightKg != null">weight_kg,</if>
+            <if test="recipientName != null">recipient_name,</if>
+            <if test="recipientPhone != null">recipient_phone,</if>
+            <if test="recipientEmail != null">recipient_email,</if>
+            <if test="description != null">description,</if>
+            <if test="needBox != null">need_box,</if>
+            <if test="createDate != null">create_date,</if>
+            <if test="remark != null">remark,</if>
+            <if test="remark2 != null">remark2,</if>
+            <if test="remark3 != null">remark3,</if>
+            <if test="remark4 != null">remark4,</if>
+            <if test="remark5 != null">remark5,</if>
+            <if test="isDelete != null">is_delete,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="documentFileId != null">#{documentFileId},</if>
+            <if test="packId != null">#{packId},</if>
+            <if test="batchId != null">#{batchId},</if>
+            <if test="logicId != null">#{logicId},</if>
+            <if test="client != null">#{client},</if>
+            <if test="country != null">#{country},</if>
+            <if test="importType != null">#{importType},</if>
+            <if test="loginid != null">#{loginid},</if>
+            <if test="newWaybill != null">#{newWaybill},</if>
+            <if test="orderNumber != null">#{orderNumber},</if>
+            <if test="valuePlnCod != null">#{valuePlnCod},</if>
+            <if test="weightKg != null">#{weightKg},</if>
+            <if test="recipientName != null">#{recipientName},</if>
+            <if test="recipientPhone != null">#{recipientPhone},</if>
+            <if test="recipientEmail != null">#{recipientEmail},</if>
+            <if test="description != null">#{description},</if>
+            <if test="needBox != null">#{needBox},</if>
+            <if test="createDate != null">#{createDate},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="remark2 != null">#{remark2},</if>
+            <if test="remark3 != null">#{remark3},</if>
+            <if test="remark4 != null">#{remark4},</if>
+            <if test="remark5 != null">#{remark5},</if>
+            <if test="isDelete != null">#{isDelete},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateImportLogicContent" parameterType="ImportLogicContent">
+        update import_logic_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="documentFileId != null">document_file_id = #{documentFileId},</if>
+            <if test="packId != null">pack_id = #{packId},</if>
+            <if test="batchId != null">batch_id = #{batchId},</if>
+            <if test="logicId != null">logic_id = #{logicId},</if>
+            <if test="client != null">client = #{client},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="importType != null">import_type = #{importType},</if>
+            <if test="loginid != null">loginId = #{loginid},</if>
+            <if test="newWaybill != null">new_waybill = #{newWaybill},</if>
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="valuePlnCod != null">value_pln_cod = #{valuePlnCod},</if>
+            <if test="weightKg != null">weight_kg = #{weightKg},</if>
+            <if test="recipientName != null">recipient_name = #{recipientName},</if>
+            <if test="recipientPhone != null">recipient_phone = #{recipientPhone},</if>
+            <if test="recipientEmail != null">recipient_email = #{recipientEmail},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="needBox != null">need_box = #{needBox},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="remark2 != null">remark2 = #{remark2},</if>
+            <if test="remark3 != null">remark3 = #{remark3},</if>
+            <if test="remark4 != null">remark4 = #{remark4},</if>
+            <if test="remark5 != null">remark5 = #{remark5},</if>
+            <if test="isDelete != null">is_delete = #{isDelete},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteImportLogicContentById" parameterType="Long">
+        delete from import_logic_content where id = #{id}
+    </delete>
+
+    <delete id="deleteImportLogicContentByIds" parameterType="String">
+        delete from import_logic_content where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="batchInsert" >
+        insert into import_logic_content (
+--         id,
+        document_file_id, pack_id, batch_id,
+        logic_id, client, country, import_type, loginId, new_waybill,
+        order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
+        recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5,
+        create_by, create_time, update_by, update_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+--             #{item.id},
+            #{item.documentFileId},
+            #{item.packId},
+            #{item.batchId},
+            #{item.logicId},
+            #{item.client},
+            #{item.country},
+            #{item.importType},
+            #{item.loginid},
+            #{item.newWaybill},
+            #{item.orderNumber},
+            #{item.valuePlnCod},
+            #{item.weightKg},
+            #{item.recipientName},
+            #{item.recipientPhone},
+            #{item.recipientEmail},
+            #{item.description},
+            #{item.needBox},
+            #{item.createDate},
+            #{item.remark},
+            #{item.remark2},
+            #{item.remark3},
+            #{item.remark4},
+            #{item.remark5},
+            #{item.createBy},
+            sysdate(),
+            #{item.updateBy},
+            sysdate()
+            )
+        </foreach>
+    </insert>
+
+</mapper>

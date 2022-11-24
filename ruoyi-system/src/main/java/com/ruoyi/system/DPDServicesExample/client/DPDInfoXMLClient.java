@@ -159,6 +159,10 @@ public class DPDInfoXMLClient {
             }
             customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
 
+            if (customerEventV3s.size() > 1) {
+                CustomerEventV3 customerEventV3Jh = customerEventV3s.get(customerEventV3s.size() - 2);
+                logisticsInfo.setActivationTime(customerEventV3Jh.getEventTime());
+            }
             CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
             logisticsInfo.setLastMsg(customerEventV3.getDescription());
             //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据

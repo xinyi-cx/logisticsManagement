@@ -105,6 +105,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </select>
 
+    <select id="selectByNewWaybillIn" resultMap="RedirectRelResult" parameterType="list">
+        <include refid="selectRedirectRelVo"/>
+        where new_waybill in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <update id="updateRedirectRel" parameterType="RedirectRel">
         update redirect_rel
         <trim prefix="SET" suffixOverrides=",">

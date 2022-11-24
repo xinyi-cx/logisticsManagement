@@ -104,4 +104,15 @@ public class RedirectRelController extends BaseController {
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(redirectRelService.deleteRedirectRelByIds(ids));
     }
+
+    /**
+     * 查询转寄关联关系物流信息
+     */
+    @GetMapping("/refresh")
+    public String refresh(RedirectRel redirectRel) {
+        startPage();
+        List<RedirectRel> list = redirectRelService.selectRedirectRelList(redirectRel);
+        return "success";
+    }
+
 }

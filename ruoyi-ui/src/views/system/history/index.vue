@@ -228,6 +228,13 @@
             @click="handleDownloadPDF(scope.row)"
             v-hasPermi="['system:history:edit']"
           >查看批量面单</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleDownloadReLogic(scope.row)"
+            v-hasPermi="['system:history:edit']"
+          >导出物流信息（转寄）</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -458,9 +465,14 @@ export default {
     handleDownload(row) {
       this.reset();
       const id = row.id;
-      console.log(row);
-      let fileName = `Original`;
       this.download('system/package/downloadFile/' + id, {}, `batch_task_${new Date().getTime()}.xlsx`)
+    },
+    handleDownloadReLogic(row) {
+      this.reset();
+      const id = row.id;
+      this.download('system/info/exportForBatch/', {
+        hisParam : id
+      }, `logistics_info_${new Date().getTime()}.xlsx`)
     },
     handleDownloadPDF(row) {
       this.reset();

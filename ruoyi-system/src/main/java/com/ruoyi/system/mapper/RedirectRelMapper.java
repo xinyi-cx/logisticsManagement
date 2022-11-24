@@ -72,4 +72,6 @@ public interface RedirectRelMapper
 
     public List<RedirectRel> selectByOldWaybillIn(List<String> oldWaybills);
 
+    public List<RedirectRel> selectByNewWaybillIn(List<String> newWaybills);
+
 }

@@ -29,20 +29,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updatedTime"    column="updated_time"    />
         <result property="isDelete"    column="is_delete"    />
         <result property="redirectNum"    column="redirect_num"    />
+        <result property="activationTime"    column="activation_time"    />
     </resultMap>
 
     <sql id="selectLogisticsInfoVo">
         select id, company, delivery_time, order_no, last_time, last_msg, rep_msg, failure_msg, content, reference,
         pack_id, sec_pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time,
-        is_delete, redirect_num, package_reference, depot from logistics_info
+        is_delete, redirect_num, activation_time, package_reference, depot from logistics_info
     </sql>
 
     <select id="selectLogisticsInfoList" parameterType="LogisticsInfo" resultMap="LogisticsInfoResult">
         <include refid="selectLogisticsInfoVo"/>
         <where>
-            is_delete = 0
+--             is_delete = 0
             <if test="ids!= null and ids.size()>0" >
-                and id in
+                id in
                 <foreach collection="ids" item="item" open="(" close=")" separator="," >
                     #{item}
                 </foreach>
@@ -128,6 +129,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="repMsg != null">rep_msg,</if>
             <if test="failureMsg != null">failure_msg,</if>
             <if test="content != null">content,</if>
+            <if test="activationTime != null">activation_time,</if>
             <if test="reference != null">reference,</if>
             <if test="packageReference != null">package_reference,</if>
             <if test="depot != null">depot,</if>
@@ -152,6 +154,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="repMsg != null">#{repMsg},</if>
             <if test="failureMsg != null">#{failureMsg},</if>
             <if test="content != null">#{content},</if>
+            <if test="activationTime != null">#{activationTime},</if>
             <if test="reference != null">#{reference},</if>
             <if test="packageReference != null">#{packageReference},</if>
             <if test="depot != null">#{depot},</if>
@@ -169,7 +172,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <insert id="batchInsert" >
-        insert into logistics_info (id, company, delivery_time, order_no, last_time, last_msg, rep_msg, failure_msg, content, reference, package_reference, depot,
+        insert into logistics_info (id, company, delivery_time, order_no, last_time, last_msg, rep_msg, failure_msg,
+        content, activation_time, reference, package_reference, depot,
         pack_id, sec_pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
@@ -183,6 +187,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.repMsg},
             #{item.failureMsg},
             #{item.content},
+            #{item.activationTime},
             #{item.reference},
             #{item.packageReference},
             #{item.depot},
@@ -210,6 +215,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="repMsg != null">rep_msg = #{repMsg},</if>
             <if test="failureMsg != null">failure_msg = #{failureMsg},</if>
             <if test="content != null">content = #{content},</if>
+            <if test="activationTime != null">activation_time = #{activationTime},</if>
             <if test="reference != null">reference = #{reference},</if>
             <if test="packageReference != null">package_reference = #{packageReference},</if>
             <if test="depot != null">depot = #{depot},</if>
@@ -274,6 +280,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectLogisticsInfoVo"/>
         where is_delete = 0
         and waybill in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        order by last_time desc
+    </select>
+
+    <select id="selectLogisticsInfoListWithLInWaybills" resultMap="LogisticsInfoResult">
+        select rel.waybill as package_reference, info.waybill,  info.status, info.last_time
+        from logistics_info info
+        right join waybill_l_rel rel
+        on rel.waybill_l = info.waybill
+        where rel.waybill in
         <foreach item="item" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>

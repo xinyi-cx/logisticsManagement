@@ -1,12 +1,12 @@
 package com.ruoyi.system.service.impl;
 
+import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.system.domain.BatchTaskHistory;
-import com.ruoyi.system.domain.Documents;
-import com.ruoyi.system.domain.Parcel;
-import com.ruoyi.system.domain.RedirectRel;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.domain.vo.ExportRedirectRelVo;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IRedirectRelService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -14,12 +14,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 /**
  * 转寄关联关系Service业务层处理
@@ -34,6 +35,12 @@ public class RedirectRelServiceImpl implements IRedirectRelService {
 
     @Autowired
     private ParcelMapper parcelMapper;
+
+    @Autowired
+    private LogisticsInfoMapper logisticsInfoMapper;
+
+    @Autowired
+    private SysDictDataMapper dictDataMapper;
 
     @Autowired
     private SequenceMapper sequenceMapper;
@@ -185,6 +192,50 @@ public class RedirectRelServiceImpl implements IRedirectRelService {
         batchTaskHistory.setStatus("上传失败");
         batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
         return "导入失败";
+    }
+
+    /**
+     * 导出转寄物流信息
+     * @param waybills
+     * @return
+     */
+    @Override
+    public List<ExportRedirectRelVo> exportRedirectRelVo(List<String> waybills) {
+        if (CollectionUtils.isEmpty(waybills)) {
+            return new ArrayList<>();
+        }
+        List<RedirectRel> redirectRelList = redirectRelMapper.selectByNewWaybillIn(waybills);
+//        List<String> waybills = redirectRelList.stream().map(RedirectRel::getNewWaybill).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+        List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(waybills);
+        Map<String, List<LogisticsInfo>> waybillListMap = logisticsInfos.stream().collect(groupingBy(LogisticsInfo::getWaybill));
+        List<SysDictData> sysDictData = dictDataMapper.selectDictDataByType("sys_waybill");
+        Map<String, String> dict = sysDictData.stream().collect(toMap(SysDictData::getDictValue, SysDictData::getDictLabel));
+
+        List<ExportRedirectRelVo> returnList = new ArrayList<>();
+        for (RedirectRel redirectRel : redirectRelList) {
+            String waybill = redirectRel.getNewWaybill();
+            ExportRedirectRelVo exportRedirectRelVo = new ExportRedirectRelVo();
+            BeanUtils.copyProperties(redirectRel, exportRedirectRelVo);
+            if (waybillListMap.containsKey(waybill)) {
+                List<LogisticsInfo> logisticsInfos1 = waybillListMap.get(waybill);
+                LogisticsInfo zjLogisticsInfo = logisticsInfos1.stream().sorted(Comparator.comparing(LogisticsInfo::getLastTime).reversed()).collect(toList()).get(0);
+                exportRedirectRelVo.setLastTime(zjLogisticsInfo.getLastTime());
+                exportRedirectRelVo.setLastMsg(zjLogisticsInfo.getLastMsg());
+                exportRedirectRelVo.setStatus(dict.get(zjLogisticsInfo.getStatus()));
+            } else {
+                exportRedirectRelVo.setLastMsg("为查询到物流信息");
+            }
+            returnList.add(exportRedirectRelVo);
+        }
+        return returnList;
+    }
+
+    @Override
+    public List<ExportRedirectRelVo> exportWithZj(List<LogisticsInfo> logisticsInfos){
+        if (CollectionUtils.isEmpty(logisticsInfos)){
+            return new ArrayList<>();
+        }
+        return exportRedirectRelVo(logisticsInfos.stream().map(LogisticsInfo::getWaybill).collect(toList()));
     }
 
 }

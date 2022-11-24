@@ -9,6 +9,7 @@ import com.ruoyi.system.service.IParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -144,6 +145,22 @@ public class ParcelServiceImpl implements IParcelService
         System.out.println("getAllParcelMsg start");
         dpdInfoXMLClient.getEventsForWaybills();
         System.out.println("getAllParcelMsg end");
+    }
+
+    /**
+     * 根据物流单号获取物流信息
+     * @param waybill
+     */
+    @Override
+    public void getMsgByWaybill(String waybill) {
+        LogisticsInfo param = new LogisticsInfo();
+        param.setWaybill(waybill);
+        List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoList(param);
+        if (CollectionUtils.isEmpty(logisticsInfos)){
+            LogisticsInfo logisticsInfo = new LogisticsInfo();
+            logisticsInfo.setWaybill(waybill);
+            dpdInfoXMLClient.getEventsByLogisticsInfo(logisticsInfo);
+        }
     }
 
 }

@@ -368,8 +368,10 @@ export default {
   },
   created() {
     const hisParam = this.$route.params && this.$route.params.hisParam;
+    const status = this.$route.params && this.$route.params.status;
     debugger;
     this.queryParams.hisParam = hisParam;
+    this.queryParams.status = status;
     this.getList();
   },
   methods: {

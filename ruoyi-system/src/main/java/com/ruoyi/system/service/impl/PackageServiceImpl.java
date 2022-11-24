@@ -7,6 +7,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.email.EmailUtil;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.DPDServicesExample.client.DPDInfoXMLClient;
 import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
@@ -22,6 +23,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,6 +89,12 @@ public class PackageServiceImpl implements IPackageService {
 
     @Autowired
     private RedirectRelMapper redirectRelMapper;
+
+    @Autowired
+    private ImportLogicContentMapper importLogicContentMapper;
+
+    @Autowired
+    private DPDInfoXMLClient dpdInfoXMLClient;
 
     /**
      * 查询面单
@@ -897,6 +905,7 @@ public class PackageServiceImpl implements IPackageService {
         AddressSender addressSender = getSender();
         List<Package> packages = new ArrayList<>();
         List<RedirectPackage> redirectPackages = new ArrayList<>();
+        List<ImportLogicContent> importLogicContents = new ArrayList<>();
         for (PackageVo packageVo : packageVos) {
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
             Services services = getServices(packageVo, getId(nameMap, "services_seq"));
@@ -924,6 +933,24 @@ public class PackageServiceImpl implements IPackageService {
             pac.setParcels(parcels1);
             pac.setSender(addressSender);
             packages.add(pac);
+
+            //            DPD Resend Wolin pol 20221101 23box exoort xls
+//            DPD Resend Wolin pol 20221101 23 exoort xls
+            String fileName = documents.getFileName();
+            List<String> list = Arrays.asList(fileName.split(" "));
+            //导入信息新增
+            ImportLogicContent importLogicContent = new ImportLogicContent();
+            BeanUtils.copyProperties(packageVo, importLogicContent, "id");
+            importLogicContent.setBatchId(batchTaskHistory.getId());
+            importLogicContent.setDocumentFileId(documents.getId());
+            importLogicContent.setPackId(pac.getId());
+            importLogicContent.setClient(list.get(2));
+            importLogicContent.setCountry(list.get(3));
+            importLogicContent.setImportType(getType(list.get(1)));
+            importLogicContent.setNeedBox(list.get(5).contains("box")?"Y":"N");
+            importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+            importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
+            importLogicContents.add(importLogicContent);
         }
         try {
 
@@ -940,10 +967,13 @@ public class PackageServiceImpl implements IPackageService {
             addressReceiverMapper.batchInsert(addressReceivers);
             servicesMapper.batchInsert(servicesList);
             parcelMapper.batchInsert(parcels);
+            importLogicContentMapper.batchInsert(importLogicContents);
             StringBuilder returnStrBuf = new StringBuilder();
             returnStrBuf.append("面单导入成功，成功")
                     .append(batchTaskHistory.getSuccessNum()).append("条，失败")
                     .append(batchTaskHistory.getFailNum()).append("条。\n");
+            // 异步查询一下物流信息
+            getLogic(parcels);
             return returnStrBuf.toString();
         }catch (Exception e){
             batchTaskHistory.setStatus("上传失败");
@@ -952,6 +982,24 @@ public class PackageServiceImpl implements IPackageService {
         }finally {
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
         }
+    }
+
+    private String getType(String engType){
+//        业务会有resend local original三种
+        if ("local".equalsIgnoreCase(engType)){
+            return "本地";
+        }
+
+        if ("resend".equalsIgnoreCase(engType)){
+            return "转寄";
+        }
+
+        return "直发";
+    }
+
+    @Async
+    void getLogic(List<Parcel> parcels){
+        parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
     }
 
     private Map<String, String> getFileNameMap(String countryCode) {

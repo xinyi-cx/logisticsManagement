@@ -79,4 +79,6 @@ public interface LogisticsInfoMapper
 
     public List<LogisticsInfo> selectLogisticsInfoListByWaybillIn(List<String> waybills);
 
+    public List<LogisticsInfo> selectLogisticsInfoListWithLInWaybills(List<String> waybills);
+
 }

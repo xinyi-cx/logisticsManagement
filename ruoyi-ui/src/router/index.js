@@ -200,6 +200,12 @@ export const dynamicRoutes = [
         component: () => import('@/views/system/info/index'),
         name: 'DataInfo',//name 重复2
         meta: { title: '物流信息', activeMenu: '/system/history' }
+      },
+      {
+        path: 'index/status/:status(\\d+)',
+        component: () => import('@/views/system/info/index'),
+        name: 'DataInfo2',//name 重复2
+        meta: { title: '物流信息', activeMenu: '/system/history' }
       }
     ]
   },

@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
+import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.RedirectRel;
+import com.ruoyi.system.domain.vo.ExportRedirectRelVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -62,5 +64,14 @@ public interface IRedirectRelService
     public int deleteRedirectRelById(Long id);
 
     public String importRedirectRel(MultipartFile file, List<RedirectRel> redirectRelList) throws Exception;
+
+    /**
+     * 导出转寄物流信息
+     * @param waybills
+     * @return
+     */
+    public List<ExportRedirectRelVo> exportRedirectRelVo(List<String> waybills);
+
+    public List<ExportRedirectRelVo> exportWithZj(List<LogisticsInfo> logisticsInfos);
 
 }
