@@ -168,16 +168,16 @@ public class DPDInfoXMLClient {
             //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
             List<WaybillLRel> waybillLRels = getRL(parcel.getWaybill(), allEventDataList);
 
-            for (WaybillLRel lRel : waybillLRels) {
-                List<LogisticsInfo> logisticsInfos1 = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(Collections.singletonList(lRel.getWaybillL()));
-                if (CollectionUtils.isEmpty(logisticsInfos1)){
-                    LogisticsInfo logisticsInfoL = new LogisticsInfo();
-                    BeanUtils.copyProperties(logisticsInfo, logisticsInfoL);
-                    logisticsInfoL.setWaybill(lRel.getWaybillL());
-                    logisticsInfoL.setStatus(SysWaybill.WJH.getCode());
-                    logisticsInfos.add(logisticsInfoL);
-                }
-            }
+//            for (WaybillLRel lRel : waybillLRels) {
+//                List<LogisticsInfo> logisticsInfos1 = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(Collections.singletonList(lRel.getWaybillL()));
+//                if (CollectionUtils.isEmpty(logisticsInfos1)){
+//                    LogisticsInfo logisticsInfoL = new LogisticsInfo();
+//                    BeanUtils.copyProperties(logisticsInfo, logisticsInfoL);
+//                    logisticsInfoL.setWaybill(lRel.getWaybillL());
+//                    logisticsInfoL.setStatus(SysWaybill.WJH.getCode());
+//                    logisticsInfos.add(logisticsInfoL);
+//                }
+//            }
 
             String status = getStatus(customerEventV3s);
             if(StringUtils.isNotEmpty(status)){
@@ -185,6 +185,10 @@ public class DPDInfoXMLClient {
                 logisticsInfo.setStatus(status);
             }
             logisticsInfo.setLastTime(customerEventV3.getEventTime());
+
+            if (!CollectionUtils.isEmpty(waybillLRels)){
+                dealForWaybillL(parcel, waybillLRels, new LogisticsInfo());
+            }
 
             List<String> waybills = new ArrayList<>();
             waybills.add(parcel.getWaybill());
@@ -262,8 +266,12 @@ public class DPDInfoXMLClient {
             WaybillLRel waybillLRel = new WaybillLRel();
             waybillLRel.setWaybill(waybill);
             waybillLRel.setWaybillL(item.getValue());
+            waybillLRel.setIsDelete(1);
             returnList.add(waybillLRel);
             lStrings.add(item.getValue());
+        }
+        if (!CollectionUtils.isEmpty(returnList)){
+            returnList.get(0).setIsDelete(0);
         }
         return returnList;
     }

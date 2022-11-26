@@ -892,7 +892,7 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setType("面单导入");
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
-        batchTaskHistory.setFileName(documents.getFileName());
+        batchTaskHistory.setFileName(documents.getDisplayName());
         batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
@@ -925,6 +925,9 @@ public class PackageServiceImpl implements IPackageService {
             parcel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
             parcel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
             parcel.setStatus("1");
+            if (ObjectUtils.isEmpty(packageVo.getWaybill())) {
+                parcel.setWaybill(packageVo.getNewWaybill());
+            }
 
             pac.setService(services);
             pac.setReceiver(addressReceiver);
@@ -936,7 +939,7 @@ public class PackageServiceImpl implements IPackageService {
 
             //            DPD Resend Wolin pol 20221101 23box exoort xls
 //            DPD Resend Wolin pol 20221101 23 exoort xls
-            String fileName = documents.getFileName();
+            String fileName = documents.getDisplayName();
             List<String> list = Arrays.asList(fileName.split(" "));
             //导入信息新增
             ImportLogicContent importLogicContent = new ImportLogicContent();
@@ -947,10 +950,12 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setClient(list.get(2));
             importLogicContent.setCountry(list.get(3));
             importLogicContent.setImportType(getType(list.get(1)));
-            importLogicContent.setNeedBox(list.get(5).contains("box")?"Y":"N");
+            importLogicContent.setNeedBox(list.get(5).contains("box") ? "Y" : "N");
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContents.add(importLogicContent);
+
+            batchTaskHistory.setType(StringUtils.isEmpty(importLogicContent.getImportType()) ? batchTaskHistory.getType() : importLogicContent.getImportType());
         }
         try {
 
@@ -968,13 +973,13 @@ public class PackageServiceImpl implements IPackageService {
             servicesMapper.batchInsert(servicesList);
             parcelMapper.batchInsert(parcels);
             importLogicContentMapper.batchInsert(importLogicContents);
-            StringBuilder returnStrBuf = new StringBuilder();
-            returnStrBuf.append("面单导入成功，成功")
-                    .append(batchTaskHistory.getSuccessNum()).append("条，失败")
-                    .append(batchTaskHistory.getFailNum()).append("条。\n");
+            batchTaskHistory.setSuccessNum(importLogicContents.size());
+            batchTaskHistory.setFailNum(0);
             // 异步查询一下物流信息
             getLogic(parcels);
-            return returnStrBuf.toString();
+            return "面单导入成功，成功" +
+                    batchTaskHistory.getSuccessNum() + "条，失败" +
+                    batchTaskHistory.getFailNum() + "条。\n";
         }catch (Exception e){
             batchTaskHistory.setStatus("上传失败");
             e.printStackTrace();

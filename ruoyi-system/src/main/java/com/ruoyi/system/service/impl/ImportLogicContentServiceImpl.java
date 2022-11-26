@@ -84,7 +84,7 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
                     exportLogicContentVo.setNewNumber(zjLogisticsInfo.getWaybill());
                 }
                 if (getTjStatus.containsKey(newWaybill)){
-                    LogisticsInfo tjLogisticsInfo = getZjStatus.get(newWaybill);
+                    LogisticsInfo tjLogisticsInfo = getTjStatus.get(newWaybill);
                     exportLogicContentVo.setStatus(tjLogisticsInfo.getStatus());
                     exportLogicContentVo.setLastStatusDate(tjLogisticsInfo.getLastTime());
                     exportLogicContentVo.setReturnNumber(tjLogisticsInfo.getWaybill());

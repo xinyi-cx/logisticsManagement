@@ -105,7 +105,7 @@
           size="mini"
           @click="handleImportForNo"
           v-hasPermi="['system:package:add']"
-        >导入</el-button>
+        >导入(不生成dpd面单)</el-button>
       </el-col>
 <!--      no-->
       <el-col :span="1.5">

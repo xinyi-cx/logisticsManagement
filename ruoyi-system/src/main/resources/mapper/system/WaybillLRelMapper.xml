@@ -64,7 +64,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <insert id="batchInsert">
-        insert into waybill_l_rel (waybill, waybill_l, create_user, update_user, created_time, updated_time, status, back_date )
+        insert into waybill_l_rel (waybill, waybill_l, create_user, update_user,
+        created_time, updated_time, status, back_date, is_delete)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
@@ -75,7 +76,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             sysdate(),
             sysdate(),
             #{item.status},
-            #{item.backDate}
+            #{item.backDate},
+            #{item.isDelete}
             )
         </foreach>
     </insert>

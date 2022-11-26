@@ -41,7 +41,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectLogisticsInfoList" parameterType="LogisticsInfo" resultMap="LogisticsInfoResult">
         <include refid="selectLogisticsInfoVo"/>
         <where>
---             is_delete = 0
             <if test="ids!= null and ids.size()>0" >
                 id in
                 <foreach collection="ids" item="item" open="(" close=")" separator="," >
@@ -291,6 +290,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from logistics_info info
         right join waybill_l_rel rel
         on rel.waybill_l = info.waybill
+        and rel.is_delete = 0
         where rel.waybill in
         <foreach item="item" collection="list" open="(" separator="," close=")">
             #{item}

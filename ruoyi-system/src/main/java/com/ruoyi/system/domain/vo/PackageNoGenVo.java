@@ -40,8 +40,8 @@ public class PackageNoGenVo extends BaseEntity {
     private String loginid;
 
     /** New waybill */
-//    @Excel(name = "New waybill")
-//    private String newWaybill;
+    @Excel(name = "New waybill")
+    private String newWaybill;
 
     /** Order number */
     @Excel(name = "Order number")
@@ -230,14 +230,14 @@ public class PackageNoGenVo extends BaseEntity {
     /**
      * 收件人手机号码
      */
-    @Excel(name = "Recipient phone")
-    @NotEmpty(message = "收件人信息不能为空")
+//    @Excel(name = "Recipient phone")
+//    @NotEmpty(message = "收件人信息不能为空")
     private String receiverPhone;
 
     /**
      * 收件人邮箱
      */
-    @Excel(name = "Recipient E-mail")
+//    @Excel(name = "Recipient E-mail")
     private String receiverEmail;
     /**
      * 重量（单位kg）
@@ -245,7 +245,7 @@ public class PackageNoGenVo extends BaseEntity {
      * 1、小于1kg的按1kg算，dpd会取体积和重量中的较大值进行计算；
      * 2、大于10kg的要提示，不能大于10kg.
      */
-    @Excel(name = "Weight kg")
+//    @Excel(name = "Weight kg")
     private BigDecimal weight;
 
     /**
@@ -257,7 +257,7 @@ public class PackageNoGenVo extends BaseEntity {
     /**
      * 备注 商品描述
      */
-    @Excel(name = "Description")
+//    @Excel(name = "Description")
     private String customerData1;
 
     /**
@@ -298,7 +298,7 @@ public class PackageNoGenVo extends BaseEntity {
 
     /** 新物流单号 */
 //    @Excel(name = "New Waybill")
-    private String newWaybill;
+//    private String newWaybill;
 
     public String getOldWaybill() {
         return oldWaybill;

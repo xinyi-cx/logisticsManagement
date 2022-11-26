@@ -186,7 +186,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <insert id="batchInsert" >
         insert into import_logic_content (
---         id,
         document_file_id, pack_id, batch_id,
         logic_id, client, country, import_type, loginId, new_waybill,
         order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
@@ -195,7 +194,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
---             #{item.id},
             #{item.documentFileId},
             #{item.packId},
             #{item.batchId},

@@ -235,6 +235,13 @@
             @click="handleDownloadReLogic(scope.row)"
             v-hasPermi="['system:history:edit']"
           >导出物流信息（转寄）</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleDownloadReContent(scope.row)"
+            v-hasPermi="['system:history:edit']"
+          >导出物流</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -473,6 +480,13 @@ export default {
       this.download('system/info/exportForBatch/', {
         hisParam : id
       }, `logistics_info_${new Date().getTime()}.xlsx`)
+    },
+    handleDownloadReContent(row) {
+      this.reset();
+      const id = row.id;
+      this.download('system/content/export/', {
+        batchId : id
+      }, `logistics_content_${new Date().getTime()}.xlsx`)
     },
     handleDownloadPDF(row) {
       this.reset();
