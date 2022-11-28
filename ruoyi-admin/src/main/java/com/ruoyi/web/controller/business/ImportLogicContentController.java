@@ -8,6 +8,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.ImportLogicContent;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
+import com.ruoyi.system.domain.vo.ImportLogicContentTemplateVo;
 import com.ruoyi.system.service.IImportLogicContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,6 +38,13 @@ public class ImportLogicContentController extends BaseController {
         startPage();
         List<ImportLogicContent> list = importLogicContentService.selectImportLogicContentList(importLogicContent);
         return getDataTable(list);
+    }
+
+    @PostMapping("/importTemplateNoGen")
+    public void importTemplateNoGen(HttpServletResponse response)
+    {
+        ExcelUtil<ImportLogicContentTemplateVo> util = new ExcelUtil<ImportLogicContentTemplateVo>(ImportLogicContentTemplateVo.class);
+        util.importTemplateExcel(response, "sheet1");
     }
 
 //    @Log(title = "面单导入", businessType = BusinessType.IMPORT)

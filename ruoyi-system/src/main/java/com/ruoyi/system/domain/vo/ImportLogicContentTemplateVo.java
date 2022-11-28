@@ -1,21 +1,17 @@
-package com.ruoyi.system.domain;
+package com.ruoyi.system.domain.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
-
-import java.util.Date;
-import java.util.List;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * 导入查询物流对象 import_logic_content
  * 
  * @author ruoyi
- * @date 2022-11-27
+ * @date 2022-11-20
  */
-public class ImportLogicContent extends BaseEntity
+public class ImportLogicContentTemplateVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -23,31 +19,24 @@ public class ImportLogicContent extends BaseEntity
     private Long id;
 
     /** document表id */
-    @Excel(name = "document表id")
     private Long documentFileId;
 
     /** package表id */
-    @Excel(name = "package表id")
     private Long packId;
 
     /** batch_id */
-    @Excel(name = "batch_id")
     private Long batchId;
 
     /** logic_id */
-    @Excel(name = "logic_id")
     private Long logicId;
 
     /** CLIENT */
-    @Excel(name = "CLIENT")
     private String client;
 
     /** Country */
-    @Excel(name = "Country")
     private String country;
 
     /** Type */
-    @Excel(name = "Type")
     private String importType;
 
     /** LoginID */
@@ -95,78 +84,18 @@ public class ImportLogicContent extends BaseEntity
     private String createDate;
 
     /** 备注2 */
-    @Excel(name = "备注2")
     private String remark2;
 
     /** 备注3 */
-    @Excel(name = "备注3")
     private String remark3;
 
     /** 备注4 */
-    @Excel(name = "备注4")
     private String remark4;
 
     /** 备注5 */
-    @Excel(name = "备注5")
     private String remark5;
 
-    /** 激活时间 */
-    @Excel(name = "激活时间")
-    private String activedDate;
-
-    /** 最近物流时间 */
-    @Excel(name = "最近物流时间")
-    private String lastStatusDate;
-
-    /** 状态 */
-    @Excel(name = "状态")
-    private String status;
-
-    /** 新单号 */
-    @Excel(name = "新单号")
-    private String newNumber;
-
-    /** 退件单号 */
-    @Excel(name = "退件单号")
-    private String returnNumber;
-
-    private List<Long> ids;
-
-    /** 创建时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date activeTimeStart;
-
-    /** 创建时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date activeTimeEnd;
-
-    public List<Long> getIds() {
-        return ids;
-    }
-
-    public void setIds(List<Long> ids) {
-        this.ids = ids;
-    }
-
-    public Date getActiveTimeStart() {
-        return activeTimeStart;
-    }
-
-    public void setActiveTimeStart(Date activeTimeStart) {
-        this.activeTimeStart = activeTimeStart;
-    }
-
-    public Date getActiveTimeEnd() {
-        return activeTimeEnd;
-    }
-
-    public void setActiveTimeEnd(Date activeTimeEnd) {
-        this.activeTimeEnd = activeTimeEnd;
-    }
-
     /** 是否删除 */
-    @Excel(name = "是否删除")
     private Integer isDelete;
 
     public void setId(Long id) 
@@ -376,51 +305,6 @@ public class ImportLogicContent extends BaseEntity
     {
         return remark5;
     }
-    public void setActivedDate(String activedDate) 
-    {
-        this.activedDate = activedDate;
-    }
-
-    public String getActivedDate() 
-    {
-        return activedDate;
-    }
-    public void setLastStatusDate(String lastStatusDate) 
-    {
-        this.lastStatusDate = lastStatusDate;
-    }
-
-    public String getLastStatusDate() 
-    {
-        return lastStatusDate;
-    }
-    public void setStatus(String status) 
-    {
-        this.status = status;
-    }
-
-    public String getStatus() 
-    {
-        return status;
-    }
-    public void setNewNumber(String newNumber) 
-    {
-        this.newNumber = newNumber;
-    }
-
-    public String getNewNumber() 
-    {
-        return newNumber;
-    }
-    public void setReturnNumber(String returnNumber) 
-    {
-        this.returnNumber = returnNumber;
-    }
-
-    public String getReturnNumber() 
-    {
-        return returnNumber;
-    }
     public void setIsDelete(Integer isDelete) 
     {
         this.isDelete = isDelete;
@@ -458,11 +342,6 @@ public class ImportLogicContent extends BaseEntity
             .append("remark3", getRemark3())
             .append("remark4", getRemark4())
             .append("remark5", getRemark5())
-            .append("activedDate", getActivedDate())
-            .append("lastStatusDate", getLastStatusDate())
-            .append("status", getStatus())
-            .append("newNumber", getNewNumber())
-            .append("returnNumber", getReturnNumber())
             .append("isDelete", getIsDelete())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

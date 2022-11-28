@@ -19,9 +19,19 @@ public class LogisticsInfo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    private WaybillLRel waybillLRel;
+
     private Long hisParam;
 
     private List<Long> ids;
+
+    public WaybillLRel getWaybillLRel() {
+        return waybillLRel;
+    }
+
+    public void setWaybillLRel(WaybillLRel waybillLRel) {
+        this.waybillLRel = waybillLRel;
+    }
 
     public List<Long> getIds() {
         return ids;

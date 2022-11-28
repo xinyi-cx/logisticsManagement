@@ -44,6 +44,8 @@ public interface ImportLogicContentMapper
      */
     public int updateImportLogicContent(ImportLogicContent importLogicContent);
 
+    public int updateImportLogicContentByWaybill(ImportLogicContent importLogicContent);
+
     /**
      * 删除导入查询物流
      * 

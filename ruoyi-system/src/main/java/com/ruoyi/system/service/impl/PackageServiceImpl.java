@@ -968,9 +968,9 @@ public class PackageServiceImpl implements IPackageService {
                 parcels.addAll(pac.getParcels());
             }
 
-            packageMapper.batchInsert(packages);
-            addressReceiverMapper.batchInsert(addressReceivers);
-            servicesMapper.batchInsert(servicesList);
+//            packageMapper.batchInsert(packages);
+//            addressReceiverMapper.batchInsert(addressReceivers);
+//            servicesMapper.batchInsert(servicesList);
             parcelMapper.batchInsert(parcels);
             importLogicContentMapper.batchInsert(importLogicContents);
             batchTaskHistory.setSuccessNum(importLogicContents.size());

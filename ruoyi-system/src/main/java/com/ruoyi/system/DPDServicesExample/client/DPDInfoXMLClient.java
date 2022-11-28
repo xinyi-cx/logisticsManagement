@@ -2,15 +2,12 @@ package com.ruoyi.system.DPDServicesExample.client;
 
 import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.*;
-import com.ruoyi.system.domain.LogisticsInfo;
-import com.ruoyi.system.domain.Parcel;
-import com.ruoyi.system.domain.Sequence;
-import com.ruoyi.system.domain.WaybillLRel;
-import com.ruoyi.system.mapper.LogisticsInfoMapper;
-import com.ruoyi.system.mapper.ParcelMapper;
-import com.ruoyi.system.mapper.SequenceMapper;
-import com.ruoyi.system.mapper.WaybillLRelMapper;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.mapper.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.Exception;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,6 +28,8 @@ import static java.util.stream.Collectors.toMap;
 
 @Component
 public class DPDInfoXMLClient {
+
+    private static final Logger log = LoggerFactory.getLogger(DPDInfoXMLClient.class);
 
     @Value("${dpdservices.authdataV1.login}")
     private String login;
@@ -44,6 +45,9 @@ public class DPDInfoXMLClient {
 
     @Autowired
     private LogisticsInfoMapper logisticsInfoMapper;
+
+    @Autowired
+    private ImportLogicContentMapper importLogicContentMapper;
 
     @Autowired
     private WaybillLRelMapper waybillLRelMapper;
@@ -71,6 +75,7 @@ public class DPDInfoXMLClient {
     @Async
     @Transactional(rollbackFor = Exception.class)
     public void getEventsByLogisticsInfo(LogisticsInfo logisticsInfo) {
+        log.info("+++getEventsByLogisticsInfo+++logisticsInfo string: {}", logisticsInfo.toString());
         AuthDataV1 authData = getAuthData();
 
         WaybillLRel waybillLRel = new WaybillLRel();
@@ -123,6 +128,7 @@ public class DPDInfoXMLClient {
     @Async
     @Transactional(rollbackFor = Exception.class)
     public void getEventsForOneWaybill(Parcel parcel) {
+        log.info("+++getEventsForOneWaybill+++parcel string: {}", parcel.toString());
         AuthDataV1 authData = getAuthData();
         LogisticsInfo logisticsInfo = new LogisticsInfo();
         logisticsInfo.setPackId(parcel.getPackId());
@@ -188,6 +194,7 @@ public class DPDInfoXMLClient {
 
             if (!CollectionUtils.isEmpty(waybillLRels)){
                 dealForWaybillL(parcel, waybillLRels, new LogisticsInfo());
+                logisticsInfo.setWaybillLRel(waybillLRels.get(0));
             }
 
             List<String> waybills = new ArrayList<>();
@@ -208,6 +215,7 @@ public class DPDInfoXMLClient {
      * 带L单号查询，拒收或者改派 后查询
      */
     private void dealForWaybillL(Parcel parcel, List<WaybillLRel> waybillLRels, LogisticsInfo logisticsInfo) throws Exception_Exception {
+        log.info("+++dealForWaybillL+++parcel string: {}", parcel.toString());
         AuthDataV1 authData = getAuthData();
         WaybillLRel waybillLRel = waybillLRels.get(0);
         CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
@@ -233,12 +241,34 @@ public class DPDInfoXMLClient {
             logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
             logisticsInfos.forEach(item -> item.setId(null));
             logisticsInfoMapper.batchInsert(logisticsInfos);
+            dealForContent(logisticsInfos);
         }
         if (!CollectionUtils.isEmpty(parcels)) {
             parcelMapper.batchUpdate(parcels);
         }
         if (!CollectionUtils.isEmpty(waybillLRels)) {
             waybillLRelMapper.batchInsert(waybillLRels);
+        }
+    }
+
+    private void dealForContent(List<LogisticsInfo> logisticsInfos){
+        log.info("+++dealForContent+++logisticsInfos string: {}", logisticsInfos.toString());
+        for (LogisticsInfo logisticsInfo : logisticsInfos) {
+            ImportLogicContent logicContent = new ImportLogicContent();
+            logicContent.setNewWaybill(logisticsInfo.getWaybill());
+            logicContent.setLastStatusDate(logisticsInfo.getLastTime());
+            logicContent.setStatus(logisticsInfo.getStatus());
+            logicContent.setActivedDate(logisticsInfo.getActivationTime());
+            logicContent.setLogicId(logisticsInfo.getId());
+            if (ObjectUtils.isNotEmpty(logisticsInfo.getWaybillLRel())){
+                if (SysWaybill.YTJ.getCode().equals(logicContent.getStatus())){
+                    logicContent.setReturnNumber(logisticsInfo.getWaybillLRel().getWaybillL());
+                }
+                if (SysWaybill.ZJ.getCode().equals(logicContent.getStatus()) || SysWaybill.GP.getCode().equals(logicContent.getStatus())) {
+                    logicContent.setNewNumber(logisticsInfo.getWaybillLRel().getWaybillL());
+                }
+            }
+            importLogicContentMapper.updateImportLogicContentByWaybill(logicContent);
         }
     }
 

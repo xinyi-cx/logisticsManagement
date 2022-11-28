@@ -141,11 +141,14 @@
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange" style="width: 100%;">
       <el-table-column type="selection" width="55" align="center" />
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
+      <!-- 物流单号、 -->
       <el-table-column fixed label="物流单号" align="center" width="200px">
         <template slot-scope="scope">
           <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.waybill" target="_blank">{{scope.row.waybill}}</el-link>
         </template>
       </el-table-column>
+
+
       <el-table-column label="物流公司" align="center" prop="company" />
       <el-table-column label="发货时间" align="center" prop="deliveryTime" width="180">
         <template slot-scope="scope">

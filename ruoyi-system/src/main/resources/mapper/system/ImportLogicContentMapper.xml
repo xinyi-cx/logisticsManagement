@@ -29,6 +29,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark3"    column="remark3"    />
         <result property="remark4"    column="remark4"    />
         <result property="remark5"    column="remark5"    />
+        <result property="activedDate"    column="actived_date"    />
+        <result property="lastStatusDate"    column="last_status_date"    />
+        <result property="status"    column="status"    />
+        <result property="newNumber"    column="new_number"    />
+        <result property="returnNumber"    column="return_number"    />
         <result property="isDelete"    column="is_delete"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -37,12 +42,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectImportLogicContentVo">
-        select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type, loginId, new_waybill, order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone, recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5, is_delete, create_by, create_time, update_by, update_time from import_logic_content
+        select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type, loginId, new_waybill, order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone, recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5, actived_date, last_status_date, status, new_number, return_number, is_delete, create_by, create_time, update_by, update_time from import_logic_content
     </sql>
 
     <select id="selectImportLogicContentList" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult">
         <include refid="selectImportLogicContentVo"/>
-        <where>  
+        <where>
+            <if test="ids!= null and ids.size()>0" >
+                AND id in
+                <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                    #{item}
+                </foreach>
+            </if>
+<!--            <if test="params.beginTime != null and params.beginTime != ''">-->
+<!--                AND date_format(created_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')-->
+<!--            </if>-->
+<!--            <if test="params.endTime != null and params.endTime != ''">-->
+<!--                AND date_format(created_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')-->
+<!--            </if>-->
             <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
             <if test="packId != null "> and pack_id = #{packId}</if>
             <if test="batchId != null "> and batch_id = #{batchId}</if>
@@ -65,6 +82,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark3 != null  and remark3 != ''"> and remark3 = #{remark3}</if>
             <if test="remark4 != null  and remark4 != ''"> and remark4 = #{remark4}</if>
             <if test="remark5 != null  and remark5 != ''"> and remark5 = #{remark5}</if>
+            <if test="activedDate != null  and activedDate != ''"> and actived_date = #{activedDate}</if>
+            <if test="lastStatusDate != null  and lastStatusDate != ''"> and last_status_date = #{lastStatusDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="newNumber != null  and newNumber != ''"> and new_number = #{newNumber}</if>
+            <if test="returnNumber != null  and returnNumber != ''"> and return_number = #{returnNumber}</if>
             <if test="isDelete != null "> and is_delete = #{isDelete}</if>
         </where>
     </select>
@@ -100,6 +122,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark3 != null">remark3,</if>
             <if test="remark4 != null">remark4,</if>
             <if test="remark5 != null">remark5,</if>
+            <if test="activedDate != null">actived_date,</if>
+            <if test="lastStatusDate != null">last_status_date,</if>
+            <if test="status != null">status,</if>
+            <if test="newNumber != null">new_number,</if>
+            <if test="returnNumber != null">return_number,</if>
             <if test="isDelete != null">is_delete,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -130,6 +157,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark3 != null">#{remark3},</if>
             <if test="remark4 != null">#{remark4},</if>
             <if test="remark5 != null">#{remark5},</if>
+            <if test="activedDate != null">#{activedDate},</if>
+            <if test="lastStatusDate != null">#{lastStatusDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="newNumber != null">#{newNumber},</if>
+            <if test="returnNumber != null">#{returnNumber},</if>
             <if test="isDelete != null">#{isDelete},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -164,6 +196,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark3 != null">remark3 = #{remark3},</if>
             <if test="remark4 != null">remark4 = #{remark4},</if>
             <if test="remark5 != null">remark5 = #{remark5},</if>
+            <if test="activedDate != null">actived_date = #{activedDate},</if>
+            <if test="lastStatusDate != null">last_status_date = #{lastStatusDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="newNumber != null">new_number = #{newNumber},</if>
+            <if test="returnNumber != null">return_number = #{returnNumber},</if>
             <if test="isDelete != null">is_delete = #{isDelete},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
@@ -171,6 +208,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
+    </update>
+
+    <update id="updateImportLogicContentByWaybill" parameterType="ImportLogicContent">
+        update import_logic_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="documentFileId != null">document_file_id = #{documentFileId},</if>
+            <if test="packId != null">pack_id = #{packId},</if>
+            <if test="batchId != null">batch_id = #{batchId},</if>
+            <if test="logicId != null">logic_id = #{logicId},</if>
+            <if test="client != null">client = #{client},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="importType != null">import_type = #{importType},</if>
+            <if test="loginid != null">loginId = #{loginid},</if>
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="valuePlnCod != null">value_pln_cod = #{valuePlnCod},</if>
+            <if test="weightKg != null">weight_kg = #{weightKg},</if>
+            <if test="recipientName != null">recipient_name = #{recipientName},</if>
+            <if test="recipientPhone != null">recipient_phone = #{recipientPhone},</if>
+            <if test="recipientEmail != null">recipient_email = #{recipientEmail},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="needBox != null">need_box = #{needBox},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="remark2 != null">remark2 = #{remark2},</if>
+            <if test="remark3 != null">remark3 = #{remark3},</if>
+            <if test="remark4 != null">remark4 = #{remark4},</if>
+            <if test="remark5 != null">remark5 = #{remark5},</if>
+            <if test="activedDate != null">actived_date = #{activedDate},</if>
+            <if test="lastStatusDate != null">last_status_date = #{lastStatusDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="newNumber != null">new_number = #{newNumber},</if>
+            <if test="returnNumber != null">return_number = #{returnNumber},</if>
+            <if test="isDelete != null">is_delete = #{isDelete},</if>
+        </trim>
+        where new_waybill = #{newWaybill}
     </update>
 
     <delete id="deleteImportLogicContentById" parameterType="Long">
@@ -190,6 +262,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         logic_id, client, country, import_type, loginId, new_waybill,
         order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
         recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5,
+        actived_date, last_status_date, status, new_number, return_number,
         create_by, create_time, update_by, update_time)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
@@ -217,6 +290,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.remark3},
             #{item.remark4},
             #{item.remark5},
+            #{item.activedDate},
+            #{item.lastStatusDate},
+            #{item.status},
+            #{item.newNumber},
+            #{item.returnNumber},
             #{item.createBy},
             sysdate(),
             #{item.updateBy},
