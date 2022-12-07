@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 物流信息对象 logistics_info
@@ -24,6 +25,16 @@ public class LogisticsInfo extends BaseEntity
     private Long hisParam;
 
     private List<Long> ids;
+
+    private Map<String, Object> lMap;
+
+    public Map<String, Object> getlMap() {
+        return lMap;
+    }
+
+    public void setlMap(Map<String, Object> lMap) {
+        this.lMap = lMap;
+    }
 
     public WaybillLRel getWaybillLRel() {
         return waybillLRel;

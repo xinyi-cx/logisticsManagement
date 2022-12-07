@@ -114,7 +114,7 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
             return new HashMap<>();
         }
 
-        return zjHs.stream().collect(Collectors.toMap(LogisticsInfo::getPackageReference, Function.identity()));
+        return zjHs.stream().collect(Collectors.toMap(LogisticsInfo::getPackageReference, Function.identity(),  (o1, o2) -> o1 ));
     }
 
     /**
@@ -136,7 +136,7 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
             return new HashMap<>();
         }
 
-        return zjHs.stream().collect(Collectors.toMap(LogisticsInfo::getPackageReference, Function.identity()));
+        return zjHs.stream().collect(Collectors.toMap(LogisticsInfo::getPackageReference, Function.identity(),  (o1, o2) -> o1));
     }
 
     /**

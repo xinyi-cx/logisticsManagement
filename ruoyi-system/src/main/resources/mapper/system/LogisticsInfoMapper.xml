@@ -295,6 +295,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="item" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>
+        order by info.last_time desc
     </select>
 
 </mapper>

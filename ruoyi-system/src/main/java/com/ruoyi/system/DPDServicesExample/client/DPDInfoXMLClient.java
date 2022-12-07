@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.lang.Exception;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -192,9 +193,15 @@ public class DPDInfoXMLClient {
             }
             logisticsInfo.setLastTime(customerEventV3.getEventTime());
 
+            LogisticsInfo logisticsInfoL = new LogisticsInfo();
             if (!CollectionUtils.isEmpty(waybillLRels)){
-                dealForWaybillL(parcel, waybillLRels, new LogisticsInfo());
+                dealForWaybillL(parcel, waybillLRels, logisticsInfoL);
                 logisticsInfo.setWaybillLRel(waybillLRels.get(0));
+                Map<String, Object> lMap = new HashMap<>();
+                lMap.put("status",logisticsInfoL.getStatus());
+                lMap.put("lastMsg",logisticsInfoL.getLastMsg());
+                lMap.put("lastTime",logisticsInfoL.getLastTime());
+                logisticsInfo.setlMap(lMap);
             }
 
             List<String> waybills = new ArrayList<>();
@@ -266,6 +273,18 @@ public class DPDInfoXMLClient {
                 }
                 if (SysWaybill.ZJ.getCode().equals(logicContent.getStatus()) || SysWaybill.GP.getCode().equals(logicContent.getStatus())) {
                     logicContent.setNewNumber(logisticsInfo.getWaybillLRel().getWaybillL());
+                }
+                Map<String, Object> lMap = logisticsInfo.getlMap();
+                if (!CollectionUtils.isEmpty(lMap)){
+                    if (lMap.containsKey("status")){
+                        logicContent.setStatus(lMap.get("status").toString());
+                    }
+//                    if (lMap.containsKey("lastMsg")){
+//                        logicContent.setStatus(lMap.get("lastMsg").toString());
+//                    }
+                    if (lMap.containsKey("lastTime")){
+                        logicContent.setLastStatusDate(lMap.get("lastTime").toString());
+                    }
                 }
             }
             importLogicContentMapper.updateImportLogicContentByWaybill(logicContent);

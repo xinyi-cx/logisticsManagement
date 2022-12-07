@@ -48,18 +48,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectImportLogicContentList" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult">
         <include refid="selectImportLogicContentVo"/>
         <where>
-            <if test="ids!= null and ids.size()>0" >
+            <choose>
+            <when  test="ids!= null and ids.size()>0" >
                 AND id in
                 <foreach collection="ids" item="item" open="(" close=")" separator="," >
                     #{item}
                 </foreach>
-            </if>
+            </when >
+            <otherwise>
+
 <!--            <if test="params.beginTime != null and params.beginTime != ''">-->
 <!--                AND date_format(created_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')-->
 <!--            </if>-->
 <!--            <if test="params.endTime != null and params.endTime != ''">-->
 <!--                AND date_format(created_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')-->
 <!--            </if>-->
+                <if test="params.beginTime != null and params.beginTime != ''">
+                    AND left(actived_date,10) &gt;= #{params.beginTime}
+                </if>
+                <if test="params.endTime != null and params.endTime != ''">
+                    AND left(actived_date,10) &lt;= #{params.endTime}
+                </if>
             <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
             <if test="packId != null "> and pack_id = #{packId}</if>
             <if test="batchId != null "> and batch_id = #{batchId}</if>
@@ -78,16 +87,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="description != null  and description != ''"> and description = #{description}</if>
             <if test="needBox != null  and needBox != ''"> and need_box = #{needBox}</if>
             <if test="createDate != null  and createDate != ''"> and create_date = #{createDate}</if>
-            <if test="remark2 != null  and remark2 != ''"> and remark2 = #{remark2}</if>
-            <if test="remark3 != null  and remark3 != ''"> and remark3 = #{remark3}</if>
-            <if test="remark4 != null  and remark4 != ''"> and remark4 = #{remark4}</if>
-            <if test="remark5 != null  and remark5 != ''"> and remark5 = #{remark5}</if>
             <if test="activedDate != null  and activedDate != ''"> and actived_date = #{activedDate}</if>
             <if test="lastStatusDate != null  and lastStatusDate != ''"> and last_status_date = #{lastStatusDate}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="newNumber != null  and newNumber != ''"> and new_number = #{newNumber}</if>
             <if test="returnNumber != null  and returnNumber != ''"> and return_number = #{returnNumber}</if>
-            <if test="isDelete != null "> and is_delete = #{isDelete}</if>
+            </otherwise>
+            </choose>
         </where>
     </select>
     

@@ -271,8 +271,8 @@ public class DPDServicesXMLClient {
             cod.setCurrency(ServiceCurrencyEnum.fromValue(ser.getCodCurrency()));
             services.setCod(cod);
 
-            ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
-            services.setRod(rod);
+//            ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
+//            services.setRod(rod);
 
             pkg.setServices(services);
 

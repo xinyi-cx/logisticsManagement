@@ -67,6 +67,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择" clearable filterable>
+          <el-option
+            v-for="dict in dict.type.sys_waybill"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
 <!--      <el-form-item label="LoginID" prop="loginid">-->
 <!--        <el-input-->
 <!--          v-model="queryParams.loginid"-->
@@ -193,15 +203,15 @@
 <!--          @keyup.enter.native="handleQuery"-->
 <!--        />-->
 <!--      </el-form-item>-->
-      <el-form-item label="状态" prop="status">
-        <el-input
-          v-model="queryParams.status"
-          placeholder="请输入备注5"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="备注5" prop="remark5">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.remark5"-->
+<!--          placeholder="请输入备注5"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
 <!--      <el-form-item label="激活时间" prop="activedDate">-->
 <!--        <el-input-->
 <!--          v-model="queryParams.activedDate"-->
@@ -233,6 +243,15 @@
 <!--        <el-input-->
 <!--          v-model="queryParams.returnNumber"-->
 <!--          placeholder="请输入退件单号"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="是否删除" prop="isDelete">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.isDelete"-->
+<!--          placeholder="请输入是否删除"-->
 <!--          clearable-->
 <!--          size="small"-->
 <!--          @keyup.enter.native="handleQuery"-->
@@ -329,7 +348,11 @@
 <!--      <el-table-column label="备注5" align="center" prop="remark5" />-->
       <el-table-column label="激活时间" align="center" prop="activedDate" />
       <el-table-column label="最近物流时间" align="center" prop="lastStatusDate" />
-      <el-table-column label="状态" align="center" prop="status" />
+      <el-table-column label="状态" align="center" prop="status" >
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_waybill" :value="scope.row.status"/>
+        </template>
+      </el-table-column>
       <el-table-column label="新单号" align="center" prop="newNumber" />
       <el-table-column label="退件单号" align="center" prop="returnNumber" />
 <!--      <el-table-column label="是否删除" align="center" prop="isDelete" />-->
@@ -486,9 +509,11 @@
 
 <script>
 import { listContent, getContent, delContent, addContent, updateContent } from "@/api/system/content";
+import { getToken } from "@/utils/auth";
 
 export default {
   name: "Content",
+  dicts: ['sys_waybill'],
   data() {
     return {
       // 遮罩层
@@ -533,16 +558,12 @@ export default {
         description: null,
         needBox: null,
         createDate: null,
-        // remark2: null,
-        // remark3: null,
-        // remark4: null,
-        // remark5: null,
         activedDate: null,
         lastStatusDate: null,
         status: null,
         newNumber: null,
         returnNumber: null,
-        isDelete: null,
+        ids:[],
       },
       // 导入时点击确定后置灰，避免重复点击
       submitDisabled: false,
@@ -712,7 +733,9 @@ export default {
       }, `logic_template_${new Date().getTime()}.xlsx`)
     },
     /** 导出按钮操作 */
-    handleExport() {
+    handleExport(row) {
+      const ids = row.id || this.ids;
+      this.queryParams.ids = ids;
       this.download('system/content/export', {
         ...this.queryParams
       }, `content_${new Date().getTime()}.xlsx`)
