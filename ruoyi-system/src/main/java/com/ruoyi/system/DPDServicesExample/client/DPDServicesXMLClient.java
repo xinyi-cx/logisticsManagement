@@ -208,7 +208,7 @@ public class DPDServicesXMLClient {
         if (org.apache.commons.collections4.CollectionUtils.isEmpty(packageDpdMappings)) {
             return new HashMap<>();
         }
-        return packageDpdMappings.stream().collect(toMap(PackageDpdMapping::getDpdField, PackageDpdMapping::getPackageField));
+        return packageDpdMappings.stream().collect(toMap(PackageDpdMapping::getDpdField, PackageDpdMapping::getPackageField, (o1, o2)->o1));
     }
 
     /**

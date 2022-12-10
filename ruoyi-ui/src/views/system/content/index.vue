@@ -319,35 +319,27 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="contentList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="contentList" stripe border
+              @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
-<!--      <el-table-column label="主键" align="center" prop="id" />-->
-<!--      <el-table-column label="document表id" align="center" prop="documentFileId" />-->
-<!--      <el-table-column label="package表id" align="center" prop="packId" />-->
-<!--      <el-table-column label="batch_id" align="center" prop="batchId" />-->
-<!--      <el-table-column label="logic_id" align="center" prop="logicId" />-->
-      <el-table-column label="物流单号" align="center" prop="newWaybill" />
+      <el-table-column label="物流单号" align="center" prop="newWaybill" width="180px" fixed />
       <el-table-column label="客户" align="center" prop="client" />
       <el-table-column label="国家" align="center" prop="country" />
       <el-table-column label="业务" align="center" prop="importType" />
-      <el-table-column label="账户" align="center" prop="loginid" />
-      <el-table-column label="订单号" align="center" prop="orderNumber" />
+      <el-table-column label="账户" align="center" prop="loginid" width="150px"/>
+      <el-table-column label="订单号" align="center" prop="orderNumber" width="180px" />
       <el-table-column label="COD" align="center" prop="valuePlnCod" />
 <!--      currency ？？？？-->
       <el-table-column label="重量" align="center" prop="weightKg" />
-      <el-table-column label="收件人" align="center" prop="recipientName" />
-      <el-table-column label="收件人电话" align="center" prop="recipientPhone" />
-      <el-table-column label="收件人邮箱" align="center" prop="recipientEmail" />
-      <el-table-column label="描述" align="center" prop="description" />
+      <el-table-column label="收件人" align="center" prop="recipientName" width="150px"/>
+      <el-table-column label="收件人电话" align="center" prop="recipientPhone" width="110px" />
+      <el-table-column label="收件人邮箱" align="center" prop="recipientEmail" width="150px"/>
+      <el-table-column label="描述" align="center" prop="description" width="100px" />
       <el-table-column label="盒子" align="center" prop="needBox" />
-      <el-table-column label="Create Date" align="center" prop="createDate" />
-<!--      <el-table-column label="备注1" align="center" prop="remark" />-->
-<!--      <el-table-column label="备注2" align="center" prop="remark2" />-->
-<!--      <el-table-column label="备注3" align="center" prop="remark3" />-->
-<!--      <el-table-column label="备注4" align="center" prop="remark4" />-->
-<!--      <el-table-column label="备注5" align="center" prop="remark5" />-->
-      <el-table-column label="激活时间" align="center" prop="activedDate" />
-      <el-table-column label="最近物流时间" align="center" prop="lastStatusDate" />
+      <el-table-column label="Create Date" align="center" prop="createDate" width="150px"/>
+      <el-table-column label="激活时间" align="center" prop="activedDate" width="120px"/>
+      <el-table-column label="最近物流时间" align="center" prop="lastStatusDate" width="120px" />
       <el-table-column label="状态" align="center" prop="status" >
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_waybill" :value="scope.row.status"/>
@@ -384,97 +376,6 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改导入查询物流对话框 -->
-<!--    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>-->
-<!--      <el-form ref="form" :model="form" :rules="rules" label-width="80px">-->
-<!--        <el-form-item label="document表id" prop="documentFileId">-->
-<!--          <el-input v-model="form.documentFileId" placeholder="请输入document表id" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="package表id" prop="packId">-->
-<!--          <el-input v-model="form.packId" placeholder="请输入package表id" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="batch_id" prop="batchId">-->
-<!--          <el-input v-model="form.batchId" placeholder="请输入batch_id" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="logic_id" prop="logicId">-->
-<!--          <el-input v-model="form.logicId" placeholder="请输入logic_id" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="CLIENT" prop="client">-->
-<!--          <el-input v-model="form.client" placeholder="请输入CLIENT" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Country" prop="country">-->
-<!--          <el-input v-model="form.country" placeholder="请输入Country" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="LoginID" prop="loginid">-->
-<!--          <el-input v-model="form.loginid" placeholder="请输入LoginID" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="New waybill" prop="newWaybill">-->
-<!--          <el-input v-model="form.newWaybill" placeholder="请输入New waybill" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Order number" prop="orderNumber">-->
-<!--          <el-input v-model="form.orderNumber" placeholder="请输入Order number" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="value PLN (COD)" prop="valuePlnCod">-->
-<!--          <el-input v-model="form.valuePlnCod" placeholder="请输入value PLN (COD)" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Weight kg" prop="weightKg">-->
-<!--          <el-input v-model="form.weightKg" placeholder="请输入Weight kg" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="recipient name" prop="recipientName">-->
-<!--          <el-input v-model="form.recipientName" placeholder="请输入recipient name" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Recipient phone" prop="recipientPhone">-->
-<!--          <el-input v-model="form.recipientPhone" placeholder="请输入Recipient phone" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Recipient E-mail" prop="recipientEmail">-->
-<!--          <el-input v-model="form.recipientEmail" placeholder="请输入Recipient E-mail" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Description" prop="description">-->
-<!--          <el-input v-model="form.description" placeholder="请输入Description" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Need box" prop="needBox">-->
-<!--          <el-input v-model="form.needBox" placeholder="请输入Need box" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Create Date" prop="createDate">-->
-<!--          <el-input v-model="form.createDate" placeholder="请输入Create Date" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="备注1" prop="remark">-->
-<!--          <el-input v-model="form.remark" placeholder="请输入备注1" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="备注2" prop="remark2">-->
-<!--          <el-input v-model="form.remark2" placeholder="请输入备注2" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="备注3" prop="remark3">-->
-<!--          <el-input v-model="form.remark3" placeholder="请输入备注3" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="备注4" prop="remark4">-->
-<!--          <el-input v-model="form.remark4" placeholder="请输入备注4" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="备注5" prop="remark5">-->
-<!--          <el-input v-model="form.remark5" placeholder="请输入备注5" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="激活时间" prop="activedDate">-->
-<!--          <el-input v-model="form.activedDate" placeholder="请输入激活时间" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="最近物流时间" prop="lastStatusDate">-->
-<!--          <el-input v-model="form.lastStatusDate" placeholder="请输入最近物流时间" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="新单号" prop="newNumber">-->
-<!--          <el-input v-model="form.newNumber" placeholder="请输入新单号" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="退件单号" prop="returnNumber">-->
-<!--          <el-input v-model="form.returnNumber" placeholder="请输入退件单号" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="是否删除" prop="isDelete">-->
-<!--          <el-input v-model="form.isDelete" placeholder="请输入是否删除" />-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
-<!--      <div slot="footer" class="dialog-footer">-->
-<!--        <el-button type="primary" @click="submitForm">确 定</el-button>-->
-<!--        <el-button @click="cancel">取 消</el-button>-->
-<!--      </div>-->
-<!--    </el-dialog>-->
-
     <!--    导入匹配 importPackageForNoGen-->
     <el-dialog :title="uploadNo.title" :visible.sync="uploadNo.open" width="400px" append-to-body>
       <el-upload
@@ -506,6 +407,16 @@
 
   </div>
 </template>
+
+<style>
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #f0f9eb;
+}
+</style>
 
 <script>
 import { listContent, getContent, delContent, addContent, updateContent } from "@/api/system/content";

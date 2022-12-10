@@ -885,11 +885,11 @@ public class PackageServiceImpl implements IPackageService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVos) throws Exception {
         Documents documents = getDocuments(file);
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
-        batchTaskHistory.setType("面单导入");
+        batchTaskHistory.setType("物流信息导入");
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
         batchTaskHistory.setFileName(documents.getDisplayName());
@@ -948,9 +948,11 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setDocumentFileId(documents.getId());
             importLogicContent.setPackId(pac.getId());
             importLogicContent.setClient(list.get(2));
-            importLogicContent.setCountry(list.get(3));
-            importLogicContent.setImportType(getType(list.get(1)));
-            importLogicContent.setNeedBox(list.get(5).contains("box") ? "Y" : "N");
+            String type =  getType(list.get(1));
+            importLogicContent.setCountry(type.equals("本地")?list.get(4):list.get(3));
+            importLogicContent.setImportType(type);
+            String box = type.equals("本地")?list.get(6):list.get(5);
+            importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContents.add(importLogicContent);
@@ -977,9 +979,10 @@ public class PackageServiceImpl implements IPackageService {
             batchTaskHistory.setFailNum(0);
             // 异步查询一下物流信息
             getLogic(parcels);
-            return "面单导入成功，成功" +
-                    batchTaskHistory.getSuccessNum() + "条，失败" +
-                    batchTaskHistory.getFailNum() + "条。\n";
+            return "物流信息导入成功，请稍后查询最新物流信息";
+//                    +
+//                    batchTaskHistory.getSuccessNum() + "条，失败" +
+//                    batchTaskHistory.getFailNum() + "条。\n";
         }catch (Exception e){
             batchTaskHistory.setStatus("上传失败");
             e.printStackTrace();
@@ -1003,7 +1006,7 @@ public class PackageServiceImpl implements IPackageService {
     }
 
     @Async
-    void getLogic(List<Parcel> parcels){
+    public void getLogic(List<Parcel> parcels){
         parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
     }
 
@@ -1014,7 +1017,7 @@ public class PackageServiceImpl implements IPackageService {
         if (CollectionUtils.isEmpty(packageDpdMappings)) {
             return new HashMap<>();
         }
-        return packageDpdMappings.stream().collect(toMap(PackageDpdMapping::getDpdField, PackageDpdMapping::getImportName));
+        return packageDpdMappings.stream().collect(toMap(PackageDpdMapping::getDpdField, PackageDpdMapping::getImportName, (o1, o2) -> o1));
     }
 
     private List<String> checkCountryAndZip(List<PackageVo> packageVos){
