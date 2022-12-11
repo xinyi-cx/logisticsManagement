@@ -304,7 +304,7 @@
           size="mini"
           @click="handleImportForNo"
           v-hasPermi="['system:content:add']"
-        >导入(不生成dpd面单)</el-button>
+        >导入</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -393,8 +393,17 @@
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip text-center" slot="tip">
-          <span>仅允许导入xls、xlsx格式文件。</span>
-          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplateForNo">下载模板</el-link>
+          <div><span style="color: red;">*各业务文件命名规则示例：</span><br/>
+            <div style="text-align: left;">本地货：DPD Local Wolin coat pol 20221212 34box export xls</div>
+            <div style="text-align: left;">转 寄：DPD Resend Wolin pol 20221212 34box export xls</div>
+            <div style="text-align: left;">直 发：DPD Origianl Wolin pol 20221212 34b export xls</div>
+          </div>
+          <div>
+            <span style="color: red;">仅允许导入xls、xlsx格式文件。</span>
+            <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplateForNo">下载模板</el-link>
+          </div>
+
+
           <!--          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplatePDF">下载测试数据</el-link>-->
         </div>
       </el-upload>
@@ -641,7 +650,7 @@ export default {
     },
     importTemplateForNo() {
       this.download('system/content/importTemplateNoGen', {
-      }, `logic_template_${new Date().getTime()}.xlsx`)
+      }, `DPD Local Wolin coat pol 20221201 43box export xls template.xlsx`)
     },
     /** 导出按钮操作 */
     handleExport(row) {
