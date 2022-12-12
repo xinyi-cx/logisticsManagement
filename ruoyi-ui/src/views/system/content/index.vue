@@ -1,12 +1,34 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="业务" prop="importType">
+        <el-select v-model="queryParams.importType" placeholder="请选择" clearable filterable>
+          <el-option
+            v-for="dict in dict.type.sys_waybill_import"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="激活时间">
         <el-date-picker
           v-model="dateRange"
           size="small"
           style="width: 240px"
           value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="创建时间">
+        <el-date-picker
+          v-model="dateRange2"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy/MM/dd"
           type="daterange"
           range-separator="-"
           start-placeholder="开始日期"
@@ -433,7 +455,7 @@ import { getToken } from "@/utils/auth";
 
 export default {
   name: "Content",
-  dicts: ['sys_waybill'],
+  dicts: ['sys_waybill','sys_waybill_import'],
   data() {
     return {
       // 遮罩层
@@ -456,6 +478,7 @@ export default {
       open: false,
       // 日期范围
       dateRange: [],
+      dateRange2:[],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -512,6 +535,10 @@ export default {
   methods: {
     /** 查询导入查询物流列表 */
     getList() {
+      this.queryParams.params = typeof (this.queryParams.params) === 'object' && this.queryParams.params !== null && !Array.isArray(this.queryParams.params) ? this.queryParams.params : {};
+      this.dateRange1 = Array.isArray(this.dateRange) ? this.dateRange : [];
+      this.queryParams.params['beginTime'] = this.dateRange1[0];
+      this.queryParams.params['endTime'] = this.dateRange1[1];
       this.loading = true;
       listContent(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.contentList = response.rows;

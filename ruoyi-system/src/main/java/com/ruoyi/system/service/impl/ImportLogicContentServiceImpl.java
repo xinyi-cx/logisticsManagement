@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.ImportLogicContent;
 import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
@@ -53,6 +54,10 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
      */
     @Override
     public List<ImportLogicContent> selectImportLogicContentList(ImportLogicContent importLogicContent) {
+        //对账
+        if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
+            importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        }
         return importLogicContentMapper.selectImportLogicContentList(importLogicContent);
     }
 

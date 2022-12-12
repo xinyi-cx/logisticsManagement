@@ -313,7 +313,6 @@ public class PackageController extends BaseController
     }
 
     @Log(title = "面单导入不生成dpd", businessType = BusinessType.IMPORT)
-    @PreAuthorize("@ss.hasPermi('system:package:add')")
     @PostMapping("/importPackageForNoGen")
     public AjaxResult importPackageForNoGen(MultipartFile file) throws Exception
     {
