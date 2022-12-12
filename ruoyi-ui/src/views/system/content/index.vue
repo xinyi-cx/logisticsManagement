@@ -99,15 +99,15 @@
           ></el-option>
         </el-select>
       </el-form-item>
-<!--      <el-form-item label="LoginID" prop="loginid">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.loginid"-->
-<!--          placeholder="请输入LoginID"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <el-form-item label="订单号" prop="orderNumber">
+        <el-input
+          v-model="queryParams.orderNumber"
+          placeholder="请输入订单号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
 <!--      <el-form-item label="New waybill" prop="newWaybill">-->
 <!--        <el-input-->
 <!--          v-model="queryParams.newWaybill"-->
