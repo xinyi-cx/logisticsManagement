@@ -79,8 +79,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packId != null "> and pack_id = #{packId}</if>
             <if test="batchId != null "> and batch_id = #{batchId}</if>
             <if test="logicId != null "> and logic_id = #{logicId}</if>
-            <if test="client != null  and client != ''"> and client = #{client}</if>
-            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="client != null  and client != ''"> and UPPER(client) = #{client}</if>
+            <if test="country != null  and country != ''"> and UPPER(country)  = #{country}</if>
             <if test="importType != null  and importType != ''"> and import_type = #{importType}</if>
             <if test="loginid != null  and loginid != ''"> and loginId = #{loginid}</if>
             <if test="newWaybill != null  and newWaybill != ''"> and new_waybill = #{newWaybill}</if>

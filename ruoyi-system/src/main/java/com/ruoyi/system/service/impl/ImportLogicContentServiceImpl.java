@@ -3,6 +3,7 @@ package com.ruoyi.system.service.impl;
 import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.ImportLogicContent;
 import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
@@ -58,11 +59,22 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
         if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
         }
+        dealParam(importLogicContent);
         return importLogicContentMapper.selectImportLogicContentList(importLogicContent);
+    }
+
+    private void dealParam(ImportLogicContent importLogicContent){
+        if (StringUtils.isNotEmpty(importLogicContent.getCountry())) {
+            importLogicContent.setCountry(importLogicContent.getCountry().toUpperCase());
+        }
+        if (StringUtils.isNotEmpty(importLogicContent.getClient())) {
+            importLogicContent.setClient(importLogicContent.getClient().toUpperCase());
+        }
     }
 
     @Override
     public List<ExportLogicContentVo> exportImportLogicContentList(ImportLogicContent importLogicContent) {
+        dealParam(importLogicContent);
         List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentList(importLogicContent);
 
         List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(
