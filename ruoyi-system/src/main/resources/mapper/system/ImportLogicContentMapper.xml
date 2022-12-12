@@ -69,6 +69,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="params.endTime != null and params.endTime != ''">
                     AND left(actived_date,10) &lt;= #{params.endTime}
                 </if>
+                <if test="params.CreateDateBeginTime != null and params.CreateDateBeginTime != ''">
+                    AND left(create_date,10) &gt;= #{params.CreateDateBeginTime}
+                </if>
+                <if test="params.CreateDateEndTime != null and params.CreateDateEndTime != ''">
+                    AND left(create_date,10) &lt;= #{params.CreateDateEndTime}
+                </if>
             <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
             <if test="packId != null "> and pack_id = #{packId}</if>
             <if test="batchId != null "> and batch_id = #{batchId}</if>
@@ -86,7 +92,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="recipientEmail != null  and recipientEmail != ''"> and recipient_email = #{recipientEmail}</if>
             <if test="description != null  and description != ''"> and description = #{description}</if>
             <if test="needBox != null  and needBox != ''"> and need_box = #{needBox}</if>
-            <if test="createDate != null  and createDate != ''"> and create_date = #{createDate}</if>
             <if test="activedDate != null  and activedDate != ''"> and actived_date = #{activedDate}</if>
             <if test="lastStatusDate != null  and lastStatusDate != ''"> and last_status_date = #{lastStatusDate}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>

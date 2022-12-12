@@ -537,8 +537,8 @@ export default {
     getList() {
       this.queryParams.params = typeof (this.queryParams.params) === 'object' && this.queryParams.params !== null && !Array.isArray(this.queryParams.params) ? this.queryParams.params : {};
       this.dateRange1 = Array.isArray(this.dateRange) ? this.dateRange : [];
-      this.queryParams.params['beginTime'] = this.dateRange1[0];
-      this.queryParams.params['endTime'] = this.dateRange1[1];
+      this.queryParams.params['CreateDateBeginTime'] = this.dateRange1[0];
+      this.queryParams.params['CreateDateEndTime'] = this.dateRange1[1];
       this.loading = true;
       listContent(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.contentList = response.rows;
