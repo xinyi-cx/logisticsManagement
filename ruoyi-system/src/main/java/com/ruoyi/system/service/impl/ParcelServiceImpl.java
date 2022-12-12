@@ -108,6 +108,7 @@ public class ParcelServiceImpl implements IParcelService
     public void getParcelMsg(Parcel parcel){
         System.out.println("getParcelMsg start");
         List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);
+        System.out.println("getParcelMsg size"+parcels.size());
         parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
         System.out.println("getParcelMsg end");
     }
