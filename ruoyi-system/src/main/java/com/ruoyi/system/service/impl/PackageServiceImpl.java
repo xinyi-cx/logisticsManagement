@@ -732,7 +732,7 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setType("面单导入");
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
-        batchTaskHistory.setFileName(documents.getFileName());
+        batchTaskHistory.setFileName(documents.getDisplayName());
         batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
@@ -780,6 +780,7 @@ public class PackageServiceImpl implements IPackageService {
         AddressSender addressSender = getSender();
         List<Package> packages = new ArrayList<>();
         List<RedirectPackage> redirectPackages = new ArrayList<>();
+        List<ImportLogicContent> importLogicContents = new ArrayList<>();
         for (PackageVo packageVo : packageVos) {
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
             Services services = getServices(packageVo, getId(nameMap, "services_seq"));
@@ -814,6 +815,31 @@ public class PackageServiceImpl implements IPackageService {
                 redirectPackage.setId(pac.getId());
                 redirectPackages.add(redirectPackage);
             }
+
+            List<String> list = Arrays.asList(documents.getDisplayName().split(" "));
+            //导入信息新增
+            ImportLogicContent importLogicContent = new ImportLogicContent();
+//            BeanUtils.copyProperties(packageVo, importLogicContent, "id");
+            importLogicContent.setBatchId(batchTaskHistory.getId());
+            importLogicContent.setDocumentFileId(documents.getId());
+            importLogicContent.setPackId(pac.getId());
+            importLogicContent.setRecipientName(addressReceiver.getName());
+            importLogicContent.setRecipientEmail(addressReceiver.getEmail());
+            importLogicContent.setRecipientPhone(addressReceiver.getPhone());
+            importLogicContent.setValuePlnCod(packageVo.getPln().toString());
+            importLogicContent.setWeightKg(packageVo.getWeight().toString());
+//            importLogicContent.setClient(addressSender.getName());
+//            importLogicContent.setCountry(addressSender.getCountryCode());
+            importLogicContent.setClient(list.get(2));
+            String type =  getType(list.get(1));
+            importLogicContent.setCountry(type.equals("本地")?list.get(4):list.get(3));
+            importLogicContent.setImportType(type);
+            String box = type.equals("本地")?list.get(6):list.get(5);
+            importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
+            importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+            importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
+            importLogicContents.add(importLogicContent);
+
         }
         try {
             List<PackagesGenerationResponse> returnResponses = dpdServicesXMLClient.generatePackagesNumberByBusiness(packages);
@@ -835,6 +861,7 @@ public class PackageServiceImpl implements IPackageService {
             servicesMapper.batchInsert(servicesList);
             parcelMapper.batchInsert(parcels);
             packagesGenerationResponseMapper.batchInsert(returnResponses);
+            importLogicContentMapper.batchInsert(importLogicContents);
             if(!reflag){
                 dealForRedirect(new ArrayList<String>(originalWaybills));
                 redirectPackageMapper.batchInsert(redirectPackages);
