@@ -345,7 +345,12 @@
               @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="物流单号" align="center" prop="newWaybill" width="180px" fixed />
+<!--      <el-table-column label="物流单号" align="center" prop="newWaybill" width="180px" fixed />-->
+      <el-table-column fixed label="物流单号" align="center" width="180px" fixed>
+        <template slot-scope="scope">
+          <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.newWaybill" target="_blank">{{scope.row.newWaybill}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="客户" align="center" prop="client" />
       <el-table-column label="国家" align="center" prop="country" />
       <el-table-column label="业务" align="center" prop="importType" />
@@ -367,8 +372,18 @@
           <dict-tag :options="dict.type.sys_waybill" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="新单号" align="center" prop="newNumber" />
-      <el-table-column label="退件单号" align="center" prop="returnNumber" />
+<!--      <el-table-column label="新单号" align="center" prop="newNumber" />-->
+      <el-table-column fixed label="新单号" align="center">
+        <template slot-scope="scope">
+          <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.newNumber" target="_blank">{{scope.row.newNumber}}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column fixed label="退件单号" align="center" width="180px" fixed>
+        <template slot-scope="scope">
+          <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.returnNumber" target="_blank">{{scope.row.returnNumber}}</el-link>
+        </template>
+      </el-table-column>
+<!--      <el-table-column label="退件单号" align="center" prop="returnNumber" />-->
 <!--      <el-table-column label="是否删除" align="center" prop="isDelete" />-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
