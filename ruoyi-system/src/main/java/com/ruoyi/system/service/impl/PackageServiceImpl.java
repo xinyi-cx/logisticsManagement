@@ -1,6 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -838,6 +839,7 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
+            importLogicContent.setStatus(SysWaybill.WCXDWLXX.getCode());
             importLogicContents.add(importLogicContent);
 
         }
@@ -914,6 +916,12 @@ public class PackageServiceImpl implements IPackageService {
     @Override
 //    @Transactional(rollbackFor = Exception.class)
     public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVos) throws Exception {
+        String fileName = file.getOriginalFilename();
+        List<String> list = Arrays.asList(fileName.split(" "));
+        if (CollectionUtils.isEmpty(list) || list.size()<6 || !(list.contains("resend") || list.contains("local")|| list.contains("original")) ){
+            return "文件命名错误";
+        }
+
         Documents documents = getDocuments(file);
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setType("物流信息导入");
@@ -966,8 +974,6 @@ public class PackageServiceImpl implements IPackageService {
 
             //            DPD Resend Wolin pol 20221101 23box exoort xls
 //            DPD Resend Wolin pol 20221101 23 exoort xls
-            String fileName = documents.getDisplayName();
-            List<String> list = Arrays.asList(fileName.split(" "));
             //导入信息新增
             ImportLogicContent importLogicContent = new ImportLogicContent();
             BeanUtils.copyProperties(packageVo, importLogicContent, "id");
@@ -982,6 +988,7 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
+            importLogicContent.setStatus(SysWaybill.WCXDWLXX.getCode());
             importLogicContents.add(importLogicContent);
 
             batchTaskHistory.setType(StringUtils.isEmpty(importLogicContent.getImportType()) ? batchTaskHistory.getType() : importLogicContent.getImportType());

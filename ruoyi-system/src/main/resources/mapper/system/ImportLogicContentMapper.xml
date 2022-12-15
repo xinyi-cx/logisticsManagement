@@ -223,6 +223,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="updateImportLogicContentByWayBill" parameterType="ImportLogicContent">
+        update import_logic_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="lastStatusDate != null">last_status_date = #{lastStatusDate},</if>
+            <if test="status != null">status = #{status},</if>
+            update_time = sysdate()
+        </trim>
+        where new_waybill = #{newWaybill} or new_number = #{newWaybill} or return_number = #{newWaybill}
+    </update>
+
     <update id="updateImportLogicContentByWaybill" parameterType="ImportLogicContent">
         update import_logic_content
         <trim prefix="SET" suffixOverrides=",">

@@ -231,8 +231,12 @@ public class DPDInfoXMLClient {
         parcel.setStatus(status);
         logisticsInfo.setStatus(status);
         logisticsInfo.setWaybill(waybillLRel.getWaybillL());
-        logisticsInfo.setLastMsg(customerEventV3s.get(0).getDescription());
-        logisticsInfo.setLastTime(customerEventV3s.get(0).getEventTime());
+        if (CollectionUtils.isEmpty(customerEventV3s)){
+            logisticsInfo.setLastMsg("未查询到物流信息");
+        }else {
+            logisticsInfo.setLastMsg(customerEventV3s.get(0).getDescription());
+            logisticsInfo.setLastTime(customerEventV3s.get(0).getEventTime());
+        }
 
         List<String> waybills = new ArrayList<>();
         waybills.add(waybillLRel.getWaybillL());
@@ -295,9 +299,21 @@ public class DPDInfoXMLClient {
     public void dealWlData(List<String> waybills, List<LogisticsInfo> logisticsInfos) {
         if (!CollectionUtils.isEmpty(logisticsInfos)) {
             logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
-            logisticsInfos.forEach(item -> item.setId(null));
+            logisticsInfos.forEach(item ->
+            {
+                item.setId(null);
+                updateImportContent(item);
+            });
             logisticsInfoMapper.batchInsert(logisticsInfos);
         }
+    }
+
+    private void updateImportContent(LogisticsInfo logisticsInfo){
+        ImportLogicContent importLogicContent = new ImportLogicContent();
+        importLogicContent.setStatus(logisticsInfo.getStatus());
+        importLogicContent.setNewWaybill(logisticsInfo.getWaybill());
+        importLogicContent.setLastStatusDate(logisticsInfo.getLastTime());
+        importLogicContentMapper.updateImportLogicContentByWayBill(importLogicContent);
     }
 
     private List<WaybillLRel> getRL(String waybill, List<CustomerEventDataV3> allEventDataList) {
@@ -354,7 +370,7 @@ public class DPDInfoXMLClient {
      */
     private String getStatus(List<CustomerEventV3> customerEventV3s) {
         if (CollectionUtils.isEmpty(customerEventV3s)) {
-            return "";
+            return SysWaybill.WCXDWLXX.getCode();
         }
         if (customerEventV3s.size() == 1 && customerEventV3s.get(0).getBusinessCode().equals("030103")) {
             return SysWaybill.WJH.getCode();

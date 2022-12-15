@@ -551,10 +551,11 @@ export default {
     /** 查询导入查询物流列表 */
     getList() {
       this.queryParams.params = typeof (this.queryParams.params) === 'object' && this.queryParams.params !== null && !Array.isArray(this.queryParams.params) ? this.queryParams.params : {};
-      this.dateRange1 = Array.isArray(this.dateRange) ? this.dateRange : [];
-      this.queryParams.params['CreateDateBeginTime'] = this.dateRange1[0];
-      this.queryParams.params['CreateDateEndTime'] = this.dateRange1[1];
+      // this.dateRange2 = Array.isArray(this.dateRange2) ? this.dateRange2 : [];
+      this.queryParams.params['CreateDateBeginTime'] = this.dateRange2[0];
+      this.queryParams.params['CreateDateEndTime'] = this.dateRange2[1];
       this.loading = true;
+      // debugger;
       listContent(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.contentList = response.rows;
         this.total = response.total;

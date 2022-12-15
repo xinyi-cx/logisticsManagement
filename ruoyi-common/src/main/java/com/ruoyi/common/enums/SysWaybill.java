@@ -11,7 +11,8 @@ public enum SysWaybill
     GP("2", "改派"),
     YQS("3", "已签收"),
     YTJ("4", "已退件"),
-    ZJ("5", "转寄");
+    ZJ("5", "转寄"),
+    WCXDWLXX("7", "未查询到物流信息");
 
     private final String code;
     private final String info;
