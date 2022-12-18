@@ -20,6 +20,8 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
 
     public static String YYYY_MM_DD = "yyyy-MM-dd";
 
+    public static String YYYY_MM_DD2 = "yyyy/MM/dd";
+
     public static String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
     public static String YYYYMMDD = "yyyyMMdd";
@@ -49,6 +51,11 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     public static String getDate()
     {
         return dateTimeNow(YYYY_MM_DD);
+    }
+
+    public static String getDate2()
+    {
+        return dateTimeNow(YYYY_MM_DD2);
     }
 
     public static final String getTime()

@@ -18,6 +18,16 @@ import java.util.List;
 public class PackageVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
+    private Integer exportFlag;
+
+    public Integer getExportFlag() {
+        return exportFlag;
+    }
+
+    public void setExportFlag(Integer exportFlag) {
+        this.exportFlag = exportFlag;
+    }
+
     /** CLIENT */
 //    @Excel(name = "CLIENT")
     private String client;

@@ -97,16 +97,16 @@
         >导出</el-button>
       </el-col>
 <!--no-->
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-upload2"
-          size="mini"
-          @click="handleImportForNo"
-          v-hasPermi="['system:package:add']"
-        >导入(不生成dpd面单)</el-button>
-      </el-col>
+<!--      <el-col :span="1.5">-->
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          icon="el-icon-upload2"-->
+<!--          size="mini"-->
+<!--          @click="handleImportForNo"-->
+<!--          v-hasPermi="['system:package:add']"-->
+<!--        >导入(不生成dpd面单)</el-button>-->
+<!--      </el-col>-->
 <!--      no-->
       <el-col :span="1.5">
         <el-button
@@ -550,7 +550,8 @@ export default {
         createUser: null,
         updateUser: null,
         createdTime: null,
-        updatedTime: null
+        updatedTime: null,
+        ids:[]
       },
       // 表单参数
       form: {},
@@ -821,19 +822,25 @@ export default {
       }).catch(() => {});
     },
     /** 导出按钮操作 */
-    handleExport() {
+    handleExport(row) {
+      const ids = row.id || this.ids;
+      this.queryParams.ids = ids;
       this.download('system/package/export', {
         ...this.queryParams
       }, `package_${new Date().getTime()}.xlsx`)
     },
     /** 捷克导出按钮操作 */
-    handleExportForCz() {
+    handleExportForCz(row) {
+      const ids = row.id || this.ids;
+      this.queryParams.ids = ids;
       this.download('system/package/exportCz', {
         ...this.queryParams
       }, `package_${new Date().getTime()}.xlsx`)
     },
     /** 导出按钮操作 */
-    handleExportTwo() {
+    handleExportTwo(row) {
+      const ids = row.id || this.ids;
+      this.queryParams.ids = ids;
       this.download('system/package/exportTwo', {
         ...this.queryParams
       }, `package_${new Date().getTime()}.xlsx`)

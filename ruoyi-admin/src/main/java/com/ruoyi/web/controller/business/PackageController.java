@@ -88,6 +88,7 @@ public class PackageController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, PackageVo pkg)
     {
+        pkg.setExportFlag(1);
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
         List<ExportPackageVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
@@ -113,6 +114,7 @@ public class PackageController extends BaseController
     @PostMapping("/exportTwo")
     public void exportTwo(HttpServletResponse response, PackageVo pkg)
     {
+        pkg.setExportFlag(1);
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
         List<ExportTwoPackageVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
@@ -138,6 +140,7 @@ public class PackageController extends BaseController
     @PostMapping("/exportCz")
     public void exportCz(HttpServletResponse response, PackageVo pkg)
     {
+        pkg.setExportFlag(1);
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
         List<ExportPackageCzVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
@@ -164,6 +167,7 @@ public class PackageController extends BaseController
     @PostMapping("/exportRe")
     public void exportRe(HttpServletResponse response, PackageVo pkg)
     {
+        pkg.setExportFlag(1);
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
         List<ExportRePackageVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
@@ -189,6 +193,7 @@ public class PackageController extends BaseController
     @PostMapping("/exportReCz")
     public void exportReCz(HttpServletResponse response, PackageVo pkg)
     {
+        pkg.setExportFlag(1);
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
         List<ExportRePackageCzVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){

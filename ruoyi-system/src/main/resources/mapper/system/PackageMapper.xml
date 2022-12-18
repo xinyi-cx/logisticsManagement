@@ -31,6 +31,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPackageVo"/>
         <where>
             is_delete = 0
+            <choose>
+            <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
+                AND id in
+                <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                    #{item}
+                </foreach>
+            </when >
+            <otherwise>
             <if test="payerType != null  and payerType != ''"> and payer_type = #{payerType}</if>
             <if test="senderId != null "> and sender_id = #{senderId}</if>
             <if test="receiverId != null "> and receiver_id = #{receiverId}</if>
@@ -45,6 +53,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createdTime != null"> and date_format(created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
             <if test="updatedTime != null"> and date_format(updated_time,'%Y-%m-%d') = date_format(#{updatedTime},'%Y-%m-%d')</if>
             <if test="paramMonth != null  and paramMonth != ''">and date_format(created_time,'%Y%m') = #{paramMonth}</if>
+            </otherwise>
+            </choose>
         </where>
         order by updated_time desc
     </select>

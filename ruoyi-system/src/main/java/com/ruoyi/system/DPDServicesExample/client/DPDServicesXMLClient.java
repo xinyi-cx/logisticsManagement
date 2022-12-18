@@ -493,6 +493,10 @@ public class DPDServicesXMLClient {
             parcel.setPackageId(sourse.getPackageId());
             parcel.setParcelId(parcelPGRV2.getParcelId());
         }
+
+        ImportLogicContent importLogicContent = targetPackage.getImportLogicContent();
+        importLogicContent.setNewWaybill(parcelPGRV2s.get(0).getWaybill());
+
         //错误信息
         if ("INCORRECT_DATA".equals(sourse.getStatus())) {
             targetPackagesGenerationResponse.setMsg(dealErrorMsg(sourse.getValidationDetails().getValidationInfo()));

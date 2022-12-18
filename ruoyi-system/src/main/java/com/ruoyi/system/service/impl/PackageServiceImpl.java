@@ -141,6 +141,7 @@ public class PackageServiceImpl implements IPackageService {
         if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
             paramPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         }
+//       直接查询物流表
         List<Package> packages = packageMapper.selectPackageList(paramPackage);
         if (CollectionUtils.isEmpty(packages)) {
             return new HashMap();
@@ -807,7 +808,7 @@ public class PackageServiceImpl implements IPackageService {
             parcels1.add(parcel);
             pac.setParcels(parcels1);
             pac.setSender(addressSender);
-            packages.add(pac);
+
             if(!reflag){
                 RedirectPackage redirectPackage = new RedirectPackage();
                 redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
@@ -840,7 +841,12 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setStatus(SysWaybill.WCXDWLXX.getCode());
-            importLogicContents.add(importLogicContent);
+            importLogicContent.setLoginid(SecurityUtils.getLoginUser().getUsername());
+            importLogicContent.setOrderNumber(packageVo.getReference());
+            importLogicContent.setDescription(packageVo.getCustomerData1());
+            importLogicContent.setCreateDate(DateUtils.getDate2());
+            pac.setImportLogicContent(importLogicContent);
+            packages.add(pac);
 
         }
         try {
@@ -853,6 +859,7 @@ public class PackageServiceImpl implements IPackageService {
                 addressReceivers.add(pac.getReceiver());
                 servicesList.add(pac.getService());
                 parcels.addAll(pac.getParcels());
+                importLogicContents.add(pac.getImportLogicContent());
             }
             batchTaskHistory.setSessionId(returnResponses.get(0).getSessionId());
             batchTaskHistory.setSuccessNum((int) returnResponses.stream().filter(item -> "OK".equals(item.getPkgStatus())).count());

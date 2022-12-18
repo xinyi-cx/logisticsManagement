@@ -21,6 +21,27 @@ public class Package extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 面单主键 */
+    private List<Long> ids;
+
+    public List<Long> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
+    }
+
+    private Integer exportFlag;
+
+    public Integer getExportFlag() {
+        return exportFlag;
+    }
+
+    public void setExportFlag(Integer exportFlag) {
+        this.exportFlag = exportFlag;
+    }
+
+    /** 面单主键 */
     private Long id;
 
     /** 付款人类型 */
@@ -86,6 +107,16 @@ public class Package extends BaseEntity
     /** 下载次数 */
     @Excel(name = "下载次数")
     private Integer downloadNum;
+
+    private ImportLogicContent importLogicContent;
+
+    public ImportLogicContent getImportLogicContent() {
+        return importLogicContent;
+    }
+
+    public void setImportLogicContent(ImportLogicContent importLogicContent) {
+        this.importLogicContent = importLogicContent;
+    }
 
     /**
      * 安月查询参数 yyyyMM
