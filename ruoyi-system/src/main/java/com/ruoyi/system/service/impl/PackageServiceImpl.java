@@ -729,6 +729,12 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception {
+        String fileName = file.getOriginalFilename();
+        List<String> listFile = Arrays.asList(fileName.split(" "));
+        if (CollectionUtils.isEmpty(listFile) || listFile.size()<6 || !(
+                "resend".equalsIgnoreCase(listFile.get(1)) || "local".equalsIgnoreCase(listFile.get(1)) || "original".equalsIgnoreCase(listFile.get(1))) ){
+            return "文件命名错误";
+        }
         Documents documents = getDocuments(file);
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setType("面单导入");
@@ -907,7 +913,7 @@ public class PackageServiceImpl implements IPackageService {
             if (errFlag){
 //                returnStrBuf.append(errorStrBuf);
 //                下载文件前端也需要处理
-                returnStrBuf.append("失败原因请点击：").append(batchTaskHistory.getId());
+                returnStrBuf.append("失败原因请去批量任务历史页面查看：").append(batchTaskHistory.getId());
                 FileUtils.createTxtFile(errorMsgList, frontPath + "/error/", batchTaskHistory.getId().toString());
             }
             return returnStrBuf.toString();
@@ -925,7 +931,8 @@ public class PackageServiceImpl implements IPackageService {
     public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVos) throws Exception {
         String fileName = file.getOriginalFilename();
         List<String> list = Arrays.asList(fileName.split(" "));
-        if (CollectionUtils.isEmpty(list) || list.size()<6 || !(list.contains("resend") || list.contains("local")|| list.contains("original")) ){
+        if (CollectionUtils.isEmpty(list) || list.size()<6 || !(
+                "resend".equalsIgnoreCase(list.get(1)) || "local".equalsIgnoreCase(list.get(1)) || "original".equalsIgnoreCase(list.get(1))) ){
             return "文件命名错误";
         }
 
@@ -1138,7 +1145,8 @@ public class PackageServiceImpl implements IPackageService {
         addressReceiver.setEmail(pkg.getReceiverEmail());
         addressReceiver.setName(pkg.getReceiverName());
         addressReceiver.setPhone(pkg.getReceiverPhone());
-        addressReceiver.setPostalCode(pkg.getReceiverPostalCode());
+        String postalCode = pkg.getReceiverPostalCode().replace("-", "").replace("_", "").replace(" ", "");
+        addressReceiver.setPostalCode(postalCode.length() == 5 ? "0" + postalCode : postalCode);
         addressReceiver.setPln(pkg.getPln());
         if (ObjectUtils.isNotEmpty(id)) {
             addressReceiver.setId(id);

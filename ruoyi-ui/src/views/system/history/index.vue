@@ -213,8 +213,13 @@
             type="text"
             icon="el-icon-view"
             @click="handleDownload(scope.row)"
-            v-hasPermi="['system:history:edit']"
           >查看原始excel</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleDownloadError(scope.row)"
+          >查看导入面单错误信息</el-button>
           <el-button
             size="mini"
             type="text"
@@ -226,21 +231,19 @@
             type="text"
             icon="el-icon-view"
             @click="handleDownloadPDF(scope.row)"
-            v-hasPermi="['system:history:edit']"
           >查看批量面单</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-view"
-            @click="handleDownloadReLogic(scope.row)"
-            v-hasPermi="['system:history:edit']"
-          >导出物流信息（转寄）</el-button>
+<!--          <el-button-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            icon="el-icon-view"-->
+<!--            @click="handleDownloadReLogic(scope.row)"-->
+<!--            v-hasPermi="['system:history:edit']"-->
+<!--          >导出物流信息（转寄）</el-button>-->
           <el-button
             size="mini"
             type="text"
             icon="el-icon-view"
             @click="handleDownloadReContent(scope.row)"
-            v-hasPermi="['system:history:edit']"
           >导出物流</el-button>
         </template>
       </el-table-column>
@@ -495,6 +498,14 @@ export default {
       this.getUserInfo(userId);
       let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export labels`;
       this.download('system/package/getPDFByBatchId/' + id, {}, `${fileName}.pdf`)
+    },
+    handleDownloadError(row) {
+      this.reset();
+      const id = row.id;
+      const userId = parseInt(row.updateUser);
+      this.getUserInfo(userId);
+      let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export error`;
+      this.download('system/package/getTxtById/' + id, {}, `${fileName}.txt`)
     },
     /** 导入按钮操作 */
     handleImport() {

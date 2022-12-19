@@ -41,7 +41,6 @@ public class PackageController extends BaseController
     /**
      * 查询面单列表
      */
-    @PreAuthorize("@ss.hasPermi('system:package:list')")
     @GetMapping("/list")
     public TableDataInfo list(Package pkg)
     {
@@ -61,7 +60,6 @@ public class PackageController extends BaseController
     /**
      * 查询面单列表
      */
-    @PreAuthorize("@ss.hasPermi('system:package:list')")
     @GetMapping("/listAll")
     public TableDataInfo list(PackageVo pkg)
     {
@@ -73,7 +71,6 @@ public class PackageController extends BaseController
     /**
      * 转寄面单页面查询面单列表
      */
-    @PreAuthorize("@ss.hasPermi('system:package:list')")
     @GetMapping("/all")
     public List<PackageVo> all(PackageVo pkg)
     {
@@ -83,7 +80,6 @@ public class PackageController extends BaseController
     /**
      * 导出面单列表
      */
-    @PreAuthorize("@ss.hasPermi('system:package:export')")
     @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, PackageVo pkg)
@@ -109,7 +105,6 @@ public class PackageController extends BaseController
     /**
      * 导出面单列表
      */
-    @PreAuthorize("@ss.hasPermi('system:package:export')")
     @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/exportTwo")
     public void exportTwo(HttpServletResponse response, PackageVo pkg)
@@ -135,7 +130,6 @@ public class PackageController extends BaseController
     /**
      * 导出面单列表
      */
-    @PreAuthorize("@ss.hasPermi('system:package:export')")
     @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/exportCz")
     public void exportCz(HttpServletResponse response, PackageVo pkg)
@@ -162,7 +156,6 @@ public class PackageController extends BaseController
     /**
      * 导出面单列表+关联关系
      */
-    @PreAuthorize("@ss.hasPermi('system:package:export')")
     @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/exportRe")
     public void exportRe(HttpServletResponse response, PackageVo pkg)
@@ -188,7 +181,6 @@ public class PackageController extends BaseController
     /**
      * 导出面单列表+关联关系
      */
-    @PreAuthorize("@ss.hasPermi('system:package:export')")
     @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/exportReCz")
     public void exportReCz(HttpServletResponse response, PackageVo pkg)
@@ -236,7 +228,6 @@ public class PackageController extends BaseController
     /**
      * 获取面单详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:package:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -246,7 +237,6 @@ public class PackageController extends BaseController
     /**
      * 新增面单
      */
-    @PreAuthorize("@ss.hasPermi('system:package:add')")
     @Log(title = "面单", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody Package pkg)
@@ -257,7 +247,6 @@ public class PackageController extends BaseController
     /**
      * 新增面单
      */
-    @PreAuthorize("@ss.hasPermi('system:package:add')")
     @Log(title = "面单", businessType = BusinessType.INSERT)
     @PostMapping(value = "/addAll")
     public AjaxResult addAll(@RequestBody @Valid PackageVo pkg) throws Exception
@@ -265,6 +254,10 @@ public class PackageController extends BaseController
         return toAjax(packageService.insertPackage(pkg));
     }
 
+    /**
+     * 导出模板
+     * @param response
+     */
     @PostMapping("/importTemplate")
     public void importTemplate(HttpServletResponse response)
     {
@@ -272,6 +265,10 @@ public class PackageController extends BaseController
         util.importTemplateExcel(response, "面单数据");
     }
 
+    /**
+     * 导出模板
+     * @param response
+     */
     @PostMapping("/importTemplateCz")
     public void importTemplateCz(HttpServletResponse response)
     {
@@ -333,7 +330,6 @@ public class PackageController extends BaseController
     }
 
     @Log(title = "面单导入", businessType = BusinessType.IMPORT)
-    @PreAuthorize("@ss.hasPermi('system:package:add')")
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file) throws Exception
     {
@@ -343,7 +339,6 @@ public class PackageController extends BaseController
     }
 
     @Log(title = "面单导入", businessType = BusinessType.IMPORT)
-    @PreAuthorize("@ss.hasPermi('system:package:add')")
     @PostMapping("/importDataCz")
     public AjaxResult importDataCz(MultipartFile file) throws Exception
     {
@@ -361,7 +356,6 @@ public class PackageController extends BaseController
     /**
      * 修改面单
      */
-    @PreAuthorize("@ss.hasPermi('system:package:edit')")
     @Log(title = "面单", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody PackageVo pkg)
@@ -372,7 +366,6 @@ public class PackageController extends BaseController
     /**
      * 删除面单
      */
-    @PreAuthorize("@ss.hasPermi('system:package:remove')")
     @Log(title = "面单", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

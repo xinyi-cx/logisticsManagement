@@ -52,7 +52,7 @@ public class ImportLogicContentTemplateVo extends BaseEntity
     private String orderNumber;
 
     /** value PLN (COD) */
-    @Excel(name = "value PLN (COD)")
+    @Excel(name = "value (COD)")
     private String valuePlnCod;
 
     /** Weight kg */

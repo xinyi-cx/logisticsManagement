@@ -11,7 +11,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="激活时间">
+      <el-form-item label="激活日期">
         <el-date-picker
           v-model="dateRange"
           size="small"
@@ -23,7 +23,7 @@
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="创建时间">
+      <el-form-item label="导单日期">
         <el-date-picker
           v-model="dateRange2"
           size="small"
@@ -35,46 +35,10 @@
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
-<!--      <el-form-item label="document表id" prop="documentFileId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.documentFileId"-->
-<!--          placeholder="请输入document表id"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="package表id" prop="packId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.packId"-->
-<!--          placeholder="请输入package表id"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="batch_id" prop="batchId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.batchId"-->
-<!--          placeholder="请输入batch_id"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="logic_id" prop="logicId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.logicId"-->
-<!--          placeholder="请输入logic_id"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
       <el-form-item label="客户" prop="client">
         <el-input
           v-model="queryParams.client"
-          placeholder="客户"
+          placeholder="请输入客户名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -108,177 +72,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-<!--      <el-form-item label="New waybill" prop="newWaybill">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.newWaybill"-->
-<!--          placeholder="请输入New waybill"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="Order number" prop="orderNumber">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.orderNumber"-->
-<!--          placeholder="请输入Order number"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="value PLN (COD)" prop="valuePlnCod">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.valuePlnCod"-->
-<!--          placeholder="请输入value PLN (COD)"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="Weight kg" prop="weightKg">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.weightKg"-->
-<!--          placeholder="请输入Weight kg"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="recipient name" prop="recipientName">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.recipientName"-->
-<!--          placeholder="请输入recipient name"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="Recipient phone" prop="recipientPhone">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.recipientPhone"-->
-<!--          placeholder="请输入Recipient phone"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="Recipient E-mail" prop="recipientEmail">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.recipientEmail"-->
-<!--          placeholder="请输入Recipient E-mail"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="Description" prop="description">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.description"-->
-<!--          placeholder="请输入Description"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="Need box" prop="needBox">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.needBox"-->
-<!--          placeholder="请输入Need box"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="Create Date" prop="createDate">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.createDate"-->
-<!--          placeholder="请输入Create Date"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="备注2" prop="remark2">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.remark2"-->
-<!--          placeholder="请输入备注2"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="备注3" prop="remark3">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.remark3"-->
-<!--          placeholder="请输入备注3"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="备注4" prop="remark4">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.remark4"-->
-<!--          placeholder="请输入备注4"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="备注5" prop="remark5">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.remark5"-->
-<!--          placeholder="请输入备注5"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="激活时间" prop="activedDate">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.activedDate"-->
-<!--          placeholder="请输入激活时间"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="最近物流时间" prop="lastStatusDate">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.lastStatusDate"-->
-<!--          placeholder="请输入最近物流时间"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="新单号" prop="newNumber">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.newNumber"-->
-<!--          placeholder="请输入新单号"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="退件单号" prop="returnNumber">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.returnNumber"-->
-<!--          placeholder="请输入退件单号"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="是否删除" prop="isDelete">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.isDelete"-->
-<!--          placeholder="请输入是否删除"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -286,27 +80,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="primary"-->
-<!--          plain-->
-<!--          icon="el-icon-plus"-->
-<!--          size="mini"-->
-<!--          @click="handleAdd"-->
-<!--          v-hasPermi="['system:content:add']"-->
-<!--        >新增</el-button>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="success"-->
-<!--          plain-->
-<!--          icon="el-icon-edit"-->
-<!--          size="mini"-->
-<!--          :disabled="single"-->
-<!--          @click="handleUpdate"-->
-<!--          v-hasPermi="['system:content:edit']"-->
-<!--        >修改</el-button>-->
-<!--      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="danger"
@@ -342,58 +115,47 @@
     </el-row>
 
     <el-table v-loading="loading" :data="contentList" stripe border
+              max-height="300px"
               @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-<!--      <el-table-column label="物流单号" align="center" prop="newWaybill" width="180px" fixed />-->
-      <el-table-column fixed label="物流单号" align="center" width="180px" fixed>
+      <el-table-column fixed label="NewWaybill" align="center" width="180px">
         <template slot-scope="scope">
           <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.newWaybill" target="_blank">{{scope.row.newWaybill}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="客户" align="center" prop="client" />
-      <el-table-column label="国家" align="center" prop="country" />
-      <el-table-column label="业务" align="center" prop="importType" />
-      <el-table-column label="账户" align="center" prop="loginid" width="150px"/>
-      <el-table-column label="订单号" align="center" prop="orderNumber" width="180px" />
+      <el-table-column label="Client" align="center" prop="client" width="150px" show-overflow-tooltip />
+      <el-table-column label="Country" align="center" prop="country" />
+      <el-table-column label="Type" align="center" prop="importType" />
+      <el-table-column label="LoginID" align="center" prop="loginid" width="150px" show-overflow-tooltip/>
+      <el-table-column label="OrderNumber" align="center" prop="orderNumber" width="180px" />
       <el-table-column label="COD" align="center" prop="valuePlnCod" />
-<!--      currency ？？？？-->
-      <el-table-column label="重量" align="center" prop="weightKg" />
-      <el-table-column label="收件人" align="center" prop="recipientName" width="150px"/>
-      <el-table-column label="收件人电话" align="center" prop="recipientPhone" width="110px" />
-      <el-table-column label="收件人邮箱" align="center" prop="recipientEmail" width="150px"/>
-      <el-table-column label="描述" align="center" prop="description" width="100px" />
-      <el-table-column label="盒子" align="center" prop="needBox" />
-      <el-table-column label="Create Date" align="center" prop="createDate" width="150px"/>
-      <el-table-column label="激活时间" align="center" prop="activedDate" width="120px"/>
-      <el-table-column label="最近物流时间" align="center" prop="lastStatusDate" width="120px" />
-      <el-table-column label="状态" align="center" prop="status" >
+      <el-table-column label="Weight" align="center" prop="weightKg" />
+      <el-table-column label="Recipient" align="center" prop="recipientName" width="150px" show-overflow-tooltip/>
+      <el-table-column label="RecipientPhone" align="center" prop="recipientPhone" width="150px" show-overflow-tooltip/>
+      <el-table-column label="RecipientEmail" align="center" prop="recipientEmail" width="150px" show-overflow-tooltip/>
+      <el-table-column label="Description" align="center" prop="description" width="100px" show-overflow-tooltip/>
+      <el-table-column label="NeedBox" align="center" prop="needBox" />
+      <el-table-column label="ExportDate" align="center" prop="createDate" width="150px" show-overflow-tooltip/>
+      <el-table-column label="ActiveDate" align="center" prop="activedDate" width="120px" show-overflow-tooltip/>
+      <el-table-column label="LastStatusDate" align="center" prop="lastStatusDate" width="120px" show-overflow-tooltip/>
+      <el-table-column label="Status" align="center" prop="status" >
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_waybill" :value="scope.row.status"/>
         </template>
       </el-table-column>
-<!--      <el-table-column label="新单号" align="center" prop="newNumber" />-->
-      <el-table-column fixed label="新单号" align="center">
+      <el-table-column fixed label="NewParcel" align="center" width="180px">
         <template slot-scope="scope">
           <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.newNumber" target="_blank">{{scope.row.newNumber}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column fixed label="退件单号" align="center" width="180px" fixed>
+      <el-table-column fixed label="ReturnParcel" align="center" width="180px">
         <template slot-scope="scope">
           <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.returnNumber" target="_blank">{{scope.row.returnNumber}}</el-link>
         </template>
       </el-table-column>
-<!--      <el-table-column label="退件单号" align="center" prop="returnNumber" />-->
-<!--      <el-table-column label="是否删除" align="center" prop="isDelete" />-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-edit"-->
-<!--            @click="handleUpdate(scope.row)"-->
-<!--            v-hasPermi="['system:content:edit']"-->
-<!--          >修改</el-button>-->
           <el-button
             size="mini"
             type="text"
@@ -439,9 +201,6 @@
             <span style="color: red;">仅允许导入xls、xlsx格式文件。</span>
             <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplateForNo">下载模板</el-link>
           </div>
-
-
-          <!--          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplatePDF">下载测试数据</el-link>-->
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
@@ -449,7 +208,6 @@
         <el-button @click="uploadNo.open = false">取 消</el-button>
       </div>
     </el-dialog>
-    <!--    importPackageForNoGen-->
 
   </div>
 </template>
