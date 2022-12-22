@@ -370,7 +370,7 @@ public class DPDInfoXMLClient {
      */
     private String getStatus(List<CustomerEventV3> customerEventV3s) {
         if (CollectionUtils.isEmpty(customerEventV3s)) {
-            return SysWaybill.WCXDWLXX.getCode();
+            return SysWaybill.WJH.getCode();
         }
         if (customerEventV3s.size() == 1 && customerEventV3s.get(0).getBusinessCode().equals("030103")) {
             return SysWaybill.WJH.getCode();

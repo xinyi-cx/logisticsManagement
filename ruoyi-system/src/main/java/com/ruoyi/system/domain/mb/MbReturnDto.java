@@ -51,6 +51,9 @@ public class MbReturnDto extends BaseEntity {
     @Excel(name = "包裹地址国家代码")
     private String shippingCountryCode;
 
+    @Excel(name = "currencyId")
+    private String currencyId;
+
     /** 订单生成时间 */
     @Excel(name = "订单生成时间")
     private String timeCreated;
@@ -187,6 +190,14 @@ public class MbReturnDto extends BaseEntity {
     /** 退件人 */
     @Excel(name = "退件人")
     private String addressBackStr;
+
+    public String getCurrencyId() {
+        return currencyId;
+    }
+
+    public void setCurrencyId(String currencyId) {
+        this.currencyId = currencyId;
+    }
 
     public void setCode(String code)
     {

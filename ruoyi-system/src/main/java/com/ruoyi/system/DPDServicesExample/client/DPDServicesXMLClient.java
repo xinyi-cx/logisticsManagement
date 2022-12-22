@@ -495,6 +495,9 @@ public class DPDServicesXMLClient {
         }
 
         ImportLogicContent importLogicContent = targetPackage.getImportLogicContent();
+        if (ObjectUtils.isEmpty(importLogicContent)){
+            importLogicContent = new ImportLogicContent();
+        }
         importLogicContent.setNewWaybill(parcelPGRV2s.get(0).getWaybill());
 
         //错误信息
@@ -550,8 +553,8 @@ public class DPDServicesXMLClient {
             cod.setCurrency(ServiceCurrencyEnum.PLN);
             services.setCod(cod);
 
-            ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
-            services.setRod(rod);
+//            ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
+//            services.setRod(rod);
 
             pkg.setServices(services);
 
@@ -617,8 +620,8 @@ public class DPDServicesXMLClient {
             cod.setCurrency(ServiceCurrencyEnum.PLN);
             services.setCod(cod);
 
-            ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
-            services.setRod(rod);
+//            ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
+//            services.setRod(rod);
 
             pkg.setServices(services);
 
@@ -672,8 +675,8 @@ public class DPDServicesXMLClient {
             cod.setCurrency(ServiceCurrencyEnum.PLN);
             services.setCod(cod);
 
-            ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
-            services.setRod(rod);
+//            ServiceRODOpenUMLFeV1 rod = new ServiceRODOpenUMLFeV1();
+//            services.setRod(rod);
 
             pkg.setServices(services);
 

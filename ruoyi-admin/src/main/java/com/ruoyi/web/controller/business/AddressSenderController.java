@@ -30,7 +30,6 @@ public class AddressSenderController extends BaseController {
     /**
      * 查询发件人信息列表
      */
-    @PreAuthorize("@ss.hasPermi('system:sender:list')")
     @GetMapping("/list")
     public TableDataInfo list(AddressSender addressSender) {
         startPage();
@@ -41,7 +40,6 @@ public class AddressSenderController extends BaseController {
     /**
      * 导出发件人信息列表
      */
-    @PreAuthorize("@ss.hasPermi('system:sender:export')")
     @Log(title = "发件人信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, AddressSender addressSender) {
@@ -53,7 +51,6 @@ public class AddressSenderController extends BaseController {
     /**
      * 获取发件人信息详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:sender:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         return AjaxResult.success(addressSenderService.selectAddressSenderById(id));
@@ -62,7 +59,6 @@ public class AddressSenderController extends BaseController {
     /**
      * 新增发件人信息
      */
-    @PreAuthorize("@ss.hasPermi('system:sender:add')")
     @Log(title = "发件人信息", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody AddressSender addressSender) {
@@ -72,7 +68,6 @@ public class AddressSenderController extends BaseController {
     /**
      * 修改发件人信息
      */
-    @PreAuthorize("@ss.hasPermi('system:sender:edit')")
     @Log(title = "发件人信息", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody AddressSender addressSender) throws Exception {
@@ -82,7 +77,6 @@ public class AddressSenderController extends BaseController {
     /**
      * 删除发件人信息
      */
-    @PreAuthorize("@ss.hasPermi('system:sender:remove')")
     @Log(title = "发件人信息", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {

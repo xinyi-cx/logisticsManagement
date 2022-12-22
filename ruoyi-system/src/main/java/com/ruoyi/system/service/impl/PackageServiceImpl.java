@@ -846,7 +846,7 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
-            importLogicContent.setStatus(SysWaybill.WCXDWLXX.getCode());
+            importLogicContent.setStatus(SysWaybill.WJH.getCode());
             importLogicContent.setLoginid(SecurityUtils.getLoginUser().getUsername());
             importLogicContent.setOrderNumber(packageVo.getReference());
             importLogicContent.setDescription(packageVo.getCustomerData1());
@@ -1002,7 +1002,7 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
-            importLogicContent.setStatus(SysWaybill.WCXDWLXX.getCode());
+            importLogicContent.setStatus(SysWaybill.WJH.getCode());
             importLogicContents.add(importLogicContent);
 
             batchTaskHistory.setType(StringUtils.isEmpty(importLogicContent.getImportType()) ? batchTaskHistory.getType() : importLogicContent.getImportType());
@@ -1146,7 +1146,7 @@ public class PackageServiceImpl implements IPackageService {
         addressReceiver.setName(pkg.getReceiverName());
         addressReceiver.setPhone(pkg.getReceiverPhone());
         String postalCode = pkg.getReceiverPostalCode().replace("-", "").replace("_", "").replace(" ", "");
-        addressReceiver.setPostalCode(postalCode.length() == 5 ? "0" + postalCode : postalCode);
+        addressReceiver.setPostalCode(postalCode);
         addressReceiver.setPln(pkg.getPln());
         if (ObjectUtils.isNotEmpty(id)) {
             addressReceiver.setId(id);

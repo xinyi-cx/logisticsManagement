@@ -3,6 +3,8 @@ package com.ruoyi.system.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.enums.SysWaybill;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.email.EmailUtil;
 import com.ruoyi.common.utils.http.HttpUtils;
@@ -82,6 +84,9 @@ public class OuterServiceImpl implements IOuterService {
 
     @Autowired
     private BatchTaskHistoryMapper batchTaskHistoryMapper;
+
+    @Autowired
+    private ImportLogicContentMapper importLogicContentMapper;
 
     @Autowired
     private SequenceMapper sequenceMapper;
@@ -202,7 +207,10 @@ public class OuterServiceImpl implements IOuterService {
         return DigestUtils.md5Hex(sb.toString());
     }
 
-    private void test2() throws Exception {
+//    public static void main(String[] args) {
+//        test2();
+//    }
+    private static void test2() {
         String url = "http://www.sandbox.i8956.com/interface/index.php";
         Map<String, String> encodeParamsMap = new HashMap<>();
         String enStr = net.arnx.jsonic.JSON.encode(encodeParamsMap);
@@ -254,7 +262,9 @@ public class OuterServiceImpl implements IOuterService {
         if (StringUtils.isEmpty(res) || res.contains("ErrorCode")) {
             if (res.contains("ErrorCode")) {
                 JSONObject jsonObject = JSON.parseObject(res);
-                saveMbMsg("find" , jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(), "主动查找");
+                String mbMsgData = (jsonObject.containsKey("Data")) ? jsonObject.get("Data").toString():
+                        (jsonObject.containsKey("Message") ? jsonObject.get("Data").toString() : jsonObject.toString());
+                saveMbMsg("find" , jsonObject.get("ErrorCode").toString(), mbMsgData, "主动查找");
                 if ("9999".equals(jsonObject.get("ErrorCode").toString())) {
 //                    成功了
                     return res;
@@ -283,6 +293,7 @@ public class OuterServiceImpl implements IOuterService {
                 .append("&apiAccountId=").append(apiAccountId);
         sb.append("&encodeParams=").append(Base64.encode(encodeParamsMapStr.getBytes()));
         sb.append("&sign=").append(getSign(api, apiAccountId, apiKey, base64EnStr, timestamp));
+        log.info("getParamStr ++++++ " + sb.toString());
         return sb.toString();
     }
 
@@ -375,7 +386,7 @@ public class OuterServiceImpl implements IOuterService {
         Map<String, String> param = new HashMap<>();
         param.put("codes" , codeStr);
         String returnStr = getMbRes("api.biaoju.order.find" , param,
-                null == user1 ? apiAccountId : user1.getApiAccountId(), null == user1 ? apiKey : user1.getApiKey());
+                null == user1 || null == user1.getApiAccountId()? apiAccountId : user1.getApiAccountId(), null == user1 || StringUtils.isEmpty(user1.getApiKey()) ? apiKey : user1.getApiKey());
         JSONObject jsonObject = JSON.parseObject(JSON.parseObject(returnStr).get("Data").toString());
         List<MbReturnDto> mbReturnDtos = JSON.parseArray(jsonObject.get("orders").toString(), MbReturnDto.class);
         if ("orderChange".equals(notify)) {
@@ -422,7 +433,7 @@ public class OuterServiceImpl implements IOuterService {
                 }
                 Map<String, Package> codePackageMap = this.getPackageListByCodes(correctList.stream().map(MbReturnDto::getPlatformTradeCode).collect(Collectors.toList()));
                 List<Package> getPackagesByMbReturnDtos = this.getPackagesByMbReturnDtos(correctList, codePackageMap);
-                this.insertPackages(getPackagesByMbReturnDtos, typeStr);
+                this.insertPackages(getPackagesByMbReturnDtos, typeStr, user1);
                 this.changeStatusToAccept(
                         correctList.stream().collect(toMap(MbReturnDto::getPlatformTradeCode, MbReturnDto::getCode)), user1);
             }
@@ -540,7 +551,7 @@ public class OuterServiceImpl implements IOuterService {
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
-    public void insertPackages(List<Package> packages, String typeStr) throws Exception {
+    public void insertPackages(List<Package> packages, String typeStr, SysUser user1) throws Exception {
 
         if (CollectionUtils.isEmpty(packages)) {
             return;
@@ -549,8 +560,8 @@ public class OuterServiceImpl implements IOuterService {
         batchTaskHistory.setType(typeStr);
         batchTaskHistory.setStatus("导入成功");
 //        batchTaskHistory.setExcelUrl(documents.getId().toString());
-        batchTaskHistory.setCreateUser(packages.get(0).getCreateUser());
-        batchTaskHistory.setUpdateUser(packages.get(0).getUpdateUser());
+        batchTaskHistory.setCreateUser(null != user1 ? user1.getUserId().toString() : packages.get(0).getCreateUser());
+        batchTaskHistory.setUpdateUser(null != user1 ? user1.getUserId().toString() : packages.get(0).getUpdateUser());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
 
         /**
@@ -558,12 +569,14 @@ public class OuterServiceImpl implements IOuterService {
          */
         //生成id 并且更新
         Map<String, Sequence> nameMap = getSeqMap(packages.size());
-        //sender是用自己的还是他们填写的？
-        AddressSender addressSender = getSender(packages.get(0).getCreateUser());
+        //此处sender应该分批获取  因为马帮又可能多个用户
+        AddressSender addressSender = getSender(null != user1 ? user1.getUserId().toString() :packages.get(0).getCreateUser());
         List<AddressReceiver> addressReceivers = new ArrayList<>();
         List<Services> servicesList = new ArrayList<>();
         List<Parcel> parcels = new ArrayList<>();
         for (Package packageVo : packages) {
+//            AddressSender addressSender = getSender(packageVo.getCreateUser());
+
             AddressReceiver addressReceiver = packageVo.getReceiver();
             addressReceiver.setCreateUser(packageVo.getCreateUser());
             addressReceiver.setUpdateUser(packageVo.getUpdateUser());
@@ -586,6 +599,32 @@ public class OuterServiceImpl implements IOuterService {
 
             packageVo.setSender(addressSender);
 
+            ImportLogicContent importLogicContent = new ImportLogicContent();
+//            BeanUtils.copyProperties(packageVo, importLogicContent, "id");
+            importLogicContent.setBatchId(batchTaskHistory.getId());
+//            importLogicContent.setDocumentFileId(documents.getId());
+            importLogicContent.setPackId(packageVo.getId());
+            importLogicContent.setRecipientName(addressReceiver.getName());
+            importLogicContent.setRecipientEmail(addressReceiver.getEmail());
+            importLogicContent.setRecipientPhone(addressReceiver.getPhone());
+            importLogicContent.setValuePlnCod(services.getCodAmount());
+            importLogicContent.setWeightKg(parcel.getWeight().toString());
+//            importLogicContent.setClient(addressSender.getName());
+//            importLogicContent.setCountry(addressSender.getCountryCode());
+            importLogicContent.setClient("马帮");
+//            String type =  getType(list.get(1));
+            importLogicContent.setCountry(addressReceiver.getCountryCode());
+            importLogicContent.setImportType("马帮");
+            importLogicContent.setNeedBox("N");
+            importLogicContent.setCreateBy(packageVo.getCreateUser());
+            importLogicContent.setUpdateBy(packageVo.getCreateUser());
+            importLogicContent.setStatus(SysWaybill.WJH.getCode());
+//            importLogicContent.setLoginid(SecurityUtils.getLoginUser().getUsername());
+            importLogicContent.setOrderNumber(parcel.getReference());
+            importLogicContent.setDescription(parcel.getCustomerData1());
+            importLogicContent.setCreateDate(DateUtils.getDate2());
+            packageVo.setImportLogicContent(importLogicContent);
+
             addressReceivers.add(packageVo.getReceiver());
             servicesList.add(packageVo.getService());
             parcels.addAll(packageVo.getParcels());
@@ -596,6 +635,11 @@ public class OuterServiceImpl implements IOuterService {
             batchTaskHistory.setSessionId(returnResponses.get(0).getSessionId());
             batchTaskHistory.setSuccessNum((int) returnResponses.stream().filter(item -> "OK".equals(item.getPkgStatus())).count());
             batchTaskHistory.setFailNum((int) returnResponses.stream().filter(item -> !"OK".equals(item.getPkgStatus())).count());
+            List<ImportLogicContent> importLogicContents = new ArrayList<>();
+            for (Package aPackage : packages) {
+                importLogicContents.add(aPackage.getImportLogicContent());
+            }
+            importLogicContentMapper.batchInsert(importLogicContents);
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
             packageMapper.batchInsert(packages);
             addressReceiverMapper.batchInsert(addressReceivers);
@@ -612,8 +656,8 @@ public class OuterServiceImpl implements IOuterService {
 
     private Package getPackage(Package pac, MbReturnDto mbReturnDto) {
         pac.setRemark(mbReturnDto.getRemark());
-        pac.setCreateUser(StringUtils.isEmpty(pac.getCreateUser()) ? mbReturnDto.getCreateBy() : pac.getCreateUser());
-        pac.setUpdateUser(StringUtils.isEmpty(pac.getUpdateUser()) ? mbReturnDto.getUpdateBy() : pac.getUpdateUser());
+        pac.setCreateUser(null == (pac.getId()) ? mbReturnDto.getCreateBy() : pac.getCreateUser());
+        pac.setUpdateUser(null == (pac.getId()) ? mbReturnDto.getUpdateBy() : pac.getUpdateUser());
         AddressReceiver addressReceiver =
                 ObjectUtils.isEmpty(pac.getReceiver()) ? new AddressReceiver() : pac.getReceiver();
 //        AddressSender addressSender =
@@ -680,8 +724,18 @@ public class OuterServiceImpl implements IOuterService {
     }
 
     private void getServices(Services services, MbReturnDto mbReturnDto) {
+        String codCurrency;
+        if ("hu".equalsIgnoreCase(mbReturnDto.getAddressReceive().getCountryCode())) {
+            codCurrency = "HUF";
+        } else if ("sk".equalsIgnoreCase(mbReturnDto.getAddressReceive().getCountryCode())) {
+            codCurrency = "HUF";
+        } else if ("cz".equalsIgnoreCase(mbReturnDto.getAddressReceive().getCountryCode())) {
+            codCurrency = "EUR";
+        } else {
+            codCurrency = "PLN";
+        }
         services.setCodAmount(mbReturnDto.getCodValue());
-        services.setCodCurrency(mbReturnDto.getCurrencyCode());
+        services.setCodCurrency(codCurrency);
     }
 
     private static String[] SEQ_NAMES = {"receiver_seq" , "package_seq" , "services_seq"};
@@ -713,6 +767,7 @@ public class OuterServiceImpl implements IOuterService {
      * @return
      */
     private AddressSender getSender(String userId) {
+        log.info("getSender+++++"+ userId);
         AddressSender senderParam = new AddressSender();
         senderParam.setCreateUser(userId);
         return addressSenderMapper.selectAddressSenderList(senderParam).get(0);
