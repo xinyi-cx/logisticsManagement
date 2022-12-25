@@ -611,7 +611,7 @@ public class OuterServiceImpl implements IOuterService {
             importLogicContent.setWeightKg(parcel.getWeight().toString());
 //            importLogicContent.setClient(addressSender.getName());
 //            importLogicContent.setCountry(addressSender.getCountryCode());
-            importLogicContent.setClient("马帮");
+            importLogicContent.setClient(addressSender.getName());
 //            String type =  getType(list.get(1));
             importLogicContent.setCountry(addressReceiver.getCountryCode());
             importLogicContent.setImportType("马帮");

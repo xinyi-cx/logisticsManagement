@@ -246,7 +246,7 @@ public class DPDInfoXMLClient {
         dealWlData(waybills, logisticsInfos);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     public void dealWlData(List<String> waybills, List<LogisticsInfo> logisticsInfos, List<Parcel> parcels, List<WaybillLRel> waybillLRels) {
         if (!CollectionUtils.isEmpty(logisticsInfos)) {
             logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
@@ -279,15 +279,15 @@ public class DPDInfoXMLClient {
                     logicContent.setNewNumber(logisticsInfo.getWaybillLRel().getWaybillL());
                 }
                 Map<String, Object> lMap = logisticsInfo.getlMap();
-                if (!CollectionUtils.isEmpty(lMap)){
-                    if (lMap.containsKey("status")){
-                        logicContent.setStatus(lMap.get("status").toString());
+                if (!CollectionUtils.isEmpty(lMap)) {
+                    if (lMap.containsKey("status")) {
+                        logicContent.setStatus(ObjectUtils.isEmpty(lMap.get("status")) ? "" : lMap.get("status").toString());
                     }
 //                    if (lMap.containsKey("lastMsg")){
 //                        logicContent.setStatus(lMap.get("lastMsg").toString());
 //                    }
-                    if (lMap.containsKey("lastTime")){
-                        logicContent.setLastStatusDate(lMap.get("lastTime").toString());
+                    if (lMap.containsKey("lastTime")) {
+                        logicContent.setLastStatusDate(ObjectUtils.isEmpty(lMap.get("lastTime")) ? "" : lMap.get("lastTime").toString());
                     }
                 }
             }

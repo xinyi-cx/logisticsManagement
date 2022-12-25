@@ -115,7 +115,7 @@
       <!--   运单号   -->
       <el-table-column label="运单号" align="center" prop="expressChannelCode" />
       <!--   客户名称   -->
-      <el-table-column label="客户名称" align="center" prop="customer" />
+      <el-table-column label="客户信息" align="center" prop="customer" />
       <el-table-column label="订单生成时间" align="center" prop="timeCreated" />
       <!--   物流渠道   -->
       <el-table-column label="物流渠道" align="center" prop="expressChannel" />
