@@ -172,8 +172,12 @@ public class DPDInfoXMLClient {
             }
             CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
             logisticsInfo.setLastMsg(customerEventV3.getDescription());
-            //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
-            List<WaybillLRel> waybillLRels = getRL(parcel.getWaybill(), allEventDataList);
+            String status = getStatus(customerEventV3s);
+            List<WaybillLRel> waybillLRels =new ArrayList<>();
+            if (SysWaybill.YTJ.getCode().equals(status) || SysWaybill.GP.getCode().equals(status) || SysWaybill.ZJ.getCode().equals(status)){
+                //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
+                waybillLRels = getRL(parcel.getWaybill(), allEventDataList);
+            }
 
 //            for (WaybillLRel lRel : waybillLRels) {
 //                List<LogisticsInfo> logisticsInfos1 = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(Collections.singletonList(lRel.getWaybillL()));
@@ -186,7 +190,6 @@ public class DPDInfoXMLClient {
 //                }
 //            }
 
-            String status = getStatus(customerEventV3s);
             if(StringUtils.isNotEmpty(status)){
                 parcel.setStatus(status);
                 logisticsInfo.setStatus(status);
@@ -277,17 +280,18 @@ public class DPDInfoXMLClient {
                 }
                 if (SysWaybill.ZJ.getCode().equals(logicContent.getStatus()) || SysWaybill.GP.getCode().equals(logicContent.getStatus())) {
                     logicContent.setNewNumber(logisticsInfo.getWaybillLRel().getWaybillL());
-                }
-                Map<String, Object> lMap = logisticsInfo.getlMap();
-                if (!CollectionUtils.isEmpty(lMap)) {
-                    if (lMap.containsKey("status")) {
-                        logicContent.setStatus(ObjectUtils.isEmpty(lMap.get("status")) ? "" : lMap.get("status").toString());
-                    }
+                    Map<String, Object> lMap = logisticsInfo.getlMap();
+                    //转寄需要获取最新物流信息
+                    if (!CollectionUtils.isEmpty(lMap)) {
+                        if (lMap.containsKey("status")) {
+                            logicContent.setStatus(ObjectUtils.isEmpty(lMap.get("status")) ? "" : lMap.get("status").toString());
+                        }
 //                    if (lMap.containsKey("lastMsg")){
 //                        logicContent.setStatus(lMap.get("lastMsg").toString());
 //                    }
-                    if (lMap.containsKey("lastTime")) {
-                        logicContent.setLastStatusDate(ObjectUtils.isEmpty(lMap.get("lastTime")) ? "" : lMap.get("lastTime").toString());
+                        if (lMap.containsKey("lastTime")) {
+                            logicContent.setLastStatusDate(ObjectUtils.isEmpty(lMap.get("lastTime")) ? "" : lMap.get("lastTime").toString());
+                        }
                     }
                 }
             }
