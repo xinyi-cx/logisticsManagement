@@ -648,6 +648,9 @@ public class OuterServiceImpl implements IOuterService {
             packagesGenerationResponseMapper.batchInsert(returnResponses);
         } catch (Exception e) {
             batchTaskHistory.setStatus("导入失败");
+            String msg = e.getMessage();
+            batchTaskHistory.setRemark(StringUtils.isNotEmpty(msg) && msg.length() > 400 ? msg.substring(0, 400) : msg);
+            batchTaskHistory.setFailNum(packages.size());
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
             e.printStackTrace();
             throw new Exception("马帮数据导入失败");
