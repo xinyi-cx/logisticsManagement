@@ -1145,7 +1145,8 @@ public class PackageServiceImpl implements IPackageService {
         addressReceiver.setEmail(pkg.getReceiverEmail());
         addressReceiver.setName(pkg.getReceiverName());
         addressReceiver.setPhone(pkg.getReceiverPhone());
-        String postalCode = pkg.getReceiverPostalCode().replace("-", "").replace("_", "").replace(" ", "");
+        String postalCode = StringUtils.isEmpty(pkg.getReceiverPostalCode()) ? "":
+                pkg.getReceiverPostalCode().replace("-", "").replace("_", "").replace(" ", "");
         addressReceiver.setPostalCode(postalCode);
         addressReceiver.setPln(pkg.getPln());
         if (ObjectUtils.isNotEmpty(id)) {
