@@ -230,7 +230,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null">status = #{status},</if>
             update_time = sysdate()
         </trim>
-        where new_waybill = #{newWaybill} or new_number = #{newWaybill} or return_number = #{newWaybill}
+        where new_waybill = #{newWaybill} or new_number = #{newWaybill}
     </update>
 
     <update id="updateImportLogicContentByWaybill" parameterType="ImportLogicContent">

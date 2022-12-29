@@ -27,6 +27,9 @@ public class DPDTask
         System.out.println("执行有参方法：" + params);
     }
 
+    /**
+     * 获取物流信息定时任务
+     */
     public void dpdTaskGetParcelMsg()
     {
         System.out.println("获取物流信息");
