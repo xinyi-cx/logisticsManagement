@@ -26,9 +26,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="发件人" prop="senderName">
+      <el-form-item label="发件人" prop="showSenderName">
         <el-input
-          v-model="queryParams.senderName"
+          v-model="queryParams.showSenderName"
           placeholder="请输入发件人信息"
           clearable
           size="small"
@@ -551,6 +551,8 @@ export default {
         updateUser: null,
         createdTime: null,
         updatedTime: null,
+        showSenderName: null,
+        waybill: null,
         ids:[]
       },
       // 表单参数

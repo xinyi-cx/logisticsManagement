@@ -73,6 +73,16 @@
         />
       </el-form-item>
 
+      <el-form-item label="物流单号" prop="newWaybill">
+        <el-input
+          v-model="queryParams.newWaybill"
+          placeholder="请输入物流单号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>

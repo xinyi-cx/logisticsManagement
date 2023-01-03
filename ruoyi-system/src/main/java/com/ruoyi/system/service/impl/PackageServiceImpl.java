@@ -471,7 +471,14 @@ public class PackageServiceImpl implements IPackageService {
 //            }
         }
         List<Parcel> parcels;
-        List<Parcel> allParcels = parcelMapper.selectParcelListByPackIdIn(packagesAll.stream().map(Package::getId).collect(toList()));
+        List<Parcel> selectParcels = parcelMapper.selectParcelListByPackIdIn(packagesAll.stream().map(Package::getId).collect(toList()));
+        List<Parcel> allParcels;
+        if (ObjectUtils.isNotEmpty(packageVo.getWaybill())){
+            allParcels = selectParcels.stream().filter(item -> item.getWaybill().contains(packageVo.getWaybill())).collect(toList());
+        } else {
+            allParcels = selectParcels;
+        }
+
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())){
             if (CollectionUtils.isEmpty(newWaybills)){
                 return new ArrayList<>();
