@@ -83,7 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="country != null  and country != ''"> and UPPER(country)  = #{country}</if>
             <if test="importType != null  and importType != ''"> and import_type = #{importType}</if>
             <if test="loginid != null  and loginid != ''"> and loginId = #{loginid}</if>
-            <if test="newWaybill != null  and newWaybill != ''"> and new_waybill = #{newWaybill}</if>
+            <if test="newWaybill != null  and newWaybill != ''"> and new_waybill like concat('%', #{newWaybill}, '%')</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="valuePlnCod != null  and valuePlnCod != ''"> and value_pln_cod = #{valuePlnCod}</if>
             <if test="weightKg != null  and weightKg != ''"> and weight_kg = #{weightKg}</if>
