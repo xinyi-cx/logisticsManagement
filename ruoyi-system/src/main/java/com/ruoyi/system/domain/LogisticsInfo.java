@@ -28,6 +28,16 @@ public class LogisticsInfo extends BaseEntity
 
     private Map<String, Object> lMap;
 
+    private String oldWaybill;
+
+    public String getOldWaybill() {
+        return oldWaybill;
+    }
+
+    public void setOldWaybill(String oldWaybill) {
+        this.oldWaybill = oldWaybill;
+    }
+
     public Map<String, Object> getlMap() {
         return lMap;
     }

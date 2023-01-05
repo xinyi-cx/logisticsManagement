@@ -228,10 +228,12 @@ public class DPDInfoXMLClient {
         log.info("+++dealForWaybillL+++parcel string: {}", parcel.toString());
         AuthDataV1 authData = getAuthData();
         WaybillLRel waybillLRel = waybillLRels.get(0);
+        List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
         CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
         List<CustomerEventV3> customerEventV3s = ret.getEventsList();
         String status = getStatus(customerEventV3s);
         parcel.setStatus(status);
+        logisticsInfo.setOldWaybill(parcel.getWaybill());
         logisticsInfo.setStatus(status);
         logisticsInfo.setWaybill(waybillLRel.getWaybillL());
         if (CollectionUtils.isEmpty(customerEventV3s)){
@@ -240,13 +242,25 @@ public class DPDInfoXMLClient {
             logisticsInfo.setLastMsg(customerEventV3s.get(0).getDescription());
             logisticsInfo.setLastTime(customerEventV3s.get(0).getEventTime());
         }
+        customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
+
+        String newRel = "";
+        if (SysWaybill.YTJ.getCode().equals(status) || SysWaybill.GP.getCode().equals(status) || SysWaybill.ZJ.getCode().equals(status)){
+            //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
+            newRel = getRLForRL(allEventDataList);
+        }
 
         List<String> waybills = new ArrayList<>();
         waybills.add(waybillLRel.getWaybillL());
         List<LogisticsInfo> logisticsInfos = new ArrayList<>();
         logisticsInfos.add(logisticsInfo);
         logisticsInfo.setId(null);
-        dealWlData(waybills, logisticsInfos);
+
+        if (ObjectUtils.isNotEmpty(parcel.getId())){
+            parcelMapper.updateParcel(parcel);
+        }
+
+        dealWlData(newRel, waybills, logisticsInfos);
     }
 
 //    @Transactional(rollbackFor = Exception.class)
@@ -300,24 +314,62 @@ public class DPDInfoXMLClient {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void dealWlData(List<String> waybills, List<LogisticsInfo> logisticsInfos) {
+    public void dealWlData(String newRel, List<String> waybills, List<LogisticsInfo> logisticsInfos) {
         if (!CollectionUtils.isEmpty(logisticsInfos)) {
             logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
             logisticsInfos.forEach(item ->
             {
                 item.setId(null);
-                updateImportContent(item);
+                updateImportContent(newRel, item);
+                updateRel(newRel, item);
             });
             logisticsInfoMapper.batchInsert(logisticsInfos);
         }
     }
 
-    private void updateImportContent(LogisticsInfo logisticsInfo){
+    private void updateRel(String newRel, LogisticsInfo logisticsInfo){
+        if (StringUtils.isNotEmpty(newRel)){
+            WaybillLRel waybillLRel = new WaybillLRel();
+            waybillLRel.setStatus(logisticsInfo.getStatus());
+            waybillLRel.setWaybill(logisticsInfo.getOldWaybill());
+            waybillLRel.setWaybillL(newRel);
+            waybillLRelMapper.updateWaybillLRel(waybillLRel);
+        }
+    }
+
+    private void updateImportContent(String newRel, LogisticsInfo logisticsInfo){
         ImportLogicContent importLogicContent = new ImportLogicContent();
         importLogicContent.setStatus(logisticsInfo.getStatus());
-        importLogicContent.setNewWaybill(logisticsInfo.getWaybill());
-        importLogicContent.setLastStatusDate(logisticsInfo.getLastTime());
-        importLogicContentMapper.updateImportLogicContentByWayBill(importLogicContent);
+        if (StringUtils.isNotEmpty(newRel)){
+            // 处理 改派物流信息又改派
+            importLogicContent.setNewWaybill(logisticsInfo.getOldWaybill());
+            ImportLogicContent importLogicContent1 = importLogicContentMapper.selectImportLogicContentByNewWaybill(logisticsInfo.getOldWaybill());
+            if (ObjectUtils.isNotEmpty(importLogicContent1) && (!SysWaybill.YTJ.getCode().equals(importLogicContent1.getStatus()))){
+                if (SysWaybill.YTJ.getCode().equals(logisticsInfo.getStatus())){
+                    importLogicContent1.setReturnNumber(newRel);
+                } else {
+                    importLogicContent1.setNewNumber(newRel);
+                }
+                importLogicContent1.setStatus(logisticsInfo.getStatus());
+                importLogicContentMapper.updateImportLogicContentByWaybill(importLogicContent1);
+            }
+        }else {
+            importLogicContent.setNewWaybill(logisticsInfo.getWaybill());
+            importLogicContent.setLastStatusDate(logisticsInfo.getLastTime());
+            importLogicContentMapper.updateImportLogicContentByWayBill(importLogicContent);
+        }
+    }
+
+    private String getRLForRL(List<CustomerEventDataV3> allEventDataList) {
+        if (CollectionUtils.isEmpty(allEventDataList)) {
+            return "";
+        }
+        List<CustomerEventDataV3> customerEventDataV3sL =
+                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && item.getValue().endsWith("L")).collect(Collectors.toList());
+        for (CustomerEventDataV3 item : customerEventDataV3sL) {
+            return item.getValue();
+        }
+        return "";
     }
 
     private List<WaybillLRel> getRL(String waybill, List<CustomerEventDataV3> allEventDataList) {

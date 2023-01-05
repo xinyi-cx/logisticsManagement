@@ -20,6 +20,8 @@ public interface ImportLogicContentMapper
      */
     public ImportLogicContent selectImportLogicContentById(Long id);
 
+    public ImportLogicContent selectImportLogicContentByNewWaybill(String newWaybill);
+
     /**
      * 查询导入查询物流列表
      * 
