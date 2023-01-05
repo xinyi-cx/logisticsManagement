@@ -288,6 +288,16 @@ public class PackageVo extends BaseEntity {
     @Excel(name = "COD")
     private BigDecimal pln;
 
+    private String codCurrency;
+
+    public String getCodCurrency() {
+        return codCurrency;
+    }
+
+    public void setCodCurrency(String codCurrency) {
+        this.codCurrency = codCurrency;
+    }
+
     /** 旧物流单号 */
 //    @Excel(name = "旧物流单号")
     private String oldWaybill;

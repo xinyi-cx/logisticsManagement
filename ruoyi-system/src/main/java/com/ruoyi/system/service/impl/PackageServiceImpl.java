@@ -1167,7 +1167,12 @@ public class PackageServiceImpl implements IPackageService {
     private Services getServices(PackageVo pkg, Long id) {
         Services services = new Services();
         services.setCodAmount(ObjectUtils.isEmpty(pkg.getPln()) ? "0" : pkg.getPln().toString());
-        services.setCodCurrency("PLN");
+        if (ObjectUtils.isEmpty(pkg.getCodCurrency())){
+            services.setCodCurrency("PLN");
+        } else {
+            services.setCodCurrency(pkg.getCodCurrency());
+        }
+
         if (ObjectUtils.isNotEmpty(id)) {
             services.setId(id);
             services.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());

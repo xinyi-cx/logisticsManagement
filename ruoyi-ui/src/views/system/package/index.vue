@@ -621,8 +621,9 @@ export default {
         let UCountry = response.msg;
         if ("PL" == UCountry){
           this.countryCodePlFlag = true;
-        }
-        if ("CZ" == UCountry){
+        } else if ("CN" == UCountry){
+          this.countryCodePlFlag = true;
+        } else {
           this.countryCodePlFlag = false;
           this.countryCodeCzFlag = true;
         }
