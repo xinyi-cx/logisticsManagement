@@ -185,18 +185,20 @@ public class DPDServicesXMLClient {
     }
 
     private void saveFile(Long id, DocumentGenerationResponseV1 ret) {
-        Documents documentsInsert = new Documents();
-        documentsInsert.setId(sequenceMapper.selectNextvalByName("doc_seq"));
-        documentsInsert.setPackageId(id);
-        documentsInsert.setFileData(ret.getDocumentData());
-        documentsInsert.setDocumentId(ret.getDocumentId());
-        documentsInsert.setExtension("PDF");
-        documentsInsert.setContentType("application/pdf");
-        documentsInsert.setFileName("file");
-        documentsInsert.setDisplayName(id.toString() + ".pdf");
-        documentsMapper.insertDocuments(documentsInsert);
+        if (ObjectUtils.isNotEmpty(ret.getDocumentData())){
+            Documents documentsInsert = new Documents();
+            documentsInsert.setId(sequenceMapper.selectNextvalByName("doc_seq"));
+            documentsInsert.setPackageId(id);
+            documentsInsert.setFileData(ret.getDocumentData());
+            documentsInsert.setDocumentId(ret.getDocumentId());
+            documentsInsert.setExtension("PDF");
+            documentsInsert.setContentType("application/pdf");
+            documentsInsert.setFileName("file");
+            documentsInsert.setDisplayName(id.toString() + ".pdf");
+            documentsMapper.insertDocuments(documentsInsert);
 
-        saveFileToLocal(documentsInsert);
+            saveFileToLocal(documentsInsert);
+        }
     }
 
     private static final Logger log = LoggerFactory.getLogger(DPDServicesXMLClient.class);
