@@ -22,14 +22,17 @@
           size="small"
           style="width: 240px"
         >
-<!--          <el-option-->
-<!--            v-for="dict in dict.type.sys_bat_status"-->
-<!--            :key="dict.value"-->
-<!--            :label="dict.label"-->
-<!--            :value="dict.value"-->
-<!--          />-->
-          <el-option label="马帮主动通知" value="马帮主动通知"/>
-          <el-option label="面单导入" value="面单导入"/>
+          <el-option
+            v-for="dict in dict.type.sys_bat_status"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+<!--          <el-option label="马帮主动通知" value="马帮主动通知"/>-->
+<!--          <el-option label="面单导入" value="面单导入"/>-->
+<!--          <el-option label="本地" value="本地"/>-->
+<!--          <el-option label="转寄" value="转寄"/>-->
+<!--          <el-option label="直发" value="直发"/>-->
 
         </el-select>
       </el-form-item>
@@ -163,17 +166,19 @@
       <el-table-column label="成功面单数" align="center" prop="successNum">
         <template slot-scope="scope">
           <!-- 待添加点击处理事件 跳转至成功面单列表 -->
-          <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type">
+          <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
            <span>{{ scope.row.successNum }}</span>
           </router-link>
+          <span v-else >{{ scope.row.successNum }}</span>
         </template>
       </el-table-column>
       <el-table-column label="失败面单数" align="center" prop="failNum">
         <template slot-scope="scope">
           <!-- 待添加点击处理事件 跳转至失败面单列表-->
-          <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type">
+          <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
            <span>{{ scope.row.failNum }}</span>
           </router-link>
+          <span v-else >{{ scope.row.failNum }}</span>
         </template>
       </el-table-column>
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
@@ -344,7 +349,7 @@ import { getToken } from "@/utils/auth";
 
 export default {
   name: "History",
-  dicts: ['sys_normal_disable'],
+  dicts: ['sys_normal_disable','sys_bat_status'],
   data() {
     return {
       // 遮罩层

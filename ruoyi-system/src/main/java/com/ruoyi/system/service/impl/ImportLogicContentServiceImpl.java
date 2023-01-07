@@ -106,8 +106,8 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
                     exportLogicContentVo.setLastStatusDate(tjLogisticsInfo.getLastTime());
                     exportLogicContentVo.setReturnNumber(tjLogisticsInfo.getWaybill());
                 }
-                returnList.add(exportLogicContentVo);
             }
+            returnList.add(exportLogicContentVo);
         }
         return returnList;
     }

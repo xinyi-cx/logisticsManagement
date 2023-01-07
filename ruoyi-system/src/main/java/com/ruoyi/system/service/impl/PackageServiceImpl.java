@@ -935,7 +935,10 @@ public class PackageServiceImpl implements IPackageService {
 
     @Override
 //    @Transactional(rollbackFor = Exception.class)
-    public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVos) throws Exception {
+    public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVosOri) throws Exception {
+        if (CollectionUtils.isEmpty(packageVosOri)){
+            return "导入数据不能为空";
+        }
         String fileName = file.getOriginalFilename();
         List<String> list = Arrays.asList(fileName.split(" "));
         if (CollectionUtils.isEmpty(list) || list.size()<6 || !(
@@ -953,6 +956,21 @@ public class PackageServiceImpl implements IPackageService {
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
 
+        List<String> wldhs = packageVosOri.stream().map(PackageVo::getNewWaybill).collect(toList());
+
+        List<ImportLogicContent> czImportLogicContents = importLogicContentMapper.selectImportLogicContentByNewWaybillIn(wldhs);
+
+        List<PackageVo> packageVos;
+        if (CollectionUtils.isEmpty(czImportLogicContents)){
+            packageVos = packageVosOri;
+        }else {
+            List<String> czwldhs = czImportLogicContents.stream().map(ImportLogicContent::getNewWaybill).collect(toList());
+            packageVos = packageVosOri.stream().filter(item -> !czwldhs.contains(item.getNewWaybill())).collect(toList());
+        }
+
+        if (CollectionUtils.isEmpty(packageVos)){
+            return "导入成功";
+        }
         /**
          * 一系列处理
          */
@@ -960,7 +978,6 @@ public class PackageServiceImpl implements IPackageService {
         Map<String, Sequence> nameMap = getSeqMap(packageVos.size());
         AddressSender addressSender = getSender();
         List<Package> packages = new ArrayList<>();
-        List<RedirectPackage> redirectPackages = new ArrayList<>();
         List<ImportLogicContent> importLogicContents = new ArrayList<>();
         for (PackageVo packageVo : packageVos) {
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
@@ -980,7 +997,7 @@ public class PackageServiceImpl implements IPackageService {
             parcel.setPackId(pac.getId());
             parcel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
             parcel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
-            parcel.setStatus("1");
+            parcel.setStatus(SysWaybill.WJH.getCode());
             if (ObjectUtils.isEmpty(packageVo.getWaybill())) {
                 parcel.setWaybill(packageVo.getNewWaybill());
             }

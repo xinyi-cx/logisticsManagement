@@ -115,6 +115,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         limit 1
     </select>
 
+    <select id="selectImportLogicContentByNewWaybillIn" resultMap="ImportLogicContentResult" parameterType="list">
+        <include refid="selectImportLogicContentVo"/>
+        where new_waybill in
+        <foreach item="waybill" collection="list" open="(" separator="," close=")">
+            #{waybill}
+        </foreach>
+    </select>
+
     <insert id="insertImportLogicContent" parameterType="ImportLogicContent" useGeneratedKeys="true" keyProperty="id">
         insert into import_logic_content
         <trim prefix="(" suffix=")" suffixOverrides=",">

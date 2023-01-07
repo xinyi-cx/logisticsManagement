@@ -22,6 +22,8 @@ public interface ImportLogicContentMapper
 
     public ImportLogicContent selectImportLogicContentByNewWaybill(String newWaybill);
 
+    public List<ImportLogicContent> selectImportLogicContentByNewWaybillIn(List<String> waybills);
+
     /**
      * 查询导入查询物流列表
      * 
