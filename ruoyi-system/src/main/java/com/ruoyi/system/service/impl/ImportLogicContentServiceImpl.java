@@ -74,39 +74,42 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
 
     @Override
     public List<ExportLogicContentVo> exportImportLogicContentList(ImportLogicContent importLogicContent) {
+        if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
+            importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        }
         dealParam(importLogicContent);
         List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentList(importLogicContent);
 
-        List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(
-                importLogicContents.stream().map(ImportLogicContent::getNewWaybill).collect(Collectors.toList())
-        );
-        Map<String, LogisticsInfo> waybillBeanMap = logisticsInfos.stream().collect(Collectors.toMap(LogisticsInfo::getWaybill, Function.identity()));
-        Map<String, LogisticsInfo> getZjStatus = getZjStatus(logisticsInfos);
-        Map<String, LogisticsInfo> getTjStatus = getTjStatus(logisticsInfos);
+//        List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(
+//                importLogicContents.stream().map(ImportLogicContent::getNewWaybill).collect(Collectors.toList())
+//        );
+//        Map<String, LogisticsInfo> waybillBeanMap = logisticsInfos.stream().collect(Collectors.toMap(LogisticsInfo::getWaybill, Function.identity()));
+//        Map<String, LogisticsInfo> getZjStatus = getZjStatus(logisticsInfos);
+//        Map<String, LogisticsInfo> getTjStatus = getTjStatus(logisticsInfos);
 
         List<ExportLogicContentVo> returnList = new ArrayList<>();
         for (ImportLogicContent logicContent : importLogicContents) {
             ExportLogicContentVo exportLogicContentVo = new ExportLogicContentVo();
             BeanUtils.copyProperties(logicContent, exportLogicContentVo);
-            String newWaybill = logicContent.getNewWaybill();
-            if (waybillBeanMap.containsKey(newWaybill)) {
-                LogisticsInfo logisticsInfo = waybillBeanMap.get(newWaybill);
-                exportLogicContentVo.setActivedDate(logisticsInfo.getActivationTime());
-                exportLogicContentVo.setStatus(logisticsInfo.getStatus());
-                exportLogicContentVo.setLastStatusDate(logisticsInfo.getLastTime());
-                if (getZjStatus.containsKey(newWaybill)){
-                    LogisticsInfo zjLogisticsInfo = getZjStatus.get(newWaybill);
-                    exportLogicContentVo.setStatus(zjLogisticsInfo.getStatus());
-                    exportLogicContentVo.setLastStatusDate(zjLogisticsInfo.getLastTime());
-                    exportLogicContentVo.setNewNumber(zjLogisticsInfo.getWaybill());
-                }
-                if (getTjStatus.containsKey(newWaybill)){
-                    LogisticsInfo tjLogisticsInfo = getTjStatus.get(newWaybill);
-                    exportLogicContentVo.setStatus(tjLogisticsInfo.getStatus());
-                    exportLogicContentVo.setLastStatusDate(tjLogisticsInfo.getLastTime());
-                    exportLogicContentVo.setReturnNumber(tjLogisticsInfo.getWaybill());
-                }
-            }
+//            String newWaybill = logicContent.getNewWaybill();
+//            if (waybillBeanMap.containsKey(newWaybill)) {
+//                LogisticsInfo logisticsInfo = waybillBeanMap.get(newWaybill);
+//                exportLogicContentVo.setActivedDate(logisticsInfo.getActivationTime());
+//                exportLogicContentVo.setStatus(logisticsInfo.getStatus());
+//                exportLogicContentVo.setLastStatusDate(logisticsInfo.getLastTime());
+//                if (getZjStatus.containsKey(newWaybill)){
+//                    LogisticsInfo zjLogisticsInfo = getZjStatus.get(newWaybill);
+//                    exportLogicContentVo.setStatus(zjLogisticsInfo.getStatus());
+//                    exportLogicContentVo.setLastStatusDate(zjLogisticsInfo.getLastTime());
+//                    exportLogicContentVo.setNewNumber(zjLogisticsInfo.getWaybill());
+//                }
+//                if (getTjStatus.containsKey(newWaybill)){
+//                    LogisticsInfo tjLogisticsInfo = getTjStatus.get(newWaybill);
+//                    exportLogicContentVo.setStatus(tjLogisticsInfo.getStatus());
+//                    exportLogicContentVo.setLastStatusDate(tjLogisticsInfo.getLastTime());
+//                    exportLogicContentVo.setReturnNumber(tjLogisticsInfo.getWaybill());
+//                }
+//            }
             returnList.add(exportLogicContentVo);
         }
         return returnList;
