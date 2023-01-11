@@ -457,7 +457,9 @@ public class PackageServiceImpl implements IPackageService {
         //查询转寄
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())) {
             RedirectRel redirectRelParam = new RedirectRel();
-            redirectRelParam.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+                redirectRelParam.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            }
             List<RedirectRel> redirectRelList = redirectRelMapper.selectRedirectRelList(redirectRelParam);
             if (CollectionUtils.isNotEmpty(redirectRelList)) {
                 newWaybills = redirectRelList.stream().map(RedirectRel::getNewWaybill).collect(toList());
