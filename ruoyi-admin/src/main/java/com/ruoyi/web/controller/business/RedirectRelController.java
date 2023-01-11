@@ -76,6 +76,15 @@ public class RedirectRelController extends BaseController {
     }
 
     /**
+     * 获取转寄关联关系详细信息
+     */
+    @PreAuthorize("@ss.hasPermi('system:redirectrel:query')")
+    @GetMapping(value = "/getInfoByNewPackageId/{newPackageId}")
+    public AjaxResult getInfoByNewPackageId(@PathVariable("newPackageId") Long newPackageId) {
+        return AjaxResult.success(redirectRelService.selectRedirectRelByNewPackageId(newPackageId));
+    }
+
+    /**
      * 新增转寄关联关系
      */
     @PreAuthorize("@ss.hasPermi('system:redirectrel:add')")

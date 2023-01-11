@@ -62,6 +62,11 @@ public class RedirectRelServiceImpl implements IRedirectRelService {
         return redirectRelMapper.selectRedirectRelById(id);
     }
 
+    @Override
+    public RedirectRel selectRedirectRelByNewPackageId(Long newPackageId){
+        return redirectRelMapper.selectRedirectRelByNewPackageId(newPackageId);
+    }
+
     /**
      * 查询转寄关联关系列表
      *

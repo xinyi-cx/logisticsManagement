@@ -17,6 +17,13 @@ export function getRel(id) {
   })
 }
 
+export function getInfoByNewPackageId(newPackageId) {
+  return request({
+    url: '/system/redirectrel/getInfoByNewPackageId/' + newPackageId,
+    method: 'get'
+  })
+}
+
 // 新增转寄关联关系
 export function addRel(data) {
   return request({

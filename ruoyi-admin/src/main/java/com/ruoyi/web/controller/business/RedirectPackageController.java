@@ -45,8 +45,9 @@ public class RedirectPackageController extends BaseController
     public TableDataInfo list(PackageVo pkg)
     {
         startPage();
+        pkg.setOriginalId(1L);
         List<PackageVo> list = packageService.selectPackageVoList(pkg);
-        return getDataTable(list);
+        return getDataTable(list, packageService.selectPackageVoListTotal(pkg));
     }
 
     /**

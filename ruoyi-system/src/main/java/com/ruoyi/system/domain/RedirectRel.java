@@ -36,6 +36,26 @@ public class RedirectRel extends BaseEntity
     /** 新物流单号 */
     private String newWaybill;
 
+    private Long newPackageId;
+
+    private Long oldPackageId;
+
+    public Long getNewPackageId() {
+        return newPackageId;
+    }
+
+    public void setNewPackageId(Long newPackageId) {
+        this.newPackageId = newPackageId;
+    }
+
+    public Long getOldPackageId() {
+        return oldPackageId;
+    }
+
+    public void setOldPackageId(Long oldPackageId) {
+        this.oldPackageId = oldPackageId;
+    }
+
     /** 国家代码 */
     private String countryCode;
 

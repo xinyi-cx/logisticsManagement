@@ -20,6 +20,8 @@ public interface RedirectRelMapper
      */
     public RedirectRel selectRedirectRelById(Long id);
 
+    public RedirectRel selectRedirectRelByNewPackageId(Long id);
+
     /**
      * 查询转寄关联关系列表
      * 
@@ -73,5 +75,9 @@ public interface RedirectRelMapper
     public List<RedirectRel> selectByOldWaybillIn(List<String> oldWaybills);
 
     public List<RedirectRel> selectByNewWaybillIn(List<String> newWaybills);
+
+    public List<RedirectRel> selectByNewPackageIdIn(List<Long> packageIds);
+
+    public List<RedirectRel> selectByOldPackageIdIn(List<Long> packageIds);
 
 }

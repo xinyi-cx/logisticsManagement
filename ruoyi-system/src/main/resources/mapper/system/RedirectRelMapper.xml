@@ -10,6 +10,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="backOrder"    column="back_order"    />
         <result property="newOrder"    column="new_order"    />
         <result property="newWaybill"    column="new_waybill"    />
+        <result property="newPackageId"    column="new_package_id"    />
+        <result property="oldPackageId"    column="old_package_id"    />
         <result property="countryCode"    column="country_code"    />
         <result property="remark"    column="remark"    />
         <result property="createUser"    column="create_user"    />
@@ -20,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectRedirectRelVo">
-        select id, old_waybill, back_order, new_order, new_waybill, country_code, remark, create_user, update_user, created_time, updated_time, is_delete from redirect_rel
+        select id, old_waybill, back_order, new_order, new_waybill,new_package_id,old_package_id,  country_code, remark, create_user, update_user, created_time, updated_time, is_delete from redirect_rel
     </sql>
 
     <select id="selectRedirectRelList" parameterType="RedirectRel" resultMap="RedirectRelResult">
@@ -30,6 +32,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="backOrder != null  and backOrder != ''"> and back_order = #{backOrder}</if>
             <if test="newOrder != null  and newOrder != ''"> and new_order = #{newOrder}</if>
             <if test="newWaybill != null  and newWaybill != ''"> and new_waybill = #{newWaybill}</if>
+            <if test="newPackageId != null  and newPackageId != ''"> and new_package_id = #{newPackageId}</if>
+            <if test="oldPackageId != null  and oldPackageId != ''"> and old_package_id = #{oldPackageId}</if>
             <if test="countryCode != null  and countryCode != ''"> and country_code = #{countryCode}</if>
             <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
@@ -42,7 +46,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectRedirectRelVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectRedirectRelByNewPackageId" parameterType="Long" resultMap="RedirectRelResult">
+        <include refid="selectRedirectRelVo"/>
+        where new_package_id = #{id}
+        limit 1
+    </select>
+
     <insert id="insertRedirectRel" parameterType="RedirectRel" useGeneratedKeys="true" keyProperty="id">
         insert into redirect_rel
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -50,6 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="backOrder != null">back_order,</if>
             <if test="newOrder != null">new_order,</if>
             <if test="newWaybill != null">new_waybill,</if>
+            <if test="newPackageId != null">new_package_id,</if>
+            <if test="oldPackageId != null">old_package_id,</if>
             <if test="countryCode != null">country_code,</if>
             <if test="remark != null">remark,</if>
             <if test="createUser != null">create_user,</if>
@@ -62,6 +74,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="backOrder != null">#{backOrder},</if>
             <if test="newOrder != null">#{newOrder},</if>
             <if test="newWaybill != null">#{newWaybill},</if>
+            <if test="newPackageId != null">#{newPackageId},</if>
+            <if test="oldPackageId != null">#{oldPackageId},</if>
             <if test="countryCode != null">#{countryCode},</if>
             <if test="remark != null">#{remark},</if>
             <if test="createUser != null">#{createUser},</if>
@@ -72,7 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <insert id="batchInsert" useGeneratedKeys="true" keyProperty="id">
-        insert into redirect_rel (old_waybill, back_order, new_order, new_waybill, country_code, remark, create_user, update_user, created_time, updated_time)
+        insert into redirect_rel (old_waybill, back_order, new_order, new_waybill, new_package_id, old_package_id, country_code, remark, create_user, update_user, created_time, updated_time)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
@@ -80,6 +94,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.backOrder},
             #{item.newOrder},
             #{item.newWaybill},
+            #{item.newPackageId},
+            #{item.oldPackageId},
             #{item.countryCode},
             #{item.remark},
             #{item.createUser},
@@ -113,6 +129,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </select>
 
+    <select id="selectByNewPackageIdIn" resultMap="RedirectRelResult" parameterType="list">
+        <include refid="selectRedirectRelVo"/>
+        where new_package_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectByOldPackageIdIn" resultMap="RedirectRelResult" parameterType="list">
+        <include refid="selectRedirectRelVo"/>
+        where old_package_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <update id="updateRedirectRel" parameterType="RedirectRel">
         update redirect_rel
         <trim prefix="SET" suffixOverrides=",">
@@ -120,6 +152,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="backOrder != null">back_order = #{backOrder},</if>
             <if test="newOrder != null">new_order = #{newOrder},</if>
             <if test="newWaybill != null">new_waybill = #{newWaybill},</if>
+            <if test="newPackageId != null">new_package_id = #{newPackageId},</if>
+            <if test="oldPackageId != null">old_package_id = #{oldPackageId},</if>
             <if test="countryCode != null">country_code = #{countryCode},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="createUser != null">create_user = #{createUser},</if>

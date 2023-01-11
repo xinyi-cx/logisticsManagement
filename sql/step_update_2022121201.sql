@@ -8,3 +8,10 @@ insert into sys_dict_data values(10009, 3,  '直发',     '直发',       'sys_w
 insert into sys_dict_data values(10010, 7,  '未查询到物流信息',     '7',       'sys_waybill',   '',   '',  'N', '0', 'admin', sysdate(), '', null, '未查询到物流信息');
 
 alter table mb_msg modify column msg LONGTEXT;
+
+
+alter table redirect_rel
+    add column new_package_id bigint(20) default null;
+
+alter table redirect_rel
+    add column old_package_id bigint(20) default null;

@@ -21,10 +21,6 @@ public class REPackageVo extends BaseEntity
     /** 面单主键 */
     private Long id;
 
-    /** 原面单主键 */
-    @Excel(name = "原面单物流单号")
-    private String originalWaybill;
-
     @Excel(name = "Sender Name")
     private String showSenderName;
 
@@ -117,6 +113,58 @@ public class REPackageVo extends BaseEntity
      */
     @Excel(name = "COD")
     private BigDecimal pln;
+
+    /** 原面单主键 */
+//    @Excel(name = "原面单物流单号")
+    private String originalWaybill;
+
+    /** 旧物流单号 */
+//    @Excel(name = "旧物流单号")
+    private String oldWaybill;
+
+    /** 新的单号 */
+//    @Excel(name = "Order number")
+    private String newOrder;
+
+    /** 回退单号 */
+//    @Excel(name = "Old return number")
+    private String backOrder;
+
+    /** 新物流单号 */
+//    @Excel(name = "New Waybill")
+    private String newWaybill;
+
+    public String getOldWaybill() {
+        return oldWaybill;
+    }
+
+    public void setOldWaybill(String oldWaybill) {
+        this.oldWaybill = oldWaybill;
+    }
+
+    public String getNewOrder() {
+        return newOrder;
+    }
+
+    public void setNewOrder(String newOrder) {
+        this.newOrder = newOrder;
+    }
+
+    public String getBackOrder() {
+        return backOrder;
+    }
+
+    public void setBackOrder(String backOrder) {
+        this.backOrder = backOrder;
+    }
+
+    public String getNewWaybill() {
+        return newWaybill;
+    }
+
+    public void setNewWaybill(String newWaybill) {
+        this.newWaybill = newWaybill;
+    }
 
     /** 服务id */
 //    @Excel(name = "服务id")

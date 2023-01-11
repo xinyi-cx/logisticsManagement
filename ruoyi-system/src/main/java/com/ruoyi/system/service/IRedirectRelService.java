@@ -23,6 +23,9 @@ public interface IRedirectRelService
      */
     public RedirectRel selectRedirectRelById(Long id);
 
+    public RedirectRel selectRedirectRelByNewPackageId(Long newPackageId);
+
+
     /**
      * 查询转寄关联关系列表
      * 
