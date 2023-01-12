@@ -73,8 +73,8 @@ public class DPDInfoXMLClient {
      * 根据物流获取信息
      * @param logisticsInfo
      */
+//    @Transactional(rollbackFor = Exception.class)
     @Async
-    @Transactional(rollbackFor = Exception.class)
     public void getEventsByLogisticsInfo(LogisticsInfo logisticsInfo) {
         log.info("+++getEventsByLogisticsInfo+++logisticsInfo string: {}", logisticsInfo.toString());
         AuthDataV1 authData = getAuthData();
@@ -126,8 +126,8 @@ public class DPDInfoXMLClient {
         }
     }
 
+//    @Transactional(rollbackFor = Exception.class)
     @Async
-    @Transactional(rollbackFor = Exception.class)
     public void getEventsForOneWaybill(Parcel parcel) {
         log.info("+++getEventsForOneWaybill+++parcel string: {}", parcel.toString());
         AuthDataV1 authData = getAuthData();
@@ -313,7 +313,7 @@ public class DPDInfoXMLClient {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     public void dealWlData(String newRel, List<String> waybills, List<LogisticsInfo> logisticsInfos) {
         if (!CollectionUtils.isEmpty(logisticsInfos)) {
             logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);

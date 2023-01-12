@@ -115,13 +115,13 @@
       <!--   运单号   -->
       <el-table-column label="运单号" align="center" prop="expressChannelCode" />
       <!--   客户名称   -->
-      <el-table-column label="客户信息" align="center" prop="customer" />
+      <el-table-column label="客户信息" show-overflow-tooltip  align="center" prop="customer" />
       <el-table-column label="订单生成时间" align="center" prop="timeCreated" />
       <!--   物流渠道   -->
-      <el-table-column label="物流渠道" align="center" prop="expressChannel" />
-      <el-table-column label="发件人" align="center" prop="addressPickupStr" />
-      <el-table-column label="收件人" align="center" prop="addressReceiveStr" />
-      <el-table-column label="退件人" align="center" prop="addressBackStr" />
+      <el-table-column label="物流渠道" show-overflow-tooltip align="center" prop="expressChannel" />
+      <el-table-column label="发件人" show-overflow-tooltip  align="center" prop="addressPickupStr" />
+      <el-table-column label="收件人" show-overflow-tooltip  align="center" prop="addressReceiveStr" />
+      <el-table-column label="退件人" show-overflow-tooltip  align="center" prop="addressBackStr" />
 <!--      <el-table-column label="cod 订单金额" align="center" prop="codValue" />-->
       <el-table-column label="COD" align="center">
         <template slot-scope="scope">

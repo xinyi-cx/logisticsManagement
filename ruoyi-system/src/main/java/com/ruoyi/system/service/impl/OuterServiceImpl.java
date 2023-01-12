@@ -682,6 +682,9 @@ public class OuterServiceImpl implements IOuterService {
         pac.setPhone(pac.getReceiver().getPhone());
         pac.setRef1("Whatsapp:+86 13726455903");
         pac.setRef2("qingguoqn@gmail.com");
+
+        //此处后期用来对应马帮
+        pac.setMbCode(mbReturnDto.getCode());
         return pac;
     }
 

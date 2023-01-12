@@ -17,7 +17,7 @@
       <el-form-item label="类型" prop="type">
         <el-select
           v-model="queryParams.type"
-          placeholder="批量任务状态"
+          placeholder="批量任务类型"
           clearable
           size="small"
           style="width: 240px"
@@ -33,6 +33,28 @@
 <!--          <el-option label="本地" value="本地"/>-->
 <!--          <el-option label="转寄" value="转寄"/>-->
 <!--          <el-option label="直发" value="直发"/>-->
+
+        </el-select>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select
+          v-model="queryParams.status"
+          placeholder="批量任务状态"
+          clearable
+          size="small"
+          style="width: 240px"
+        >
+          <el-option
+            v-for="dict in dict.type.sys_bat_imp_status"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+          <!--          <el-option label="马帮主动通知" value="马帮主动通知"/>-->
+          <!--          <el-option label="面单导入" value="面单导入"/>-->
+          <!--          <el-option label="本地" value="本地"/>-->
+          <!--          <el-option label="转寄" value="转寄"/>-->
+          <!--          <el-option label="直发" value="直发"/>-->
 
         </el-select>
       </el-form-item>
@@ -128,17 +150,16 @@
 <!--          v-hasPermi="['system:history:edit']"-->
 <!--        >修改</el-button>-->
 <!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="danger"-->
-<!--          plain-->
-<!--          icon="el-icon-delete"-->
-<!--          size="mini"-->
-<!--          :disabled="multiple"-->
-<!--          @click="handleDelete"-->
-<!--          v-hasPermi="['system:history:remove']"-->
-<!--        >删除</el-button>-->
-<!--      </el-col>-->
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+        >删除</el-button>
+      </el-col>
 
 <!--      <el-col :span="1.5">-->
 <!--        <el-button-->
@@ -349,7 +370,7 @@ import { getToken } from "@/utils/auth";
 
 export default {
   name: "History",
-  dicts: ['sys_normal_disable','sys_bat_status'],
+  dicts: ['sys_normal_disable','sys_bat_status', 'sys_bat_imp_status'],
   data() {
     return {
       // 遮罩层

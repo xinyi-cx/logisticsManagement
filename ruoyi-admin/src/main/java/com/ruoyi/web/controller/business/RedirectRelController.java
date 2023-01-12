@@ -31,7 +31,6 @@ public class RedirectRelController extends BaseController {
     /**
      * 查询转寄关联关系列表
      */
-    @PreAuthorize("@ss.hasPermi('system:redirectrel:list')")
     @GetMapping("/list")
     public TableDataInfo list(RedirectRel redirectRel) {
         startPage();
@@ -42,7 +41,6 @@ public class RedirectRelController extends BaseController {
     /**
      * 导出转寄关联关系列表
      */
-    @PreAuthorize("@ss.hasPermi('system:redirectrel:export')")
     @Log(title = "转寄关联关系", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, RedirectRel redirectRel) {
@@ -58,7 +56,6 @@ public class RedirectRelController extends BaseController {
     }
 
     @Log(title = "转寄关联关系导入", businessType = BusinessType.IMPORT)
-    @PreAuthorize("@ss.hasPermi('system:redirectrel:add')")
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file) throws Exception {
         ExcelUtil<RedirectRel> util = new ExcelUtil<RedirectRel>(RedirectRel.class);
@@ -69,7 +66,6 @@ public class RedirectRelController extends BaseController {
     /**
      * 获取转寄关联关系详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:redirectrel:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         return AjaxResult.success(redirectRelService.selectRedirectRelById(id));
@@ -78,7 +74,6 @@ public class RedirectRelController extends BaseController {
     /**
      * 获取转寄关联关系详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:redirectrel:query')")
     @GetMapping(value = "/getInfoByNewPackageId/{newPackageId}")
     public AjaxResult getInfoByNewPackageId(@PathVariable("newPackageId") Long newPackageId) {
         return AjaxResult.success(redirectRelService.selectRedirectRelByNewPackageId(newPackageId));
@@ -87,7 +82,6 @@ public class RedirectRelController extends BaseController {
     /**
      * 新增转寄关联关系
      */
-    @PreAuthorize("@ss.hasPermi('system:redirectrel:add')")
     @Log(title = "转寄关联关系", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody RedirectRel redirectRel) {
@@ -97,7 +91,6 @@ public class RedirectRelController extends BaseController {
     /**
      * 修改转寄关联关系
      */
-    @PreAuthorize("@ss.hasPermi('system:redirectrel:edit')")
     @Log(title = "转寄关联关系", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody RedirectRel redirectRel) {
@@ -107,7 +100,6 @@ public class RedirectRelController extends BaseController {
     /**
      * 删除转寄关联关系
      */
-    @PreAuthorize("@ss.hasPermi('system:redirectrel:remove')")
     @Log(title = "转寄关联关系", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {

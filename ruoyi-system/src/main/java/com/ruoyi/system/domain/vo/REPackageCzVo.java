@@ -7,14 +7,15 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
- * 导出 面单对象 package
+ * 面单对象 package
  *
  * @author ruoyi
  * @date 2022-01-02
  */
-public class ExportRePackageVo extends BaseEntity {
+public class REPackageCzVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -24,19 +25,6 @@ public class ExportRePackageVo extends BaseEntity {
 
     @Excel(name = "Sender Name")
     private String showSenderName;
-
-    /**
-     * 创建时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
-    private Date createdTime;
-
-    /**
-     * waybill 运货单
-     */
-    @Excel(name = "waybill")
-    private String waybill;
 
     /**
      * 收件人姓名
@@ -55,7 +43,7 @@ public class ExportRePackageVo extends BaseEntity {
     /**
      * 收件人邮政编码
      */
-    @Excel(name = "Recipient Postal code")
+    @Excel(name = "RecipientPostalcode")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverPostalCode;
 
@@ -69,14 +57,14 @@ public class ExportRePackageVo extends BaseEntity {
     /**
      * 收件人国家编码
      */
-    @Excel(name = "Recipient Country")
+    @Excel(name = "Recipient country")
 //    @NotEmpty(message = "收件人信息不能为空")
     private String receiverCountryCode;
 
     /**
      * 收件人手机号码
      */
-    @Excel(name = "Recipient phone")
+    @Excel(name = "Recipientphone")
     @NotEmpty(message = "收件人信息不能为空")
     private String receiverPhone;
 
@@ -97,7 +85,7 @@ public class ExportRePackageVo extends BaseEntity {
     /**
      * 包裹里物件的数量
      */
-//    @Excel(name = "Qty packages")
+    @Excel(name = "Qty packages")
     private String qtyPackages;
 
     /**
@@ -129,6 +117,88 @@ public class ExportRePackageVo extends BaseEntity {
      */
     @Excel(name = "COD")
     private BigDecimal pln;
+
+    @Excel(name = "Currency")
+    private String codCurrency;
+
+    public String getCodCurrency() {
+        return codCurrency;
+    }
+
+    public void setCodCurrency(String codCurrency) {
+        this.codCurrency = codCurrency;
+    }
+
+    /**
+     * 付款人类型
+     */
+//    @Excel(name = "付款人类型")
+    private String payerType;
+
+    /**
+     * 收件人公司
+     */
+//    @Excel(name = "收件人公司")
+    private String receiverCompany;
+
+    /**
+     * 客户数据1
+     */
+//    @Excel(name = "客户数据1")
+    private String content;
+
+
+    /**
+     * 长
+     */
+//    @Excel(name = "长")
+    private Integer sizeX;
+
+    /**
+     * 宽
+     */
+//    @Excel(name = "宽")
+    private Integer sizeY;
+
+    /**
+     * 高
+     */
+//    @Excel(name = "高")
+    private Integer sizeZ;
+
+    /**
+     * pack_id
+     */
+//    @Excel(name = "pack_id")
+    private Long packId;
+
+    /**
+     * waybill 运货单
+     */
+//    @Excel(name = "waybill 运货单")
+    private String waybill;
+
+    /**
+     * 包裹状态
+     */
+//    @Excel(name = "包裹状态")
+    private String status;
+
+    /**
+     * package_id
+     */
+//    @Excel(name = "package_id")
+    private Long packageId;
+
+    private Long parcelId;
+
+    private Long sessionId;
+
+    private String packagesGenerationResponseStatus;
+
+    private String pkgReference;
+
+    private String pkgStatus;
 
     /** 旧物流单号 */
     @Excel(name = "old shipment number")
@@ -178,70 +248,6 @@ public class ExportRePackageVo extends BaseEntity {
         this.newWaybill = newWaybill;
     }
 
-    /**
-     * 付款人类型
-     */
-//    @Excel(name = "付款人类型")
-    private String payerType;
-
-    /**
-     * 收件人公司
-     */
-//    @Excel(name = "收件人公司")
-    private String receiverCompany;
-
-    /**
-     * 客户数据1
-     */
-//    @Excel(name = "客户数据1")
-    private String content;
-
-
-    /**
-     * 长
-     */
-//    @Excel(name = "长")
-    private Integer sizeX;
-
-    /**
-     * 宽
-     */
-//    @Excel(name = "宽")
-    private Integer sizeY;
-
-    /**
-     * 高
-     */
-//    @Excel(name = "高")
-    private Integer sizeZ;
-
-    /**
-     * pack_id
-     */
-//    @Excel(name = "pack_id")
-    private Long packId;
-
-    /**
-     * 包裹状态
-     */
-//    @Excel(name = "包裹状态")
-    private String status;
-
-    /**
-     * package_id
-     */
-//    @Excel(name = "package_id")
-    private Long packageId;
-
-    private Long parcelId;
-
-    private Long sessionId;
-
-    private String packagesGenerationResponseStatus;
-
-    private String pkgReference;
-
-    private String pkgStatus;
 
     /**
      * 发件人id
@@ -299,9 +305,16 @@ public class ExportRePackageVo extends BaseEntity {
     private String updateUser;
 
     /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date createdTime;
+
+    /**
      * 更新时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 //    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
 
@@ -314,6 +327,26 @@ public class ExportRePackageVo extends BaseEntity {
     private String hisParam;
 
     private String datStr;
+
+    private String source;
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    private List<Long> ids;
+
+    public List<Long> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
+    }
 
     public String getDatStr() {
         return datStr;

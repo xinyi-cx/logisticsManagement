@@ -632,6 +632,8 @@ export default {
     /** 查询面单列表 */
     getList() {
       this.loading = true;
+      this.ids = [];
+      this.queryParams.ids = [];
       listPackageAll(this.queryParams).then(response => {
         this.packageList = response.rows;
         console.log(this.packageList);
@@ -675,6 +677,8 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm");
+      this.ids = [];
+      this.queryParams.ids = [];
       this.handleQuery();
     },
     // 多选框选中数据

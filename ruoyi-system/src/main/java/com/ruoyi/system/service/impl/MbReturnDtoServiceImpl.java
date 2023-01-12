@@ -43,7 +43,9 @@ public class MbReturnDtoServiceImpl implements IMbReturnDtoService
     @Override
     public List<MbReturnDto> selectMbReturnDtoList(MbReturnDto mbReturnDto)
     {
-        mbReturnDto.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+            mbReturnDto.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        }
         return mbReturnDtoMapper.selectMbReturnDtoList(mbReturnDto);
     }
 

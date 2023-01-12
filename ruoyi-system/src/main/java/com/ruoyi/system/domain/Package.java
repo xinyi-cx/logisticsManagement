@@ -8,7 +8,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 面单对象 package
@@ -43,6 +42,16 @@ public class Package extends BaseEntity
 
     /** 面单主键 */
     private Long id;
+
+    private String mbCode;
+
+    public String getMbCode() {
+        return mbCode;
+    }
+
+    public void setMbCode(String mbCode) {
+        this.mbCode = mbCode;
+    }
 
     /** 付款人类型 */
     @Excel(name = "付款人类型")

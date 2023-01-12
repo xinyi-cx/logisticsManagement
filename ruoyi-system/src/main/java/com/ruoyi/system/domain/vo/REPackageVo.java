@@ -119,7 +119,7 @@ public class REPackageVo extends BaseEntity
     private String originalWaybill;
 
     /** 旧物流单号 */
-//    @Excel(name = "旧物流单号")
+    @Excel(name = "old shipment number")
     private String oldWaybill;
 
     /** 新的单号 */
@@ -127,7 +127,7 @@ public class REPackageVo extends BaseEntity
     private String newOrder;
 
     /** 回退单号 */
-//    @Excel(name = "Old return number")
+    @Excel(name = "old return number")
     private String backOrder;
 
     /** 新物流单号 */

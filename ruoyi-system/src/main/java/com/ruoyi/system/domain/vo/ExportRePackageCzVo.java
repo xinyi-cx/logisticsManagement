@@ -131,19 +131,19 @@ public class ExportRePackageCzVo extends BaseEntity {
     private BigDecimal pln;
 
     /** 旧物流单号 */
-//    @Excel(name = "旧物流单号")
+    @Excel(name = "old shipment number")
     private String oldWaybill;
 
     /** 新的单号 */
-    @Excel(name = "Order number")
+//    @Excel(name = "Order number")
     private String newOrder;
 
     /** 回退单号 */
-    @Excel(name = "Old return number")
+    @Excel(name = "old return number")
     private String backOrder;
 
     /** 新物流单号 */
-    @Excel(name = "New Waybill")
+//    @Excel(name = "New Waybill")
     private String newWaybill;
 
     public String getOldWaybill() {

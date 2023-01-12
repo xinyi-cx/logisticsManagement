@@ -15,3 +15,6 @@ alter table redirect_rel
 
 alter table redirect_rel
     add column old_package_id bigint(20) default null;
+
+alter table package
+    add column mb_code varchar(500) default null;
