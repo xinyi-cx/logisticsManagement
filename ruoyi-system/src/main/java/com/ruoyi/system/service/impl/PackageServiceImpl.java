@@ -24,7 +24,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -1071,7 +1070,7 @@ public class PackageServiceImpl implements IPackageService {
             batchTaskHistory.setSuccessNum(importLogicContents.size());
             batchTaskHistory.setFailNum(0);
             // 异步查询一下物流信息
-            getLogic(parcels);
+            dpdInfoXMLClient.getLogic(parcels);
             return "物流信息导入成功，请稍后查询最新物流信息";
 //                    +
 //                    batchTaskHistory.getSuccessNum() + "条，失败" +
@@ -1098,10 +1097,9 @@ public class PackageServiceImpl implements IPackageService {
         return "直发";
     }
 
-    @Async
-    public void getLogic(List<Parcel> parcels){
-        parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
-    }
+//    public void getLogic(List<Parcel> parcels){
+//        parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
+//    }
 
     private Map<String, String> getFileNameMap(String countryCode) {
         PackageDpdMapping packageDpdMapping = new PackageDpdMapping();

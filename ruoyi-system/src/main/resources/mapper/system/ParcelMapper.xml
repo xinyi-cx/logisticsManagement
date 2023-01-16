@@ -66,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packageId != null "> and package_id = #{packageId}</if>
             <if test="parcelId != null "> and parcel_id = #{parcelId}</if>
             <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="createdTime != null"> and date_format(created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
         </where>
     </select>
 

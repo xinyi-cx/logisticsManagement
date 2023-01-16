@@ -121,6 +121,14 @@
           v-hasPermi="['system:content:export']"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          size="mini"
+          @click="refreshToday"
+        >获取当日导入物流信息</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -233,7 +241,7 @@
 </style>
 
 <script>
-import { listContent, getContent, delContent, addContent, updateContent } from "@/api/system/content";
+import { listContent, getContent, delContent, addContent, updateContent, refreshToday } from "@/api/system/content";
 import { getToken } from "@/utils/auth";
 
 export default {
@@ -318,6 +326,8 @@ export default {
   methods: {
     /** 查询导入查询物流列表 */
     getList() {
+      this.ids = [];
+      this.queryParams.ids = [];
       this.queryParams.params = typeof (this.queryParams.params) === 'object' && this.queryParams.params !== null && !Array.isArray(this.queryParams.params) ? this.queryParams.params : {};
       // this.dateRange2 = Array.isArray(this.dateRange2) ? this.dateRange2 : [];
       this.queryParams.params['CreateDateBeginTime'] = this.dateRange2[0];
@@ -391,6 +401,13 @@ export default {
       this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
+    },
+    refreshToday(){
+      this.loading = true;
+      refreshToday(this.queryParams).then(response => {
+        this.$modal.msgSuccess(response);
+        this.getList();
+      });
     },
     /** 新增按钮操作 */
     handleAdd() {

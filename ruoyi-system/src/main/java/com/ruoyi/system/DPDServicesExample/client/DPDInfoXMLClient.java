@@ -13,10 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,6 +122,11 @@ public class DPDInfoXMLClient {
         } catch (Exception_Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Async
+    public void getLogic(List<Parcel> parcels){
+        parcels.parallelStream().forEach(this::getEventsForOneWaybill);
     }
 
 //    @Transactional(rollbackFor = Exception.class)

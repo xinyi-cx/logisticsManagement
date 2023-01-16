@@ -42,3 +42,11 @@ export function delContent(id) {
     method: 'delete'
   })
 }
+
+export function refreshToday(query) {
+  return request({
+    url: '/system/content/refreshToday',
+    method: 'get',
+    params: query
+  })
+}

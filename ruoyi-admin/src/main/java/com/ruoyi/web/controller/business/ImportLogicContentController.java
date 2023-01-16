@@ -5,11 +5,15 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.ImportLogicContent;
+import com.ruoyi.system.domain.Parcel;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
 import com.ruoyi.system.domain.vo.ImportLogicContentTemplateVo;
 import com.ruoyi.system.service.IImportLogicContentService;
+import com.ruoyi.system.service.IParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +32,9 @@ import java.util.List;
 public class ImportLogicContentController extends BaseController {
     @Autowired
     private IImportLogicContentService importLogicContentService;
+
+    @Autowired
+    private IParcelService parcelService;
 
     /**
      * 查询导入查询物流列表
@@ -105,5 +112,17 @@ public class ImportLogicContentController extends BaseController {
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(importLogicContentService.deleteImportLogicContentByIds(ids));
+    }
+
+    @GetMapping("/refreshToday")
+    public String refreshToday(ImportLogicContent importLogicContent) {
+        Parcel parcel = new Parcel();
+        if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
+            parcel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        }
+        parcel.setCreatedTime(DateUtils.getNowDate());
+        parcelService.getParcelMsg(parcel);
+
+        return "已经刷新物流，请稍后查看最新消息";
     }
 }
