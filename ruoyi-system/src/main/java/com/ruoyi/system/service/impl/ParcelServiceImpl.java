@@ -105,11 +105,18 @@ public class ParcelServiceImpl implements IParcelService
 
     @Override
     @Async
-    public void getParcelMsg(Parcel parcel){
+    public void getParcelMsg(Parcel parcel) {
         System.out.println("getParcelMsg start");
         List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);
-        System.out.println("getParcelMsg size"+parcels.size());
-        parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
+        System.out.println("getParcelMsg size" + parcels.size());
+        parcels.parallelStream().forEach(item -> {
+                    try {
+                        dpdInfoXMLClient.getEventsForOneWaybill(item);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
         System.out.println("getParcelMsg end");
     }
 
@@ -162,6 +169,20 @@ public class ParcelServiceImpl implements IParcelService
             logisticsInfo.setWaybill(waybill);
             dpdInfoXMLClient.getEventsByLogisticsInfo(logisticsInfo);
         }
+    }
+
+    /**
+     * 根据物流单号获取物流信息
+     * @param waybills
+     */
+    @Override
+    @Async
+    public void getMsgByWaybills(List<String> waybills) {
+        System.out.println("getParcelMsg start");
+        List<Parcel> parcels = parcelMapper.selectParcelListByWaybillIn(waybills);
+        System.out.println("getParcelMsg size"+parcels.size());
+        parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
+        System.out.println("getParcelMsg end");
     }
 
 }

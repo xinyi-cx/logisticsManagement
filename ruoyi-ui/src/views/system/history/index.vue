@@ -224,13 +224,13 @@
       </el-table-column>
       -->
       <el-table-column label="导入文件名称" align="center" prop="fileName" />
-      <el-table-column label="查看物流信息" align="center">
-        <template slot-scope="scope">
-          <router-link :to="'/system/info/index/' + scope.row.id" class="link-type">
-            <span>查看物流信息</span>
-          </router-link>
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="查看物流信息" align="center">-->
+<!--        <template slot-scope="scope">-->
+<!--          <router-link :to="'/system/info/index/' + scope.row.id" class="link-type">-->
+<!--            <span>查看物流信息</span>-->
+<!--          </router-link>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -271,6 +271,12 @@
             icon="el-icon-view"
             @click="handleDownloadReContent(scope.row)"
           >导出物流</el-button>
+<!--          <el-button-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            icon="el-icon-view"-->
+<!--            @click="refreshByBatch(scope.row)"-->
+<!--          >获取最新物流信息</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -600,7 +606,13 @@ export default {
     handlePacExport(id) {
       this.packParams.hisParam = '000' + id;
     },
-
+    refreshByBatch(row) {
+      this.reset();
+      const id = row.id;
+      this.download('system/content/export/', {
+        batchId : id
+      }, `logistics_content_${new Date().getTime()}.xlsx`)
+    },
     downloadGeneratedExcel(row) {
       this.packParams.hisParam = row.id;
       const userId = parseInt(row.updateUser);

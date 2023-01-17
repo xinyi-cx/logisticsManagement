@@ -88,4 +88,6 @@ public interface IParcelService
      */
     public void getMsgByWaybill(String waybill);
 
+    public void getMsgByWaybills(List<String> waybills);
+
 }

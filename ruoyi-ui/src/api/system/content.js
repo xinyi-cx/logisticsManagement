@@ -50,3 +50,11 @@ export function refreshToday(query) {
     params: query
   })
 }
+
+export function refreshQuery(query) {
+  return request({
+    url: '/system/content/refreshQuery',
+    method: 'get',
+    params: query
+  })
+}

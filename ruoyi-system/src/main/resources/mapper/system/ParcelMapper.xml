@@ -53,6 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectParcelVo"/>
         <where>
             is_delete = 0
+            and waybill is not null
             and status != '3'
             and status != '4'
             and status != '5'
@@ -68,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
             <if test="createdTime != null"> and date_format(created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
         </where>
+        order by id desc
     </select>
 
     <select id="selectParcelById" parameterType="Long" resultMap="ParcelResult">

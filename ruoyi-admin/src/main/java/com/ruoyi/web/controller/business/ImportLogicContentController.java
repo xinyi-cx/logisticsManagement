@@ -16,10 +16,12 @@ import com.ruoyi.system.service.IImportLogicContentService;
 import com.ruoyi.system.service.IParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 导入查询物流Controller
@@ -123,6 +125,16 @@ public class ImportLogicContentController extends BaseController {
         parcel.setCreatedTime(DateUtils.getNowDate());
         parcelService.getParcelMsg(parcel);
 
-        return "已经刷新物流，请稍后查看最新消息";
+        return "正在获取物流信息，请稍后查看最新消息";
     }
+
+    @GetMapping("/refreshQuery")
+    public String refreshQuery(ImportLogicContent importLogicContent) {
+        List<ImportLogicContent> list = importLogicContentService.selectImportLogicContentList(importLogicContent);
+        if (!CollectionUtils.isEmpty(list)){
+            parcelService.getMsgByWaybills(list.stream().map(ImportLogicContent::getNewWaybill).collect(Collectors.toList()));
+        }
+        return "正在获取物流信息，请稍后查看最新消息";
+    }
+
 }

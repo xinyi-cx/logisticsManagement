@@ -74,7 +74,7 @@ public class DPDInfoXMLClient {
 //    @Transactional(rollbackFor = Exception.class)
     @Async
     public void getEventsByLogisticsInfo(LogisticsInfo logisticsInfo) {
-        log.info("+++getEventsByLogisticsInfo+++logisticsInfo string: {}", logisticsInfo.toString());
+        log.info("+++getEventsByLogisticsInfo+++logisticsInfo waybill string: {}", logisticsInfo.getWaybill());
         AuthDataV1 authData = getAuthData();
 
         WaybillLRel waybillLRel = new WaybillLRel();
@@ -132,7 +132,7 @@ public class DPDInfoXMLClient {
 //    @Transactional(rollbackFor = Exception.class)
 //    @Async
     public void getEventsForOneWaybill(Parcel parcel) {
-        log.info("+++getEventsForOneWaybill+++parcel string: {}", parcel.toString());
+        log.info("+++getEventsForOneWaybill+++parcel id string: {}", parcel.getWaybill());
         AuthDataV1 authData = getAuthData();
         LogisticsInfo logisticsInfo = new LogisticsInfo();
         logisticsInfo.setPackId(parcel.getPackId());
@@ -176,6 +176,7 @@ public class DPDInfoXMLClient {
             CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
             logisticsInfo.setLastMsg(customerEventV3.getDescription());
             String status = getStatus(customerEventV3s);
+            log.info("+++getEventsForOneWaybill+++getStatus waybill: {}, status: {}", parcel.getWaybill(), status);
             List<WaybillLRel> waybillLRels =new ArrayList<>();
             if (SysWaybill.YTJ.getCode().equals(status) || SysWaybill.GP.getCode().equals(status) || SysWaybill.ZJ.getCode().equals(status)){
                 //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
@@ -228,7 +229,7 @@ public class DPDInfoXMLClient {
      * 带L单号查询，拒收或者改派 后查询
      */
     private void dealForWaybillL(Parcel parcel, List<WaybillLRel> waybillLRels, LogisticsInfo logisticsInfo) throws Exception_Exception {
-        log.info("+++dealForWaybillL+++parcel string: {}", parcel.toString());
+        log.info("+++dealForWaybillL+++parcel waybill string: {}", parcel.getWaybill());
         AuthDataV1 authData = getAuthData();
         WaybillLRel waybillLRel = waybillLRels.get(0);
         List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
@@ -283,8 +284,8 @@ public class DPDInfoXMLClient {
     }
 
     private void dealForContent(List<LogisticsInfo> logisticsInfos){
-        log.info("+++dealForContent+++logisticsInfos string: {}", logisticsInfos.toString());
         for (LogisticsInfo logisticsInfo : logisticsInfos) {
+            log.info("+++dealForContent+++logisticsInfos waybill string: {}", logisticsInfo.getWaybill());
             ImportLogicContent logicContent = new ImportLogicContent();
             logicContent.setNewWaybill(logisticsInfo.getWaybill());
             logicContent.setLastStatusDate(logisticsInfo.getLastTime());
@@ -434,6 +435,7 @@ public class DPDInfoXMLClient {
         if (customerEventV3s.size() == 1 && customerEventV3s.get(0).getBusinessCode().equals("030103")) {
             return SysWaybill.WJH.getCode();
         }
+//        501300
         if (listContain(customerEventV3s, "190101")){
             return SysWaybill.YQS.getCode();
         }
