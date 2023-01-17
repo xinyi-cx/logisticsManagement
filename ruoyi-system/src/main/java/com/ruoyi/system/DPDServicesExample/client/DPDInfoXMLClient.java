@@ -130,7 +130,7 @@ public class DPDInfoXMLClient {
     }
 
 //    @Transactional(rollbackFor = Exception.class)
-    @Async
+//    @Async
     public void getEventsForOneWaybill(Parcel parcel) {
         log.info("+++getEventsForOneWaybill+++parcel string: {}", parcel.toString());
         AuthDataV1 authData = getAuthData();
