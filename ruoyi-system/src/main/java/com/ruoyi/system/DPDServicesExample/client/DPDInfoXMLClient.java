@@ -1,5 +1,6 @@
 package com.ruoyi.system.DPDServicesExample.client;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.*;
 import com.ruoyi.system.domain.*;
@@ -15,6 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +40,15 @@ public class DPDInfoXMLClient {
 
     @Value("${dpdservices.authdataV1.channel}")
     private String channel;
+
+    @Value("#{'${yqscode}'.empty ? null : '${yqscode}'.split(',')}")
+    private List<String> yqsCodes;
+
+    @Value("#{'${ytjcode}'.empty ? null : '${ytjcode}'.split(',')}")
+    private List<String> ytjCodes;
+
+    @Value("#{'${gpcode}'.empty ? null : '${gpcode}'.split(',')}")
+    private List<String> gpCodes;
 
     @Autowired
     private SequenceMapper sequenceMapper;
@@ -126,7 +137,19 @@ public class DPDInfoXMLClient {
 
     @Async
     public void getLogic(List<Parcel> parcels){
-        parcels.parallelStream().forEach(this::getEventsForOneWaybill);
+        parcels.parallelStream().forEach( item -> {
+            try {
+                this.getEventsForOneWaybill(item);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public String getE(String waybill) throws Exception_Exception {
+        AuthDataV1 authData = getAuthData();
+        CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybill, EventsSelectTypeEnum.ALL, "EN", authData);
+        return JSONObject.toJSONString(ret);
     }
 
 //    @Transactional(rollbackFor = Exception.class)
@@ -436,21 +459,22 @@ public class DPDInfoXMLClient {
             return SysWaybill.WJH.getCode();
         }
 //        501300
-        if (listContain(customerEventV3s, "190101")){
+//        Parcel delivered  190103
+        if (listContain(customerEventV3s, yqsCodes)){
             return SysWaybill.YQS.getCode();
         }
-        if (listContain(customerEventV3s, "230403")){
+        if (listContain(customerEventV3s, ytjCodes)){
             return SysWaybill.YTJ.getCode();
         }
-        if (listContain(customerEventV3s, "230402")){
+        if (listContain(customerEventV3s, gpCodes)){
             return SysWaybill.GP.getCode();
         }
         return SysWaybill.YSZ.getCode();
     }
 
-    private boolean listContain(List<CustomerEventV3> customerEventV3s, String key){
+    private boolean listContain(List<CustomerEventV3> customerEventV3s, List<String> keys){
         for (CustomerEventV3 customerEventV3 : customerEventV3s) {
-            if (customerEventV3.getBusinessCode().contains(key)){
+            if (!CollectionUtils.isEmpty(keys) && keys.contains(customerEventV3.getBusinessCode())){
                 return true;
             }
         }

@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.Exception_Exception;
 import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.Parcel;
 
@@ -90,4 +91,5 @@ public interface IParcelService
 
     public void getMsgByWaybills(List<String> waybills);
 
+    public String getStringByWaybill(String waybill) throws Exception_Exception;
 }

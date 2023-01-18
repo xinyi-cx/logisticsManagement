@@ -1,11 +1,14 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.DPDServicesExample.client.DPDInfoXMLClient;
+import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.Exception_Exception;
 import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.Parcel;
 import com.ruoyi.system.mapper.LogisticsInfoMapper;
 import com.ruoyi.system.mapper.ParcelMapper;
 import com.ruoyi.system.service.IParcelService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,8 @@ import java.util.List;
 @Service
 public class ParcelServiceImpl implements IParcelService 
 {
+    private static final Logger log = LoggerFactory.getLogger(ParcelServiceImpl.class);
+    
     @Autowired
     private ParcelMapper parcelMapper;
 
@@ -104,11 +109,16 @@ public class ParcelServiceImpl implements IParcelService
     }
 
     @Override
+    public String getStringByWaybill(String waybill) throws Exception_Exception {
+        return dpdInfoXMLClient.getE(waybill);
+    }
+
+    @Override
     @Async
     public void getParcelMsg(Parcel parcel) {
-        System.out.println("getParcelMsg start");
+        log.info("getParcelMsg start");
         List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);
-        System.out.println("getParcelMsg size" + parcels.size());
+        log.info("getParcelMsg size" + parcels.size());
         parcels.parallelStream().forEach(item -> {
                     try {
                         dpdInfoXMLClient.getEventsForOneWaybill(item);
@@ -117,16 +127,16 @@ public class ParcelServiceImpl implements IParcelService
                     }
                 }
         );
-        System.out.println("getParcelMsg end");
+        log.info("getParcelMsg end");
     }
 
     @Override
     @Async
     public void getParcelMsgByLogisticsInfo(LogisticsInfo param){
-        System.out.println("getParcelMsgByLogisticsInfo start");
+        log.info("getParcelMsgByLogisticsInfo start");
         List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListNeedDeal(param);
         logisticsInfos.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsByLogisticsInfo(item));
-        System.out.println("getParcelMsgByLogisticsInfo end");
+        log.info("getParcelMsgByLogisticsInfo end");
     }
 
     @Override
@@ -150,9 +160,9 @@ public class ParcelServiceImpl implements IParcelService
 
     @Override
     public void getAllParcelMsg() {
-        System.out.println("getAllParcelMsg start");
+        log.info("getAllParcelMsg start");
         dpdInfoXMLClient.getEventsForWaybills();
-        System.out.println("getAllParcelMsg end");
+        log.info("getAllParcelMsg end");
     }
 
     /**
@@ -178,11 +188,17 @@ public class ParcelServiceImpl implements IParcelService
     @Override
     @Async
     public void getMsgByWaybills(List<String> waybills) {
-        System.out.println("getParcelMsg start");
+        log.info("getParcelMsg start");
         List<Parcel> parcels = parcelMapper.selectParcelListByWaybillIn(waybills);
-        System.out.println("getParcelMsg size"+parcels.size());
-        parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
-        System.out.println("getParcelMsg end");
+        log.info("getParcelMsg size"+parcels.size());
+        parcels.parallelStream().forEach(item -> {
+            try {
+                dpdInfoXMLClient.getEventsForOneWaybill(item);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        log.info("getParcelMsg end");
     }
 
 }

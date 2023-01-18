@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.business;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.Exception_Exception;
 import com.ruoyi.system.domain.MbImport;
 import com.ruoyi.system.domain.mb.MbReceiveDto;
 import com.ruoyi.system.service.IOuterService;
@@ -89,6 +90,11 @@ public class OuterController extends BaseController {
     @GetMapping(value = "/getParcelMsgByLogisticsInfoId/{id}")
     public void getParcelMsgByLogisticsInfoId(@PathVariable("id") Long id) {
         parcelService.getParcelMsgByLogisticsInfoId(id);
+    }
+
+    @GetMapping(value = "/getStringByWaybill/{waybill}")
+    public String getStringByWaybill(@PathVariable("waybill") String waybill) throws Exception_Exception {
+        return parcelService.getStringByWaybill(waybill);
     }
 
 }
