@@ -118,6 +118,9 @@ public class PackageCzVo extends BaseEntity {
     @Excel(name = "COD")
     private BigDecimal pln;
 
+//    @Excel(name = "COD")
+    private String rodStr;
+
     @Excel(name = "Currency")
     private String codCurrency;
 

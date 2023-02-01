@@ -50,6 +50,9 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     @Autowired
     private SequenceMapper sequenceMapper;
 
+    @Autowired
+    private AddressReceiverMapper addressReceiverMapper;
+
     /**
      * 查询批量任务历史
      * 
@@ -131,7 +134,12 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
         Documents documents = documentsMapper.selectDocumentsBySessionId(batchTaskHistory.getSessionId());
         if (ObjectUtils.isEmpty(documents)) {
             //下载PDF并且存储
-            DocumentGenerationResponseV1 ret = dpdServicesXMLClient.generateSpedLabelsBySessionId(batchTaskHistory.getSessionId());
+            Package param = new Package();
+            param.setBatchId(id);
+            List<Package> packageList = packageMapper.selectPackageList(param);
+            AddressReceiver addressReceiver = addressReceiverMapper.selectAddressReceiverById(packageList.get(0).getReceiverId());
+            boolean plFlag = "PL".equalsIgnoreCase(addressReceiver.getCountryCode());
+            DocumentGenerationResponseV1 ret = dpdServicesXMLClient.generateSpedLabelsBySessionId(batchTaskHistory.getSessionId(), plFlag);
             Documents documentsInsert = new Documents();
             documentsInsert.setId(sequenceMapper.selectNextvalByName("doc_seq"));
             documentsInsert.setSessionId(batchTaskHistory.getSessionId());

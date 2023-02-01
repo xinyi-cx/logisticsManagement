@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.Exception;
@@ -68,7 +71,13 @@ public class DPDInfoXMLClient {
     @Autowired
     private DPDInfoServicesObjEvents dpdInfoServicesObjEvents;
 
-//    @PostConstruct
+    @Autowired
+    private PlatformTransactionManager platformTransactionManager;
+
+    @Autowired
+    private TransactionDefinition transactionDefinition;
+
+    //    @PostConstruct
     public void runExamples() {
         Parcel parcel = new Parcel();
 //        0000368219706W
@@ -85,6 +94,7 @@ public class DPDInfoXMLClient {
 //    @Transactional(rollbackFor = Exception.class)
     @Async
     public void getEventsByLogisticsInfo(LogisticsInfo logisticsInfo) {
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         log.info("+++getEventsByLogisticsInfo+++logisticsInfo waybill string: {}", logisticsInfo.getWaybill());
         AuthDataV1 authData = getAuthData();
 
@@ -129,7 +139,7 @@ public class DPDInfoXMLClient {
             }
             List<Parcel> parcels = new ArrayList<>();
             dealWlData(waybills, logisticsInfos, parcels, waybillLRels);
-
+            platformTransactionManager.commit(transaction);
         } catch (Exception_Exception e) {
             e.printStackTrace();
         }
@@ -155,6 +165,7 @@ public class DPDInfoXMLClient {
 //    @Transactional(rollbackFor = Exception.class)
 //    @Async
     public void getEventsForOneWaybill(Parcel parcel) {
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         log.info("+++getEventsForOneWaybill+++parcel id string: {}", parcel.getWaybill());
         AuthDataV1 authData = getAuthData();
         LogisticsInfo logisticsInfo = new LogisticsInfo();
@@ -242,7 +253,7 @@ public class DPDInfoXMLClient {
             List<Parcel> parcels = new ArrayList<>();
             parcels.add(parcel);
             dealWlData(waybills, logisticsInfos, parcels, waybillLRels);
-
+            platformTransactionManager.commit(transaction);
         } catch (Exception_Exception e) {
             e.printStackTrace();
         }

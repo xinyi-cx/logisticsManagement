@@ -3,6 +3,7 @@ package com.ruoyi.system.service.impl;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.DictUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.email.EmailUtil;
@@ -180,7 +181,7 @@ public class PackageServiceImpl implements IPackageService {
         List<String> xAxisData = new ArrayList<>();
         List<String> seriesData = new ArrayList<>();
         for (String key : collect.keySet()) {
-            xAxisData.add(key);
+            xAxisData.add(DictUtils.getDictLabel("sys_waybill", key));
             seriesData.add(collect.get(key).toString());
         }
         returnList.put("xAxisData", xAxisData);
@@ -221,7 +222,7 @@ public class PackageServiceImpl implements IPackageService {
         List<String> xAxisData = new ArrayList<>();
         List<String> seriesData = new ArrayList<>();
         for (String key : collect.keySet()) {
-            xAxisData.add(key);
+            xAxisData.add(DictUtils.getDictLabel("sys_waybill", key));
             seriesData.add(collect.get(key).toString());
         }
         returnList.put("xAxisData", xAxisData);
@@ -331,7 +332,12 @@ public class PackageServiceImpl implements IPackageService {
         Documents documents;
         if (CollectionUtils.isEmpty(documentsList)) {
             //下载PDF并且存储
-            DocumentGenerationResponseV1 ret = dpdServicesXMLClient.generateSpedLabelsBySessionId(batchTaskHistory.getSessionId());
+            Package param = new Package();
+            param.setBatchId(batchId);
+            List<Package> packageList = packageMapper.selectPackageList(param);
+            AddressReceiver addressReceiver = addressReceiverMapper.selectAddressReceiverById(packageList.get(0).getReceiverId());
+            boolean plFlage = "PL".equalsIgnoreCase(addressReceiver.getCountryCode());
+            DocumentGenerationResponseV1 ret = dpdServicesXMLClient.generateSpedLabelsBySessionId(batchTaskHistory.getSessionId(), plFlage);
             Documents documentsInsert = new Documents();
             documentsInsert.setId(sequenceMapper.selectNextvalByName("doc_seq"));
             documentsInsert.setSessionId(batchTaskHistory.getSessionId());
@@ -803,6 +809,17 @@ public class PackageServiceImpl implements IPackageService {
         Map<Long, RedirectRel> idRedirectRelMap = new HashMap<>();
         for (PackageVo packageVo : packageVos) {
             AddressReceiver addressReceiver = getReceiver(packageVo, getId(nameMap, "receiver_seq"));
+            SysUser sysUser = sysUserMapper.selectUserById(SecurityUtils.getLoginUser().getUserId());
+            if (addressReceiver.getCountryCode().equalsIgnoreCase("PL")) {
+                if (!(sysUser.getCountry().equalsIgnoreCase("CN") || sysUser.getCountry().equalsIgnoreCase("PL"))) {
+                    return "导入失败，收件人国家与当前登陆用户所在国家不一致";
+                }
+            } else {
+                if (!(sysUser.getCountry().equalsIgnoreCase(addressReceiver.getCountryCode()))) {
+                    return "导入失败，收件人国家与当前登陆用户所在国家不一致";
+                }
+            }
+
             Services services = getServices(packageVo, getId(nameMap, "services_seq"));
 
             Package pac = new Package();

@@ -156,6 +156,33 @@ public class DPDServicesXMLClient {
         return ret;
     }
 
+    public DocumentGenerationResponseV1 generateSpedLabelsBySessionId(long sessionId, boolean plFlag) {
+        AuthDataV1 authData = getAuthData();
+        SessionDSPV1 session = new SessionDSPV1();
+        DpdServicesParamsV1 param = new DpdServicesParamsV1();
+        param.setPolicy(PolicyDSPEnumV1.STOP_ON_FIRST_ERROR);
+//        param.setDocumentId();
+        // Na podstawie sessionId
+        session.setSessionId(sessionId);
+        if (plFlag){
+            session.setSessionType(SessionTypeDSPEnumV1.DOMESTIC);
+        } else {
+            session.setSessionType(SessionTypeDSPEnumV1.INTERNATIONAL);
+        }
+
+        param.setSession(session);
+
+        DocumentGenerationResponseV1 ret = new DocumentGenerationResponseV1();
+        try {
+            ret = xmlServices.generateSpedLabelsV4(param, OutputDocFormatDSPEnumV1.PDF, OutputDocPageFormatDSPEnumV1.LBL_PRINTER, OutputLabelTypeEnumV1.BIC_3, "", authData);
+            saveFile(sessionId, ret);
+            System.out.println("test");
+        } catch (DPDServiceException_Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
     public void generateSpedLabels2(long parcelIdT, long sessionIdT) {
         AuthDataV1 authData = getAuthData();
 //        245977011 0000000906700Q
@@ -223,6 +250,7 @@ public class DPDServicesXMLClient {
         Integer methodFid = null;
         OpenUMLFeV3 umlf = new OpenUMLFeV3(); // Ilość przesyłek
         Map<String, String> dpdPackageMap = getPackageDpdMap(packages.get(0).getSender().getCountryCode());
+        boolean plFlag = true;
         for (Package aPackage : packages) {
             AddressReceiver receiver = aPackage.getReceiver();
             AddressSender sender = aPackage.getSender();
@@ -253,6 +281,7 @@ public class DPDServicesXMLClient {
             addressReceiver.setCity(receiver.getCity());
             addressReceiver.setCompany(receiver.getCompany());
             addressReceiver.setCountryCode(receiver.getCountryCode());
+            plFlag = "PL".equalsIgnoreCase(receiver.getCountryCode());
             addressReceiver.setEmail(receiver.getEmail());
             addressReceiver.setName(receiver.getName());
             addressReceiver.setPhone(receiver.getPhone());
@@ -304,7 +333,7 @@ public class DPDServicesXMLClient {
             throw new Exception(documentGenerationResponse.getStatus());
         }
 
-        DocumentGenerationResponseV1 ret = generateSpedLabelsBySessionId(documentGenerationResponse.getSessionId());
+        DocumentGenerationResponseV1 ret = generateSpedLabelsBySessionId(documentGenerationResponse.getSessionId(), plFlag);
 
         Sequence sequence = sequenceMapper.selectSequenceBySeqName("doc_seq");
         Long currentVal = sequence.getCurrentVal();
