@@ -8,6 +8,7 @@ import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.ruoyi.common.enums.SysWaybill;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
@@ -250,6 +251,7 @@ public class DPDServicesXMLClient {
         Integer methodFid = null;
         OpenUMLFeV3 umlf = new OpenUMLFeV3(); // Ilość przesyłek
         Map<String, String> dpdPackageMap = getPackageDpdMap(packages.get(0).getSender().getCountryCode());
+        boolean notEmpty = !CollectionUtils.isEmpty(dpdPackageMap);
         boolean plFlag = true;
         for (Package aPackage : packages) {
             AddressReceiver receiver = aPackage.getReceiver();
@@ -288,8 +290,17 @@ public class DPDServicesXMLClient {
             addressReceiver.setPostalCode(receiver.getPostalCode());
             pkg.setReceiver(addressReceiver);
 
+//            if (notEmpty && dpdPackageMap.containsKey("ParcelContent")){
+//                parcel1.setContent(com.ruoyi.common.utils.bean.BeanUtils.getAttribute(parcel, dpdPackageMap.get("ParcelContent")));//id
+//            }
+
             pkg.setRef1(aPackage.getRef1());
             pkg.setRef2(aPackage.getRef2());
+
+            if (!plFlag){
+                pkg.setRef1(parcels.get(0).getReference());
+                pkg.setRef2(parcels.get(0).getCustomerData1());
+            }
 
             ServicesOpenUMLFeV4 services = new ServicesOpenUMLFeV4();
             ServiceCODOpenUMLFeV1 cod = new ServiceCODOpenUMLFeV1();
@@ -308,7 +319,7 @@ public class DPDServicesXMLClient {
             pkg.setServices(services);
 
             for (Parcel parcel : parcels) {
-                setParcel(pkg, parcel, dpdPackageMap);
+                setParcel(pkg, parcel, dpdPackageMap, plFlag, aPackage);
             }
             umlf.getPackages().add(pkg);
         }
@@ -393,7 +404,7 @@ public class DPDServicesXMLClient {
         return returnResponses;
     }
 
-    private void setParcel(PackageOpenUMLFeV3 pkg, Parcel parcel, Map<String, String> dpdPackageMap) {
+    private void setParcel(PackageOpenUMLFeV3 pkg, Parcel parcel, Map<String, String> dpdPackageMap, boolean plFlag, Package pack) {
         boolean notEmpty = !CollectionUtils.isEmpty(dpdPackageMap);
         ParcelOpenUMLFeV1 parcel1 = new ParcelOpenUMLFeV1();
         parcel1.setSizeX(null == parcel.getSizeX() || 0 == parcel.getSizeX() ? 1 : parcel.getSizeX());
@@ -417,6 +428,11 @@ public class DPDServicesXMLClient {
 
         if (notEmpty && dpdPackageMap.containsKey("ParcelCustomerData1")){
             parcel1.setCustomerData1(com.ruoyi.common.utils.bean.BeanUtils.getAttribute(parcel, dpdPackageMap.get("ParcelCustomerData1")));//id
+        }
+
+        //国际货运暂时处理
+        if (!plFlag && (StringUtils.isNotEmpty(pack.getRef1()) || StringUtils.isNotEmpty(pack.getRef2()))) {
+            parcel1.setContent(pack.getRef1() + pack.getRef2());
         }
 
 //                parcel1.setReference(parcel.getReference()); //parametr opcjonalny
