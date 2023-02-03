@@ -243,13 +243,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
 
-    <update id="deleteLogisticsInfoByWaybills">
-        update logistics_info set is_delete = 1, updated_time = sysdate()
+    <delete id="deleteLogisticsInfoByWaybills">
+        delete from logistics_info
         where waybill in
         <foreach item="item" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>
-    </update>
+    </delete>
 
     <update id="updateRedirectNumByIds">
         update logistics_info set redirect_num = redirect_num + 1, updated_time = sysdate()
