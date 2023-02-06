@@ -259,6 +259,99 @@ public class DPDInfoXMLClient {
         }
     }
 
+    public void getEventsForOneWaybillTransa(Parcel parcel) {
+        log.info("+++getEventsForOneWaybillTransa+++parcel id string: {}", parcel.getWaybill());
+        AuthDataV1 authData = getAuthData();
+        LogisticsInfo logisticsInfo = new LogisticsInfo();
+        logisticsInfo.setPackId(parcel.getPackId());
+        //转寄字段
+        logisticsInfo.setPackageId(parcel.getPackageId());
+        logisticsInfo.setParcelId(parcel.getParcelId());
+        logisticsInfo.setCreateUser(parcel.getCreateUser());
+        logisticsInfo.setUpdateUser(parcel.getUpdateUser());
+        logisticsInfo.setWaybill(parcel.getWaybill());
+        logisticsInfo.setCompany("DPD");
+
+        WaybillLRel waybillLRel = new WaybillLRel();
+        waybillLRel.setWaybill(parcel.getWaybill());
+        List<WaybillLRel> waybillLRelList = waybillLRelMapper.selectWaybillLRelList(waybillLRel);
+
+        try {
+            if (!CollectionUtils.isEmpty(waybillLRelList)){
+                dealForWaybillL(parcel, waybillLRelList, logisticsInfo);
+                return;
+            }
+
+            List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
+            List<LogisticsInfo> logisticsInfos = new ArrayList<>();
+
+            CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(parcel.getWaybill(), EventsSelectTypeEnum.ALL, "EN", authData);
+            List<CustomerEventV3> customerEventV3s = ret.getEventsList();
+//            Parcel return    Parcel readdressed according to instructions
+//            Parcel not delivered - refusal  + l  拒收
+//            Parcel delivered      Registered parcel data, parcel not dispatched yet  -未激活
+//           Parcel not delivered - recipient not available -> Parcel return 0000018734275L  推荐？
+//            改派 - Parcel not delivered - wrong address  +  Parcel return  0000020184525L
+            if (CollectionUtils.isEmpty(customerEventV3s)){
+                return;
+            }
+            customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
+
+            if (customerEventV3s.size() > 1) {
+                CustomerEventV3 customerEventV3Jh = customerEventV3s.get(customerEventV3s.size() - 2);
+                logisticsInfo.setActivationTime(customerEventV3Jh.getEventTime());
+            }
+            CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
+            logisticsInfo.setLastMsg(customerEventV3.getDescription());
+            String status = getStatus(customerEventV3s);
+            log.info("+++getEventsForOneWaybillTransa+++getStatus waybill: {}, status: {}", parcel.getWaybill(), status);
+            List<WaybillLRel> waybillLRels =new ArrayList<>();
+            if (SysWaybill.YTJ.getCode().equals(status) || SysWaybill.GP.getCode().equals(status) || SysWaybill.ZJ.getCode().equals(status)){
+                //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
+                waybillLRels = getRL(parcel.getWaybill(), allEventDataList);
+            }
+
+//            for (WaybillLRel lRel : waybillLRels) {
+//                List<LogisticsInfo> logisticsInfos1 = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(Collections.singletonList(lRel.getWaybillL()));
+//                if (CollectionUtils.isEmpty(logisticsInfos1)){
+//                    LogisticsInfo logisticsInfoL = new LogisticsInfo();
+//                    BeanUtils.copyProperties(logisticsInfo, logisticsInfoL);
+//                    logisticsInfoL.setWaybill(lRel.getWaybillL());
+//                    logisticsInfoL.setStatus(SysWaybill.WJH.getCode());
+//                    logisticsInfos.add(logisticsInfoL);
+//                }
+//            }
+
+            if(StringUtils.isNotEmpty(status)){
+                parcel.setStatus(status);
+                logisticsInfo.setStatus(status);
+            }
+            logisticsInfo.setLastTime(customerEventV3.getEventTime());
+
+            LogisticsInfo logisticsInfoL = new LogisticsInfo();
+            if (!CollectionUtils.isEmpty(waybillLRels)){
+                dealForWaybillL(parcel, waybillLRels, logisticsInfoL);
+                logisticsInfo.setWaybillLRel(waybillLRels.get(0));
+                Map<String, Object> lMap = new HashMap<>();
+                lMap.put("status",logisticsInfoL.getStatus());
+                lMap.put("lastMsg",logisticsInfoL.getLastMsg());
+                lMap.put("lastTime",logisticsInfoL.getLastTime());
+                logisticsInfo.setlMap(lMap);
+            }
+
+            List<String> waybills = new ArrayList<>();
+            waybills.add(parcel.getWaybill());
+
+            logisticsInfos.add(logisticsInfo);
+
+            List<Parcel> parcels = new ArrayList<>();
+            parcels.add(parcel);
+            dealWlData(waybills, logisticsInfos, parcels, waybillLRels);
+        } catch (Exception_Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 带L单号查询，拒收或者改派 后查询
      */

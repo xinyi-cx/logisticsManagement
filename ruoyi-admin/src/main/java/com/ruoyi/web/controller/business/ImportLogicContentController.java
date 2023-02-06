@@ -123,7 +123,7 @@ public class ImportLogicContentController extends BaseController {
             parcel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         }
         parcel.setCreatedTime(DateUtils.getNowDate());
-        parcelService.getParcelMsg(parcel);
+        parcelService.getParcelMsgTrans(parcel);
 
         return "正在获取物流信息，请稍后查看最新消息";
     }

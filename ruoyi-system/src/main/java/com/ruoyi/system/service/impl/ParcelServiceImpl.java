@@ -132,6 +132,23 @@ public class ParcelServiceImpl implements IParcelService
 
     @Override
     @Async
+    public void getParcelMsgTrans(Parcel parcel) {
+        log.info("getParcelMsgTrans start");
+        List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);
+        log.info("getParcelMsgTrans size" + parcels.size());
+        parcels.parallelStream().forEach(item -> {
+                    try {
+                        dpdInfoXMLClient.getEventsForOneWaybillTransa(item);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+        log.info("getParcelMsgTrans end");
+    }
+
+    @Override
+    @Async
     public void getParcelMsgByLogisticsInfo(LogisticsInfo param){
         log.info("getParcelMsgByLogisticsInfo start");
         List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListNeedDeal(param);
@@ -142,7 +159,7 @@ public class ParcelServiceImpl implements IParcelService
     @Override
     public void getParcelMsgById(Long id) {
         Parcel parcel = parcelMapper.selectParcelById(id);
-        dpdInfoXMLClient.getEventsForOneWaybill(parcel);
+        dpdInfoXMLClient.getEventsForOneWaybillTransa(parcel);
     }
 
     @Override
@@ -193,7 +210,7 @@ public class ParcelServiceImpl implements IParcelService
         log.info("getParcelMsg size"+parcels.size());
         parcels.parallelStream().forEach(item -> {
             try {
-                dpdInfoXMLClient.getEventsForOneWaybill(item);
+                dpdInfoXMLClient.getEventsForOneWaybillTransa(item);
             } catch (Exception e) {
                 e.printStackTrace();
             }
