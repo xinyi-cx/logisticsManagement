@@ -149,7 +149,7 @@ public class DPDInfoXMLClient {
     public void getLogic(List<Parcel> parcels){
         parcels.parallelStream().forEach( item -> {
             try {
-                this.getEventsForOneWaybill(item);
+                this.getEventsForOneWaybillTransa(item);
             } catch (Exception e) {
                 e.printStackTrace();
             }
