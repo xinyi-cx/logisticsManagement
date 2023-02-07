@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.impl;
 
+import com.ruoyi.common.enums.SysWaybill;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.DPDServicesExample.client.DPDInfoXMLClient;
 import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.Exception_Exception;
 import com.ruoyi.system.domain.LogisticsInfo;
@@ -14,7 +16,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 包裹Service业务层处理
@@ -135,7 +139,10 @@ public class ParcelServiceImpl implements IParcelService
     @Async
     public void getParcelMsgTask(Parcel parcel) {
         log.info("getParcelMsgTask start");
-        List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);
+        List<Parcel> needParcels = parcelMapper.selectParcelListNeedDeal(parcel);
+        Date lastMonth = DateUtils.getDateBeforeNow(-30);
+        List<Parcel> parcels= needParcels.stream().filter(
+                item -> SysWaybill.WJH.getCode().equals(item.getStatus()) && item.getCreatedTime().compareTo(lastMonth) > 0).collect(Collectors.toList());
         log.info("getParcelMsgTask size" + parcels.size());
         parcels.parallelStream().forEach(item -> {
                     try {
