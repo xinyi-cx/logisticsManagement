@@ -165,7 +165,7 @@ public class DPDInfoXMLClient {
 //    @Transactional(rollbackFor = Exception.class)
 //    @Async
     public void getEventsForOneWaybill(Parcel parcel) {
-        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
+//        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         log.info("+++getEventsForOneWaybill+++parcel id string: {}", parcel.getWaybill());
         AuthDataV1 authData = getAuthData();
         LogisticsInfo logisticsInfo = new LogisticsInfo();
@@ -253,7 +253,7 @@ public class DPDInfoXMLClient {
             List<Parcel> parcels = new ArrayList<>();
             parcels.add(parcel);
             dealWlData(waybills, logisticsInfos, parcels, waybillLRels);
-            platformTransactionManager.commit(transaction);
+//            platformTransactionManager.commit(transaction);
         } catch (Exception_Exception e) {
             e.printStackTrace();
         }

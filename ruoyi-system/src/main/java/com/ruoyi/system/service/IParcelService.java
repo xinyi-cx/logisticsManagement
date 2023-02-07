@@ -67,6 +67,8 @@ public interface IParcelService
      */
     public void getParcelMsg(Parcel parcel);
 
+    public void getParcelMsgTask(Parcel parcel);
+
     public void getParcelMsgTrans(Parcel parcel);
 
     public void getParcelMsgByLogisticsInfo(LogisticsInfo param);

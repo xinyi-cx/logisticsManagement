@@ -133,6 +133,24 @@ public class ParcelServiceImpl implements IParcelService
 
     @Override
     @Async
+    public void getParcelMsgTask(Parcel parcel) {
+        log.info("getParcelMsgTask start");
+        List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);
+        log.info("getParcelMsgTask size" + parcels.size());
+        parcels.parallelStream().forEach(item -> {
+                    try {
+                        log.info("getParcelMsgTask running");
+                        dpdInfoXMLClient.getEventsForOneWaybill(item);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+        log.info("getParcelMsgTask end");
+    }
+
+    @Override
+    @Async
     public void getParcelMsgTrans(Parcel parcel) {
         log.info("getParcelMsgTrans start");
         List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);
