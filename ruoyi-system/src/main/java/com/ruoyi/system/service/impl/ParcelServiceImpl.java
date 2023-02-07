@@ -121,6 +121,7 @@ public class ParcelServiceImpl implements IParcelService
         log.info("getParcelMsg size" + parcels.size());
         parcels.parallelStream().forEach(item -> {
                     try {
+                        log.info("getParcelMsg running");
                         dpdInfoXMLClient.getEventsForOneWaybill(item);
                     } catch (Exception e) {
                         e.printStackTrace();
