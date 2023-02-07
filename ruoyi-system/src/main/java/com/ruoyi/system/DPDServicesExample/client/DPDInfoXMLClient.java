@@ -397,9 +397,10 @@ public class DPDInfoXMLClient {
 //    @Transactional(rollbackFor = Exception.class)
     public void dealWlData(List<String> waybills, List<LogisticsInfo> logisticsInfos, List<Parcel> parcels, List<WaybillLRel> waybillLRels) {
         if (!CollectionUtils.isEmpty(logisticsInfos)) {
-            logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
-            logisticsInfos.forEach(item -> item.setId(null));
-            logisticsInfoMapper.batchInsert(logisticsInfos);
+//            暂时不删除
+//            logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
+//            logisticsInfos.forEach(item -> item.setId(null));
+//            logisticsInfoMapper.batchInsert(logisticsInfos);
             dealForContent(logisticsInfos);
         }
         if (!CollectionUtils.isEmpty(parcels)) {
