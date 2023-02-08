@@ -50,7 +50,11 @@ public interface ImportLogicContentMapper
 
     public int updateImportLogicContentByWayBill(ImportLogicContent importLogicContent);
 
+    public int batchUpdateImportLogicContentByWayBill(List<ImportLogicContent> importLogicContents);
+
     public int updateImportLogicContentByWaybill(ImportLogicContent importLogicContent);
+
+    public int batchUpdateImportLogicContentByWaybill(List<ImportLogicContent> importLogicContents);
 
     /**
      * 删除导入查询物流

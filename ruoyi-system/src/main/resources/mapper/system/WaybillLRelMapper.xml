@@ -95,6 +95,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where waybill = #{waybill}
     </update>
 
+    <update id="batchUpdateWaybillLRel" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update waybill_l_rel
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="item.waybillL != null">waybill_l = #{item.waybillL},</if>
+                <if test="item.createUser != null">create_user = #{item.createUser},</if>
+                <if test="item.updateUser != null">update_user = #{item.updateUser},</if>
+                updated_time = sysdate(),
+                <if test="item.status != null">status = #{item.status},</if>
+                <if test="item.backDate != null">back_date = #{item.backDate},</if>
+            </trim>
+            where waybill = #{item.waybill}
+        </foreach>
+    </update>
+
     <update id="deleteWaybillLRelByWaybill" parameterType="String">
         update waybill_l_rel set is_delete = 1, updated_time = sysdate()
         where waybill = #{waybill}

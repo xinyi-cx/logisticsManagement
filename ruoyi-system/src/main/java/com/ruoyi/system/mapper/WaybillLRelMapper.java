@@ -51,6 +51,8 @@ public interface WaybillLRelMapper
      */
     public int updateWaybillLRel(WaybillLRel waybillLRel);
 
+    public int batchUpdateWaybillLRel(List<WaybillLRel> waybillLRels);
+
     /**
      * 删除物流单号和L关联
      * 

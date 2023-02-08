@@ -247,6 +247,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where new_waybill = #{newWaybill} or new_number = #{newWaybill}
     </update>
 
+    <update id="batchUpdateImportLogicContentByWayBill" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update import_logic_content
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="item.lastStatusDate != null">last_status_date = #{item.lastStatusDate},</if>
+                <if test="item.status != null">status = #{item.status},</if>
+                update_time = sysdate()
+            </trim>
+            where new_waybill = #{item.newWaybill} or new_number = #{item.newWaybill}
+        </foreach>
+    </update>
+
     <update id="updateImportLogicContentByWaybill" parameterType="ImportLogicContent">
         update import_logic_content
         <trim prefix="SET" suffixOverrides=",">
@@ -280,6 +292,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isDelete != null">is_delete = #{isDelete},</if>
         </trim>
         where new_waybill = #{newWaybill}
+    </update>
+
+    <update id="batchUpdateImportLogicContentByWaybill" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update import_logic_content
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="item.documentFileId != null">document_file_id = #{item.documentFileId},</if>
+                <if test="item.packId != null">pack_id = #{item.packId},</if>
+                <if test="item.batchId != null">batch_id = #{item.batchId},</if>
+                <if test="item.logicId != null">logic_id = #{item.logicId},</if>
+                <if test="item.client != null">client = #{item.client},</if>
+                <if test="item.country != null">country = #{item.country},</if>
+                <if test="item.importType != null">import_type = #{item.importType},</if>
+                <if test="item.loginid != null">loginId = #{item.loginid},</if>
+                <if test="item.orderNumber != null">order_number = #{item.orderNumber},</if>
+                <if test="item.valuePlnCod != null">value_pln_cod = #{item.valuePlnCod},</if>
+                <if test="item.weightKg != null">weight_kg = #{item.weightKg},</if>
+                <if test="item.recipientName != null">recipient_name = #{item.recipientName},</if>
+                <if test="item.recipientPhone != null">recipient_phone = #{item.recipientPhone},</if>
+                <if test="item.recipientEmail != null">recipient_email = #{item.recipientEmail},</if>
+                <if test="item.description != null">description = #{item.description},</if>
+                <if test="item.needBox != null">need_box = #{item.needBox},</if>
+                <if test="item.createDate != null">create_date = #{item.createDate},</if>
+                <if test="item.remark != null">remark = #{item.remark},</if>
+                <if test="item.remark2 != null">remark2 = #{item.remark2},</if>
+                <if test="item.remark3 != null">remark3 = #{item.remark3},</if>
+                <if test="item.remark4 != null">remark4 = #{item.remark4},</if>
+                <if test="item.remark5 != null">remark5 = #{item.remark5},</if>
+                <if test="item.activedDate != null">actived_date = #{item.activedDate},</if>
+                <if test="item.lastStatusDate != null">last_status_date = #{item.lastStatusDate},</if>
+                <if test="item.status != null">status = #{item.status},</if>
+                <if test="item.newNumber != null">new_number = #{item.newNumber},</if>
+                <if test="item.returnNumber != null">return_number = #{item.returnNumber},</if>
+                <if test="item.isDelete != null">is_delete = #{item.isDelete},</if>
+            </trim>
+            where new_waybill = #{item.newWaybill}
+        </foreach>
     </update>
 
     <delete id="deleteImportLogicContentById" parameterType="Long">

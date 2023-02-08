@@ -1,14 +1,10 @@
 package com.ruoyi.common.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.springframework.util.AntPathMatcher;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.text.StrFormatter;
+import org.springframework.util.AntPathMatcher;
+
+import java.util.*;
 
 /**
  * 字符串工具类
@@ -530,5 +526,34 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     public static <T> T cast(Object obj)
     {
         return (T) obj;
+    }
+
+    /**
+     * 拆分list
+     * @param list  被拆分的list
+     * @param count  拆分后每个list的数量
+     * @param <T> 拆分后list的集合
+     * @return
+     */
+    public static <T> List<List<T>> splitList(List<T> list,int count) {
+        if (list == null) {
+            return null;
+        }
+        List<List<T>> lists = new ArrayList<>();
+        int num = list.size() / count;
+
+        for (int i = 0; i <= num; i++) {
+            if (i * count >= list.size()) {
+                break;
+            }
+            if ((i + 1) * count > list.size()) {
+                List<T> ts = list.subList(i * count, list.size());
+                lists.add(ts);
+                break;
+            }
+            List<T> ts = list.subList(i * count, (i + 1) * count);
+            lists.add(ts);
+        }
+        return lists;
     }
 }

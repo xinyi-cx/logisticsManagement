@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.DPDServicesExample.client.DPDInfoXMLClient;
 import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.Exception_Exception;
 import com.ruoyi.system.domain.LogisticsInfo;
@@ -144,6 +145,9 @@ public class ParcelServiceImpl implements IParcelService
         List<Parcel> parcels= needParcels.stream().filter(
                 item -> SysWaybill.WJH.getCode().equals(item.getStatus()) && item.getCreatedTime().compareTo(lastMonth) > 0).collect(Collectors.toList());
         log.info("getParcelMsgTask size" + parcels.size());
+
+        List<List<Parcel>> cfList = StringUtils.splitList(parcels, 100);
+
         parcels.parallelStream().forEach(item -> {
                     try {
                         log.info("getParcelMsgTask running");

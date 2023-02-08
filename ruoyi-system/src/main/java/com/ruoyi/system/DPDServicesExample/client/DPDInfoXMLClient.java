@@ -162,6 +162,277 @@ public class DPDInfoXMLClient {
         return JSONObject.toJSONString(ret);
     }
 
+    public void batchUpdate(List<Parcel> params){
+        List<Parcel> dealParcels = new ArrayList<>();
+        List<WaybillLRel> dealWaybillLRels = new ArrayList<>();
+        List<WaybillLRel> updateWaybillLRels = new ArrayList<>();
+        List<ImportLogicContent> dealImportLogicContents = new ArrayList<>();
+        List<ImportLogicContent> dealForRLImportLogicContents  = new ArrayList<>();
+
+        params.parallelStream().forEach(item -> {
+                    try {
+                        getEventsForOneWaybillByBatch(item, dealParcels,
+                                dealImportLogicContents, dealForRLImportLogicContents,
+                                dealWaybillLRels, updateWaybillLRels);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+        dealWlDataByBatch(dealParcels, dealWaybillLRels, updateWaybillLRels, dealImportLogicContents, dealForRLImportLogicContents);
+    }
+
+    public void getEventsForOneWaybillByBatch(Parcel parcel,
+                                              List<Parcel> dealParcels,
+                                              List<ImportLogicContent> dealImportLogicContents,
+                                              List<ImportLogicContent> dealForRLImportLogicContents,
+                                              List<WaybillLRel> dealWaybillLRels,
+                                              List<WaybillLRel> updateWaybillLRels) {
+//        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
+        log.info("+++getEventsForOneWaybillByBatch+++parcel id string: {}", parcel.getWaybill());
+        AuthDataV1 authData = getAuthData();
+        LogisticsInfo logisticsInfo = new LogisticsInfo();
+        logisticsInfo.setPackId(parcel.getPackId());
+        //转寄字段
+        logisticsInfo.setPackageId(parcel.getPackageId());
+        logisticsInfo.setParcelId(parcel.getParcelId());
+        logisticsInfo.setCreateUser(parcel.getCreateUser());
+        logisticsInfo.setUpdateUser(parcel.getUpdateUser());
+        logisticsInfo.setWaybill(parcel.getWaybill());
+        logisticsInfo.setCompany("DPD");
+
+        WaybillLRel waybillLRel = new WaybillLRel();
+        waybillLRel.setWaybill(parcel.getWaybill());
+        List<WaybillLRel> waybillLRelList = waybillLRelMapper.selectWaybillLRelList(waybillLRel);
+
+        String oldStatus = parcel.getStatus();
+        try {
+            if (!CollectionUtils.isEmpty(waybillLRelList)){
+                dealForWaybillLByBatch(parcel, waybillLRelList, logisticsInfo,
+                        dealParcels,
+                        updateWaybillLRels,
+                        dealImportLogicContents,
+                        dealForRLImportLogicContents);
+                return;
+            }
+
+            List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
+            List<LogisticsInfo> logisticsInfos = new ArrayList<>();
+
+            CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(parcel.getWaybill(), EventsSelectTypeEnum.ALL, "EN", authData);
+            List<CustomerEventV3> customerEventV3s = ret.getEventsList();
+//            Parcel return    Parcel readdressed according to instructions
+//            Parcel not delivered - refusal  + l  拒收
+//            Parcel delivered      Registered parcel data, parcel not dispatched yet  -未激活
+//           Parcel not delivered - recipient not available -> Parcel return 0000018734275L  推荐？
+//            改派 - Parcel not delivered - wrong address  +  Parcel return  0000020184525L
+            if (CollectionUtils.isEmpty(customerEventV3s)){
+                return;
+            }
+            customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
+
+            if (customerEventV3s.size() > 1) {
+                CustomerEventV3 customerEventV3Jh = customerEventV3s.get(customerEventV3s.size() - 2);
+                logisticsInfo.setActivationTime(customerEventV3Jh.getEventTime());
+            }
+            CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
+            logisticsInfo.setLastMsg(customerEventV3.getDescription());
+            String status = getStatus(customerEventV3s);
+            if (oldStatus.equals(status)){
+                log.info("+++getEventsForOneWaybillByBatch+++getStatusSame waybill: {}, status: {}", parcel.getWaybill(), status);
+                return;
+            }
+            log.info("+++getEventsForOneWaybillByBatch+++getStatus waybill: {}, status: {}", parcel.getWaybill(), status);
+            List<WaybillLRel> waybillLRels =new ArrayList<>();
+            if (SysWaybill.YTJ.getCode().equals(status) || SysWaybill.GP.getCode().equals(status) || SysWaybill.ZJ.getCode().equals(status)){
+                //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
+                waybillLRels = getRL(parcel.getWaybill(), allEventDataList);
+            }
+
+//            for (WaybillLRel lRel : waybillLRels) {
+//                List<LogisticsInfo> logisticsInfos1 = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(Collections.singletonList(lRel.getWaybillL()));
+//                if (CollectionUtils.isEmpty(logisticsInfos1)){
+//                    LogisticsInfo logisticsInfoL = new LogisticsInfo();
+//                    BeanUtils.copyProperties(logisticsInfo, logisticsInfoL);
+//                    logisticsInfoL.setWaybill(lRel.getWaybillL());
+//                    logisticsInfoL.setStatus(SysWaybill.WJH.getCode());
+//                    logisticsInfos.add(logisticsInfoL);
+//                }
+//            }
+
+            if(StringUtils.isNotEmpty(status)){
+                parcel.setStatus(status);
+                logisticsInfo.setStatus(status);
+            }
+            logisticsInfo.setLastTime(customerEventV3.getEventTime());
+
+            LogisticsInfo logisticsInfoL = new LogisticsInfo();
+            if (!CollectionUtils.isEmpty(waybillLRels)){
+                dealForWaybillL(parcel, waybillLRels, logisticsInfoL);
+                logisticsInfo.setWaybillLRel(waybillLRels.get(0));
+                Map<String, Object> lMap = new HashMap<>();
+                lMap.put("status",logisticsInfoL.getStatus());
+                lMap.put("lastMsg",logisticsInfoL.getLastMsg());
+                lMap.put("lastTime",logisticsInfoL.getLastTime());
+                logisticsInfo.setlMap(lMap);
+            }
+
+            List<String> waybills = new ArrayList<>();
+            waybills.add(parcel.getWaybill());
+
+            logisticsInfos.add(logisticsInfo);
+
+            dealParcels.add(parcel);
+            dealWaybillLRels.addAll(waybillLRels);
+//aaaaaaa
+            if (!CollectionUtils.isEmpty(logisticsInfos)) {
+                dealForContentByBatch(logisticsInfos, dealImportLogicContents);
+            }
+
+//            platformTransactionManager.commit(transaction);
+        } catch (Exception_Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void dealForContentByBatch(List<LogisticsInfo> logisticsInfos, List<ImportLogicContent> importLogicContents){
+        for (LogisticsInfo logisticsInfo : logisticsInfos) {
+            log.info("+++dealForContentByBatch+++logisticsInfos waybill string: {}", logisticsInfo.getWaybill());
+            ImportLogicContent logicContent = new ImportLogicContent();
+            logicContent.setNewWaybill(logisticsInfo.getWaybill());
+            logicContent.setLastStatusDate(logisticsInfo.getLastTime());
+            logicContent.setStatus(logisticsInfo.getStatus());
+            logicContent.setActivedDate(logisticsInfo.getActivationTime());
+            logicContent.setLogicId(logisticsInfo.getId());
+            if (ObjectUtils.isNotEmpty(logisticsInfo.getWaybillLRel())){
+                if (SysWaybill.YTJ.getCode().equals(logicContent.getStatus())){
+                    logicContent.setReturnNumber(logisticsInfo.getWaybillLRel().getWaybillL());
+                }
+                if (SysWaybill.ZJ.getCode().equals(logicContent.getStatus()) || SysWaybill.GP.getCode().equals(logicContent.getStatus())) {
+                    logicContent.setNewNumber(logisticsInfo.getWaybillLRel().getWaybillL());
+                    Map<String, Object> lMap = logisticsInfo.getlMap();
+                    //转寄需要获取最新物流信息
+                    if (!CollectionUtils.isEmpty(lMap)) {
+                        if (lMap.containsKey("status")) {
+                            logicContent.setStatus(ObjectUtils.isEmpty(lMap.get("status")) ? "" : lMap.get("status").toString());
+                        }
+//                    if (lMap.containsKey("lastMsg")){
+//                        logicContent.setStatus(lMap.get("lastMsg").toString());
+//                    }
+                        if (lMap.containsKey("lastTime")) {
+                            logicContent.setLastStatusDate(ObjectUtils.isEmpty(lMap.get("lastTime")) ? "" : lMap.get("lastTime").toString());
+                        }
+                    }
+                }
+            }
+            importLogicContents.add(logicContent);
+//            importLogicContentMapper.updateImportLogicContentByWaybill(logicContent);
+        }
+    }
+
+    public void dealWlDataByBatch(List<Parcel> parcels,
+                                  List<WaybillLRel> deelWaybillLRels,
+                                  List<WaybillLRel> updateWaybillLRels,
+                                  List<ImportLogicContent> dealImportLogicContents,
+                                  List<ImportLogicContent> dealForRLImportLogicContents) {
+        if (!CollectionUtils.isEmpty(parcels)) {
+            parcelMapper.batchUpdate(parcels);
+        }
+        if (!CollectionUtils.isEmpty(deelWaybillLRels)) {
+            waybillLRelMapper.batchInsert(deelWaybillLRels);
+        }
+        if (!CollectionUtils.isEmpty(updateWaybillLRels)) {
+            waybillLRelMapper.batchUpdateWaybillLRel(updateWaybillLRels);
+        }
+        if (!CollectionUtils.isEmpty(dealImportLogicContents)) {
+            importLogicContentMapper.batchUpdateImportLogicContentByWaybill(dealImportLogicContents);
+        }
+        //批量更新转寄状态
+        if (!CollectionUtils.isEmpty(dealForRLImportLogicContents)) {
+            importLogicContentMapper.batchUpdateImportLogicContentByWaybill(dealImportLogicContents);
+        }
+
+    }
+
+    private void dealForWaybillLByBatch(Parcel parcel,
+                                        List<WaybillLRel> waybillLRels,
+                                        LogisticsInfo logisticsInfo,
+                                        List<Parcel> dealParcels,
+                                        List<WaybillLRel> updateWaybillLRels,
+                                        List<ImportLogicContent> dealImportLogicContents,
+                                        List<ImportLogicContent> dealForRLImportLogicContents) throws Exception_Exception {
+        log.info("+++dealForWaybillLByBatch+++parcel waybill string: {}", parcel.getWaybill());
+        AuthDataV1 authData = getAuthData();
+        WaybillLRel waybillLRel = waybillLRels.get(0);
+        List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
+        CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
+        List<CustomerEventV3> customerEventV3s = ret.getEventsList();
+        String status = getStatus(customerEventV3s);
+        if (status.equals(parcel.getStatus())){
+            log.info("+++dealForWaybillLByBatch+++parcel waybill same status: {}", status);
+            return;
+        }
+        parcel.setStatus(status);
+        logisticsInfo.setOldWaybill(parcel.getWaybill());
+        logisticsInfo.setStatus(status);
+        logisticsInfo.setWaybill(waybillLRel.getWaybillL());
+        if (CollectionUtils.isEmpty(customerEventV3s)){
+            logisticsInfo.setLastMsg("未查询到物流信息");
+        }else {
+            logisticsInfo.setLastMsg(customerEventV3s.get(0).getDescription());
+            logisticsInfo.setLastTime(customerEventV3s.get(0).getEventTime());
+        }
+        customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
+
+        String newRel = "";
+        if (SysWaybill.YTJ.getCode().equals(status) || SysWaybill.GP.getCode().equals(status) || SysWaybill.ZJ.getCode().equals(status)){
+            //如果 最终状态，回退or重寄 带L还需要在重新查一下物流数据
+            newRel = getRLForRL(allEventDataList);
+        }
+
+        List<String> waybills = new ArrayList<>();
+        waybills.add(waybillLRel.getWaybillL());
+//        List<LogisticsInfo> logisticsInfos = new ArrayList<>();
+//        logisticsInfos.add(logisticsInfo);
+        logisticsInfo.setId(null);
+
+        if (ObjectUtils.isNotEmpty(parcel.getId())){
+            dealParcels.add(parcel);
+        }
+
+        if (StringUtils.isNotEmpty(newRel)){
+            WaybillLRel updateWaybillLRel = new WaybillLRel();
+            updateWaybillLRel.setStatus(logisticsInfo.getStatus());
+            updateWaybillLRel.setWaybill(logisticsInfo.getOldWaybill());
+            updateWaybillLRel.setWaybillL(newRel);
+            updateWaybillLRels.add(updateWaybillLRel);
+//            waybillLRelMapper.updateWaybillLRel(waybillLRel);
+        }
+
+        ImportLogicContent importLogicContent = new ImportLogicContent();
+        importLogicContent.setStatus(logisticsInfo.getStatus());
+        if (StringUtils.isNotEmpty(newRel)){
+            // 处理 改派物流信息又改派
+            importLogicContent.setNewWaybill(logisticsInfo.getOldWaybill());
+            ImportLogicContent importLogicContent1 = importLogicContentMapper.selectImportLogicContentByNewWaybill(logisticsInfo.getOldWaybill());
+            if (ObjectUtils.isNotEmpty(importLogicContent1) && (!SysWaybill.YTJ.getCode().equals(importLogicContent1.getStatus()))){
+                if (SysWaybill.YTJ.getCode().equals(logisticsInfo.getStatus())){
+                    importLogicContent1.setReturnNumber(newRel);
+                } else {
+                    importLogicContent1.setNewNumber(newRel);
+                }
+                importLogicContent1.setStatus(logisticsInfo.getStatus());
+                dealImportLogicContents.add(importLogicContent1);
+//                importLogicContentMapper.updateImportLogicContentByWaybill(importLogicContent1);
+            }
+        }else {
+            importLogicContent.setNewWaybill(logisticsInfo.getWaybill());
+            importLogicContent.setLastStatusDate(logisticsInfo.getLastTime());
+            dealForRLImportLogicContents.add(importLogicContent);
+//            importLogicContentMapper.updateImportLogicContentByWayBill(importLogicContent);
+        }
+    }
+
 //    @Transactional(rollbackFor = Exception.class)
 //    @Async
     public void getEventsForOneWaybill(Parcel parcel) {
@@ -457,14 +728,14 @@ public class DPDInfoXMLClient {
 //    @Transactional(rollbackFor = Exception.class)
     public void dealWlData(String newRel, List<String> waybills, List<LogisticsInfo> logisticsInfos) {
         if (!CollectionUtils.isEmpty(logisticsInfos)) {
-            logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
+//            logisticsInfoMapper.deleteLogisticsInfoByWaybills(waybills);
             logisticsInfos.forEach(item ->
             {
                 item.setId(null);
                 updateImportContent(newRel, item);
                 updateRel(newRel, item);
             });
-            logisticsInfoMapper.batchInsert(logisticsInfos);
+//            logisticsInfoMapper.batchInsert(logisticsInfos);
         }
     }
 
