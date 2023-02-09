@@ -162,7 +162,12 @@ public class DPDInfoXMLClient {
         return JSONObject.toJSONString(ret);
     }
 
-    public void batchUpdate(List<Parcel> params){
+    /**批量更新物流
+     *
+     * @param params
+     */
+    public void batchUpdateParcel(List<Parcel> params){
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         List<Parcel> dealParcels = new ArrayList<>();
         List<WaybillLRel> dealWaybillLRels = new ArrayList<>();
         List<WaybillLRel> updateWaybillLRels = new ArrayList<>();
@@ -180,6 +185,7 @@ public class DPDInfoXMLClient {
                 }
         );
         dealWlDataByBatch(dealParcels, dealWaybillLRels, updateWaybillLRels, dealImportLogicContents, dealForRLImportLogicContents);
+        platformTransactionManager.commit(transaction);
     }
 
     public void getEventsForOneWaybillByBatch(Parcel parcel,

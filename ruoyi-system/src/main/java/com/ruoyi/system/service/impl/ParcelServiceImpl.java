@@ -148,10 +148,10 @@ public class ParcelServiceImpl implements IParcelService
 
         List<List<Parcel>> cfList = StringUtils.splitList(parcels, 100);
 
-        parcels.parallelStream().forEach(item -> {
+        cfList.stream().forEach(item -> {
                     try {
                         log.info("getParcelMsgTask running");
-                        dpdInfoXMLClient.getEventsForOneWaybill(item);
+                        dpdInfoXMLClient.batchUpdateParcel(item);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -238,13 +238,16 @@ public class ParcelServiceImpl implements IParcelService
         log.info("getParcelMsg start");
         List<Parcel> parcels = parcelMapper.selectParcelListByWaybillIn(waybills);
         log.info("getParcelMsg size"+parcels.size());
-        parcels.parallelStream().forEach(item -> {
-            try {
-                dpdInfoXMLClient.getEventsForOneWaybillTransa(item);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        List<List<Parcel>> cfList = StringUtils.splitList(parcels, 100);
+        cfList.stream().forEach(item -> {
+                    try {
+                        log.info("getParcelMsg running");
+                        dpdInfoXMLClient.batchUpdateParcel(item);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
         log.info("getParcelMsg end");
     }
 
