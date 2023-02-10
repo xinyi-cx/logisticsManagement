@@ -242,7 +242,7 @@ public class DPDServicesXMLClient {
     }
 
     /**
-     * 生成返回值
+     * 生成面单
      *
      * @param packages
      * @return

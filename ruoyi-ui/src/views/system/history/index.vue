@@ -50,78 +50,8 @@
             :label="dict.label"
             :value="dict.value"
           />
-          <!--          <el-option label="马帮主动通知" value="马帮主动通知"/>-->
-          <!--          <el-option label="面单导入" value="面单导入"/>-->
-          <!--          <el-option label="本地" value="本地"/>-->
-          <!--          <el-option label="转寄" value="转寄"/>-->
-          <!--          <el-option label="直发" value="直发"/>-->
-
         </el-select>
       </el-form-item>
-      <!--
-      <el-form-item label="成功面单数" prop="successNum">
-        <el-input
-          v-model="queryParams.successNum"
-          placeholder="请输入成功面单数"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="失败面单数" prop="failNum">
-        <el-input
-          v-model="queryParams.failNum"
-          placeholder="请输入失败面单数"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="下载次数" prop="downloadNum">
-        <el-input
-          v-model="queryParams.downloadNum"
-          placeholder="请输入下载次数"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="原始excel路径" prop="excelUrl">
-        <el-input
-          v-model="queryParams.excelUrl"
-          placeholder="请输入原始excel路径"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="创建人" prop="createUser">
-        <el-input
-          v-model="queryParams.createUser"
-          placeholder="请输入创建人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="更新人" prop="updateUser">
-        <el-input
-          v-model="queryParams.updateUser"
-          placeholder="请输入更新人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updatedTime">
-        <el-date-picker clearable size="small"
-          v-model="queryParams.updatedTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择更新时间">
-        </el-date-picker>
-      </el-form-item>
-      -->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -176,7 +106,6 @@
 
     <el-table v-loading="loading" :data="historyList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-<!--      <el-table-column label="主键" align="center" prop="id" />-->
       <el-table-column label="创建时间" align="center" prop="createdTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createdTime) }}</span>
@@ -522,6 +451,18 @@ export default {
       this.download('system/content/export/', {
         batchId : id
       }, `logistics_content_${new Date().getTime()}.xlsx`)
+    },
+    handleDownloadDouble(row) {
+      this.reset();
+      const id = row.id;
+      const userId = parseInt(row.updateUser);
+      this.getUserInfo(userId);
+      let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export labels`;
+      this.download('system/package/getPDFByBatchId/' + id, {}, `${fileName}.pdf`);
+      this.packParams.hisParam = row.id;
+      this.download('system/package/export', {
+        ...this.packParams
+      }, `${fileName}.xlsx`);
     },
     handleDownloadPDF(row) {
       this.reset();
