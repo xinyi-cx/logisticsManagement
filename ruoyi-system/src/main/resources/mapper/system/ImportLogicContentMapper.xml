@@ -48,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectImportLogicContentList" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult">
         <include refid="selectImportLogicContentVo"/>
         <where>
+            is_delete = 0
             <choose>
             <when  test="ids!= null and ids.size()>0" >
                 AND id in
@@ -341,6 +342,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <update id="deleteImportLogicContentByPackIds" parameterType="String">
+        update import_logic_content set is_delete = 1, updated_time = sysdate()
+        where pack_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 
     <insert id="batchInsert" >
         insert into import_logic_content (

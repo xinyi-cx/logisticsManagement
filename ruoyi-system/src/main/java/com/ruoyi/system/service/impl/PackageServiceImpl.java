@@ -1276,7 +1276,10 @@ public class PackageServiceImpl implements IPackageService {
      */
     @Override
     public int deletePackageByIds(Long[] ids) {
-        return packageMapper.deletePackageByIds(ids);
+        packageMapper.deletePackageByIds(ids);
+        importLogicContentMapper.deleteImportLogicContentByPackIds(ids);
+        parcelMapper.deleteParcelByPackIds(ids);
+        return 1;
     }
 
     /**

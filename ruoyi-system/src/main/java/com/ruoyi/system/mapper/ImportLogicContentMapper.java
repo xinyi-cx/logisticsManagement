@@ -72,6 +72,8 @@ public interface ImportLogicContentMapper
      */
     public int deleteImportLogicContentByIds(Long[] ids);
 
+    public int deleteImportLogicContentByPackIds(Long[] ids);
+
     public int batchInsert(List<ImportLogicContent> list);
 
 }

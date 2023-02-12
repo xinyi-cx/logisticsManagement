@@ -75,6 +75,8 @@ public interface ParcelMapper
      */
     public int deleteParcelByIds(Long[] ids);
 
+    public int deleteParcelByPackIds(Long[] ids);
+
     /**
      * 批量更新
      * @param list
