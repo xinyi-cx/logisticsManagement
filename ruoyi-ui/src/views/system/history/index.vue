@@ -167,6 +167,13 @@
             size="mini"
             type="text"
             icon="el-icon-view"
+            @click="handleDownloadDouble(scope.row)"
+          >下载两个</el-button>
+          <el-button
+            v-show="scope.row.type === '面单导入'"
+            size="mini"
+            type="text"
+            icon="el-icon-view"
             @click="handleDownload(scope.row)"
           >查看原始excel</el-button>
           <el-button
@@ -356,7 +363,8 @@ export default {
       // 表单校验
       rules: {
       },
-      userInfo: {}
+      userInfo: {},
+      exportFileName: ""
     };
   },
   created() {
@@ -448,36 +456,57 @@ export default {
     handleDownloadReContent(row) {
       this.reset();
       const id = row.id;
+      this.getFileName(row);
+      let excelFileName = this.exportFileName  + "export status";
       this.download('system/content/export/', {
         batchId : id
-      }, `logistics_content_${new Date().getTime()}.xlsx`)
+      }, `${excelFileName}.xlsx`)
     },
     handleDownloadDouble(row) {
       this.reset();
       const id = row.id;
-      const userId = parseInt(row.updateUser);
-      this.getUserInfo(userId);
-      let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export labels`;
-      this.download('system/package/getPDFByBatchId/' + id, {}, `${fileName}.pdf`);
+      // const userId = parseInt(row.updateUser);
+      // this.getUserInfo(userId);
+      // let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export labels`;
+      this.getFileName(row);
+      let pdfFileName = this.exportFileName  + "export labels";
+      let excelFileName = this.exportFileName  + "export xls";
+      this.download('system/package/getPDFByBatchId/' + id, {}, `${pdfFileName}.pdf`);
       this.packParams.hisParam = row.id;
       this.download('system/package/export', {
         ...this.packParams
-      }, `${fileName}.xlsx`);
+      }, `${excelFileName}.xlsx`);
     },
     handleDownloadPDF(row) {
       this.reset();
       const id = row.id;
-      const userId = parseInt(row.updateUser);
-      this.getUserInfo(userId);
-      let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export labels`;
+      // const userId = parseInt(row.updateUser);
+      // this.getUserInfo(userId);
+      // let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export labels`;
+      this.getFileName(row);
+      let fileName = this.exportFileName  + "export labels";
       this.download('system/package/getPDFByBatchId/' + id, {}, `${fileName}.pdf`)
+    },
+    getFileName(row){
+      const fileName = row.fileName;
+      if(typeof fileName === 'undefined' || fileName == null || fileName === ''){
+        const userId = parseInt(row.updateUser);
+        this.getUserInfo(userId);
+        this.exportFileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum}`;
+      }else {
+        // xls
+        const strArr = fileName.split("import");
+        this.exportFileName = strArr[0];
+      }
     },
     handleDownloadError(row) {
       this.reset();
       const id = row.id;
-      const userId = parseInt(row.updateUser);
-      this.getUserInfo(userId);
-      let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export error`;
+      // const userId = parseInt(row.updateUser);
+      // this.getUserInfo(userId);
+      // let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export error`;
+      this.getFileName(row);
+      let fileName = this.exportFileName  + "export error";
       this.download('system/package/getTxtById/' + id, {}, `${fileName}.txt`)
     },
     /** 导入按钮操作 */
@@ -556,9 +585,11 @@ export default {
     },
     downloadGeneratedExcel(row) {
       this.packParams.hisParam = row.id;
-      const userId = parseInt(row.updateUser);
-      this.getUserInfo(userId);
-      let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export xls`;
+      // const userId = parseInt(row.updateUser);
+      // this.getUserInfo(userId);
+      // let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export xls`;
+      this.getFileName(row);
+      let fileName = this.exportFileName  + "export xls";
       this.download('system/package/export', {
         ...this.packParams
       }, `${fileName}.xlsx`);
