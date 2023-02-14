@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="country"      column="country"  />
 		<result property="apiKey"      column="api_key"  />
 		<result property="apiAccountId"      column="api_account_id"  />
+		<result property="customerName"      column="customer_name"  />
 		<result property="sex"          column="sex"          />
 		<result property="avatar"       column="avatar"       />
 		<result property="password"     column="password"     />
@@ -47,9 +48,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="dataScope"     column="data_scope"    />
 		<result property="status"       column="role_status"    />
 	</resultMap>
-	
+
 	<sql id="selectUserVo">
-        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.country, u.api_key, u.api_account_id,
+        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.country, u.api_key, u.api_account_id, customer_name,
 		u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
         d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
         r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
@@ -60,7 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
-		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.country, u.api_key, u.api_account_id,
+		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.country, u.api_key, u.api_account_id, u.customer_name,
 		u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0'
@@ -84,6 +85,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</if>
 		<if test="apiAccountId != null and apiAccountId != 0">
 			AND u.api_account_id = #{apiAccountId}
+		</if>
+		<if test="customerName != null and customerName != ''">
+			AND u.customer_name = #{customerName}
 		</if>
 		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
 			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
@@ -167,6 +171,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="apiAccountId != null and apiAccountId != 0">
 				AND u.api_account_id = #{apiAccountId}
 			</if>
+			<if test="customerName != null and customerName != ''">
+				AND u.customer_name = #{customerName}
+			</if>
 		</where>
 		limit 1
 	</select>
@@ -200,6 +207,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="country != null and country != ''">country,</if>
 			<if test="apiKey != null and apiKey != ''">api_key,</if>
 			<if test="apiAccountId != null and apiAccountId != 0">api_account_id,</if>
+			<if test="customerName != null and customerName != ''">customer_name,</if>
  			<if test="sex != null and sex != ''">sex,</if>
  			<if test="password != null and password != ''">password,</if>
  			<if test="status != null and status != ''">status,</if>
@@ -217,6 +225,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="country != null and country != ''">#{country},</if>
 			<if test="apiKey != null and apiKey != ''">#{apiKey},</if>
 			<if test="apiAccountId != null and apiAccountId != 0">#{apiAccountId},</if>
+			<if test="customerName != null and customerName != ''">#{customerName},</if>
  			<if test="sex != null and sex != ''">#{sex},</if>
  			<if test="password != null and password != ''">#{password},</if>
  			<if test="status != null and status != ''">#{status},</if>
@@ -237,6 +246,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="country != null and country != ''">country = #{country},</if>
 			<if test="apiKey != null and apiKey != ''">api_key = #{apiKey},</if>
 			<if test="apiAccountId != null and apiAccountId != 0">api_account_id = #{apiAccountId},</if>
+			<if test="customerName != null and customerName != ''">customer_name = #{customerName},</if>
  			<if test="sex != null and sex != ''">sex = #{sex},</if>
  			<if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
  			<if test="password != null and password != ''">password = #{password},</if>

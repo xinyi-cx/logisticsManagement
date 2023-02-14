@@ -65,6 +65,16 @@ public class BatchTaskHistoryVo extends BaseEntity
     @Excel(name = "是否删除")
     private Integer isDelete;
 
+    private String fileName;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public Long getSessionId() {
         return sessionId;
     }

@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="downloadNum != null "> and download_num = #{downloadNum}</if>
             <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name = like concat('%', #{fileName}, '%')</if>
             <if test="params.beginTime != null and params.beginTime != ''">
                 AND date_format(created_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
             </if>

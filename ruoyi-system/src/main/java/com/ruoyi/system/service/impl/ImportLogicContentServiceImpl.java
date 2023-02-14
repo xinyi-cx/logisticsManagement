@@ -7,6 +7,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.ImportLogicContent;
 import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
+import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
 import com.ruoyi.system.mapper.ImportLogicContentMapper;
 import com.ruoyi.system.mapper.LogisticsInfoMapper;
 import com.ruoyi.system.service.IImportLogicContentService;
@@ -36,6 +37,9 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
     @Autowired
     private LogisticsInfoMapper logisticsInfoMapper;
 
+    @Autowired
+    private BatchTaskHistoryMapper batchTaskHistoryMapper;
+
     /**
      * 查询导入查询物流
      *
@@ -59,17 +63,27 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
         if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
         }
-        dealParam(importLogicContent);
+        Map<Long, String> idFileNameMap = new HashMap<>();
+        dealParam(importLogicContent, idFileNameMap);
         return importLogicContentMapper.selectImportLogicContentList(importLogicContent);
     }
 
-    private void dealParam(ImportLogicContent importLogicContent){
+    private void dealParam(ImportLogicContent importLogicContent, Map<Long, String> idFileNameMap){
         if (StringUtils.isNotEmpty(importLogicContent.getCountry())) {
             importLogicContent.setCountry(importLogicContent.getCountry().toUpperCase());
         }
         if (StringUtils.isNotEmpty(importLogicContent.getClient())) {
             importLogicContent.setClient(importLogicContent.getClient().toUpperCase());
         }
+//        if (StringUtils.isNotEmpty(importLogicContent.getFileName())){
+//            BatchTaskHistoryVo batchTaskHistory = new BatchTaskHistoryVo();
+//            batchTaskHistory.setFileName(importLogicContent.getFileName());
+//            List<BatchTaskHistory> batchTaskHistories = batchTaskHistoryMapper.selectBatchTaskHistoryList(batchTaskHistory);
+//            if (!CollectionUtils.isEmpty(batchTaskHistories)){
+//                idFileNameMap = batchTaskHistories.stream().collect(Collectors.toMap(BatchTaskHistory::getId, BatchTaskHistory::getFileName));
+//                importLogicContent.setBatchIds(new ArrayList<>(idFileNameMap.keySet()));
+//            }
+//        }
     }
 
     @Override
@@ -77,7 +91,8 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
         if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
         }
-        dealParam(importLogicContent);
+        Map<Long, String> idFileNameMap = new HashMap<>();
+        dealParam(importLogicContent, idFileNameMap);
         List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentList(importLogicContent);
 
 //        List<LogisticsInfo> logisticsInfos = logisticsInfoMapper.selectLogisticsInfoListByWaybillIn(

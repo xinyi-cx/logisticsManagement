@@ -92,6 +92,8 @@ public class SysUser extends BaseEntity
      */
     private Long apiAccountId;
 
+    private String customerName;
+
     /** 部门对象 */
     @Excels({
         @Excel(name = "部门名称", targetAttr = "deptName", type = Type.EXPORT),
@@ -137,6 +139,14 @@ public class SysUser extends BaseEntity
 
     /** 发件人邮政编码 */
     private String postalCode;
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
     public Long getApiAccountId() {
         return apiAccountId;

@@ -126,7 +126,12 @@
       <!-- 多选 -->
       <el-table-column type="selection" width="55" align="center" />
       <!-- 物流单号 -->
-      <el-table-column label="物流单号" align="center" width="150" prop="waybill" />
+<!--      <el-table-column label="物流单号" align="center" width="150" prop="waybill" />-->
+      <el-table-column fixed label="物流单号" align="center" width="180px">
+        <template slot-scope="scope">
+          <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.waybill" target="_blank">{{scope.row.waybill}}</el-link>
+        </template>
+      </el-table-column>
       <!-- 创建时间 -->
       <el-table-column label="创建时间" align="center" prop="createdTime" width="160">
         <template slot-scope="scope">

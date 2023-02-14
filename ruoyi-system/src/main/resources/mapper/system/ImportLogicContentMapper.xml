@@ -41,12 +41,63 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
+    <resultMap type="ImportLogicContent" id="ImportLogicContentResult2">
+        <result property="id"    column="id"    />
+        <result property="documentFileId"    column="document_file_id"    />
+        <result property="packId"    column="pack_id"    />
+        <result property="batchId"    column="batch_id"    />
+        <result property="logicId"    column="logic_id"    />
+        <result property="client"    column="client"    />
+        <result property="country"    column="country"    />
+        <result property="importType"    column="import_type"    />
+        <result property="loginid"    column="loginId"    />
+        <result property="newWaybill"    column="new_waybill"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="valuePlnCod"    column="value_pln_cod"    />
+        <result property="weightKg"    column="weight_kg"    />
+        <result property="recipientName"    column="recipient_name"    />
+        <result property="recipientPhone"    column="recipient_phone"    />
+        <result property="recipientEmail"    column="recipient_email"    />
+        <result property="description"    column="description"    />
+        <result property="needBox"    column="need_box"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="remark2"    column="remark2"    />
+        <result property="remark3"    column="remark3"    />
+        <result property="remark4"    column="remark4"    />
+        <result property="remark5"    column="remark5"    />
+        <result property="activedDate"    column="actived_date"    />
+        <result property="lastStatusDate"    column="last_status_date"    />
+        <result property="status"    column="status"    />
+        <result property="newNumber"    column="new_number"    />
+        <result property="returnNumber"    column="return_number"    />
+        <result property="isDelete"    column="is_delete"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+
+        <result property="fileName"    column="file_name"    />
+    </resultMap>
+
     <sql id="selectImportLogicContentVo">
-        select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type, loginId, new_waybill, order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone, recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5, actived_date, last_status_date, status, new_number, return_number, is_delete, create_by, create_time, update_by, update_time from import_logic_content
+        select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type, loginId, new_waybill,
+        order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone, recipient_email, description,
+        need_box, create_date, remark, remark2, remark3, remark4, remark5, actived_date, last_status_date, status,
+        new_number, return_number, is_delete, create_by, create_time, update_by, update_time
+        from import_logic_content
     </sql>
 
-    <select id="selectImportLogicContentList" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult">
-        <include refid="selectImportLogicContentVo"/>
+    <select id="selectImportLogicContentList" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult2">
+        select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type,
+        loginId, new_waybill, order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
+        recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5, actived_date,
+        last_status_date, status, new_number, return_number, is_delete, create_by, create_time, update_by, update_time, file_name
+        from (
+        select imcontent.*,  bathis.file_name
+        from import_logic_content imcontent
+        left join batch_task_history bathis on imcontent.batch_id = bathis.id
+        ) tba
         <where>
             is_delete = 0
             <choose>
@@ -57,7 +108,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 </foreach>
             </when >
             <otherwise>
-
+                <if test="batchIds!= null and batchIds.size()>0" >
+                    AND batch_id in
+                    <foreach collection="batchIds" item="item" open="(" close=")" separator="," >
+                        #{item}
+                    </foreach>
+                 </if>
+                <if test="fileName != null  and fileName != ''"> and file_name = like concat('%', #{fileName}, '%')</if>
 <!--            <if test="params.beginTime != null and params.beginTime != ''">-->
 <!--                AND date_format(created_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')-->
 <!--            </if>-->

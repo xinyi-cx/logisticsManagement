@@ -130,8 +130,10 @@ public class ImportLogicContent extends BaseEntity
     @Excel(name = "退件单号")
     private String returnNumber;
 
-    private List<Long> ids;
+    private String fileName;
 
+    private List<Long> ids;
+    private List<Long> batchIds;
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date activeTimeStart;
@@ -140,6 +142,22 @@ public class ImportLogicContent extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date activeTimeEnd;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public List<Long> getBatchIds() {
+        return batchIds;
+    }
+
+    public void setBatchIds(List<Long> batchIds) {
+        this.batchIds = batchIds;
+    }
 
     public List<Long> getIds() {
         return ids;

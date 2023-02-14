@@ -150,6 +150,7 @@
           <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.newWaybill" target="_blank">{{scope.row.newWaybill}}</el-link>
         </template>
       </el-table-column>
+      <el-table-column label="fileName" align="center" prop="fileName" width="150px" show-overflow-tooltip />
       <el-table-column label="Client" align="center" prop="client" width="150px" show-overflow-tooltip />
       <el-table-column label="Country" align="center" prop="country" />
       <el-table-column label="Type" align="center" prop="importType" />
