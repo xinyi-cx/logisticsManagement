@@ -584,7 +584,7 @@ export default {
       }, `logistics_content_${new Date().getTime()}.xlsx`)
     },
     downloadGeneratedExcel(row) {
-      this.packParams.hisParam = row.id;
+      this.packParams.hisParam = '000' + row.id;
       // const userId = parseInt(row.updateUser);
       // this.getUserInfo(userId);
       // let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export xls`;
