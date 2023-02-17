@@ -401,7 +401,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <update id="deleteImportLogicContentByPackIds" parameterType="String">
-        update import_logic_content set is_delete = 1, updated_time = sysdate()
+        update import_logic_content set is_delete = 1, update_time = sysdate()
         where pack_id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
