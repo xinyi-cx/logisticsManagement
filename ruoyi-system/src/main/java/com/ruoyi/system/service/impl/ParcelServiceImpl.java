@@ -148,25 +148,25 @@ public class ParcelServiceImpl implements IParcelService
 
         List<List<Parcel>> cfList = StringUtils.splitList(parcels, 100);
 
-        parcels.parallelStream().forEach(item -> {
-                    try {
-                        log.info("getParcelMsgTask running");
-                        dpdInfoXMLClient.getEventsForOneWaybill(item);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-        );
-
-//        cfList.stream().forEach(item -> {
+//        parcels.parallelStream().forEach(item -> {
 //                    try {
 //                        log.info("getParcelMsgTask running");
-//                        dpdInfoXMLClient.batchUpdateParcel(item);
+//                        dpdInfoXMLClient.getEventsForOneWaybill(item);
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
 //                    }
 //                }
 //        );
+
+        cfList.stream().forEach(item -> {
+                    try {
+                        log.info("getParcelMsgTask running");
+                        dpdInfoXMLClient.batchUpdateParcel(item);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
         log.info("getParcelMsgTask end");
     }
 
@@ -249,22 +249,22 @@ public class ParcelServiceImpl implements IParcelService
         List<Parcel> parcels = parcelMapper.selectParcelListByWaybillIn(waybills);
         log.info("getParcelMsg size"+parcels.size());
         List<List<Parcel>> cfList = StringUtils.splitList(parcels, 100);
-        parcels.parallelStream().forEach(item -> {
-            try {
-                dpdInfoXMLClient.getEventsForOneWaybillTransa(item);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-//        cfList.stream().forEach(item -> {
-//                    try {
-//                        log.info("getParcelMsg running");
-//                        dpdInfoXMLClient.batchUpdateParcel(item);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//        );
+//        parcels.parallelStream().forEach(item -> {
+//            try {
+//                dpdInfoXMLClient.getEventsForOneWaybillTransa(item);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+        cfList.stream().forEach(item -> {
+                    try {
+                        log.info("getParcelMsg running");
+                        dpdInfoXMLClient.batchUpdateParcel(item);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
         log.info("getParcelMsg end");
     }
 
