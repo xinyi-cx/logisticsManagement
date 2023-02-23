@@ -641,7 +641,6 @@ export default {
       this.queryParams.ids = [];
       listPackageAll(this.queryParams).then(response => {
         this.packageList = response.rows;
-        console.log(this.packageList);
         this.total = response.total;
         this.loading = false;
       });

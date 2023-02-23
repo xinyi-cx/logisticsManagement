@@ -11,7 +11,6 @@ import com.ruoyi.system.domain.vo.*;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -154,6 +153,7 @@ public class PackageController extends BaseController
 //    ExportRePackageVo
 
     /**
+     * 转寄面单导出
      * 导出面单列表+关联关系
      */
     @Log(title = "面单", businessType = BusinessType.EXPORT)

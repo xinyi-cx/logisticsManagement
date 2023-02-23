@@ -190,6 +190,20 @@ export const dynamicRoutes = [
     ]
   },
   {
+    path: '/system/redirect',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:package:list'],
+    children: [
+      {
+        path: 'index/:hisParam(\\d+)',
+        component: () => import('@/views/system/redirect/index'),
+        name: 'redirectDataPackage',//name 重复2
+        meta: { title: '面单列表', activeMenu: '/system/history' }
+      }
+    ]
+  },
+  {
     path: '/system/info',
     component: Layout,
     hidden: true,

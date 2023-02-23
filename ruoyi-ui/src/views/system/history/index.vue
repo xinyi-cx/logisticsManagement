@@ -119,6 +119,9 @@
           <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
            <span>{{ scope.row.successNum }}</span>
           </router-link>
+          <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
+            <span>{{ scope.row.successNum }}</span>
+          </router-link>
           <span v-else >{{ scope.row.successNum }}</span>
         </template>
       </el-table-column>
@@ -127,6 +130,9 @@
           <!-- 待添加点击处理事件 跳转至失败面单列表-->
           <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
            <span>{{ scope.row.failNum }}</span>
+          </router-link>
+          <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type" v-else-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
+            <span>{{ scope.row.failNum }}</span>
           </router-link>
           <span v-else >{{ scope.row.failNum }}</span>
         </template>
@@ -162,12 +168,21 @@
 <!--      </el-table-column>-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+<!--          面单-->
           <el-button
             v-show="scope.row.type === '面单导入'"
             size="mini"
             type="text"
             icon="el-icon-view"
             @click="handleDownloadDouble(scope.row)"
+          >下载两个</el-button>
+<!--          转寄-->
+          <el-button
+            v-show="scope.row.type === '面单导入'"
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleDownloadDoubleForRe(scope.row)"
           >下载两个</el-button>
           <el-button
             v-show="scope.row.type === '面单导入'"
@@ -182,11 +197,21 @@
             icon="el-icon-view"
             @click="handleDownloadError(scope.row)"
           >查看导入面单错误信息</el-button>
+<!--          正常面单-->
           <el-button
+            v-show="scope.row.type === '面单导入'"
             size="mini"
             type="text"
             icon="el-icon-view"
             @click="downloadGeneratedExcel(scope.row)"
+          >查看批量excel</el-button>
+<!--          转寄-->
+          <el-button
+            v-show="scope.row.type === '面单导入'"
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="downloadGeneratedExcelForRe(scope.row)"
           >查看批量excel</el-button>
           <el-button
             size="mini"
@@ -472,8 +497,25 @@ export default {
       let pdfFileName = this.exportFileName  + "export labels";
       let excelFileName = this.exportFileName  + "export xls";
       this.download('system/package/getPDFByBatchId/' + id, {}, `${pdfFileName}.pdf`);
-      this.packParams.hisParam = row.id;
+      // this.packParams.hisParam = row.id;
+      this.packParams.hisParam = '000' + row.id;
       this.download('system/package/export', {
+        ...this.packParams
+      }, `${excelFileName}.xlsx`);
+    },
+    handleDownloadDoubleForRe(row) {
+      this.reset();
+      const id = row.id;
+      // const userId = parseInt(row.updateUser);
+      // this.getUserInfo(userId);
+      // let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export labels`;
+      this.getFileName(row);
+      let pdfFileName = this.exportFileName  + "export labels";
+      let excelFileName = this.exportFileName  + "export xls";
+      this.download('system/package/getPDFByBatchId/' + id, {}, `${pdfFileName}.pdf`);
+      // this.packParams.hisParam = row.id;
+      this.packParams.hisParam = '000' + row.id;
+      this.download('system/package/exportRe', {
         ...this.packParams
       }, `${excelFileName}.xlsx`);
     },
@@ -591,6 +633,17 @@ export default {
       this.getFileName(row);
       let fileName = this.exportFileName  + "export xls";
       this.download('system/package/export', {
+        ...this.packParams
+      }, `${fileName}.xlsx`);
+    },
+    downloadGeneratedExcelForRe(row) {
+      this.packParams.hisParam = '000' + row.id;
+      // const userId = parseInt(row.updateUser);
+      // this.getUserInfo(userId);
+      // let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export xls`;
+      this.getFileName(row);
+      let fileName = this.exportFileName  + "export xls";
+      this.download('system/package/exportRe', {
         ...this.packParams
       }, `${fileName}.xlsx`);
     }

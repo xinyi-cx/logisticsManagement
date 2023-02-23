@@ -434,7 +434,11 @@ public class PackageServiceImpl implements IPackageService {
         Boolean sucFlag = null;
         if (ObjectUtils.isNotEmpty(packageVo.getHisParam())) {
             sucFlag = "000".equals(packageVo.getHisParam().substring(0, 3));
-            hisId = Long.valueOf(packageVo.getHisParam().substring(3));
+            if ("000".equals(packageVo.getHisParam().substring(0, 3)) || "111".equals(packageVo.getHisParam().substring(0, 3))){
+                hisId = Long.valueOf(packageVo.getHisParam().substring(3));
+            }else {
+                hisId = Long.valueOf(packageVo.getHisParam());
+            }
         }
         Package pkg = new Package();
         BeanUtils.copyProperties(packageVo, pkg);
