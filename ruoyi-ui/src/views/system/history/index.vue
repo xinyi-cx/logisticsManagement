@@ -119,7 +119,7 @@
           <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
            <span>{{ scope.row.successNum }}</span>
           </router-link>
-          <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
+          <router-link :to="'/system/redirect/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
             <span>{{ scope.row.successNum }}</span>
           </router-link>
           <span v-else >{{ scope.row.successNum }}</span>
@@ -131,7 +131,7 @@
           <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
            <span>{{ scope.row.failNum }}</span>
           </router-link>
-          <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type" v-else-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
+          <router-link :to="'/system/redirect/index/111' + scope.row.id" class="link-type" v-else-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
             <span>{{ scope.row.failNum }}</span>
           </router-link>
           <span v-else >{{ scope.row.failNum }}</span>

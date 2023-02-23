@@ -188,48 +188,6 @@
           >删除</el-button>
         </template>
       </el-table-column>
-
-      <!-- 原来的字段内容
-        <el-table-column label="面单主键" align="center" prop="id" />
-        <el-table-column label="付款人类型" align="center" prop="payerType" />
-        <el-table-column label="发件人id" align="center" prop="senderId" />
-        <el-table-column label="收货人id" align="center" prop="receiverId" />
-        <el-table-column label="分类1" align="center" prop="ref1" />
-        <el-table-column label="分类2" align="center" prop="ref2" />
-        <el-table-column label="服务id" align="center" prop="servicesId" />
-        <el-table-column label="手机号码" align="center" prop="phone" />
-        <el-table-column label="邮政编码" align="center" prop="postalCode" />
-        <el-table-column label="创建人" align="center" prop="createUser" />
-        <el-table-column label="更新人" align="center" prop="updateUser" />
-        <el-table-column label="创建时间" align="center" prop="createdTime" width="180">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="更新时间" align="center" prop="updatedTime" width="180">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.updatedTime, '{y}-{m}-{d}') }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-edit"
-              @click="handleUpdate(scope.row)"
-              v-hasPermi="['system:package:edit']"
-            >修改</el-button>
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
-              v-hasPermi="['system:package:remove']"
-            >删除</el-button>
-          </template>
-        </el-table-column>
-      -->
     </el-table>
     <!-- 翻页 -->
     <pagination

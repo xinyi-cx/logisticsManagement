@@ -164,7 +164,12 @@
       <!-- 原面单ID -->
 <!--      <el-table-column label="原面单ID" align="center" prop="originalId" />-->
       <!-- 物流单号 -->
-      <el-table-column label="物流单号" align="center" prop="waybill" />
+<!--      <el-table-column label="物流单号" align="center" prop="waybill" />-->
+      <el-table-column fixed label="物流单号" align="center" width="180px">
+        <template slot-scope="scope">
+          <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.waybill" target="_blank">{{scope.row.waybill}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="old shipment number" align="center" prop="oldWaybill" />
       <el-table-column label="old return number" align="center" prop="backOrder" />
       <!-- 创建时间 -->
