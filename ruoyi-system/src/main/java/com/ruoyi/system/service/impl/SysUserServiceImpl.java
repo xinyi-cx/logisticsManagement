@@ -84,6 +84,12 @@ public class SysUserServiceImpl implements ISysUserService
     }
 
     @Override
+    public List<SysUser> getAll(SysUser user)
+    {
+        return userMapper.getAll(user);
+    }
+
+    @Override
     public List<SysUser> getUserForLogin(SysUser user)
     {
         return userMapper.selectUserList(user);

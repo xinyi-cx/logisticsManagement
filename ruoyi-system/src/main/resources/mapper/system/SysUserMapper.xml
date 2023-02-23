@@ -102,6 +102,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		${params.dataScope}
 	</select>
 
+	<select id="getAll" parameterType="SysUser" resultMap="SysUserResult">
+		select u.user_id, u.user_name, u.nick_name, u.country, customer_name
+		from sys_user u
+		<where>
+			<if test="userId != null and userId != 0">
+				AND u.user_id = #{userId}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND u.user_name like concat('%', #{userName}, '%')
+			</if>
+			<if test="country != null and country != ''">
+				AND u.country = #{country}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND u.customer_name = like concat('%', #{customerName}, '%')
+			</if>
+			<if test="nickName != null and nickName != ''">
+				AND u.nick_name = like concat('%', #{nickName}, '%')
+			</if>
+		</where>
+	</select>
+
 	<select id="selectUserListByParam" parameterType="SysUser" resultMap="SysUserResult">
 		<include refid="selectUserVo"/>
 		<where>
