@@ -143,7 +143,7 @@ public class ParcelServiceImpl implements IParcelService
         List<Parcel> needParcels = parcelMapper.selectParcelListNeedDeal(parcel);
         Date lastMonth = DateUtils.getDateBeforeNow(-30);
         List<Parcel> parcels= needParcels.stream().filter(
-                item -> SysWaybill.WJH.getCode().equals(item.getStatus()) && item.getCreatedTime().compareTo(lastMonth) > 0).collect(Collectors.toList());
+                item -> item.getCreatedTime().compareTo(lastMonth) > 0).collect(Collectors.toList());
         log.info("getParcelMsgTask size" + parcels.size());
 
         List<List<Parcel>> cfList = StringUtils.splitList(parcels, 100);

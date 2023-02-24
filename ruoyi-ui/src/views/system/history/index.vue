@@ -28,11 +28,6 @@
             :label="dict.label"
             :value="dict.value"
           />
-<!--          <el-option label="马帮主动通知" value="马帮主动通知"/>-->
-<!--          <el-option label="面单导入" value="面单导入"/>-->
-<!--          <el-option label="本地" value="本地"/>-->
-<!--          <el-option label="转寄" value="转寄"/>-->
-<!--          <el-option label="直发" value="直发"/>-->
 
         </el-select>
       </el-form-item>
@@ -119,7 +114,7 @@
           <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
            <span>{{ scope.row.successNum }}</span>
           </router-link>
-          <router-link :to="'/system/redirect/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
+          <router-link :to="'/system/redirect/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '转寄面单导入'">
             <span>{{ scope.row.successNum }}</span>
           </router-link>
           <span v-else >{{ scope.row.successNum }}</span>
@@ -131,13 +126,13 @@
           <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
            <span>{{ scope.row.failNum }}</span>
           </router-link>
-          <router-link :to="'/system/redirect/index/111' + scope.row.id" class="link-type" v-else-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
+          <router-link :to="'/system/redirect/index/111' + scope.row.id" class="link-type" v-else-if="scope.row.type == '转寄面单导入'">
             <span>{{ scope.row.failNum }}</span>
           </router-link>
           <span v-else >{{ scope.row.failNum }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="下载次数" align="center" prop="downloadNum" />
+<!--      <el-table-column label="下载次数" align="center" prop="downloadNum" />-->
 <!--      <el-table-column label="原始excel" align="center" prop="excelUrl" width="180">-->
 <!--        <template slot-scope="scope">-->
 <!--          <el-button-->
@@ -178,7 +173,7 @@
           >下载两个</el-button>
 <!--          转寄-->
           <el-button
-            v-show="scope.row.type === '面单导入'"
+            v-show="scope.row.type === '转寄面单导入'"
             size="mini"
             type="text"
             icon="el-icon-view"
@@ -207,7 +202,7 @@
           >查看批量excel</el-button>
 <!--          转寄-->
           <el-button
-            v-show="scope.row.type === '面单导入'"
+            v-show="scope.row.type === '转寄面单导入'"
             size="mini"
             type="text"
             icon="el-icon-view"
@@ -249,53 +244,6 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
-    <!-- 添加或修改批量任务历史对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="成功面单数" prop="successNum">
-          <el-input v-model="form.successNum" placeholder="请输入成功面单数" />
-        </el-form-item>
-        <el-form-item label="失败面单数" prop="failNum">
-          <el-input v-model="form.failNum" placeholder="请输入失败面单数" />
-        </el-form-item>
-        <el-form-item label="下载次数" prop="downloadNum">
-          <el-input v-model="form.downloadNum" placeholder="请输入下载次数" />
-        </el-form-item>
-        <el-form-item label="原始excel路径" prop="excelUrl">
-          <el-input v-model="form.excelUrl" placeholder="请输入原始excel路径" />
-        </el-form-item>
-        <el-form-item label="excel内容">
-          <editor v-model="form.excelContent" :min-height="192"/>
-        </el-form-item>
-        <el-form-item label="创建人" prop="createUser">
-          <el-input v-model="form.createUser" placeholder="请输入创建人" />
-        </el-form-item>
-        <el-form-item label="更新人" prop="updateUser">
-          <el-input v-model="form.updateUser" placeholder="请输入更新人" />
-        </el-form-item>
-        <el-form-item label="创建时间" prop="createdTime">
-          <el-date-picker clearable size="small"
-            v-model="form.createdTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择创建时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="更新时间" prop="updatedTime">
-          <el-date-picker clearable size="small"
-            v-model="form.updatedTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择更新时间">
-          </el-date-picker>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
 
     <!--    导入对话框-->
     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
@@ -381,6 +329,10 @@ export default {
         status: undefined
       },
       packParams:{
+        hisParam : null
+      },
+      rePackParams:{
+        originalId: 1,
         hisParam : null
       },
       // 表单参数
@@ -514,9 +466,9 @@ export default {
       let excelFileName = this.exportFileName  + "export xls";
       this.download('system/package/getPDFByBatchId/' + id, {}, `${pdfFileName}.pdf`);
       // this.packParams.hisParam = row.id;
-      this.packParams.hisParam = '000' + row.id;
+      this.rePackParams.hisParam = '000' + row.id;
       this.download('system/package/exportRe', {
-        ...this.packParams
+        ...this.rePackParams
       }, `${excelFileName}.xlsx`);
     },
     handleDownloadPDF(row) {
@@ -637,14 +589,14 @@ export default {
       }, `${fileName}.xlsx`);
     },
     downloadGeneratedExcelForRe(row) {
-      this.packParams.hisParam = '000' + row.id;
+      this.rePackParams.hisParam = '000' + row.id;
       // const userId = parseInt(row.updateUser);
       // this.getUserInfo(userId);
       // let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export xls`;
       this.getFileName(row);
       let fileName = this.exportFileName  + "export xls";
       this.download('system/package/exportRe', {
-        ...this.packParams
+        ...this.rePackParams
       }, `${fileName}.xlsx`);
     }
   }

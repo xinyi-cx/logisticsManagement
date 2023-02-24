@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.UserFidRelMapper">
+    
+    <resultMap type="UserFidRel" id="UserFidRelResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="country"    column="country"    />
+        <result property="fid"    column="fid"    />
+        <result property="fidCommon"    column="fid_common"    />
+        <result property="remark"    column="remark"    />
+        <result property="remark2"    column="remark2"    />
+        <result property="isActive"    column="is_active"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectUserFidRelVo">
+        select id, user_id, user_name, customer_name, nick_name, country, fid, fid_common, remark, remark2, is_active, create_by, create_time, update_by, update_time from user_fid_rel
+    </sql>
+
+    <select id="selectUserFidRelList" parameterType="UserFidRel" resultMap="UserFidRelResult">
+        <include refid="selectUserFidRelVo"/>
+        <where>
+            fid is not null
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="fid != null "> and fid = #{fid}</if>
+            <if test="fidCommon != null  and fidCommon != ''"> and fid_common = #{fidCommon}</if>
+            <if test="remark2 != null  and remark2 != ''"> and remark2 = #{remark2}</if>
+            <if test="isActive != null "> and is_active = #{isActive}</if>
+        </where>
+        order by user_id, fid, is_active
+    </select>
+    
+    <select id="selectUserFidRelById" parameterType="Long" resultMap="UserFidRelResult">
+        <include refid="selectUserFidRelVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertUserFidRel" parameterType="UserFidRel" useGeneratedKeys="true" keyProperty="id">
+        insert into user_fid_rel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="customerName != null">customer_name,</if>
+            <if test="nickName != null">nick_name,</if>
+            <if test="country != null">country,</if>
+            <if test="fid != null">fid,</if>
+            <if test="fidCommon != null">fid_common,</if>
+            <if test="remark != null">remark,</if>
+            <if test="remark2 != null">remark2,</if>
+            <if test="isActive != null">is_active,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="customerName != null">#{customerName},</if>
+            <if test="nickName != null">#{nickName},</if>
+            <if test="country != null">#{country},</if>
+            <if test="fid != null">#{fid},</if>
+            <if test="fidCommon != null">#{fidCommon},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="remark2 != null">#{remark2},</if>
+            <if test="isActive != null">#{isActive},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserFidRel" parameterType="UserFidRel">
+        update user_fid_rel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="customerName != null">customer_name = #{customerName},</if>
+            <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="fid != null">fid = #{fid},</if>
+            <if test="fidCommon != null">fid_common = #{fidCommon},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="remark2 != null">remark2 = #{remark2},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            create_time = sysdate(),
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUserFidRelById" parameterType="Long">
+        delete from user_fid_rel where id = #{id} and is_active = 0
+    </delete>
+
+    <update id="activeUserFidRelById" parameterType="Long">
+        update user_fid_rel
+        set is_active = 1
+        where id = #{id}
+    </update>
+
+    <update id="inActiveUserFidRelById" parameterType="Long">
+        update user_fid_rel
+        set is_active = 0
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteUserFidRelByIds" parameterType="String">
+        delete from user_fid_rel where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and is_active = 0
+    </delete>
+</mapper>

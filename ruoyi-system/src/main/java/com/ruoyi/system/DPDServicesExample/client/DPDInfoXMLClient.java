@@ -167,7 +167,7 @@ public class DPDInfoXMLClient {
      * @param params
      */
     public void batchUpdateParcel(List<Parcel> params){
-        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
+//        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         List<Parcel> dealParcels = new ArrayList<>();
         List<WaybillLRel> dealWaybillLRels = new ArrayList<>();
         List<WaybillLRel> updateWaybillLRels = new ArrayList<>();
@@ -185,7 +185,7 @@ public class DPDInfoXMLClient {
                 }
         );
         dealWlDataByBatch(dealParcels, dealWaybillLRels, updateWaybillLRels, dealImportLogicContents, dealForRLImportLogicContents);
-        platformTransactionManager.commit(transaction);
+//        platformTransactionManager.commit(transaction);
     }
 
     public void getEventsForOneWaybillByBatch(Parcel parcel,

@@ -473,7 +473,7 @@ export default {
     if (hisParam){
       this.queryParams.hisParam = hisParam;
     }
-    this.getAll();
+    // this.getAll();
     this.getList();
   },
   methods: {

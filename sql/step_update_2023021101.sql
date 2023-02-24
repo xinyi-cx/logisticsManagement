@@ -49,3 +49,9 @@ CREATE INDEX index_logistics_info_parcel_id ON logistics_info (parcel_id);
 
 
 CREATE INDEX index_batch_task_history_excel_url ON batch_task_history (excel_url);
+
+
+insert into sys_menu values('3', '系统工具', '0', '6', 'tool',             null, '', 1, 0, 'M', '1', '1', '', 'tool',     'admin', sysdate(), '', null, '系统工具目录');
+insert into sys_menu values('114',  '表单构建', '3',   '1', 'build',      'tool/build/index',         '', 1, 0, 'C', '0', '0', 'tool:build:list',         'build',         'admin', sysdate(), '', null, '表单构建菜单');
+insert into sys_menu values('115',  '代码生成', '3',   '2', 'gen',        'tool/gen/index',           '', 1, 0, 'C', '0', '0', 'tool:gen:list',           'code',          'admin', sysdate(), '', null, '代码生成菜单');
+insert into sys_menu values('116',  '系统接口', '3',   '3', 'swagger',    'tool/swagger/index',       '', 1, 0, 'C', '0', '0', 'tool:swagger:list',       'swagger',       'admin', sysdate(), '', null, '系统接口菜单');
