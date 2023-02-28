@@ -355,11 +355,22 @@ public class DPDInfoXMLClient {
         }
         //批量更新转寄状态
         if (!CollectionUtils.isEmpty(dealForRLImportLogicContents)) {
-            importLogicContentMapper.batchUpdateImportLogicContentByWaybill(dealImportLogicContents);
+            importLogicContentMapper.batchUpdateZjImportLogicContentByWayBill(dealForRLImportLogicContents);
         }
 
     }
 
+    /**
+     *
+     * @param parcel
+     * @param waybillLRels
+     * @param logisticsInfo
+     * @param dealParcels
+     * @param updateWaybillLRels
+     * @param dealImportLogicContents  改派又改派
+     * @param dealForRLImportLogicContents
+     * @throws Exception_Exception
+     */
     private void dealForWaybillLByBatch(Parcel parcel,
                                         List<WaybillLRel> waybillLRels,
                                         LogisticsInfo logisticsInfo,
@@ -374,7 +385,7 @@ public class DPDInfoXMLClient {
         CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
         List<CustomerEventV3> customerEventV3s = ret.getEventsList();
         String status = getStatus(customerEventV3s);
-        if (status.equals(parcel.getStatus())){
+        if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus())){
             log.info("+++dealForWaybillLByBatch+++parcel waybill same status: {}", status);
             return;
         }
@@ -421,6 +432,7 @@ public class DPDInfoXMLClient {
             // 处理 改派物流信息又改派
             importLogicContent.setNewWaybill(logisticsInfo.getOldWaybill());
             ImportLogicContent importLogicContent1 = importLogicContentMapper.selectImportLogicContentByNewWaybill(logisticsInfo.getOldWaybill());
+            // 原来的状态需要不是 已经退件
             if (ObjectUtils.isNotEmpty(importLogicContent1) && (!SysWaybill.YTJ.getCode().equals(importLogicContent1.getStatus()))){
                 if (SysWaybill.YTJ.getCode().equals(logisticsInfo.getStatus())){
                     importLogicContent1.setReturnNumber(newRel);
@@ -645,7 +657,7 @@ public class DPDInfoXMLClient {
         CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
         List<CustomerEventV3> customerEventV3s = ret.getEventsList();
         String status = getStatus(customerEventV3s);
-        if (status.equals(parcel.getStatus())){
+        if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus())) {
             log.info("+++dealForWaybillL+++parcel waybill same status: {}", status);
             return;
         }

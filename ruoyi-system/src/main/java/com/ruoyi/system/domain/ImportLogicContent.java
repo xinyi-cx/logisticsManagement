@@ -54,7 +54,7 @@ public class ImportLogicContent extends BaseEntity
     @Excel(name = "LoginID")
     private String loginid;
 
-    /** New waybill */
+    /** 原单号 waybill */
     @Excel(name = "New waybill")
     private String newWaybill;
 
