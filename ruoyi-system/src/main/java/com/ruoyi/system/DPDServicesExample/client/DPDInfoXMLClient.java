@@ -440,6 +440,9 @@ public class DPDInfoXMLClient {
                     importLogicContent1.setNewNumber(newRel);
                 }
                 importLogicContent1.setStatus(logisticsInfo.getStatus());
+                importLogicContent1.setLastStatusDate(logisticsInfo.getLastTime());
+                importLogicContent1.setLogicId(logisticsInfo.getId());
+
                 dealImportLogicContents.add(importLogicContent1);
 //                importLogicContentMapper.updateImportLogicContentByWaybill(importLogicContent1);
             }
