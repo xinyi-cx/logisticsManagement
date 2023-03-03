@@ -161,6 +161,14 @@
 <!--          </router-link>-->
 <!--        </template>-->
 <!--      </el-table-column>-->
+<!--      <el-table-column label="pdf" align="center" prop="sessionId" />-->
+      <el-table-column label="快速下载" align="center" width="180px">
+        <template slot-scope="scope" v-if=" typeof scope.row.sessionId != 'undefined' ">
+          <el-link :href="'http://118.195.237.144/dev-api/profile/packagePdf/' + scope.row.sessionId + '.pdf'" target="_blank">
+            {{scope.row.sessionId}}
+          </el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
 <!--          面单-->
