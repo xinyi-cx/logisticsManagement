@@ -53,26 +53,26 @@ public class RedirectPackageController extends BaseController
     /**
      * 导出转寄面单原面单关联关系列表
      */
-//    @Log(title = "转寄面单原面单关联关系", businessType = BusinessType.EXPORT)
-//    @PostMapping("/export")
-//    public void export(HttpServletResponse response, PackageVo pkg)
-//    {
-//        List<PackageVo> list = packageService.selectPackageVoList(pkg);
-//        List<ExportPackageVo> exportPackageVos = new ArrayList<>();
-//        if (!CollectionUtils.isEmpty(list)){
-//            packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
-//
-//            exportPackageVos = list.stream().map(item ->
-//                    {
-//                        ExportPackageVo packageVo = new ExportPackageVo();
-//                        BeanUtils.copyProperties(item, packageVo);
-//                        return packageVo;
-//                    }
-//            ).collect(toList());
-//        }
-//        ExcelUtil<ExportPackageVo> util = new ExcelUtil<ExportPackageVo>(ExportPackageVo.class);
-//        util.exportExcel(response, exportPackageVos, "转寄面单原面单关联关系数据");
-//    }
+    @Log(title = "转寄面单原面单关联关系", businessType = BusinessType.EXPORT)
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, PackageVo pkg)
+    {
+        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<ExportPackageVo> exportPackageVos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(list)){
+            packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
+
+            exportPackageVos = list.stream().map(item ->
+                    {
+                        ExportPackageVo packageVo = new ExportPackageVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        }
+        ExcelUtil<ExportPackageVo> util = new ExcelUtil<ExportPackageVo>(ExportPackageVo.class);
+        util.exportExcel(response, exportPackageVos, "转寄面单原面单关联关系数据");
+    }
 
     /**
      * 获取转寄面单原面单关联关系详细信息

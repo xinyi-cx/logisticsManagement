@@ -428,7 +428,7 @@ export default {
         // 设置上传的请求头部
         headers: { Authorization: "Bearer " + getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + "/system/redirect/importDataCz"
+        url: process.env.VUE_APP_BASE_API + "/system/redirectrel/importDataCz"
       },
       // 导入关联关系参数
       uploadRel: {
@@ -698,21 +698,25 @@ export default {
       }).catch(() => {});
     },
     /** 导出按钮操作 */
-    handleExport() {
+    // handleExport() {
+    //   const ids = row.id || this.ids;
+    //   this.queryParams.ids = ids;
+    //   this.download('system/redirect/export', {
+    //     ...this.queryParams
+    //   }, `package_${new Date().getTime()}.xlsx`)
+    // },
+    /** 导出按钮操作 */
+    handleExportRe(row) {
       const ids = row.id || this.ids;
       this.queryParams.ids = ids;
-      this.download('system/redirect/export', {
-        ...this.queryParams
-      }, `package_${new Date().getTime()}.xlsx`)
-    },
-    /** 导出按钮操作 */
-    handleExportRe() {
       this.download('system/package/exportRe', {
         ...this.queryParams
       }, `package_${new Date().getTime()}.xlsx`)
     },
     /** 导出按钮操作 */
-    handleExportReCz() {
+    handleExportReCz(row) {
+      const ids = row.id || this.ids;
+      this.queryParams.ids = ids;
       this.download('system/package/exportReCz', {
         ...this.queryParams
       }, `package_${new Date().getTime()}.xlsx`)

@@ -27,7 +27,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectRedirectRelList" parameterType="RedirectRel" resultMap="RedirectRelResult">
         <include refid="selectRedirectRelVo"/>
-        <where>  
+        <where>
+            is_delete = 0
+            <choose>
+            <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
+                AND new_package_id in
+                <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                    #{item}
+                </foreach>
+            </when >
+            <otherwise>
             <if test="oldWaybill != null  and oldWaybill != ''"> and old_waybill = #{oldWaybill}</if>
             <if test="backOrder != null  and backOrder != ''"> and back_order = #{backOrder}</if>
             <if test="newOrder != null  and newOrder != ''"> and new_order = #{newOrder}</if>
@@ -39,6 +48,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
             <if test="createdTime != null "> and created_time = #{createdTime}</if>
             <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+            </otherwise>
+            </choose>
         </where>
     </select>
     

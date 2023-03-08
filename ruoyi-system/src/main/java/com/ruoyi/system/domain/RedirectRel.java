@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 转寄关联关系对象 redirect_rel
@@ -17,6 +18,27 @@ import java.util.Date;
 public class RedirectRel extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
+
+    private Integer exportFlag;
+
+    /** 面单主键 */
+    private List<Long> ids;
+
+    public List<Long> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
+    }
+
+    public Integer getExportFlag() {
+        return exportFlag;
+    }
+
+    public void setExportFlag(Integer exportFlag) {
+        this.exportFlag = exportFlag;
+    }
 
     /** 主键 */
     private Long id;

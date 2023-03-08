@@ -464,18 +464,17 @@ public class PackageServiceImpl implements IPackageService {
                 pkg.setCreatedTime(paramDate);
             }
         }
-        List<Package> packagesAll = packageMapper.selectPackageList(pkg);
-        if (CollectionUtils.isEmpty(packagesAll)) {
-            return new ArrayList<>();
-        }
         List<String> newWaybills = new ArrayList<>();
         Map<Long, List<RedirectRel>> idRedirectRelMap = new HashMap<>();
+        List<Package> packagesAll = new ArrayList<>();
         //查询转寄
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())) {
             RedirectRel redirectRelParam = new RedirectRel();
             if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
                 redirectRelParam.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
             }
+            redirectRelParam.setExportFlag(pkg.getExportFlag());
+            redirectRelParam.setIds(pkg.getIds());
             List<RedirectRel> redirectRelList = redirectRelMapper.selectRedirectRelList(redirectRelParam);
             if (CollectionUtils.isNotEmpty(redirectRelList)) {
                 newWaybills = redirectRelList.stream().map(RedirectRel::getNewWaybill).collect(toList());
@@ -488,6 +487,16 @@ public class PackageServiceImpl implements IPackageService {
 //            if (CollectionUtils.isEmpty(originalIds)) {
 //                packages = packagesAll.stream().filter(item -> originalIds.contains(item.getId())).collect(toList());
 //            }
+            if (ObjectUtils.isNotEmpty(idRedirectRelMap)){
+                pkg.setExportFlag(1);
+                pkg.setIds(new ArrayList<>(idRedirectRelMap.keySet()));
+                packagesAll = packageMapper.selectPackageList(pkg);
+            }
+        }else {
+            packagesAll = packageMapper.selectPackageList(pkg);
+        }
+        if (CollectionUtils.isEmpty(packagesAll)) {
+            return new ArrayList<>();
         }
         List<Parcel> parcels;
         List<Parcel> selectParcels = parcelMapper.selectParcelListByPackIdIn(packagesAll.stream().map(Package::getId).collect(toList()));
@@ -807,6 +816,12 @@ public class PackageServiceImpl implements IPackageService {
 //            }
         }
 
+        boolean localFlag =  oldWaybills.isEmpty();
+
+        if(!localFlag){
+            batchTaskHistory.setType("本地面单导入");
+        }
+        
         /**
          * 一系列处理
          */
