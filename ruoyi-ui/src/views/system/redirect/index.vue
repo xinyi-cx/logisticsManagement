@@ -428,7 +428,7 @@ export default {
         // 设置上传的请求头部
         headers: { Authorization: "Bearer " + getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + "/system/redirectrel/importDataCz"
+        url: process.env.VUE_APP_BASE_API + "/system/redirect/importDataCz"
       },
       // 导入关联关系参数
       uploadRel: {
@@ -473,7 +473,7 @@ export default {
     if (hisParam){
       this.queryParams.hisParam = hisParam;
     }
-    // this.getAll();
+    this.getCountry();
     this.getList();
   },
   methods: {
@@ -568,7 +568,7 @@ export default {
     },
     /** 导入按钮操作 */
     handleImport() {
-      this.upload.title = "批量导入";
+      this.upload.title = "转寄面单批量导入";
       this.upload.open = true;
     },
     /** 下载模板操作 */
@@ -597,7 +597,7 @@ export default {
       }, `redirect_package_template_${new Date().getTime()}.xlsx`)
     },
     handleImportForCz() {
-      this.uploadCz.title = "批量导入";
+      this.uploadCz.title = "转寄面单批量导入";
       this.uploadCz.open = true;
       this.submitDisabled = false;
     },
@@ -629,7 +629,7 @@ export default {
 
     /** 导入关联关系按钮操作 */
     handleImportForRel() {
-      this.uploadRel.title = "批量导入关联关系";
+      this.uploadRel.title = "转寄面单批量导入关联关系";
       this.uploadRel.open = true;
     },
     /** 下载关联关系模板操作 */

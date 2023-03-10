@@ -671,17 +671,17 @@ export default {
     },
     /** 导入按钮操作 */
     handleImport() {
-      this.upload.title = "批量导入";
+      this.upload.title = "面单批量导入";
       this.upload.open = true;
       this.submitDisabled = false;
     },
     handleImportForCz() {
-      this.uploadCz.title = "批量导入";
+      this.uploadCz.title = "面单批量导入";
       this.uploadCz.open = true;
       this.submitDisabled = false;
     },
     handleImportForNo() {
-      this.uploadNo.title = "批量导入";
+      this.uploadNo.title = "面单批量导入";
       this.uploadNo.open = true;
       this.submitDisabled = false;
     },

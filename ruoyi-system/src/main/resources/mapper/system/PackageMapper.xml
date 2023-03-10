@@ -39,6 +39,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 </foreach>
             </when >
             <otherwise>
+            </otherwise>
+            </choose>
             <if test="payerType != null  and payerType != ''"> and payer_type = #{payerType}</if>
             <if test="senderId != null "> and sender_id = #{senderId}</if>
             <if test="receiverId != null "> and receiver_id = #{receiverId}</if>
@@ -53,12 +55,116 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createdTime != null"> and date_format(created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
             <if test="updatedTime != null"> and date_format(updated_time,'%Y-%m-%d') = date_format(#{updatedTime},'%Y-%m-%d')</if>
             <if test="paramMonth != null  and paramMonth != ''">and date_format(created_time,'%Y%m') = #{paramMonth}</if>
-            </otherwise>
-            </choose>
         </where>
         order by updated_time desc
     </select>
-    
+
+    <select id="selectPackageListForRel" parameterType="Package" resultMap="PackageResult">
+        select pac.id,
+        pac.payer_type,
+        pac.sender_id,
+        pac.receiver_id,
+        pac.ref1,
+        pac.ref2,
+        pac.services_id,
+        pac.phone,
+        pac.postal_code,
+        pac.batch_id,
+        pac.create_user,
+        pac.update_user,
+        pac.created_time,
+        pac.updated_time,
+        pac.download_num,
+        pac.is_delete
+        from package pac
+        inner join redirect_rel rel
+        on pac.id = rel.new_package_id
+        <where>
+            pac.is_delete = 0
+            <choose>
+                <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
+                    AND pac.id in
+                    <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                        #{item}
+                    </foreach>
+                </when >
+                <otherwise>
+                </otherwise>
+            </choose>
+            <if test="payerType != null  and payerType != ''"> and pac.payer_type = #{payerType}</if>
+            <if test="senderId != null "> and pac.sender_id = #{senderId}</if>
+            <if test="receiverId != null "> and pac.receiver_id = #{receiverId}</if>
+            <if test="ref1 != null  and ref1 != ''"> and pac.ref1 = #{ref1}</if>
+            <if test="ref2 != null  and ref2 != ''"> and pac.ref2 = #{ref2}</if>
+            <if test="servicesId != null "> and pac.services_id = #{servicesId}</if>
+            <if test="phone != null  and phone != ''"> and pac.phone = #{phone}</if>
+            <if test="postalCode != null  and postalCode != ''"> and pac.postal_code = #{postalCode}</if>
+            <if test="batchId != null "> and pac.batch_id = #{batchId}</if>
+            <if test="createUser != null  and createUser != ''"> and pac.create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and pac.update_user = #{updateUser}</if>
+            <if test="createdTime != null"> and date_format(pac.created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
+            <if test="updatedTime != null"> and date_format(pac.updated_time,'%Y-%m-%d') = date_format(#{updatedTime},'%Y-%m-%d')</if>
+            <if test="paramMonth != null  and paramMonth != ''">and date_format(pac.created_time,'%Y%m') = #{paramMonth}</if>
+        </where>
+        order by updated_time desc
+    </select>
+
+    <select id="selectPackageListForLocal" parameterType="Package" resultMap="PackageResult">
+        select pac.id,
+        pac.payer_type,
+        pac.sender_id,
+        pac.receiver_id,
+        pac.ref1,
+        pac.ref2,
+        pac.services_id,
+        pac.phone,
+        pac.postal_code,
+        pac.batch_id,
+        pac.create_user,
+        pac.update_user,
+        pac.created_time,
+        pac.updated_time,
+        pac.download_num,
+        pac.is_delete
+        from package pac
+        inner join pack_rel_local rel
+        on pac.id = rel.old_package_id
+        <where>
+            pac.is_delete = 0
+            <choose>
+                <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
+                    AND pac.id in
+                    <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                        #{item}
+                    </foreach>
+                </when >
+                <otherwise>
+                </otherwise>
+            </choose>
+            <if test="code1 != null  and code1 != ''">
+                and code1 like concat('%', #{code1}, '%') </if>
+            <if test="code2 != null  and code2 != ''">
+                and code2 like concat('%', #{code2}, '%') </if>
+            <if test="code3 != null  and code3 != ''">
+                and code3 like concat('%', #{code3}, '%') </if>
+            <if test="payerType != null  and payerType != ''"> and pac.payer_type = #{payerType}</if>
+            <if test="senderId != null "> and pac.sender_id = #{senderId}</if>
+            <if test="receiverId != null "> and pac.receiver_id = #{receiverId}</if>
+            <if test="ref1 != null  and ref1 != ''"> and pac.ref1 = #{ref1}</if>
+            <if test="ref2 != null  and ref2 != ''"> and pac.ref2 = #{ref2}</if>
+            <if test="servicesId != null "> and pac.services_id = #{servicesId}</if>
+            <if test="phone != null  and phone != ''"> and pac.phone = #{phone}</if>
+            <if test="postalCode != null  and postalCode != ''"> and pac.postal_code = #{postalCode}</if>
+            <if test="batchId != null "> and pac.batch_id = #{batchId}</if>
+            <if test="createUser != null  and createUser != ''"> and pac.create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and pac.update_user = #{updateUser}</if>
+            <if test="createdTime != null"> and date_format(pac.created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
+            <if test="updatedTime != null"> and date_format(pac.updated_time,'%Y-%m-%d') = date_format(#{updatedTime},'%Y-%m-%d')</if>
+            <if test="paramMonth != null  and paramMonth != ''">and date_format(pac.created_time,'%Y%m') = #{paramMonth}</if>
+        </where>
+        order by updated_time desc
+    </select>
+
     <select id="selectPackageById" parameterType="Long" resultMap="PackageResult">
         <include refid="selectPackageVo"/>
         where id = #{id}

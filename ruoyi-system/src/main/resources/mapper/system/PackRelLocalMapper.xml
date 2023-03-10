@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PackRelLocalMapper">
+    
+    <resultMap type="PackRelLocal" id="PackRelLocalResult">
+        <result property="id"    column="id"    />
+        <result property="oldPackageId"    column="old_package_id"    />
+        <result property="code1"    column="code1"    />
+        <result property="code2"    column="code2"    />
+        <result property="code3"    column="code3"    />
+        <result property="countryCode"    column="country_code"    />
+        <result property="remark"    column="remark"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+        <result property="isDelete"    column="is_delete"    />
+    </resultMap>
+
+    <sql id="selectPackRelLocalVo">
+        select id, old_package_id, code1, code2, code3, country_code, remark, create_user, update_user, created_time, updated_time, is_delete from pack_rel_local
+    </sql>
+
+    <select id="selectPackRelLocalList" parameterType="PackRelLocal" resultMap="PackRelLocalResult">
+        <include refid="selectPackRelLocalVo"/>
+        <where>
+            is_delete = 0
+            <choose>
+            <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
+                AND id in
+                <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                    #{item}
+                </foreach>
+            </when >
+            <otherwise>
+            </otherwise>
+            </choose>
+                <if test="oldPackageId != null "> and old_package_id = #{oldPackageId}</if>
+                <if test="code1 != null  and code1 != ''">
+                 and code1 like concat('%', #{code1}, '%') </if>
+                <if test="code2 != null  and code2 != ''">
+                    and code2 like concat('%', #{code2}, '%') </if>
+                <if test="code3 != null  and code3 != ''">
+                    and code3 like concat('%', #{code3}, '%') </if>
+                <if test="countryCode != null  and countryCode != ''"> and country_code = #{countryCode}</if>
+                <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+                <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+        </where>
+    </select>
+    
+    <select id="selectPackRelLocalById" parameterType="Long" resultMap="PackRelLocalResult">
+        <include refid="selectPackRelLocalVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPackRelLocal" parameterType="PackRelLocal">
+        insert into pack_rel_local
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="oldPackageId != null">old_package_id,</if>
+            <if test="code1 != null">code1,</if>
+            <if test="code2 != null">code2,</if>
+            <if test="code3 != null">code3,</if>
+            <if test="countryCode != null">country_code,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            created_time,
+            updated_time,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="oldPackageId != null">#{oldPackageId},</if>
+            <if test="code1 != null">#{code1},</if>
+            <if test="code2 != null">#{code2},</if>
+            <if test="code3 != null">#{code3},</if>
+            <if test="countryCode != null">#{countryCode},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            sysdate(),
+            sysdate(),
+         </trim>
+    </insert>
+
+    <insert id="batchInsert" >
+        insert into pack_rel_local (id, old_package_id, code1, code2, code3, country_code, remark, create_user, update_user, created_time, updated_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.oldPackageId},
+            #{item.code1},
+            #{item.code2},
+            #{item.code3},
+            #{item.countryCode},
+            #{item.remark},
+            #{item.createUser},
+            #{item.updateUser},
+            sysdate(),
+            sysdate())
+        </foreach>
+    </insert>
+
+    <update id="updatePackRelLocal" parameterType="PackRelLocal">
+        update pack_rel_local
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="oldPackageId != null">old_package_id = #{oldPackageId},</if>
+            <if test="code1 != null">code1 = #{code1},</if>
+            <if test="code2 != null">code2 = #{code2},</if>
+            <if test="code3 != null">code3 = #{code3},</if>
+            <if test="countryCode != null">country_code = #{countryCode},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+            <if test="isDelete != null">is_delete = #{isDelete},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePackRelLocalById" parameterType="Long">
+        delete from pack_rel_local where id = #{id}
+    </delete>
+
+    <delete id="deletePackRelLocalByIds" parameterType="String">
+        delete from pack_rel_local where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

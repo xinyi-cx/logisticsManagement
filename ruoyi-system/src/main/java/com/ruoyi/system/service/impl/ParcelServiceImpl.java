@@ -146,7 +146,7 @@ public class ParcelServiceImpl implements IParcelService
                 item -> item.getCreatedTime().compareTo(lastMonth) > 0).collect(Collectors.toList());
         log.info("getParcelMsgTask size" + parcels.size());
 
-        List<List<Parcel>> cfList = StringUtils.splitList(parcels, 100);
+        List<List<Parcel>> cfList = StringUtils.splitList(parcels, 1000);
 
 //        parcels.parallelStream().forEach(item -> {
 //                    try {

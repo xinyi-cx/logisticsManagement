@@ -299,20 +299,37 @@ public class PackageVo extends BaseEntity {
     }
 
     /** 旧物流单号 */
-//    @Excel(name = "旧物流单号")
     private String oldWaybill;
 
     /** 新的单号 */
-//    @Excel(name = "Order number")
     private String newOrder;
 
     /** 回退单号 */
-//    @Excel(name = "Old return number")
     private String backOrder;
 
     /** 新物流单号 */
-//    @Excel(name = "New Waybill")
     private String newWaybill;
+
+    private String code1;
+
+    /** code2 */
+    private String code2;
+
+    public String getCode1() {
+        return code1;
+    }
+
+    public void setCode1(String code1) {
+        this.code1 = code1;
+    }
+
+    public String getCode2() {
+        return code2;
+    }
+
+    public void setCode2(String code2) {
+        this.code2 = code2;
+    }
 
     public String getOldWaybill() {
         return oldWaybill;
@@ -430,10 +447,15 @@ public class PackageVo extends BaseEntity {
     private Long receiverId;
 
     /**
-     * 原面单主键
+     * 原面单主键 有值说明查询的是转寄
      */
 //    @Excel(name = "原面单主键")
     private Long originalId;
+
+    /**
+     * 有值说明查询的是本地
+     */
+    private Long localId;
 
     /**
      * 原面单主键
@@ -546,6 +568,14 @@ public class PackageVo extends BaseEntity {
 
     public void setOriginalWaybill(String originalWaybill) {
         this.originalWaybill = originalWaybill;
+    }
+
+    public Long getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(Long localId) {
+        this.localId = localId;
     }
 
     public Long getOriginalId() {

@@ -199,7 +199,21 @@ export const dynamicRoutes = [
         path: 'index/:hisParam(\\d+)',
         component: () => import('@/views/system/redirect/index'),
         name: 'redirectDataPackage',//name 重复2
-        meta: { title: '面单列表', activeMenu: '/system/history' }
+        meta: { title: '转寄面单列表', activeMenu: '/system/history' }
+      }
+    ]
+  },
+  {
+    path: '/system/local',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:package:list'],
+    children: [
+      {
+        path: 'index/:hisParam(\\d+)',
+        component: () => import('@/views/system/local/index'),
+        name: 'redirectDataPackage',//name 重复2
+        meta: { title: '本地面单列表', activeMenu: '/system/history' }
       }
     ]
   },

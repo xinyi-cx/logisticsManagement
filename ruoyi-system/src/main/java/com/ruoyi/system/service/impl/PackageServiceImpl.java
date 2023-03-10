@@ -53,6 +53,9 @@ public class PackageServiceImpl implements IPackageService {
     private RedirectPackageMapper redirectPackageMapper;
 
     @Autowired
+    private PackRelLocalMapper packRelLocalMapper;
+
+    @Autowired
     private AddressSenderMapper addressSenderMapper;
 
     @Autowired
@@ -117,7 +120,7 @@ public class PackageServiceImpl implements IPackageService {
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(Collections.singletonList(pkg.getId()));
         Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
 
-        return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, idServicesMap, parcels, packagesGenerationResponseMap, new HashMap<>(), new HashMap<>());
+        return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, idServicesMap, parcels, packagesGenerationResponseMap, new HashMap<>(), new HashMap<>(), new HashMap<>());
     }
 
     /**
@@ -385,10 +388,7 @@ public class PackageServiceImpl implements IPackageService {
                 pkg.setCreatedTime(paramDate);
             }
         }
-        List<Package> packagesAll = packageMapper.selectPackageList(pkg);
-        if (CollectionUtils.isEmpty(packagesAll)) {
-            return 0;
-        }
+        List<Package> packagesAll;
         List<String> newWaybills = new ArrayList<>();
         //查询转寄
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())) {
@@ -407,6 +407,33 @@ public class PackageServiceImpl implements IPackageService {
 //            if (CollectionUtils.isEmpty(originalIds)) {
 //                packages = packagesAll.stream().filter(item -> originalIds.contains(item.getId())).collect(toList());
 //            }
+            if (ObjectUtils.isNotEmpty(redirectRelList)){
+                pkg.setExportFlag(1);
+                pkg.setIds(redirectRelList.stream().map(RedirectRel::getNewPackageId).collect(toList()));
+                packagesAll = packageMapper.selectPackageList(pkg);
+            }else {
+                return 0;
+            }
+        }else if (ObjectUtils.isNotEmpty(packageVo.getLocalId())) {
+            PackRelLocal packRelLocalParam = new PackRelLocal();
+            if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+                packRelLocalParam.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            }
+            packRelLocalParam.setExportFlag(pkg.getExportFlag());
+            packRelLocalParam.setIds(pkg.getIds());
+            List<PackRelLocal> packRelLocals = packRelLocalMapper.selectPackRelLocalList(packRelLocalParam);
+            if (CollectionUtils.isNotEmpty(packRelLocals)) {
+                pkg.setExportFlag(1);
+                pkg.setIds(packRelLocals.stream().map(PackRelLocal::getOldPackageId).collect(toList()));
+                packagesAll = packageMapper.selectPackageList(pkg);
+            }else {
+                return 0;
+            }
+        }else {
+            packagesAll = packageMapper.selectPackageList(pkg);
+        }
+        if (CollectionUtils.isEmpty(packagesAll)) {
+            return 0;
         }
         List<Parcel> parcels;
         List<Parcel> allParcels = parcelMapper.selectParcelListByPackIdIn(packagesAll.stream().map(Package::getId).collect(toList()));
@@ -449,6 +476,15 @@ public class PackageServiceImpl implements IPackageService {
         Package pkg = new Package();
         BeanUtils.copyProperties(packageVo, pkg);
         pkg.setBatchId(hisId);
+//        if (ObjectUtils.isNotEmpty(hisId)){
+//            BatchTaskHistory batchTaskHistory = batchTaskHistoryMapper.selectBatchTaskHistoryById(hisId);
+//            if ("转寄面单导入".equals(batchTaskHistory.getType())){
+//                packageVo.setOriginalId(1L);
+//            }else if ("本地面单导入".equals(batchTaskHistory.getType())){
+//                packageVo.setLocalId(1L);
+//            }
+//        }
+
         if ((!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) && ObjectUtils.isEmpty(hisId)) {
             pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         }
@@ -466,6 +502,7 @@ public class PackageServiceImpl implements IPackageService {
         }
         List<String> newWaybills = new ArrayList<>();
         Map<Long, List<RedirectRel>> idRedirectRelMap = new HashMap<>();
+        Map<Long, PackRelLocal> idPackRelLocalMap = new HashMap<>();
         List<Package> packagesAll = new ArrayList<>();
         //查询转寄
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())) {
@@ -475,6 +512,7 @@ public class PackageServiceImpl implements IPackageService {
             }
             redirectRelParam.setExportFlag(pkg.getExportFlag());
             redirectRelParam.setIds(pkg.getIds());
+            packagesAll = packageMapper.selectPackageListForRel(pkg);
             List<RedirectRel> redirectRelList = redirectRelMapper.selectRedirectRelList(redirectRelParam);
             if (CollectionUtils.isNotEmpty(redirectRelList)) {
                 newWaybills = redirectRelList.stream().map(RedirectRel::getNewWaybill).collect(toList());
@@ -487,10 +525,30 @@ public class PackageServiceImpl implements IPackageService {
 //            if (CollectionUtils.isEmpty(originalIds)) {
 //                packages = packagesAll.stream().filter(item -> originalIds.contains(item.getId())).collect(toList());
 //            }
-            if (ObjectUtils.isNotEmpty(idRedirectRelMap)){
-                pkg.setExportFlag(1);
-                pkg.setIds(new ArrayList<>(idRedirectRelMap.keySet()));
-                packagesAll = packageMapper.selectPackageList(pkg);
+
+//            if (ObjectUtils.isNotEmpty(idRedirectRelMap)){
+//                pkg.setExportFlag(1);
+//                pkg.setIds(new ArrayList<>(idRedirectRelMap.keySet()));
+//                packagesAll = packageMapper.selectPackageList(pkg);
+//            }else {
+//                return new ArrayList<>();
+//            }
+        }else if (ObjectUtils.isNotEmpty(packageVo.getLocalId())) {
+            PackRelLocal packRelLocalParam = new PackRelLocal();
+            if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+                packRelLocalParam.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            }
+            packRelLocalParam.setExportFlag(pkg.getExportFlag());
+            packRelLocalParam.setIds(pkg.getIds());
+            packagesAll = packageMapper.selectPackageListForLocal(pkg);
+            List<PackRelLocal> packRelLocals = packRelLocalMapper.selectPackRelLocalList(packRelLocalParam);
+            if (CollectionUtils.isNotEmpty(packRelLocals)) {
+//                pkg.setExportFlag(1);
+//                pkg.setIds(packRelLocals.stream().map(PackRelLocal::getOldPackageId).collect(toList()));
+                idPackRelLocalMap = packRelLocals.stream().collect(toMap(PackRelLocal::getOldPackageId, Function.identity()));
+//                packagesAll = packageMapper.selectPackageList(pkg);
+            }else {
+                return new ArrayList<>();
             }
         }else {
             packagesAll = packageMapper.selectPackageList(pkg);
@@ -543,8 +601,9 @@ public class PackageServiceImpl implements IPackageService {
 //            orderListMap = getRedirectRel(parcels.stream().map(Parcel::getReference).collect(Collectors.toList()));
 //        }
         Map<Long, List<RedirectRel>> finalOrderListMap = idRedirectRelMap;
+        Map<Long, PackRelLocal> finalIdPackRelLocalMap = idPackRelLocalMap;
         List<PackageVo> resultList = packages.stream().map(item -> this.getPackageVo(packageVo, item, addressSenderMap,
-                addressReceiverMap, idServicesMap, parcels, packagesGenerationResponseMap, finalBatchTaskHistoryMap, finalOrderListMap))
+                addressReceiverMap, idServicesMap, parcels, packagesGenerationResponseMap, finalBatchTaskHistoryMap, finalOrderListMap, finalIdPackRelLocalMap))
                 .filter(Objects::nonNull).collect(Collectors.toList());
 
         if (null == sucFlag) {
@@ -565,7 +624,8 @@ public class PackageServiceImpl implements IPackageService {
                                    List<Parcel> parcels,
                                    Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap,
                                    Map<Long, BatchTaskHistory> batchTaskHistoryMap,
-                                   Map<Long, List<RedirectRel>> orderListMap) {
+                                   Map<Long, List<RedirectRel>> orderListMap,
+                                   Map<Long, PackRelLocal> idPackRelLocalMap) {
         if (CollectionUtils.isNotEmpty(paramPackageVo.getIds()) && !paramPackageVo.getIds().contains(pac.getId())){
             return null;
         }
@@ -620,6 +680,12 @@ public class PackageServiceImpl implements IPackageService {
             packageVo.setNewOrder(packageVo.getReference());
             packageVo.setNewWaybill(packageVo.getWaybill());
             packageVo.setOldWaybill(redirectRelList.get(0).getOldWaybill());
+        }
+
+        if (ObjectUtils.isNotEmpty(idPackRelLocalMap) && idPackRelLocalMap.containsKey(pac.getId())){
+            PackRelLocal packRelLocal = idPackRelLocalMap.get(pac.getId());
+            packageVo.setCode1(packRelLocal.getCode1());
+            packageVo.setCode2(packRelLocal.getCode2());
         }
 
         return packageVo;
@@ -816,9 +882,10 @@ public class PackageServiceImpl implements IPackageService {
 //            }
         }
 
-        boolean localFlag =  oldWaybills.isEmpty();
+        List<PackageVo> judgeList = packageVos.stream().filter(item -> StringUtils.isNotEmpty(item.getCode1()) || StringUtils.isNotEmpty(item.getCode2())).collect(Collectors.toList());
+        boolean localFlag = CollectionUtils.isNotEmpty(judgeList);
 
-        if(!localFlag){
+        if(localFlag){
             batchTaskHistory.setType("本地面单导入");
         }
         
@@ -830,6 +897,7 @@ public class PackageServiceImpl implements IPackageService {
         AddressSender addressSender = getSender();
         List<Package> packages = new ArrayList<>();
         List<RedirectPackage> redirectPackages = new ArrayList<>();
+        List<PackRelLocal> packRelLocals = new ArrayList<>();
         List<ImportLogicContent> importLogicContents = new ArrayList<>();
         Map<Long, RedirectRel> idRedirectRelMap = new HashMap<>();
         for (PackageVo packageVo : packageVos) {
@@ -884,6 +952,17 @@ public class PackageServiceImpl implements IPackageService {
                 redirectRel.setNewPackageId(pac.getId());
                 redirectRel.setCountryCode(addressReceiver.getCountryCode());
                 idRedirectRelMap.put(pac.getId(), redirectRel);
+            }
+
+            if(localFlag){
+                PackRelLocal packRelLocal = new PackRelLocal();
+                BeanUtils.copyProperties(packageVo, packRelLocal);
+                packRelLocal.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+                packRelLocal.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+                packRelLocal.setId(pac.getId());
+                packRelLocal.setOldPackageId(pac.getId());
+                packRelLocal.setCountryCode(addressReceiver.getCountryCode());
+                packRelLocals.add(packRelLocal);
             }
 
             List<String> list = Arrays.asList(documents.getDisplayName().split(" "));
@@ -949,6 +1028,9 @@ public class PackageServiceImpl implements IPackageService {
                 dealForRedirect(new ArrayList<String>(oldWaybills));
                 redirectPackageMapper.batchInsert(redirectPackages);
                 redirectRelMapper.batchInsert(redirectRels);
+            }
+            if(localFlag){
+                packRelLocalMapper.batchInsert(packRelLocals);
             }
             StringBuilder returnStrBuf = new StringBuilder();
             returnStrBuf.append("面单导入成功，成功")

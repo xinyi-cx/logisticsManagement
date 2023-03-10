@@ -117,6 +117,9 @@
           <router-link :to="'/system/redirect/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '转寄面单导入'">
             <span>{{ scope.row.successNum }}</span>
           </router-link>
+          <router-link :to="'/system/local/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '本地面单导入'">
+            <span>{{ scope.row.successNum }}</span>
+          </router-link>
           <span v-else >{{ scope.row.successNum }}</span>
         </template>
       </el-table-column>

@@ -474,7 +474,7 @@ export default {
       }).catch(() => {});
     },
     handleImportForNo() {
-      this.uploadNo.title = "批量导入";
+      this.uploadNo.title = "物流批量导入";
       this.uploadNo.open = true;
       this.submitDisabled = false;
     },

@@ -36,6 +36,10 @@ public interface PackageMapper {
      */
     public List<Package> selectPackageList(Package pkg);
 
+    public List<Package> selectPackageListForRel(Package pkg);
+
+    public List<Package> selectPackageListForLocal(Package pkg);
+
     /**
      * 更细下载数量
      * @param ids
