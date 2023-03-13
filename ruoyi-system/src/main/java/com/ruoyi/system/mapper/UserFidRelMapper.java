@@ -53,7 +53,7 @@ public interface UserFidRelMapper {
 
     public int activeUserFidRelById(Long id);
 
-    public int inActiveUserFidRelById(Long userId);
+    public int inActiveUserFidRelById(UserFidRel userFidRel);
 
     /**
      * 批量删除用户fid对应关系

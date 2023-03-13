@@ -73,16 +73,16 @@
 <!--          @keyup.enter.native="handleQuery"-->
 <!--        />-->
 <!--      </el-form-item>-->
-      <el-form-item label="是否激活" prop="isActive">
+      <el-form-item label="状态" prop="status">
         <el-select
-          v-model="queryParams.isActive"
+          v-model="queryParams.status"
           placeholder="用户状态"
           clearable
           size="small"
           style="width: 240px"
         >
           <el-option
-            v-for="dict in dict.type.sys_yes_no_num"
+            v-for="dict in dict.type.sys_job_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -117,26 +117,16 @@
 <!--          v-hasPermi="['system:fidrel:edit']"-->
 <!--        >修改</el-button>-->
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:fidrel:remove']"
-        >删除</el-button>
-      </el-col>
 <!--      <el-col :span="1.5">-->
 <!--        <el-button-->
-<!--          type="warning"-->
+<!--          type="danger"-->
 <!--          plain-->
-<!--          icon="el-icon-download"-->
+<!--          icon="el-icon-delete"-->
 <!--          size="mini"-->
-<!--          @click="handleExport"-->
-<!--          v-hasPermi="['system:fidrel:export']"-->
-<!--        >导出</el-button>-->
+<!--          :disabled="multiple"-->
+<!--          @click="handleDelete"-->
+<!--          v-hasPermi="['system:fidrel:remove']"-->
+<!--        >删除</el-button>-->
 <!--      </el-col>-->
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -153,29 +143,18 @@
       <el-table-column label="fid备注" align="center" prop="fidCommon" />
 <!--      <el-table-column label="备注1" align="center" prop="remark" />-->
 <!--      <el-table-column label="备注2" align="center" prop="remark2" />-->
-      <el-table-column label="是否激活" align="center" prop="isActive" />
+<!--      <el-table-column label="状态" align="center" prop="status" />-->
 
-      <el-table-column label="状态" align="center" key="isActive">
+      <el-table-column label="状态" align="center">
         <template slot-scope="scope">
           <el-switch
-            v-model="scope.row.isActive"
-            active-value="1"
-            inactive-value="0"
+            v-model="scope.row.status"
+            active-value="0"
+            inactive-value="1"
             @change="handleStatusChange(scope.row)"
           ></el-switch>
         </template>
       </el-table-column>
-
-<!--      <el-table-column label="状态" align="center" key="status">-->
-<!--        <template slot-scope="scope">-->
-<!--          <el-switch-->
-<!--            v-model="scope.row.isActive"-->
-<!--            active-value="0"-->
-<!--            inactive-value="1"-->
-<!--            @change="handleStatusChange(scope.row)"-->
-<!--          ></el-switch>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -192,6 +171,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:fidrel:remove']"
+            v-show="scope.row.status === '1'"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -209,19 +189,34 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="用户ID" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入用户ID" />
+          <el-select
+            v-model="form.userId"
+            placeholder="用户ID"
+            clearable
+            size="small"
+            style="width: 240px"
+            @change="selectUser"
+          >
+            <el-option
+              v-for="dict in userList"
+              :key="dict.userId"
+              :label="dict.userName"
+              :value="dict"
+            />
+          </el-select>
+
         </el-form-item>
         <el-form-item label="用户账号" prop="userName">
-          <el-input v-model="form.userName" placeholder="请输入用户账号" />
+          <el-input v-model="form.userName" placeholder="请输入用户账号" readonly />
         </el-form-item>
         <el-form-item label="客户名称" prop="customerName">
-          <el-input v-model="form.customerName" placeholder="请输入客户名称" />
+          <el-input v-model="form.customerName" placeholder="请输入客户名称" readonly />
         </el-form-item>
-        <el-form-item label="用户昵称" prop="nickName">
-          <el-input v-model="form.nickName" placeholder="请输入用户昵称" />
-        </el-form-item>
-        <el-form-item label="国家" prop="country">
-          <el-input v-model="form.country" placeholder="请输入国家" />
+<!--        <el-form-item label="用户昵称" prop="nickName">-->
+<!--          <el-input v-model="form.nickName" placeholder="请输入用户昵称" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="用户国家" prop="country">
+          <el-input v-model="form.country" placeholder="请输入国家" readonly />
         </el-form-item>
         <el-form-item label="fid" prop="fid">
           <el-input v-model="form.fid" placeholder="请输入fid" />
@@ -235,8 +230,8 @@
 <!--        <el-form-item label="备注2" prop="remark2">-->
 <!--          <el-input v-model="form.remark2" placeholder="请输入备注2" />-->
 <!--        </el-form-item>-->
-<!--        <el-form-item label="是否激活" prop="isActive">-->
-<!--          <el-input v-model="form.isActive" placeholder="请输入是否激活" />-->
+<!--        <el-form-item label="状态" prop="status">-->
+<!--          <el-input v-model="form.status" placeholder="请输入状态" />-->
 <!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -255,7 +250,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "Fidrel",
-  dicts: ['sys_yes_no_num', 'sys_country'],
+  dicts: ['sys_job_status', 'sys_country'],
   data() {
     return {
       // 遮罩层
@@ -272,6 +267,7 @@ export default {
       total: 0,
       // 用户fid对应关系表格数据
       relList: [],
+      userList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -288,7 +284,7 @@ export default {
         fid: null,
         fidCommon: null,
         remark2: null,
-        isActive: null,
+        status: null,
       },
       userQueryParams: {
         userId: null,
@@ -309,11 +305,19 @@ export default {
   },
   created() {
     this.getList();
+    this.getAllUser();
   },
   methods: {
+    selectUser(val){
+      debugger;
+      this.form.customerName = val.customerName;
+      this.form.userId = val.userId;
+      this.form.userName = val.userName;
+      this.form.country = val.country;
+    },
     getAllUser() {
       getAllUser(this.userQueryParams).then(response => {
-          // this.userList = response.rows;
+          this.userList = response.data;
         }
       );
     },
@@ -321,7 +325,6 @@ export default {
     getList() {
       this.loading = true;
       listFidrel(this.queryParams).then(response => {
-        debugger;
         this.relList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -345,7 +348,7 @@ export default {
         fidCommon: null,
         remark: null,
         remark2: null,
-        isActive: null,
+        status: null,
         createBy: null,
         createTime: null,
         updateBy: null,
@@ -371,14 +374,20 @@ export default {
     },
     handleStatusChange(row) {
       debugger
-      let text = row.isActive === "0" ? "启用" : "停用";
-      this.$modal.confirm('确认要"' + text + '""' + row.userName + '"用户吗？').then(function() {
-        return activeFidrel(row.id);
-      }).then(() => {
-        this.$modal.msgSuccess(text + "成功");
-      }).catch(function() {
+      let text = row.status === "0" ? "启用" : "停用";
+      if (row.status === "1"){
+        this.$modal.msg( "不可以停用");
         row.status = row.status === "0" ? "1" : "0";
-      });
+      }else {
+        this.$modal.confirm('确认要"' + text + '""' + row.userName + '"客户的fid吗？').then(function() {
+          return activeFidrel(row.id);
+        }).then(() => {
+          this.$modal.msgSuccess(text + "成功");
+          this.getList();
+        }).catch(function() {
+          row.status = row.status === "0" ? "1" : "0";
+        });
+      }
     },
     /** 新增按钮操作 */
     handleAdd() {

@@ -2,9 +2,11 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.AddressSender;
 import com.ruoyi.system.mapper.AddressSenderMapper;
+import com.ruoyi.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.UserFidRelMapper;
@@ -22,6 +24,9 @@ public class UserFidRelServiceImpl implements IUserFidRelService {
 
     @Autowired
     private UserFidRelMapper userFidRelMapper;
+
+    @Autowired
+    private SysUserMapper sysUserMapper;
 
     @Autowired
     private AddressSenderMapper addressSenderMapper;
@@ -56,7 +61,13 @@ public class UserFidRelServiceImpl implements IUserFidRelService {
      */
     @Override
     public int insertUserFidRel(UserFidRel userFidRel) {
+        SysUser sysUser = sysUserMapper.selectUserById(userFidRel.getUserId());
         userFidRel.setCreateTime(DateUtils.getNowDate());
+        userFidRel.setUserName(sysUser.getUserName());
+        userFidRel.setCustomerName(sysUser.getCustomerName());
+        userFidRel.setNickName(sysUser.getNickName());
+        userFidRel.setCountry(sysUser.getCountry());
+        userFidRel.setStatus("1");
         return userFidRelMapper.insertUserFidRel(userFidRel);
     }
 
@@ -97,8 +108,8 @@ public class UserFidRelServiceImpl implements IUserFidRelService {
     @Override
     public int activeUserFidRelById(Long id) {
         UserFidRel userFidRel = userFidRelMapper.selectUserFidRelById(id);
+        userFidRelMapper.inActiveUserFidRelById(userFidRel);
         userFidRelMapper.activeUserFidRelById(id);
-        userFidRelMapper.inActiveUserFidRelById(userFidRel.getUserId());
         AddressSender param = new AddressSender();
         param.setCreateUser(userFidRel.getUserId().toString());
         List<AddressSender> addressSenders = addressSenderMapper.selectAddressSenderList(param);

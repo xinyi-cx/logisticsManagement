@@ -52,12 +52,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectParcelListNeedDeal" parameterType="Parcel" resultMap="ParcelResult">
         <include refid="selectParcelVo"/>
         <where>
-            is_delete = 0
-            and waybill is not null
+            waybill is not null
             and status != '3'
             and status != '4'
-            and status != '5'
-            and status != '6'
             <if test="content != null  and content != ''"> and content = #{content}</if>
             <if test="customerData1 != null  and customerData1 != ''"> and customer_data1 = #{customerData1}</if>
             <if test="reference != null  and reference != ''"> and reference = #{reference}</if>

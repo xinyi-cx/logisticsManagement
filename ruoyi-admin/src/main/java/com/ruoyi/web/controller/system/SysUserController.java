@@ -59,7 +59,6 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:list')")
     @GetMapping("/getAll")
     public AjaxResult getAll(SysUser user) {
-        startPage();
         List<SysUser> list = userService.getAll(user);
         return AjaxResult.success(list);
     }

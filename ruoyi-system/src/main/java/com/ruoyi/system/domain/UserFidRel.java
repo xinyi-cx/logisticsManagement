@@ -70,8 +70,8 @@ public class UserFidRel extends BaseEntity {
     /**
      * 是否激活
      */
-    @Excel(name = "是否激活")
-    private Integer isActive;
+    @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")
+    private String status;
 
     public void setId(Long id) {
         this.id = id;
@@ -145,12 +145,12 @@ public class UserFidRel extends BaseEntity {
         return remark2;
     }
 
-    public void setIsActive(Integer isActive) {
-        this.isActive = isActive;
+    public String getStatus() {
+        return status;
     }
 
-    public Integer getIsActive() {
-        return isActive;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
@@ -166,7 +166,7 @@ public class UserFidRel extends BaseEntity {
                 .append("fidCommon", getFidCommon())
                 .append("remark", getRemark())
                 .append("remark2", getRemark2())
-                .append("isActive", getIsActive())
+                .append("status", getStatus())
                 .append("createBy", getCreateBy())
                 .append("createTime", getCreateTime())
                 .append("updateBy", getUpdateBy())

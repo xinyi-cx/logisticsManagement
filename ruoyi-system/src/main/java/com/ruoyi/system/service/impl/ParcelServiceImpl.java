@@ -13,6 +13,7 @@ import com.ruoyi.system.service.IParcelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -40,6 +41,9 @@ public class ParcelServiceImpl implements IParcelService
 
     @Autowired
     private DPDInfoXMLClient dpdInfoXMLClient;
+
+    @Value("${getnum}")
+    private Integer getnum;
 
     /**
      * 查询包裹
@@ -141,12 +145,13 @@ public class ParcelServiceImpl implements IParcelService
     public void getParcelMsgTask(Parcel parcel) {
         log.info("getParcelMsgTask start");
         List<Parcel> needParcels = parcelMapper.selectParcelListNeedDeal(parcel);
-        Date lastMonth = DateUtils.getDateBeforeNow(-30);
-        List<Parcel> parcels= needParcels.stream().filter(
-                item -> item.getCreatedTime().compareTo(lastMonth) > 0).collect(Collectors.toList());
+//        Date lastMonth = DateUtils.getDateBeforeNow(-30);
+//        List<Parcel> parcels= needParcels.stream().filter(
+//                item -> item.getCreatedTime().compareTo(lastMonth) > 0).collect(Collectors.toList());
+        List<Parcel> parcels = needParcels;
         log.info("getParcelMsgTask size" + parcels.size());
 
-        List<List<Parcel>> cfList = StringUtils.splitList(parcels, 1000);
+        List<List<Parcel>> cfList = StringUtils.splitList(parcels, getnum);
 
 //        parcels.parallelStream().forEach(item -> {
 //                    try {
