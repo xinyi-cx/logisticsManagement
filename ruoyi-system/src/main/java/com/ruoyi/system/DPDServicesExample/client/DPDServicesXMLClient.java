@@ -463,8 +463,12 @@ public class DPDServicesXMLClient {
         } catch (DocumentException e) {
             e.printStackTrace();
         } finally {
-            document.close();
-            copy.close();
+            if (document != null){
+                document.close();
+            }
+            if (copy != null){
+                copy.close();
+            }
         }
         return byteArrayOutputStream.toByteArray();
     }

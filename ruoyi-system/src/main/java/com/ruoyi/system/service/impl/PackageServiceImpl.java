@@ -831,6 +831,9 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception {
+        if (CollectionUtils.isNotEmpty(packageVos) && packageVos.size() > 300) {
+            return "单次导入最多300条";
+        }
         String fileName = file.getOriginalFilename();
         List<String> listFile = Arrays.asList(fileName.split(" "));
         if (CollectionUtils.isEmpty(listFile) || listFile.size()<6 || !(

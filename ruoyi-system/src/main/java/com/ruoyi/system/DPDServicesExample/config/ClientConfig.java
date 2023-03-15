@@ -8,6 +8,7 @@ import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +55,13 @@ public class ClientConfig {
 
     //Workaround for self-signed ssl certificate
     private void httpsSetup(Client client){
+        if (client != null) {
+            HTTPConduit conduit = (HTTPConduit) client.getConduit();
+            HTTPClientPolicy policy = new HTTPClientPolicy();
+            policy.setConnectionTimeout(6000000);
+            policy.setReceiveTimeout(6000000);
+            conduit.setClient(policy);
+        }
         final TLSClientParameters tlsCP = new TLSClientParameters();
 
         tlsCP.setDisableCNCheck(true);
