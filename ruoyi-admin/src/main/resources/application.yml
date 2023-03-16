@@ -55,7 +55,7 @@ spring:
     druid:
       # 主库数据源
       master:
-        url: jdbc:mysql://118.195.237.144:3306/business?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        url: jdbc:mysql://118.195.237.144:3306/business?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
 #        username: root
 #        password: dev
         username: test
@@ -221,7 +221,7 @@ mb:
   phone: 13888888888
   importUserFlag: false
   postUserFlag: false
-  senderUserId: 1
+  senderUserId: 104
 frontPath: C:/ruoyi/uploadPath/packagePdf/
 localIp: http://118.195.237.144/dev-api/profile/packagePdf
 
@@ -230,6 +230,8 @@ dpd:
     to: 1097700731@qq.com,caixin0830@163.com
     cc: 1097700731@qq.com,caixin0830@163.com
 #  Parcel delivered  190103
-yqscode: 190101,190103
-ytjcode: 230403
+yqscode: 190101,190103,190104,190105,190205,501300,501304,501340,511901,511903,600103,701901
+ytjcode: 230403,230408
 gpcode: 230402
+
+getnum: 500
