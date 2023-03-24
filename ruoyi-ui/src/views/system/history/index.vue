@@ -132,6 +132,9 @@
           <router-link :to="'/system/redirect/index/111' + scope.row.id" class="link-type" v-else-if="scope.row.type == '转寄面单导入'">
             <span>{{ scope.row.failNum }}</span>
           </router-link>
+          <router-link :to="'/system/local/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '本地面单导入'">
+            <span>{{ scope.row.successNum }}</span>
+          </router-link>
           <span v-else >{{ scope.row.failNum }}</span>
         </template>
       </el-table-column>
@@ -218,6 +221,13 @@
             type="text"
             icon="el-icon-view"
             @click="downloadGeneratedExcelForRe(scope.row)"
+          >查看批量excel</el-button>
+          <el-button
+            v-show="scope.row.type === '本地面单导入'"
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="downloadGeneratedExcelForLocal(scope.row)"
           >查看批量excel</el-button>
           <el-button
             size="mini"
@@ -344,6 +354,10 @@ export default {
       },
       rePackParams:{
         originalId: 1,
+        hisParam : null
+      },
+      localPackParams:{
+        localId: 1,
         hisParam : null
       },
       // 表单参数
@@ -609,7 +623,19 @@ export default {
       this.download('system/package/exportRe', {
         ...this.rePackParams
       }, `${fileName}.xlsx`);
+    },
+    downloadGeneratedExcelForLocal(row) {
+      this.localPackParams.hisParam = '000' + row.id;
+      // const userId = parseInt(row.updateUser);
+      // this.getUserInfo(userId);
+      // let fileName = `Original ${this.userInfo.userName} ${this.userInfo.country} ${row.createdTime} ${row.successNum} export xls`;
+      this.getFileName(row);
+      let fileName = this.exportFileName  + "export xls";
+      this.download('system/local/exportLocalCz', {
+        ...this.localPackParams
+      }, `${fileName}.xlsx`);
     }
+
   }
 };
 </script>

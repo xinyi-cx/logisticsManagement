@@ -244,7 +244,7 @@ public class DPDInfoXMLClient {
             CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
             logisticsInfo.setLastMsg(customerEventV3.getDescription());
             String status = getStatus(customerEventV3s);
-            if (oldStatus.equals(status)){
+            if (!SysWaybill.GP.getCode().equals(status) && oldStatus.equals(status)){
                 log.info("+++getEventsForOneWaybillByBatch+++getStatusSame waybill: {}, status: {}", parcel.getWaybill(), status);
                 return;
             }
@@ -503,7 +503,7 @@ public class DPDInfoXMLClient {
             CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
             logisticsInfo.setLastMsg(customerEventV3.getDescription());
             String status = getStatus(customerEventV3s);
-            if (oldStatus.equals(status)){
+            if (!SysWaybill.GP.getCode().equals(status) && oldStatus.equals(status)){
                 log.info("+++getEventsForOneWaybill+++getStatusSame waybill: {}, status: {}", parcel.getWaybill(), status);
                 return;
             }
@@ -800,7 +800,7 @@ public class DPDInfoXMLClient {
         List<CustomerEventDataV3> customerEventDataV3sL =
                 allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && item.getValue().endsWith("L")).collect(Collectors.toList());
         for (CustomerEventDataV3 item : customerEventDataV3sL) {
-            return item.getValue();
+            return item.getValue().trim();
         }
         return "";
     }
@@ -864,13 +864,13 @@ public class DPDInfoXMLClient {
         if (customerEventV3s.size() == 1 && customerEventV3s.get(0).getBusinessCode().equals("030103")) {
             return SysWaybill.WJH.getCode();
         }
+        if (listContain(customerEventV3s, ytjCodes)){
+            return SysWaybill.YTJ.getCode();
+        }
 //        501300
 //        Parcel delivered  190103
         if (listContain(customerEventV3s, yqsCodes)){
             return SysWaybill.YQS.getCode();
-        }
-        if (listContain(customerEventV3s, ytjCodes)){
-            return SysWaybill.YTJ.getCode();
         }
         if (listContain(customerEventV3s, gpCodes)){
             return SysWaybill.GP.getCode();

@@ -10,10 +10,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
-import com.ruoyi.system.domain.AddressSender;
-import com.ruoyi.system.domain.SysPost;
-import com.ruoyi.system.domain.SysUserPost;
-import com.ruoyi.system.domain.SysUserRole;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
@@ -70,6 +67,9 @@ public class SysUserServiceImpl implements ISysUserService
     @Autowired
     private SequenceMapper sequenceMapper;
 
+    @Autowired
+    private UserFidRelMapper userFidRelMapper;
+
     /**
      * 根据条件分页查询用户列表
      * 
@@ -90,9 +90,20 @@ public class SysUserServiceImpl implements ISysUserService
     }
 
     @Override
-    public List<SysUser> getUserForLogin(SysUser user)
+    public List<String> getUserForLogin(SysUser user)
     {
-        return userMapper.selectUserList(user);
+        UserFidRel userFidRelParam = new UserFidRel();
+        userFidRelParam.setCustomerName(user.getUserName());
+        userFidRelParam.setStatus("0");
+        List<UserFidRel> userFidRels = userFidRelMapper.selectUserFidRelListByEq(userFidRelParam);
+        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(userFidRels)){
+            return userFidRels.stream().map(UserFidRel::getCountry).collect(Collectors.toList());
+        }
+        List<SysUser> sysUserList = userMapper.selectUserList(user);
+        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(sysUserList)){
+            return sysUserList.stream().map(SysUser::getCountry).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     /**

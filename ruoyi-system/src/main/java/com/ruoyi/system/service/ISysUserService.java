@@ -21,7 +21,7 @@ public interface ISysUserService
 
     public List<SysUser> getAll(SysUser user);
 
-    public List<SysUser> getUserForLogin(SysUser user);
+    public List<String> getUserForLogin(SysUser user);
 
     /**
      * 根据条件分页查询已分配用户角色列表

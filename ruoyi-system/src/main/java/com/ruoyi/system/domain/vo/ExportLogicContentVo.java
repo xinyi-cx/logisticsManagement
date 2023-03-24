@@ -45,6 +45,17 @@ public class ExportLogicContentVo extends BaseEntity {
 //    @Excel(name = "logic_id")
     private Long logicId;
 
+    @Excel(name = "fileName")
+    private String fileName;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     /**
      * CLIENT
      */
@@ -147,25 +158,21 @@ public class ExportLogicContentVo extends BaseEntity {
     /**
      * 备注2
      */
-//    @Excel(name = "备注2")
+    @Excel(name = "Code 1")
     private String remark2;
 
-    /**
-     * 备注3
-     */
-//    @Excel(name = "备注3")
+    /** 备注3 */
+    @Excel(name = "Code 2")
     private String remark3;
 
     /**
      * 备注4
      */
-//    @Excel(name = "备注4")
+    @Excel(name = "old return number")
     private String remark4;
 
-    /**
-     * 备注5
-     */
-//    @Excel(name = "备注5")
+    /** 备注5 */
+    @Excel(name = "old shipment number")
     private String remark5;
 
     /**

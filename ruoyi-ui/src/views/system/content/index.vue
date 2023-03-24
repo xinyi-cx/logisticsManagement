@@ -35,6 +35,18 @@
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
+      <el-form-item label="LastStatusDate" label-width="118px">
+        <el-date-picker
+          v-model="dateRange3"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
       <el-form-item label="客户" prop="client">
         <el-input
           v-model="queryParams.client"
@@ -164,6 +176,10 @@
       <el-table-column label="Description" align="center" prop="description" width="100px" show-overflow-tooltip/>
       <el-table-column label="NeedBox" align="center" prop="needBox" />
       <el-table-column label="ExportDate" align="center" prop="createDate" width="150px" show-overflow-tooltip/>
+      <el-table-column label="Code 1" align="center" prop="remark2" width="150px" show-overflow-tooltip/>
+      <el-table-column label="Code 2" align="center" prop="remark3" width="150px" show-overflow-tooltip/>
+      <el-table-column label="old return number" align="center" prop="remark4" width="150px" show-overflow-tooltip/>
+      <el-table-column label="old shipment number" align="center" prop="remark5" width="150px" show-overflow-tooltip/>
       <el-table-column label="ActiveDate" align="center" prop="activedDate" width="120px" show-overflow-tooltip/>
       <el-table-column label="LastStatusDate" align="center" prop="lastStatusDate" width="120px" show-overflow-tooltip/>
       <el-table-column label="Status" align="center" prop="status" >
@@ -279,6 +295,7 @@ export default {
       // 日期范围
       dateRange: [],
       dateRange2:[],
+      dateRange3:[],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -341,6 +358,8 @@ export default {
       // this.dateRange2 = Array.isArray(this.dateRange2) ? this.dateRange2 : [];
       this.queryParams.params['CreateDateBeginTime'] = this.dateRange2[0];
       this.queryParams.params['CreateDateEndTime'] = this.dateRange2[1];
+      this.queryParams.params['lastStatusDateBeginTime'] = this.dateRange3[0];
+      this.queryParams.params['lastStatusDateEndTime'] = this.dateRange3[1];
       this.loading = true;
       // debugger;
       listContent(this.addDateRange(this.queryParams, this.dateRange)).then(response => {

@@ -116,7 +116,7 @@
       <el-table-column label="用户编号" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
       <el-table-column label="用户名" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
       <el-table-column label="昵称" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
-      <el-table-column label="客户名称" align="center" key="customerName" prop="customerName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
+<!--      <el-table-column label="客户名称" align="center" key="customerName" prop="customerName" v-if="columns[2].visible" :show-overflow-tooltip="true" />-->
       <el-table-column label="所在国家" align="center" key="country" prop="country" v-if="columns[3].visible" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_country" :value="scope.row.country"/>
@@ -249,12 +249,12 @@
 <!--            </el-form-item>-->
 <!--          </el-col>-->
         </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="客户名称" prop="customerName">
-              <el-input v-model="form.customerName" placeholder="请输入客户名称" maxlength="30" />
-            </el-form-item>
-          </el-col>
+<!--        <el-row>-->
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="客户名称" prop="customerName">-->
+<!--              <el-input v-model="form.customerName" placeholder="请输入客户名称" maxlength="30" />-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
 <!--          <el-col :span="12">-->
 <!--            <el-form-item label="用户状态">-->
 <!--              <el-radio-group v-model="form.status">-->
@@ -266,7 +266,7 @@
 <!--              </el-radio-group>-->
 <!--            </el-form-item>-->
 <!--          </el-col>-->
-        </el-row>
+<!--        </el-row>-->
         <el-row>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">

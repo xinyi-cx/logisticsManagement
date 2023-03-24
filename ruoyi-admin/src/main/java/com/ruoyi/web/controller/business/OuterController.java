@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/receiveMb")
@@ -78,8 +77,8 @@ public class OuterController extends BaseController {
      */
     @PostMapping("/getUser")
     public AjaxResult getUserForLogin(@RequestBody SysUser user) {
-        List<SysUser> list = userService.getUserForLogin(user);
-        return AjaxResult.success(CollectionUtils.isEmpty(list) ? new ArrayList<>() : list.stream().map(SysUser::getCountry).collect(Collectors.toList()));
+        List<String> list = userService.getUserForLogin(user);
+        return AjaxResult.success(CollectionUtils.isEmpty(list) ? new ArrayList<>() : list);
     }
 
     @GetMapping(value = "/getParcelMsgById/{id}")

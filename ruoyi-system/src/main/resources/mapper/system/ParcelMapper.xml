@@ -53,7 +53,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectParcelVo"/>
         <where>
             waybill is not null
-            and status != '3'
             and status != '4'
             <if test="content != null  and content != ''"> and content = #{content}</if>
             <if test="customerData1 != null  and customerData1 != ''"> and customer_data1 = #{customerData1}</if>

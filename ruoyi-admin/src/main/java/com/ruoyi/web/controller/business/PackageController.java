@@ -79,7 +79,6 @@ public class PackageController extends BaseController
     /**
      * 导出面单列表
      */
-    @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, PackageVo pkg)
     {
@@ -104,7 +103,6 @@ public class PackageController extends BaseController
     /**
      * 导出面单列表
      */
-    @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/exportTwo")
     public void exportTwo(HttpServletResponse response, PackageVo pkg)
     {
@@ -129,7 +127,6 @@ public class PackageController extends BaseController
     /**
      * 导出面单列表
      */
-    @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/exportCz")
     public void exportCz(HttpServletResponse response, PackageVo pkg)
     {
@@ -156,7 +153,6 @@ public class PackageController extends BaseController
      * 转寄面单导出
      * 导出面单列表+关联关系
      */
-    @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/exportRe")
     public void exportRe(HttpServletResponse response, PackageVo pkg)
     {
@@ -181,7 +177,6 @@ public class PackageController extends BaseController
     /**
      * 导出面单列表+关联关系
      */
-    @Log(title = "面单", businessType = BusinessType.EXPORT)
     @PostMapping("/exportReCz")
     public void exportReCz(HttpServletResponse response, PackageVo pkg)
     {
@@ -237,7 +232,6 @@ public class PackageController extends BaseController
     /**
      * 新增面单
      */
-    @Log(title = "面单", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody Package pkg)
     {
@@ -247,7 +241,6 @@ public class PackageController extends BaseController
     /**
      * 新增面单
      */
-    @Log(title = "面单", businessType = BusinessType.INSERT)
     @PostMapping(value = "/addAll")
     public AjaxResult addAll(@RequestBody @Valid PackageVo pkg) throws Exception
     {
@@ -314,7 +307,7 @@ public class PackageController extends BaseController
         packageService.getPDFByBatchId(response, id);
     }
 
-    @Log(title = "面单导入不生成dpd", businessType = BusinessType.IMPORT)
+    @Log(title = "导入物流", businessType = BusinessType.IMPORT)
     @PostMapping("/importPackageForNoGen")
     public AjaxResult importPackageForNoGen(MultipartFile file) throws Exception
     {
@@ -329,7 +322,7 @@ public class PackageController extends BaseController
         return AjaxResult.success(packageService.importPackageForNoGen(file, packageVos));
     }
 
-    @Log(title = "面单导入", businessType = BusinessType.IMPORT)
+    @Log(title = "面单导入-波兰", businessType = BusinessType.IMPORT)
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file) throws Exception
     {
@@ -338,7 +331,7 @@ public class PackageController extends BaseController
         return AjaxResult.success(packageService.importPackage(file, packageVos));
     }
 
-    @Log(title = "面单导入", businessType = BusinessType.IMPORT)
+    @Log(title = "面单导入-其他国家", businessType = BusinessType.IMPORT)
     @PostMapping("/importDataCz")
     public AjaxResult importDataCz(MultipartFile file) throws Exception
     {
@@ -356,7 +349,6 @@ public class PackageController extends BaseController
     /**
      * 修改面单
      */
-    @Log(title = "面单", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody PackageVo pkg)
     {
@@ -366,7 +358,6 @@ public class PackageController extends BaseController
     /**
      * 删除面单
      */
-    @Log(title = "面单", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {

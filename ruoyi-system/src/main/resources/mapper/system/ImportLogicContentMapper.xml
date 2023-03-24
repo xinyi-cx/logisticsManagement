@@ -133,6 +133,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="params.CreateDateEndTime != null and params.CreateDateEndTime != ''">
                     AND left(create_date,10) &lt;= #{params.CreateDateEndTime}
                 </if>
+                <if test="params.lastStatusDateBeginTime != null and params.lastStatusDateBeginTime != ''">
+                    AND left(last_status_date,10) &gt;= #{params.lastStatusDateBeginTime}
+                </if>
+                <if test="params.lastStatusDateEndTime != null and params.lastStatusDateEndTime != ''">
+                    AND left(last_status_date,10) &lt;= #{params.lastStatusDateEndTime}
+                </if>
             <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
             <if test="packId != null "> and pack_id = #{packId}</if>
             <if test="batchId != null "> and batch_id = #{batchId}</if>

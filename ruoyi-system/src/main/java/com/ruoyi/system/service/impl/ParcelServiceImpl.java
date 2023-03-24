@@ -10,6 +10,7 @@ import com.ruoyi.system.domain.Parcel;
 import com.ruoyi.system.mapper.LogisticsInfoMapper;
 import com.ruoyi.system.mapper.ParcelMapper;
 import com.ruoyi.system.service.IParcelService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class ParcelServiceImpl implements IParcelService
 
     @Value("${getnum}")
     private Integer getnum;
+
+    @Value("${dayNum}")
+    private Integer dayNum;
 
     /**
      * 查询包裹
@@ -145,10 +149,10 @@ public class ParcelServiceImpl implements IParcelService
     public void getParcelMsgTask(Parcel parcel) {
         log.info("getParcelMsgTask start");
         List<Parcel> needParcels = parcelMapper.selectParcelListNeedDeal(parcel);
-//        Date lastMonth = DateUtils.getDateBeforeNow(-30);
-//        List<Parcel> parcels= needParcels.stream().filter(
-//                item -> item.getCreatedTime().compareTo(lastMonth) > 0).collect(Collectors.toList());
-        List<Parcel> parcels = needParcels;
+        Date lastMonth = DateUtils.getDateBeforeNow(dayNum);
+        List<Parcel> parcels = needParcels.stream().filter(
+                item -> !(SysWaybill.YQS.getCode().equals(item.getStatus()) && ObjectUtils.isNotEmpty(item.getUpdatedTime()) && item.getUpdatedTime().compareTo(lastMonth) < 0)).collect(Collectors.toList());
+//        List<Parcel> parcels = needParcels;
         log.info("getParcelMsgTask size" + parcels.size());
 
         List<List<Parcel>> cfList = StringUtils.splitList(parcels, getnum);

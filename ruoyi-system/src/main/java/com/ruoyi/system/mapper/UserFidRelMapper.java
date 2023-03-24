@@ -1,8 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
-
 import com.ruoyi.system.domain.UserFidRel;
+
+import java.util.List;
 
 /**
  * 用户fid对应关系Mapper接口
@@ -26,6 +26,8 @@ public interface UserFidRelMapper {
      * @return 用户fid对应关系集合
      */
     public List<UserFidRel> selectUserFidRelList(UserFidRel userFidRel);
+
+    public List<UserFidRel> selectUserFidRelListByEq(UserFidRel userFidRel);
 
     /**
      * 新增用户fid对应关系

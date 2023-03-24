@@ -84,15 +84,19 @@ public class ImportLogicContentTemplateVo extends BaseEntity
     private String createDate;
 
     /** 备注2 */
+    @Excel(name = "Code 1")
     private String remark2;
 
     /** 备注3 */
+    @Excel(name = "Code 2")
     private String remark3;
 
     /** 备注4 */
+    @Excel(name = "old return number")
     private String remark4;
 
     /** 备注5 */
+    @Excel(name = "old shipment number")
     private String remark5;
 
     /** 是否删除 */

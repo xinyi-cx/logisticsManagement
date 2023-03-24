@@ -435,20 +435,29 @@ public class PackageServiceImpl implements IPackageService {
         if (CollectionUtils.isEmpty(packagesAll)) {
             return 0;
         }
-        List<Parcel> parcels;
-        List<Parcel> allParcels = parcelMapper.selectParcelListByPackIdIn(packagesAll.stream().map(Package::getId).collect(toList()));
+        List<Parcel> parcels = new ArrayList<>();
+        boolean parcelFlag = false;
         if (ObjectUtils.isNotEmpty(packageVo.getOriginalId())){
             if (CollectionUtils.isEmpty(newWaybills)){
                 return 0;
             }
             List<String> finalNewWaybills = newWaybills;
+            List<Parcel> allParcels = parcelMapper.selectParcelListByPackIdIn(packagesAll.stream().map(Package::getId).collect(toList()));
             parcels = allParcels.stream().filter(item -> finalNewWaybills.contains(item.getWaybill())).collect(toList());
-        }else {
-            parcels = allParcels;
+            parcelFlag = true;
+        }
+        if (ObjectUtils.isNotEmpty(packageVo.getWaybill())){
+            List<Parcel> selectParcels = parcelMapper.selectParcelListByPackIdIn(packagesAll.stream().map(Package::getId).collect(toList()));
+            parcels = selectParcels.stream().filter(item -> StringUtils.isNotEmpty(item.getWaybill()) && item.getWaybill().contains(packageVo.getWaybill())).collect(toList());
+            parcelFlag = true;
         }
         List<Package> packages;
-        List<Long> pkIds = parcels.stream().map(Parcel::getPackId).collect(toList());
-        packages = packagesAll.stream().filter(item -> pkIds.contains(item.getId())).collect(toList());
+        if (parcelFlag){
+            List<Long> pkIds = parcels.stream().map(Parcel::getPackId).collect(toList());
+            packages = packagesAll.stream().filter(item -> pkIds.contains(item.getId())).collect(toList());
+        }else {
+            packages = packagesAll;
+        }
         if (CollectionUtils.isEmpty(packages)) {
             return 0;
         }
@@ -489,6 +498,10 @@ public class PackageServiceImpl implements IPackageService {
             pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         }
         if (StringUtils.isNotEmpty(packageVo.getStatus())){
+            String statusCode = SysWaybill.getCodeByInfo(packageVo.getStatus());
+            if (StringUtils.isNotEmpty(statusCode)){
+                packageVo.setStatus(statusCode);
+            }
             Date paramDate = new Date();
             if (!StringUtils.isEmpty(packageVo.getDatStr()) && !"null".equals(packageVo.getDatStr()) && packageVo.getDatStr().length() == 8 ) {
                 paramDate = DateUtils.dateTime(DateUtils.YYYYMMDD, packageVo.getDatStr());
@@ -995,6 +1008,8 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setOrderNumber(packageVo.getReference());
             importLogicContent.setDescription(packageVo.getCustomerData1());
             importLogicContent.setCreateDate(DateUtils.getDate2());
+            importLogicContent.setRemark2(packageVo.getCode1());
+            importLogicContent.setRemark3(packageVo.getCode2());
             pac.setImportLogicContent(importLogicContent);
             packages.add(pac);
 
@@ -1287,23 +1302,11 @@ public class PackageServiceImpl implements IPackageService {
     private AddressSender getSender() {
         AddressSender senderParam = new AddressSender();
         senderParam.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-        return addressSenderMapper.selectAddressSenderList(senderParam).get(0);
-//        AddressSender addressSender = new AddressSender();
-//        addressSender.setAddress(pkg.getSenderAddress());
-//        addressSender.setCity(pkg.getSenderCity());
-//        addressSender.setCompany(pkg.getSenderCompany());
-//        addressSender.setCountryCode(pkg.getSenderCountryCode());
-//        addressSender.setEmail(pkg.getSenderEmail());
-//        addressSender.setFid(pkg.getSenderFid());
-//        addressSender.setName(pkg.getSenderName());
-//        addressSender.setPhone(pkg.getSenderPhone());
-//        addressSender.setPostalCode(pkg.getSenderPostalCode());
-//        if (ObjectUtils.isNotEmpty(id)) {
-//            addressSender.setId(id);
-//            addressSender.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-//        }
-//        addressSender.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
-//        return addressSender;
+        AddressSender returnSender = addressSenderMapper.selectAddressSenderList(senderParam).get(0);
+        if (ObjectUtils.isNotEmpty(SecurityUtils.getLoginUser().getFid())){
+            returnSender.setFid(SecurityUtils.getLoginUser().getFid());
+        }
+        return returnSender;
     }
 
     private AddressReceiver getReceiver(PackageVo pkg, Long id) {

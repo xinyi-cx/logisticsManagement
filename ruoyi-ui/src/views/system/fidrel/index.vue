@@ -1,28 +1,28 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="用户ID" prop="userId">
-        <el-input
-          v-model="queryParams.userId"
-          placeholder="请输入用户ID"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="用户账号" prop="userName">
-        <el-input
-          v-model="queryParams.userName"
-          placeholder="请输入用户账号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="客户名称" prop="customerName">
         <el-input
           v-model="queryParams.customerName"
           placeholder="请输入客户名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+<!--      <el-form-item label="用户ID" prop="userId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.userId"-->
+<!--          placeholder="请输入用户ID"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+      <el-form-item label="用户账号" prop="userName">
+        <el-input
+          v-model="queryParams.userName"
+          placeholder="请输入用户账号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -46,19 +46,19 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="fid" prop="fid">
-        <el-input
-          v-model="queryParams.fid"
-          placeholder="请输入fid"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="fid备注" prop="fidCommon">
+<!--      <el-form-item label="fid" prop="fid">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.fid"-->
+<!--          placeholder="请输入fid"-->
+<!--          clearable-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+      <el-form-item label="备注" prop="fidCommon">
         <el-input
           v-model="queryParams.fidCommon"
-          placeholder="请输入fid备注"
+          placeholder="请输入备注"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -134,13 +134,13 @@
     <el-table v-loading="loading" :data="relList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
 <!--      <el-table-column label="主键" align="center" prop="id" />-->
-      <el-table-column label="用户ID" align="center" prop="userId" />
-      <el-table-column label="用户账号" align="center" prop="userName" />
       <el-table-column label="客户名称" align="center" prop="customerName" />
+<!--      <el-table-column label="用户ID" align="center" prop="userId" />-->
+      <el-table-column label="用户账号" align="center" prop="userName" />
       <el-table-column label="用户昵称" align="center" prop="nickName" />
       <el-table-column label="国家" align="center" prop="country" />
       <el-table-column label="fid" align="center" prop="fid" />
-      <el-table-column label="fid备注" align="center" prop="fidCommon" />
+      <el-table-column label="备注" align="center" prop="fidCommon" />
 <!--      <el-table-column label="备注1" align="center" prop="remark" />-->
 <!--      <el-table-column label="备注2" align="center" prop="remark2" />-->
 <!--      <el-table-column label="状态" align="center" prop="status" />-->
@@ -171,7 +171,6 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:fidrel:remove']"
-            v-show="scope.row.status === '1'"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -188,10 +187,33 @@
     <!-- 添加或修改用户fid对应关系对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="用户ID" prop="userId">
+        <el-form-item label="客户名称" prop="customerName">
+          <el-input v-model="form.customerName" placeholder="请输入客户名称" />
+        </el-form-item>
+        <el-form-item label="用户ID" prop="userId" hidden>
+          <el-input v-model="form.userId" />
+<!--          <el-select-->
+<!--            v-model="form.userId"-->
+<!--            placeholder="请选择用户ID"-->
+<!--            clearable-->
+<!--            size="small"-->
+<!--            style="width: 240px"-->
+<!--            @change="selectUser"-->
+<!--          >-->
+<!--            <el-option-->
+<!--              v-for="dict in userList"-->
+<!--              :key="dict.userId"-->
+<!--              :label="dict.userName"-->
+<!--              :value="dict"-->
+<!--            />-->
+<!--          </el-select>-->
+
+        </el-form-item>
+        <el-form-item label="用户账号" prop="userName">
+<!--          <el-input v-model="form.userName" placeholder="请输入用户账号" readonly />-->
           <el-select
-            v-model="form.userId"
-            placeholder="用户ID"
+            v-model="form.userName"
+            placeholder="请选择用户"
             clearable
             size="small"
             style="width: 240px"
@@ -204,13 +226,6 @@
               :value="dict"
             />
           </el-select>
-
-        </el-form-item>
-        <el-form-item label="用户账号" prop="userName">
-          <el-input v-model="form.userName" placeholder="请输入用户账号" readonly />
-        </el-form-item>
-        <el-form-item label="客户名称" prop="customerName">
-          <el-input v-model="form.customerName" placeholder="请输入客户名称" readonly />
         </el-form-item>
 <!--        <el-form-item label="用户昵称" prop="nickName">-->
 <!--          <el-input v-model="form.nickName" placeholder="请输入用户昵称" />-->
@@ -218,11 +233,11 @@
         <el-form-item label="用户国家" prop="country">
           <el-input v-model="form.country" placeholder="请输入国家" readonly />
         </el-form-item>
-        <el-form-item label="fid" prop="fid">
-          <el-input v-model="form.fid" placeholder="请输入fid" />
-        </el-form-item>
-        <el-form-item label="fid备注" prop="fidCommon">
-          <el-input v-model="form.fidCommon" placeholder="请输入fid备注" />
+<!--        <el-form-item label="fid" prop="fid">-->
+<!--          <el-input v-model="form.fid" placeholder="请输入fid" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="备注" prop="fidCommon">
+          <el-input v-model="form.fidCommon" placeholder="请备注该客户开始日期" />
         </el-form-item>
 <!--        <el-form-item label="备注1" prop="remark">-->
 <!--          <el-input v-model="form.remark" placeholder="请输入备注1" />-->
@@ -297,8 +312,14 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        userId: [
-          { required: true, message: "用户ID不能为空", trigger: "blur" }
+        userName: [
+          { required: true, message: "请选择用户", trigger: "blur" }
+        ],
+        customerName: [
+          { required: true, message: "客户名称不能为空", trigger: "blur" }
+        ],
+        fidCommon: [
+          { required: true, message: "请备注该客户开始日期", trigger: "blur" }
         ],
       }
     };
@@ -309,8 +330,6 @@ export default {
   },
   methods: {
     selectUser(val){
-      debugger;
-      this.form.customerName = val.customerName;
       this.form.userId = val.userId;
       this.form.userName = val.userName;
       this.form.country = val.country;
@@ -375,19 +394,24 @@ export default {
     handleStatusChange(row) {
       debugger
       let text = row.status === "0" ? "启用" : "停用";
-      if (row.status === "1"){
-        this.$modal.msg( "不可以停用");
-        row.status = row.status === "0" ? "1" : "0";
-      }else {
+      // if (row.status === "1"){
+      //   this.$modal.msg( "不可以停用");
+      //   row.status = row.status === "0" ? "1" : "0";
+      // }else {
         this.$modal.confirm('确认要"' + text + '""' + row.userName + '"客户的fid吗？').then(function() {
-          return activeFidrel(row.id);
+          const updateForm = {
+            id : row.id,
+            status : row.status
+          };
+          return updateFidrel(updateForm);
+          // changeUserStatus(row.userId, row.status)
         }).then(() => {
           this.$modal.msgSuccess(text + "成功");
           this.getList();
         }).catch(function() {
           row.status = row.status === "0" ? "1" : "0";
         });
-      }
+      // }
     },
     /** 新增按钮操作 */
     handleAdd() {

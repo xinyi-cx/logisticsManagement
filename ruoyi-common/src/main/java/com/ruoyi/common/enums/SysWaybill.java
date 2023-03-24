@@ -31,6 +31,15 @@ public enum SysWaybill
         return null;
     }
 
+    public static String getCodeByInfo(String info) {
+        for (SysWaybill value : SysWaybill.values()) {
+            if (value.info.equals(info)) {
+                return value.code;
+            }
+        }
+        return null;
+    }
+
     public String getCode()
     {
         return code;

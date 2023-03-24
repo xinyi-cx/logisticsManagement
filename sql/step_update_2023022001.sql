@@ -25,7 +25,6 @@ values('用户fid对应关系导出', @parentId, '5',  '#', '', 1, 0, 'F', '0', 
 
 
 -- 初始化数据
-
 insert into user_fid_rel
 (user_id,
  user_name,
@@ -33,15 +32,14 @@ insert into user_fid_rel
  nick_name,
  country,
  fid,
- is_active)
+ status)
 select user_id,
        user_name,
-       customer_name,
+       nick_name,
        nick_name,
        country,
        as.fid,
-       1
-
+       '0'
 from sys_user tb1
          left join address_sender `as` on tb1.user_id = `as`.create_user
 

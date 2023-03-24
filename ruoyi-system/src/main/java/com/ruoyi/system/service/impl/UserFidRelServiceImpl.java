@@ -1,17 +1,18 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
-
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.AddressSender;
+import com.ruoyi.system.domain.UserFidRel;
 import com.ruoyi.system.mapper.AddressSenderMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
+import com.ruoyi.system.mapper.UserFidRelMapper;
+import com.ruoyi.system.service.IUserFidRelService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.UserFidRelMapper;
-import com.ruoyi.system.domain.UserFidRel;
-import com.ruoyi.system.service.IUserFidRelService;
+
+import java.util.List;
 
 /**
  * 用户fid对应关系Service业务层处理
@@ -64,10 +65,16 @@ public class UserFidRelServiceImpl implements IUserFidRelService {
         SysUser sysUser = sysUserMapper.selectUserById(userFidRel.getUserId());
         userFidRel.setCreateTime(DateUtils.getNowDate());
         userFidRel.setUserName(sysUser.getUserName());
-        userFidRel.setCustomerName(sysUser.getCustomerName());
+//        userFidRel.setCustomerName(sysUser.getCustomerName());
         userFidRel.setNickName(sysUser.getNickName());
         userFidRel.setCountry(sysUser.getCountry());
-        userFidRel.setStatus("1");
+        userFidRel.setStatus("0");
+        AddressSender senderParam = new AddressSender();
+        senderParam.setCreateUser(sysUser.getUserId().toString());
+        AddressSender returnSender = addressSenderMapper.selectAddressSenderList(senderParam).get(0);
+        if (ObjectUtils.isNotEmpty(returnSender)){
+            userFidRel.setFid(returnSender.getFid());
+        }
         return userFidRelMapper.insertUserFidRel(userFidRel);
     }
 
@@ -107,15 +114,15 @@ public class UserFidRelServiceImpl implements IUserFidRelService {
 
     @Override
     public int activeUserFidRelById(Long id) {
-        UserFidRel userFidRel = userFidRelMapper.selectUserFidRelById(id);
-        userFidRelMapper.inActiveUserFidRelById(userFidRel);
+//        UserFidRel userFidRel = userFidRelMapper.selectUserFidRelById(id);
+//        userFidRelMapper.inActiveUserFidRelById(userFidRel);
         userFidRelMapper.activeUserFidRelById(id);
-        AddressSender param = new AddressSender();
-        param.setCreateUser(userFidRel.getUserId().toString());
-        List<AddressSender> addressSenders = addressSenderMapper.selectAddressSenderList(param);
-        AddressSender updateOne = addressSenders.get(0);
-        updateOne.setFid(userFidRel.getFid());
-        addressSenderMapper.updateAddressSender(updateOne);
+//        AddressSender param = new AddressSender();
+//        param.setCreateUser(userFidRel.getUserId().toString());
+//        List<AddressSender> addressSenders = addressSenderMapper.selectAddressSenderList(param);
+//        AddressSender updateOne = addressSenders.get(0);
+//        updateOne.setFid(userFidRel.getFid());
+//        addressSenderMapper.updateAddressSender(updateOne);
         return 1;
     }
 

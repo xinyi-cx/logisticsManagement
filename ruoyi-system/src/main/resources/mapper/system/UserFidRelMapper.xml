@@ -42,6 +42,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by user_id, fid, status
     </select>
+
+    <select id="selectUserFidRelListByEq" parameterType="UserFidRel" resultMap="UserFidRelResult">
+        <include refid="selectUserFidRelVo"/>
+        <where>
+            fid is not null
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name = #{userName}</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name = #{customerName}</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name = #{nickName}</if>
+            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="fid != null "> and fid = #{fid}</if>
+            <if test="fidCommon != null  and fidCommon != ''"> and fid_common = #{fidCommon}</if>
+            <if test="remark2 != null  and remark2 != ''"> and remark2 = #{remark2}</if>
+            <if test="status != null and status != '' "> and status = #{status}</if>
+        </where>
+        order by update_time desc, create_time desc, user_id
+    </select>
     
     <select id="selectUserFidRelById" parameterType="Long" resultMap="UserFidRelResult">
         <include refid="selectUserFidRelVo"/>
@@ -118,7 +135,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="inActiveUserFidRelById" parameterType="UserFidRel">
         update user_fid_rel
         set status = '1'
-        where user_id = #{userId}
+        where customer_name = #{customerName}
         and id != #{id}
         and status = '0'
     </update>

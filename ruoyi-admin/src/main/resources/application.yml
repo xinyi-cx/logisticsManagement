@@ -57,7 +57,7 @@ spring:
       master:
         url: jdbc:mysql://118.195.237.144:3306/business?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
 #        username: root
-#        password: dev
+#        password: root1234
         username: test
         password: test
       # 从库数据源
@@ -231,7 +231,8 @@ dpd:
     cc: 1097700731@qq.com,caixin0830@163.com
 #  Parcel delivered  190103
 yqscode: 190101,190103,190104,190105,190205,501300,501304,501340,511901,511903,600103,701901
-ytjcode: 230403,230408
+ytjcode: 230403,230408,230501,240304,500611,500612,500614,500615,500616,500617,500624,500629,500630,500633,500635,500637,500639,500642,500647,500649,500661,500684,500685
 gpcode: 230402
 
 getnum: 500
+dayNum: -5

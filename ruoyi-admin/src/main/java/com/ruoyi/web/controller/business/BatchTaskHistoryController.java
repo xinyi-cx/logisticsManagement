@@ -1,10 +1,8 @@
 package com.ruoyi.web.controller.business;
 
-import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.BatchTaskHistory;
 import com.ruoyi.system.domain.vo.BatchTaskHistoryVo;
@@ -45,7 +43,6 @@ public class BatchTaskHistoryController extends BaseController
      * 导出批量任务历史列表
      */
     @PreAuthorize("@ss.hasPermi('system:history:export')")
-    @Log(title = "批量任务历史", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, BatchTaskHistoryVo batchTaskHistory)
     {
@@ -68,7 +65,6 @@ public class BatchTaskHistoryController extends BaseController
      * 新增批量任务历史
      */
     @PreAuthorize("@ss.hasPermi('system:history:add')")
-    @Log(title = "批量任务历史", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody BatchTaskHistory batchTaskHistory)
     {
@@ -79,7 +75,6 @@ public class BatchTaskHistoryController extends BaseController
      * 修改批量任务历史
      */
     @PreAuthorize("@ss.hasPermi('system:history:edit')")
-    @Log(title = "批量任务历史", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody BatchTaskHistory batchTaskHistory)
     {
@@ -90,7 +85,6 @@ public class BatchTaskHistoryController extends BaseController
      * 删除批量任务历史
      */
     @PreAuthorize("@ss.hasPermi('system:history:remove')")
-    @Log(title = "批量任务历史", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
