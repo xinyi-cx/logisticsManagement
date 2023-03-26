@@ -6,10 +6,8 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.UserStatus;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.UserFidRel;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.service.IUserFidRelService;
-import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 用户验证处理
@@ -46,22 +42,22 @@ public class UserDetailsServiceImpl implements UserDetailsService
         //更改为 customerName 登录
         String username = jsonObject.getString("username");
         String country = jsonObject.getString("country");
-        UserFidRel userFidRelParam = new UserFidRel();
-        userFidRelParam.setCustomerName(username);
-        userFidRelParam.setCountry(country);
-        userFidRelParam.setStatus("0");
-        Long fid = null;
-        List<UserFidRel> userFidRels = userFidRelService.selectUserFidRelList(userFidRelParam);
-        if (CollectionUtils.isNotEmpty(userFidRels)){
-            username = userFidRels.get(0).getUserName();
-            fid = userFidRels.get(0).getFid();
-        }
+//        UserFidRel userFidRelParam = new UserFidRel();
+//        userFidRelParam.setCustomerName(username);
+//        userFidRelParam.setCountry(country);
+//        userFidRelParam.setStatus("0");
+//        Long fid = null;
+//        List<UserFidRel> userFidRels = userFidRelService.selectUserFidRelList(userFidRelParam);
+//        if (CollectionUtils.isNotEmpty(userFidRels)){
+//            username = userFidRels.get(0).getUserName();
+//            fid = userFidRels.get(0).getFid();
+//        }
         SysUser user = null;
         if (StringUtils.isEmpty(country)){
-            user = userService.selectUserByUserName(username);
+            user = userService.selectUserByCustomerName(username);
         }else{
             SysUser paramUser = new SysUser();
-            paramUser.setUserName(username);
+            paramUser.setCustomerName(username);
             paramUser.setCountry(country);
             user = userService.selectUserByUser(paramUser);
         }
@@ -81,7 +77,7 @@ public class UserDetailsServiceImpl implements UserDetailsService
             throw new ServiceException("对不起，您的账号：" + username + " 已停用");
         }
 
-        return createLoginUser(user, fid);
+        return createLoginUser(user, null);
     }
 
     public UserDetails createLoginUser(SysUser user, Long fid)

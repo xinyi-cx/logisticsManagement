@@ -92,14 +92,16 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public List<String> getUserForLogin(SysUser user)
     {
-        UserFidRel userFidRelParam = new UserFidRel();
-        userFidRelParam.setCustomerName(user.getUserName());
-        userFidRelParam.setStatus("0");
-        List<UserFidRel> userFidRels = userFidRelMapper.selectUserFidRelListByEq(userFidRelParam);
-        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(userFidRels)){
-            return userFidRels.stream().map(UserFidRel::getCountry).collect(Collectors.toList());
-        }
-        List<SysUser> sysUserList = userMapper.selectUserList(user);
+//        UserFidRel userFidRelParam = new UserFidRel();
+//        userFidRelParam.setCustomerName(user.getUserName());
+//        userFidRelParam.setStatus("0");
+//        List<UserFidRel> userFidRels = userFidRelMapper.selectUserFidRelListByEq(userFidRelParam);
+//        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(userFidRels)){
+//            return userFidRels.stream().map(UserFidRel::getCountry).collect(Collectors.toList());
+//        }
+        SysUser param = new SysUser();
+        param.setCustomerName(user.getUserName());
+        List<SysUser> sysUserList = userMapper.selectUserList(param);
         if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(sysUserList)){
             return sysUserList.stream().map(SysUser::getCountry).collect(Collectors.toList());
         }
@@ -142,6 +144,12 @@ public class SysUserServiceImpl implements ISysUserService
     public SysUser selectUserByUserName(String userName)
     {
         return userMapper.selectUserByUserName(userName);
+    }
+
+    @Override
+    public SysUser selectUserByCustomerName(String userName)
+    {
+        return userMapper.selectUserByCustomerName(userName);
     }
 
     @Override
@@ -224,6 +232,19 @@ public class SysUserServiceImpl implements ISysUserService
         return UserConstants.UNIQUE;
     }
 
+    @Override
+    public String checkCustomerNameAndCountryUnique(String customerName, String country)
+    {
+        SysUser paramUser = new SysUser();
+        paramUser.setCountry(country);
+        paramUser.setCustomerName(customerName);
+        int count = userMapper.selectUserListByParam(paramUser).size();
+        if (count > 0)
+        {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
+    }
     /**
      * 校验手机号码是否唯一
      *

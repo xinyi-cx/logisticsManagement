@@ -47,6 +47,8 @@ public interface ISysUserService
      */
     public SysUser selectUserByUserName(String userName);
 
+    public SysUser selectUserByCustomerName(String userName);
+
     /**
      * 通过用户查询用户
      * @param user
@@ -85,6 +87,8 @@ public interface ISysUserService
      * @return 结果
      */
     public String checkUserNameAndCountryUnique(String userName, String country);
+
+    public String checkCustomerNameAndCountryUnique(String customerName, String country);
 
     /**
      * 校验手机号码是否唯一

@@ -79,110 +79,6 @@ public class PackageNoGenVo extends BaseEntity {
     @Excel(name = "Create Date")
     private String createDate;
 
-    public String getClient() {
-        return client;
-    }
-
-    public void setClient(String client) {
-        this.client = client;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getImportType() {
-        return importType;
-    }
-
-    public void setImportType(String importType) {
-        this.importType = importType;
-    }
-
-    public String getLoginid() {
-        return loginid;
-    }
-
-    public void setLoginid(String loginid) {
-        this.loginid = loginid;
-    }
-
-    public String getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-    public String getValuePlnCod() {
-        return valuePlnCod;
-    }
-
-    public void setValuePlnCod(String valuePlnCod) {
-        this.valuePlnCod = valuePlnCod;
-    }
-
-    public String getWeightKg() {
-        return weightKg;
-    }
-
-    public void setWeightKg(String weightKg) {
-        this.weightKg = weightKg;
-    }
-
-    public String getRecipientName() {
-        return recipientName;
-    }
-
-    public void setRecipientName(String recipientName) {
-        this.recipientName = recipientName;
-    }
-
-    public String getRecipientPhone() {
-        return recipientPhone;
-    }
-
-    public void setRecipientPhone(String recipientPhone) {
-        this.recipientPhone = recipientPhone;
-    }
-
-    public String getRecipientEmail() {
-        return recipientEmail;
-    }
-
-    public void setRecipientEmail(String recipientEmail) {
-        this.recipientEmail = recipientEmail;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getNeedBox() {
-        return needBox;
-    }
-
-    public void setNeedBox(String needBox) {
-        this.needBox = needBox;
-    }
-
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
-    }
-
     /**
      * waybill 运货单
      */
@@ -285,7 +181,7 @@ public class PackageNoGenVo extends BaseEntity {
     private BigDecimal pln;
 
     /** 旧物流单号 */
-//    @Excel(name = "旧物流单号")
+    @Excel(name = "old shipment number")
     private String oldWaybill;
 
     /** 新的单号 */
@@ -294,43 +190,12 @@ public class PackageNoGenVo extends BaseEntity {
 
     /** 回退单号 */
 //    @Excel(name = "Old return number")
+    @Excel(name = "old return number")
     private String backOrder;
 
     /** 新物流单号 */
 //    @Excel(name = "New Waybill")
 //    private String newWaybill;
-
-    public String getOldWaybill() {
-        return oldWaybill;
-    }
-
-    public void setOldWaybill(String oldWaybill) {
-        this.oldWaybill = oldWaybill;
-    }
-
-    public String getBackOrder() {
-        return backOrder;
-    }
-
-    public void setBackOrder(String backOrder) {
-        this.backOrder = backOrder;
-    }
-
-    public String getNewOrder() {
-        return newOrder;
-    }
-
-    public void setNewOrder(String newOrder) {
-        this.newOrder = newOrder;
-    }
-
-    public String getNewWaybill() {
-        return newWaybill;
-    }
-
-    public void setNewWaybill(String newWaybill) {
-        this.newWaybill = newWaybill;
-    }
 
     /**
      * 付款人类型
@@ -350,23 +215,10 @@ public class PackageNoGenVo extends BaseEntity {
 //    @Excel(name = "客户数据1")
     private String content;
 
-
-    /**
-     * 长
-     */
-//    @Excel(name = "长")
     private Integer sizeX;
 
-    /**
-     * 宽
-     */
-//    @Excel(name = "宽")
     private Integer sizeY;
 
-    /**
-     * 高
-     */
-//    @Excel(name = "高")
     private Integer sizeZ;
 
     /**
@@ -477,6 +329,170 @@ public class PackageNoGenVo extends BaseEntity {
     private String datStr;
 
     private String source;
+
+    @Excel(name = "Code 1")
+    private String code1;
+
+    @Excel(name = "Code 2")
+    private String code2;
+
+
+
+
+
+
+
+    public String getCode1() {
+        return code1;
+    }
+
+    public void setCode1(String code1) {
+        this.code1 = code1;
+    }
+
+    public String getCode2() {
+        return code2;
+    }
+
+    public void setCode2(String code2) {
+        this.code2 = code2;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getImportType() {
+        return importType;
+    }
+
+    public void setImportType(String importType) {
+        this.importType = importType;
+    }
+
+    public String getLoginid() {
+        return loginid;
+    }
+
+    public void setLoginid(String loginid) {
+        this.loginid = loginid;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getValuePlnCod() {
+        return valuePlnCod;
+    }
+
+    public void setValuePlnCod(String valuePlnCod) {
+        this.valuePlnCod = valuePlnCod;
+    }
+
+    public String getWeightKg() {
+        return weightKg;
+    }
+
+    public void setWeightKg(String weightKg) {
+        this.weightKg = weightKg;
+    }
+
+    public String getRecipientName() {
+        return recipientName;
+    }
+
+    public void setRecipientName(String recipientName) {
+        this.recipientName = recipientName;
+    }
+
+    public String getRecipientPhone() {
+        return recipientPhone;
+    }
+
+    public void setRecipientPhone(String recipientPhone) {
+        this.recipientPhone = recipientPhone;
+    }
+
+    public String getRecipientEmail() {
+        return recipientEmail;
+    }
+
+    public void setRecipientEmail(String recipientEmail) {
+        this.recipientEmail = recipientEmail;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getNeedBox() {
+        return needBox;
+    }
+
+    public void setNeedBox(String needBox) {
+        this.needBox = needBox;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getOldWaybill() {
+        return oldWaybill;
+    }
+
+    public void setOldWaybill(String oldWaybill) {
+        this.oldWaybill = oldWaybill;
+    }
+
+    public String getBackOrder() {
+        return backOrder;
+    }
+
+    public void setBackOrder(String backOrder) {
+        this.backOrder = backOrder;
+    }
+
+    public String getNewOrder() {
+        return newOrder;
+    }
+
+    public void setNewOrder(String newOrder) {
+        this.newOrder = newOrder;
+    }
+
+    public String getNewWaybill() {
+        return newWaybill;
+    }
+
+    public void setNewWaybill(String newWaybill) {
+        this.newWaybill = newWaybill;
+    }
 
     public String getSource() {
         return source;

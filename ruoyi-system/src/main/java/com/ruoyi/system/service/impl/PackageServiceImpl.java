@@ -1010,6 +1010,8 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setCreateDate(DateUtils.getDate2());
             importLogicContent.setRemark2(packageVo.getCode1());
             importLogicContent.setRemark3(packageVo.getCode2());
+            importLogicContent.setRemark4(packageVo.getBackOrder());
+            importLogicContent.setRemark5(packageVo.getOldWaybill());
             pac.setImportLogicContent(importLogicContent);
             packages.add(pac);
 
@@ -1189,6 +1191,10 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setStatus(SysWaybill.WJH.getCode());
+            importLogicContent.setRemark2(packageVo.getCode1());
+            importLogicContent.setRemark3(packageVo.getCode2());
+            importLogicContent.setRemark4(packageVo.getBackOrder());
+            importLogicContent.setRemark5(packageVo.getOldWaybill());
             importLogicContents.add(importLogicContent);
 
             batchTaskHistory.setType(StringUtils.isEmpty(importLogicContent.getImportType()) ? batchTaskHistory.getType() : importLogicContent.getImportType());

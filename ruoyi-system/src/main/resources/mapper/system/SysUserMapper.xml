@@ -133,6 +133,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="country != null and country != ''">
 				AND u.country = #{country}
 			</if>
+			<if test="customerName != null and customerName != ''">
+				AND u.customer_name = #{customerName}
+			</if>
 		</where>
 		limit 1
 	</select>
@@ -175,6 +178,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
 	    <include refid="selectUserVo"/>
 		where u.user_name = #{userName}
+		limit 1
+	</select>
+
+	<select id="selectUserByCustomerName" parameterType="String" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where u.customer_name = #{customerName}
 		limit 1
 	</select>
 

@@ -48,6 +48,8 @@ public interface SysUserMapper
      */
     public SysUser selectUserByUserName(String userName);
 
+    public SysUser selectUserByCustomerName(String userName);
+
     public SysUser selectUserByUser(SysUser user);
 
     /**

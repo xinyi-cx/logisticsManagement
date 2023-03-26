@@ -66,7 +66,7 @@ public class SysRegisterService
         {
             msg = "密码长度必须在5到20个字符之间";
         }
-        else if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameAndCountryUnique(username, country)))
+        else if (UserConstants.NOT_UNIQUE.equals(userService.checkCustomerNameAndCountryUnique(username, country)))
         {
             msg = "保存用户'" + username + "'失败，注册账号已存在";
         }
@@ -74,8 +74,10 @@ public class SysRegisterService
         {
             SysUser sysUser = new SysUser();
             sysUser.setUserName(username);
+            sysUser.setCustomerName(username);
             sysUser.setNickName(username);
             sysUser.setPassword(SecurityUtils.encryptPassword(registerBody.getPassword()));
+            sysUser.setCountry(country);
             boolean regFlag = userService.registerUser(sysUser);
             if (!regFlag)
             {

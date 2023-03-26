@@ -118,6 +118,9 @@ public class SysUserController extends BaseController {
         if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameAndCountryUnique(user.getUserName(), user.getCountry()))) {
             return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
         }
+        if (UserConstants.NOT_UNIQUE.equals(userService.checkCustomerNameAndCountryUnique(user.getCustomerName(), user.getCountry()))) {
+            return AjaxResult.error("新增用户'" + user.getCustomerName() + "'失败，登录账号已存在");
+        }
 //        else if (StringUtils.isNotEmpty(user.getPhonenumber())
 //                && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
 //        {
@@ -151,6 +154,12 @@ public class SysUserController extends BaseController {
 //        {
 //            return AjaxResult.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
 //        }
+        SysUser oldUser = userService.selectUserById(user.getUserId());
+        if (!oldUser.getCustomerName().equals(user.getUserName())){
+            if (UserConstants.NOT_UNIQUE.equals(userService.checkCustomerNameAndCountryUnique(user.getCustomerName(), user.getCountry()))) {
+                return AjaxResult.error("新增用户'" + user.getCustomerName() + "'失败，登录账号已存在");
+            }
+        }
         user.setUpdateBy(getUsername());
         return toAjax(userService.updateUser(user));
     }
