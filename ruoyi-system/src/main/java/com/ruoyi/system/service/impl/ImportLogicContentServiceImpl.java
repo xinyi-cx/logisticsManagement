@@ -4,18 +4,20 @@ import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.BatchTaskHistory;
+import com.ruoyi.system.domain.Documents;
 import com.ruoyi.system.domain.ImportLogicContent;
 import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
-import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
-import com.ruoyi.system.mapper.ImportLogicContentMapper;
-import com.ruoyi.system.mapper.LogisticsInfoMapper;
+import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IImportLogicContentService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +41,12 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
 
     @Autowired
     private BatchTaskHistoryMapper batchTaskHistoryMapper;
+
+    @Autowired
+    private SequenceMapper sequenceMapper;
+
+    @Autowired
+    private DocumentsMapper documentsMapper;
 
     /**
      * 查询导入查询物流
@@ -219,4 +227,49 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
     public int deleteImportLogicContentById(Long id) {
         return importLogicContentMapper.deleteImportLogicContentById(id);
     }
+
+    /**
+     * 批量更新退件信息
+     * @param file
+     * @param importLogicContents
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public String importLogicContentForTj(MultipartFile file, List<ImportLogicContent> importLogicContents) throws Exception {
+        if (org.apache.commons.collections4.CollectionUtils.isEmpty(importLogicContents)) {
+            return "导入数据不能为空";
+        }
+        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(importLogicContents) && importLogicContents.size() > 300) {
+            return "单次导入最多300条";
+        }
+        Documents documents = getDocuments(file);
+        BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
+        batchTaskHistory.setType("退件物流导入");
+        batchTaskHistory.setStatus("导入成功");
+        batchTaskHistory.setExcelUrl(documents.getId().toString());
+        batchTaskHistory.setFileName(documents.getDisplayName());
+        batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
+
+        importLogicContentMapper.batchUpdateImportLogicContentByWaybill(importLogicContents);
+        batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
+        return "更新退件物流信息成功";
+    }
+
+    public Documents getDocuments(MultipartFile file) throws IOException {
+        Documents documents = new Documents();
+        documents.setId(sequenceMapper.selectNextvalByName("doc_seq"));
+        documents.setFileData(file.getBytes());
+        documents.setFileName(file.getName());
+        documents.setContentType(file.getContentType());
+        documents.setFileSize(file.getSize());
+        documents.setDisplayName(file.getOriginalFilename());
+        documents.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        documents.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        documentsMapper.insertDocuments(documents);
+        return documents;
+    }
+
 }

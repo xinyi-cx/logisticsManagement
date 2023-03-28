@@ -125,6 +125,16 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          type="success"
+          plain
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleImportForTj"
+          v-hasPermi="['system:content:add']"
+        >导入退件</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
           type="warning"
           plain
           icon="el-icon-download"
@@ -252,6 +262,40 @@
       </div>
     </el-dialog>
 
+    <!--    导入匹配 importLogicContentForTj-->
+    <el-dialog :title="uploadTj.title" :visible.sync="uploadTj.open" width="400px" append-to-body>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="uploadTj.headers"
+        :action="uploadTj.url"
+        :disabled="uploadTj.isUploading"
+        :on-progress="handleFileUploadProgressForTj"
+        :on-success="handleFileSuccessForTj"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <div><span style="color: red;">*各业务文件命名规则示例：</span><br/>
+            <div style="text-align: left;">本地货：DPD Local Wolin coat pol 20221212 34box export xls</div>
+            <div style="text-align: left;">转 寄：DPD Resend Wolin pol 20221212 34box export xls</div>
+            <div style="text-align: left;">直 发：DPD Origianl Wolin pol 20221212 34b export xls</div>
+          </div>
+          <div>
+            <span style="color: red;">仅允许导入xls、xlsx格式文件。</span>
+            <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplateForTj">下载模板</el-link>
+          </div>
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileFormForTj" :disabled="submitDisabled">确 定</el-button>
+        <el-button @click="uploadTj.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -338,6 +382,18 @@ export default {
         headers: { Authorization: "Bearer " + getToken() },
         // 上传的地址
         url: process.env.VUE_APP_BASE_API + "/system/package/importPackageForNoGen"
+      },
+      uploadTj: {
+        // 是否显示弹出层（导入）
+        open: false,
+        // 弹出层标题（导入）
+        title: "",
+        // 是否禁用上传
+        isUploading: false,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/system/content/importLogicContentForTj"
       },
       // 表单参数
       form: {},
@@ -516,6 +572,32 @@ export default {
     },
     importTemplateForNo() {
       this.download('system/content/importTemplateNoGen', {
+      }, `DPD Local Wolin coat pol 20221201 43box export xls template.xlsx`)
+    },
+    handleImportForTj() {
+      this.uploadTj.title = "退件物流批量导入";
+      this.uploadTj.open = true;
+      this.submitDisabled = false;
+    },
+    // 文件上传中处理
+    handleFileUploadProgressForTj(event, file, fileList) {
+      this.uploadTj.isUploading = true;
+    },
+    // 文件上传成功处理
+    handleFileSuccessForTj(response, file, fileList) {
+      this.uploadTj.open = false;
+      this.uploadTj.isUploading = false;
+      this.$refs.upload.clearFiles();
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
+      this.getList();
+    },
+    // 提交上传文件
+    submitFileFormForTj() {
+      this.$refs.upload.submit();
+      this.submitDisabled = true;
+    },
+    importTemplateForTj() {
+      this.download('system/content/importTemplateForTj', {
       }, `DPD Local Wolin coat pol 20221201 43box export xls template.xlsx`)
     },
     /** 导出按钮操作 */

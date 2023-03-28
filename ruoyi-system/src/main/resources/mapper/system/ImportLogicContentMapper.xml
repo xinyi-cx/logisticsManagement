@@ -390,6 +390,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="item.newNumber != null">new_number = #{item.newNumber},</if>
                 <if test="item.returnNumber != null">return_number = #{item.returnNumber},</if>
                 <if test="item.isDelete != null">is_delete = #{item.isDelete},</if>
+                update_time = sysdate()
             </trim>
             where new_waybill = #{item.newWaybill}
         </foreach>

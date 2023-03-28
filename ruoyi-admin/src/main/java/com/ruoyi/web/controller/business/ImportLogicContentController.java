@@ -5,21 +5,24 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.ImportLogicContent;
 import com.ruoyi.system.domain.Parcel;
-import com.ruoyi.system.domain.vo.ExportLogicContentVo;
-import com.ruoyi.system.domain.vo.ImportLogicContentTemplateVo;
+import com.ruoyi.system.domain.vo.*;
 import com.ruoyi.system.service.IImportLogicContentService;
 import com.ruoyi.system.service.IParcelService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +57,29 @@ public class ImportLogicContentController extends BaseController {
     {
         ExcelUtil<ImportLogicContentTemplateVo> util = new ExcelUtil<ImportLogicContentTemplateVo>(ImportLogicContentTemplateVo.class);
         util.importTemplateExcel(response, "sheet1");
+    }
+
+    @PostMapping("/importTemplateForTj")
+    public void importTemplateForTj(HttpServletResponse response)
+    {
+        ExcelUtil<ImportLogicContentTjTemplateVo> util = new ExcelUtil<ImportLogicContentTjTemplateVo>(ImportLogicContentTjTemplateVo.class);
+        util.importTemplateExcel(response, "sheet1");
+    }
+
+    @Log(title = "批量更新退件物流", businessType = BusinessType.IMPORT)
+    @PostMapping("/importLogicContentForTj")
+    public AjaxResult importLogicContentForTj(MultipartFile file) throws Exception
+    {
+        ExcelUtil<ImportLogicContentTjTemplateVo> util = new ExcelUtil<ImportLogicContentTjTemplateVo>(ImportLogicContentTjTemplateVo.class);
+        List<ImportLogicContentTjTemplateVo> importLogicContentTjTemplateVos = util.importExcel(file.getInputStream());
+        List<ImportLogicContent> importLogicContents = new ArrayList<>();
+        for (ImportLogicContentTjTemplateVo importLogicContentTjTemplateVo : importLogicContentTjTemplateVos) {
+            ImportLogicContent importLogicContent = new ImportLogicContent();
+            BeanUtils.copyProperties(importLogicContentTjTemplateVo, importLogicContent);
+            importLogicContent.setStatus(SysWaybill.YTJ.getCode());
+            importLogicContents.add(importLogicContent);
+        }
+        return AjaxResult.success(importLogicContentService.importLogicContentForTj(file, importLogicContents));
     }
 
 //    @Log(title = "面单导入", businessType = BusinessType.IMPORT)
