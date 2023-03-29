@@ -173,7 +173,7 @@
       <el-table-column label="old shipment number" align="center" prop="oldWaybill" />
       <el-table-column label="old return number" align="center" prop="backOrder" />
       <!-- 创建时间 -->
-      <el-table-column label="创建时间" align="center" prop="createdTime">
+      <el-table-column label="创建时间" align="center" prop="createdTime" width="160" >
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
         </template>
@@ -191,21 +191,21 @@
       <!-- 城市 -->
       <el-table-column label="城市" align="center" prop="receiverCity" show-overflow-tooltip />
       <!-- 邮编 -->
-      <el-table-column label="邮编" align="center"  show-overflow-tooltip prop="receiverPostalCode" />
+      <el-table-column label="邮编" width="100" align="center"  show-overflow-tooltip prop="receiverPostalCode" />
       <!-- 手机号码 -->
-      <el-table-column label="手机号码" align="center" show-overflow-tooltip prop="receiverPhone" />
+      <el-table-column label="手机号码" width="100" align="center" show-overflow-tooltip prop="receiverPhone" />
       <!-- 货物金额(pln) -->
-      <el-table-column label="COD(pln)" align="center" prop="pln" width="180"/>
+      <el-table-column label="COD(pln)" align="center" prop="pln" width="80"/>
       <!-- 重量(kg) -->
       <el-table-column label="重量(kg)" align="center" prop="weight" />
       <!-- 物品类型-description -->
-      <el-table-column label="物品类型" align="center" show-overflow-tooltip prop="content" />
+      <el-table-column label="物品类型" width="100" align="center" show-overflow-tooltip prop="content" />
       <!-- 下载次数 -->
       <el-table-column label="下载次数" align="center" prop="downloadNum" />
       <!-- 备注1 -->
-      <el-table-column label="售后电话" align="center" show-overflow-tooltip prop="ref1" />
+      <el-table-column label="售后电话" width="100" align="center" show-overflow-tooltip prop="ref1" />
       <!-- 备注2 -->
-      <el-table-column label="售后邮箱" align="center" show-overflow-tooltip prop="ref2" />
+      <el-table-column label="售后邮箱" width="100" align="center" show-overflow-tooltip prop="ref2" />
       <!-- 操作 -->
       <el-table-column label="操作" align="center" prop="id">
          <template slot-scope="scope">

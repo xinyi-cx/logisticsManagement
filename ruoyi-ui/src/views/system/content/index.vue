@@ -162,8 +162,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="contentList" stripe border
-              max-height="300px"
+    <el-table v-loading="loading" :data="contentList"
               @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />

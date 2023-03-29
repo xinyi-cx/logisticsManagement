@@ -178,21 +178,21 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
 <!--          面单-->
-          <el-button
-            v-show="scope.row.type === '面单导入'"
-            size="mini"
-            type="text"
-            icon="el-icon-view"
-            @click="handleDownloadDouble(scope.row)"
-          >下载两个</el-button>
+<!--          <el-button-->
+<!--            v-show="scope.row.type === '面单导入'"-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            icon="el-icon-view"-->
+<!--            @click="handleDownloadDouble(scope.row)"-->
+<!--          >下载两个</el-button>-->
 <!--          转寄-->
-          <el-button
-            v-show="scope.row.type === '转寄面单导入'"
-            size="mini"
-            type="text"
-            icon="el-icon-view"
-            @click="handleDownloadDoubleForRe(scope.row)"
-          >下载两个</el-button>
+<!--          <el-button-->
+<!--            v-show="scope.row.type === '转寄面单导入'"-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            icon="el-icon-view"-->
+<!--            @click="handleDownloadDoubleForRe(scope.row)"-->
+<!--          >下载两个</el-button>-->
           <el-button
             v-show="scope.row.type === '面单导入'"
             size="mini"
@@ -229,12 +229,12 @@
             icon="el-icon-view"
             @click="downloadGeneratedExcelForLocal(scope.row)"
           >查看批量excel</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-view"
-            @click="handleDownloadPDF(scope.row)"
-          >查看批量面单</el-button>
+<!--          <el-button-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            icon="el-icon-view"-->
+<!--            @click="handleDownloadPDF(scope.row)"-->
+<!--          >查看批量面单</el-button>-->
 <!--          <el-button-->
 <!--            size="mini"-->
 <!--            type="text"-->

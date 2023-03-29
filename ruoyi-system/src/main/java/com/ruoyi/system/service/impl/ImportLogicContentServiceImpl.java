@@ -272,4 +272,9 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
         return documents;
     }
 
+    @Override
+    public void backupImportLogicContent(){
+
+    }
+
 }

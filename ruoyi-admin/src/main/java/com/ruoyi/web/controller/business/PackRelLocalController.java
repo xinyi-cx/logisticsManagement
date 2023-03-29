@@ -1,33 +1,26 @@
 package com.ruoyi.web.controller.business;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ruoyi.system.domain.vo.*;
-import com.ruoyi.system.service.IPackageService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.PackRelLocal;
-import com.ruoyi.system.service.IPackRelLocalService;
-import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.PackRelLocal;
+import com.ruoyi.system.domain.vo.*;
+import com.ruoyi.system.service.IPackRelLocalService;
+import com.ruoyi.system.service.IPackageService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -159,7 +152,7 @@ public class PackRelLocalController extends BaseController {
     public void exportRe(HttpServletResponse response, PackageVo pkg)
     {
         pkg.setExportFlag(1);
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, "numRedisKey");
         List<ExportLocalPackageVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
             packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
@@ -184,7 +177,7 @@ public class PackRelLocalController extends BaseController {
     public void exportReCz(HttpServletResponse response, PackageVo pkg)
     {
         pkg.setExportFlag(1);
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, "numRedisKey");
         List<ExportLocalPackageCzVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
             packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));

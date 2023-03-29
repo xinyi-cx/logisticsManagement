@@ -1,6 +1,8 @@
 package com.ruoyi.system.service.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.DictUtils;
@@ -99,6 +101,9 @@ public class PackageServiceImpl implements IPackageService {
 
     @Autowired
     private DPDInfoXMLClient dpdInfoXMLClient;
+
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 查询面单
@@ -361,7 +366,11 @@ public class PackageServiceImpl implements IPackageService {
     }
 
     @Override
-    public long selectPackageVoListTotal(PackageVo packageVo){
+    public long selectPackageVoListTotal(PackageVo packageVo, String numRedisKey){
+        Long num = redisCache.getCacheObject(numRedisKey);
+        if (num != null){
+            return num;
+        }
         Long hisId = null;
         if (ObjectUtils.isNotEmpty(packageVo.getHisParam())) {
             if ("000".equals(packageVo.getHisParam().substring(0, 3)) || "111".equals(packageVo.getHisParam().substring(0, 3))){
@@ -372,6 +381,9 @@ public class PackageServiceImpl implements IPackageService {
         }
         Package pkg = new Package();
         BeanUtils.copyProperties(packageVo, pkg);
+        if (ObjectUtils.isNotEmpty(packageVo.getWaybill())){
+            pkg.setParcelWaybill(packageVo.getWaybill());
+        }
         pkg.setBatchId(hisId);
         if ((!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) && ObjectUtils.isEmpty(hisId)) {
             pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
@@ -410,7 +422,7 @@ public class PackageServiceImpl implements IPackageService {
             if (ObjectUtils.isNotEmpty(redirectRelList)){
                 pkg.setExportFlag(1);
                 pkg.setIds(redirectRelList.stream().map(RedirectRel::getNewPackageId).collect(toList()));
-                packagesAll = packageMapper.selectPackageList(pkg);
+                packagesAll = packageMapper.selectPackageListForRel(pkg);
             }else {
                 return 0;
             }
@@ -425,7 +437,7 @@ public class PackageServiceImpl implements IPackageService {
             if (CollectionUtils.isNotEmpty(packRelLocals)) {
                 pkg.setExportFlag(1);
                 pkg.setIds(packRelLocals.stream().map(PackRelLocal::getOldPackageId).collect(toList()));
-                packagesAll = packageMapper.selectPackageList(pkg);
+                packagesAll = packageMapper.selectPackageListForLocal(pkg);
             }else {
                 return 0;
             }
@@ -471,7 +483,7 @@ public class PackageServiceImpl implements IPackageService {
      * @return 面单
      */
     @Override
-    public List<PackageVo> selectPackageVoList(PackageVo packageVo) {
+    public List<PackageVo> selectPackageVoList(PackageVo packageVo, String numRedisKey) {
         Long hisId = null;
         Boolean sucFlag = null;
         if (ObjectUtils.isNotEmpty(packageVo.getHisParam())) {
@@ -484,6 +496,9 @@ public class PackageServiceImpl implements IPackageService {
         }
         Package pkg = new Package();
         BeanUtils.copyProperties(packageVo, pkg);
+        if (ObjectUtils.isNotEmpty(packageVo.getWaybill())){
+            pkg.setParcelWaybill(packageVo.getWaybill());
+        }
         pkg.setBatchId(hisId);
 //        if (ObjectUtils.isNotEmpty(hisId)){
 //            BatchTaskHistory batchTaskHistory = batchTaskHistoryMapper.selectBatchTaskHistoryById(hisId);
@@ -561,13 +576,17 @@ public class PackageServiceImpl implements IPackageService {
                 idPackRelLocalMap = packRelLocals.stream().collect(toMap(PackRelLocal::getOldPackageId, Function.identity()));
 //                packagesAll = packageMapper.selectPackageList(pkg);
             }else {
+                redisCache.setCacheObject(numRedisKey, 0);
                 return new ArrayList<>();
             }
         }else {
             packagesAll = packageMapper.selectPackageList(pkg);
         }
         if (CollectionUtils.isEmpty(packagesAll)) {
+            redisCache.setCacheObject(numRedisKey, 0);
             return new ArrayList<>();
+        }else {
+            redisCache.setCacheObject(numRedisKey, new PageInfo(packagesAll).getTotal());
         }
         List<Parcel> parcels;
         List<Parcel> selectParcels = parcelMapper.selectParcelListByPackIdIn(packagesAll.stream().map(Package::getId).collect(toList()));

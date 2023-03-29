@@ -102,42 +102,42 @@
           <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.waybill" target="_blank">{{scope.row.waybill}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="code1" align="center" prop="code1" />
-      <el-table-column label="code2" align="center" prop="code2" />
+      <el-table-column label="code1" align="center" prop="code1" width="120"/>
+      <el-table-column label="code2" align="center" prop="code2" width="120"/>
       <!-- 创建时间 -->
-      <el-table-column label="创建时间" align="center" prop="createdTime">
+      <el-table-column label="创建时间" align="center" prop="createdTime" width="160" >
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createdTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <!-- 内部引用号 -->
-      <el-table-column label="内部单号" align="center" show-overflow-tooltip prop="reference" />
+      <el-table-column label="内部单号" align="center" show-overflow-tooltip prop="reference" width="100"/>
       <!-- 收货人全名 -->
       <el-table-column label="收件人" width="100" show-overflow-tooltip align="center" prop="receiverName" />
       <!-- 国家 -->
-      <el-table-column label="国家" align="center" prop="receiverCountryCode" >
+      <el-table-column label="国家" align="center" prop="receiverCountryCode" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_country" :value="scope.row.receiverCountryCode"/>
         </template>
       </el-table-column>
       <!-- 城市 -->
-      <el-table-column label="城市" align="center" prop="receiverCity" show-overflow-tooltip />
+      <el-table-column label="城市" align="center" prop="receiverCity" show-overflow-tooltip width="100"/>
       <!-- 邮编 -->
-      <el-table-column label="邮编" align="center"  show-overflow-tooltip prop="receiverPostalCode" />
+      <el-table-column label="邮编" align="center"  show-overflow-tooltip prop="receiverPostalCode" width="100"/>
       <!-- 手机号码 -->
-      <el-table-column label="手机号码" align="center" show-overflow-tooltip prop="receiverPhone" />
+      <el-table-column label="手机号码" align="center" show-overflow-tooltip prop="receiverPhone" width="100"/>
       <!-- 货物金额(pln) -->
-      <el-table-column label="COD(pln)" align="center" prop="pln" width="180"/>
+      <el-table-column label="COD(pln)" align="center" prop="pln" width="100"/>
       <!-- 重量(kg) -->
-      <el-table-column label="重量(kg)" align="center" prop="weight" />
+      <el-table-column label="重量(kg)" align="center" prop="weight" width="100"/>
       <!-- 物品类型-description -->
-      <el-table-column label="物品类型" align="center" show-overflow-tooltip prop="content" />
+      <el-table-column label="物品类型" align="center" show-overflow-tooltip prop="content" width="100"/>
       <!-- 下载次数 -->
 <!--      <el-table-column label="下载次数" align="center" prop="downloadNum" />-->
       <!-- 备注1 -->
-      <el-table-column label="售后电话" align="center" show-overflow-tooltip prop="ref1" />
+      <el-table-column label="售后电话" align="center" show-overflow-tooltip prop="ref1" width="100"/>
       <!-- 备注2 -->
-      <el-table-column label="售后邮箱" align="center" show-overflow-tooltip prop="ref2" />
+      <el-table-column label="售后邮箱" align="center" show-overflow-tooltip prop="ref2" width="100"/>
       <!-- 操作 -->
       <el-table-column label="操作" align="center" prop="id">
         <template slot-scope="scope">

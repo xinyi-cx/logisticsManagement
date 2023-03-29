@@ -24,3 +24,50 @@ CREATE INDEX index_redirect_rel_new_package_id ON redirect_rel (new_package_id);
 CREATE INDEX index_pack_rel_local_old_package_id ON pack_rel_local (old_package_id);
 
 CREATE INDEX index_parcel_pack_id ON parcel (pack_id);
+
+
+CREATE TABLE `import_logic_content_backup` (
+  `id` bigint(20) unsigned NOT NULL COMMENT '主键',
+  `document_file_id` bigint(20) DEFAULT NULL COMMENT 'document表id',
+  `pack_id` bigint(20) DEFAULT NULL COMMENT 'package表id',
+  `batch_id` bigint(20) DEFAULT NULL COMMENT 'batch_id',
+  `logic_id` bigint(20) DEFAULT NULL COMMENT 'logic_id',
+  `client` varchar(200) DEFAULT NULL COMMENT 'CLIENT',
+  `country` varchar(200) DEFAULT NULL COMMENT 'Country',
+  `import_type` varchar(200) DEFAULT NULL COMMENT 'Type',
+  `loginId` varchar(200) DEFAULT NULL COMMENT 'LoginID',
+  `new_waybill` varchar(200) DEFAULT NULL COMMENT 'New waybill',
+  `order_number` varchar(200) DEFAULT NULL COMMENT 'Order number',
+  `value_pln_cod` varchar(200) DEFAULT NULL COMMENT 'value PLN (COD)',
+  `weight_kg` varchar(200) DEFAULT NULL COMMENT 'Weight kg',
+  `recipient_name` varchar(200) DEFAULT NULL COMMENT 'recipient name',
+  `recipient_phone` varchar(200) DEFAULT NULL COMMENT 'Recipient phone',
+  `recipient_email` varchar(200) DEFAULT NULL COMMENT 'Recipient E-mail',
+  `description` varchar(200) DEFAULT NULL COMMENT 'Description',
+  `need_box` varchar(200) DEFAULT NULL COMMENT 'Need box',
+  `create_date` varchar(200) DEFAULT NULL COMMENT 'Create Date',
+  `remark` varchar(200) DEFAULT NULL COMMENT '备注1',
+  `remark2` varchar(200) DEFAULT NULL COMMENT '备注2',
+  `remark3` varchar(200) DEFAULT NULL COMMENT '备注3',
+  `remark4` varchar(200) DEFAULT NULL COMMENT '备注4',
+  `remark5` varchar(200) DEFAULT NULL COMMENT '备注5',
+  `actived_date` varchar(200) DEFAULT NULL COMMENT '激活时间',
+  `last_status_date` varchar(200) DEFAULT NULL COMMENT '最近物流时间',
+  `status` varchar(200) DEFAULT NULL COMMENT '状态',
+  `new_number` varchar(200) DEFAULT NULL COMMENT '新单号',
+  `return_number` varchar(200) DEFAULT NULL COMMENT '退件单号',
+  `is_delete` tinyint(1) DEFAULT '0' COMMENT '是否删除',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `index_import_logic_content_new_waybill` (`new_waybill`),
+  KEY `index_import_logic_content_document_file_id` (`document_file_id`),
+  KEY `index_import_logic_content_document_pack_id` (`pack_id`),
+  KEY `index_import_logic_content_document_batch_id` (`batch_id`),
+  KEY `index_import_logic_content_document_document_file_id` (`document_file_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=182709 DEFAULT CHARSET=utf8 COMMENT='导入查询物流表';
+
+alter table package
+    add column parcel_waybill varchar(100)  default null comment '物流单号';

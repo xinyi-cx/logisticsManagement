@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.domain.vo.ExportPackageVo;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.domain.vo.REPackageCzVo;
@@ -13,7 +14,6 @@ import com.ruoyi.system.domain.vo.REPackageVo;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,8 +46,9 @@ public class RedirectPackageController extends BaseController
     {
         startPage();
         pkg.setOriginalId(1L);
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
-        return getDataTable(list, packageService.selectPackageVoListTotal(pkg));
+        String numRedisKey = IdUtils.fastSimpleUUID();
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, numRedisKey);
+        return getDataTable(list, packageService.selectPackageVoListTotal(pkg, numRedisKey));
     }
 
     /**
@@ -57,7 +58,7 @@ public class RedirectPackageController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, PackageVo pkg)
     {
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, "numRedisKey");
         List<ExportPackageVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
             packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));

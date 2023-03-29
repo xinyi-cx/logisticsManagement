@@ -74,7 +74,7 @@ public interface IPackageService
      * @param packageVo 面单
      * @return 面单集合
      */
-    public List<PackageVo> selectPackageVoList(PackageVo packageVo);
+    public List<PackageVo> selectPackageVoList(PackageVo packageVo, String numRedisKey);
 
     /**
      * 查询面单列表
@@ -82,7 +82,7 @@ public interface IPackageService
      * @param packageVo 面单
      * @return 面单集合
      */
-    public long selectPackageVoListTotal(PackageVo packageVo);
+    public long selectPackageVoListTotal(PackageVo packageVo, String numRedisKey);
 
     /**
      * 更细下载数量

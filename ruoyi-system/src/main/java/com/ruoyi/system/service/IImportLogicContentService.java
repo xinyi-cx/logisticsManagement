@@ -65,4 +65,7 @@ public interface IImportLogicContentService
     public int deleteImportLogicContentById(Long id);
 
     public String importLogicContentForTj(MultipartFile file, List<ImportLogicContent> importLogicContents) throws Exception;
+
+    public void backupImportLogicContent();
+
 }

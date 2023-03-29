@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.vo.*;
 import com.ruoyi.system.service.IPackageService;
@@ -63,8 +64,9 @@ public class PackageController extends BaseController
     public TableDataInfo list(PackageVo pkg)
     {
         startPage();
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
-        return getDataTable(list, packageService.selectPackageVoListTotal(pkg));
+        String numRedisKey = IdUtils.fastSimpleUUID();
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, numRedisKey);
+        return getDataTable(list, packageService.selectPackageVoListTotal(pkg, numRedisKey));
     }
 
     /**
@@ -73,7 +75,7 @@ public class PackageController extends BaseController
     @GetMapping("/all")
     public List<PackageVo> all(PackageVo pkg)
     {
-        return packageService.selectPackageVoList(pkg);
+        return packageService.selectPackageVoList(pkg, "numRedisKey");
     }
 
     /**
@@ -83,7 +85,7 @@ public class PackageController extends BaseController
     public void export(HttpServletResponse response, PackageVo pkg)
     {
         pkg.setExportFlag(1);
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, "numRedisKey");
         List<ExportPackageVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
             packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
@@ -107,7 +109,7 @@ public class PackageController extends BaseController
     public void exportTwo(HttpServletResponse response, PackageVo pkg)
     {
         pkg.setExportFlag(1);
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, "numRedisKey");
         List<ExportTwoPackageVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
             packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
@@ -131,7 +133,7 @@ public class PackageController extends BaseController
     public void exportCz(HttpServletResponse response, PackageVo pkg)
     {
         pkg.setExportFlag(1);
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, "numRedisKey");
         List<ExportPackageCzVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
             packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
@@ -157,7 +159,7 @@ public class PackageController extends BaseController
     public void exportRe(HttpServletResponse response, PackageVo pkg)
     {
         pkg.setExportFlag(1);
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, "numRedisKey");
         List<ExportRePackageVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
             packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));
@@ -181,7 +183,7 @@ public class PackageController extends BaseController
     public void exportReCz(HttpServletResponse response, PackageVo pkg)
     {
         pkg.setExportFlag(1);
-        List<PackageVo> list = packageService.selectPackageVoList(pkg);
+        List<PackageVo> list = packageService.selectPackageVoList(pkg, "numRedisKey");
         List<ExportRePackageCzVo> exportPackageVos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)){
             packageService.updateDownloadNum(list.stream().map(PackageVo::getId).collect(Collectors.toList()));

@@ -49,6 +49,16 @@ public class Package extends BaseEntity
     /** code2 */
     private String code3;
 
+    private String parcelWaybill;
+
+    public String getParcelWaybill() {
+        return parcelWaybill;
+    }
+
+    public void setParcelWaybill(String parcelWaybill) {
+        this.parcelWaybill = parcelWaybill;
+    }
+
     public String getCode1() {
         return code1;
     }

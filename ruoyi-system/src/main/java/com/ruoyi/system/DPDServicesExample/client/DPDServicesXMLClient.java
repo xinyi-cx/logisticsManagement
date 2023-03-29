@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -400,8 +401,13 @@ public class DPDServicesXMLClient {
         for (Documents documents : documentsList) {
             saveFileToLocal(documents);
         }
-        documentsMapper.batchInsert(documentsList);
+        insertDocument(documentsList);
         return returnResponses;
+    }
+
+    @Async
+    public void insertDocument(List<Documents> documentsList){
+        documentsMapper.batchInsert(documentsList);
     }
 
     private void setParcel(PackageOpenUMLFeV3 pkg, Parcel parcel, Map<String, String> dpdPackageMap, boolean plFlag, Package pack) {
@@ -543,6 +549,7 @@ public class DPDServicesXMLClient {
             parcel.setStatus(SysWaybill.WJH.getCode());
             parcel.setPackageId(sourse.getPackageId());
             parcel.setParcelId(parcelPGRV2.getParcelId());
+            targetPackage.setParcelWaybill(parcelPGRV2.getWaybill());
         }
 
         ImportLogicContent importLogicContent = targetPackage.getImportLogicContent();
