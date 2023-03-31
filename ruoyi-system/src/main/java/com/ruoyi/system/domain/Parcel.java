@@ -126,6 +126,16 @@ public class Parcel extends BaseEntity {
     @Excel(name = "是否删除")
     private Integer isDelete;
 
+    private boolean updateFlag = false;
+
+    public boolean isUpdateFlag() {
+        return updateFlag;
+    }
+
+    public void setUpdateFlag(boolean updateFlag) {
+        this.updateFlag = updateFlag;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

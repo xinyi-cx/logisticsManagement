@@ -166,7 +166,7 @@ public class DPDInfoXMLClient {
      *
      * @param params
      */
-    public void batchUpdateParcel(List<Parcel> params){
+    public void batchUpdateParcel(List<Parcel> params, boolean updateFlag){
 //        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         List<Parcel> dealParcels = new ArrayList<>();
         List<WaybillLRel> dealWaybillLRels = new ArrayList<>();
@@ -176,6 +176,7 @@ public class DPDInfoXMLClient {
 
         params.parallelStream().forEach(item -> {
                     try {
+                        item.setUpdateFlag(updateFlag);
                         getEventsForOneWaybillByBatch(item, dealParcels,
                                 dealImportLogicContents, dealForRLImportLogicContents,
                                 dealWaybillLRels, updateWaybillLRels);
@@ -244,7 +245,7 @@ public class DPDInfoXMLClient {
             CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
             logisticsInfo.setLastMsg(customerEventV3.getDescription());
             String status = getStatus(customerEventV3s);
-            if (!SysWaybill.GP.getCode().equals(status) && oldStatus.equals(status)){
+            if (!SysWaybill.GP.getCode().equals(status) && oldStatus.equals(status) && !parcel.isUpdateFlag()){
                 log.info("+++getEventsForOneWaybillByBatch+++getStatusSame waybill: {}, status: {}", parcel.getWaybill(), status);
                 return;
             }
@@ -385,7 +386,7 @@ public class DPDInfoXMLClient {
         CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
         List<CustomerEventV3> customerEventV3s = ret.getEventsList();
         String status = getStatus(customerEventV3s);
-        if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus())){
+        if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus()) && !parcel.isUpdateFlag()){
             log.info("+++dealForWaybillLByBatch+++parcel waybill same status: {}", status);
             return;
         }
@@ -503,7 +504,7 @@ public class DPDInfoXMLClient {
             CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
             logisticsInfo.setLastMsg(customerEventV3.getDescription());
             String status = getStatus(customerEventV3s);
-            if (!SysWaybill.GP.getCode().equals(status) && oldStatus.equals(status)){
+            if (!SysWaybill.GP.getCode().equals(status) && oldStatus.equals(status) && !parcel.isUpdateFlag()){
                 log.info("+++getEventsForOneWaybill+++getStatusSame waybill: {}, status: {}", parcel.getWaybill(), status);
                 return;
             }
@@ -660,7 +661,7 @@ public class DPDInfoXMLClient {
         CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
         List<CustomerEventV3> customerEventV3s = ret.getEventsList();
         String status = getStatus(customerEventV3s);
-        if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus())) {
+        if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus()) && !parcel.isUpdateFlag()) {
             log.info("+++dealForWaybillL+++parcel waybill same status: {}", status);
             return;
         }
@@ -798,7 +799,8 @@ public class DPDInfoXMLClient {
             return "";
         }
         List<CustomerEventDataV3> customerEventDataV3sL =
-                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && item.getValue().endsWith("L")).collect(Collectors.toList());
+                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) &&
+                        (item.getValue().endsWith("L") || item.getValue().endsWith("l"))).collect(Collectors.toList());
         for (CustomerEventDataV3 item : customerEventDataV3sL) {
             return item.getValue().trim();
         }
@@ -811,7 +813,8 @@ public class DPDInfoXMLClient {
         }
         List<WaybillLRel> returnList = new ArrayList<>();
         List<CustomerEventDataV3> customerEventDataV3sL =
-                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && item.getValue().endsWith("L")).collect(Collectors.toList());
+                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue())
+                        && (item.getValue().endsWith("L") || item.getValue().endsWith("l"))).collect(Collectors.toList());
         List<String> lStrings = new ArrayList<>();
         for (CustomerEventDataV3 item : customerEventDataV3sL) {
             if (lStrings.contains(item.getValue())) {
@@ -835,7 +838,7 @@ public class DPDInfoXMLClient {
         if (CollectionUtils.isEmpty(allEventDataList)) {
             return new ArrayList<>();
         }
-        return allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && item.getValue().endsWith("L"))
+        return allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && (item.getValue().endsWith("L") || item.getValue().endsWith("l")))
                 .map(item -> {
                     WaybillLRel waybillLRel = new WaybillLRel();
                     waybillLRel.setStatus(customerEventV2.getOperationType());

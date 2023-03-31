@@ -154,6 +154,11 @@ public class ImportLogicContentController extends BaseController {
         return "正在获取物流信息，请稍后查看最新消息";
     }
 
+    /**
+     * 获取当前查询物流信息
+     * @param importLogicContent
+     * @return
+     */
     @GetMapping("/refreshQuery")
     public String refreshQuery(ImportLogicContent importLogicContent) {
         List<ImportLogicContent> list = importLogicContentService.selectImportLogicContentList(importLogicContent);

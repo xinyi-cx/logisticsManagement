@@ -170,7 +170,7 @@ public class ParcelServiceImpl implements IParcelService
         cfList.stream().forEach(item -> {
                     try {
                         log.info("getParcelMsgTask running");
-                        dpdInfoXMLClient.batchUpdateParcel(item);
+                        dpdInfoXMLClient.batchUpdateParcel(item, false);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -268,7 +268,7 @@ public class ParcelServiceImpl implements IParcelService
         cfList.stream().forEach(item -> {
                     try {
                         log.info("getParcelMsg running");
-                        dpdInfoXMLClient.batchUpdateParcel(item);
+                        dpdInfoXMLClient.batchUpdateParcel(item, true);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
