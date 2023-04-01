@@ -51,6 +51,16 @@ public class Package extends BaseEntity
 
     private String parcelWaybill;
 
+    private String qtyPackages;
+
+    public String getQtyPackages() {
+        return qtyPackages;
+    }
+
+    public void setQtyPackages(String qtyPackages) {
+        this.qtyPackages = qtyPackages;
+    }
+
     public String getParcelWaybill() {
         return parcelWaybill;
     }

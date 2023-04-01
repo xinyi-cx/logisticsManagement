@@ -36,6 +36,12 @@ public class DPDTask
         parcelService.getParcelMsgTask(new Parcel());
     }
 
+    public void dpdTaskGetParcelMsgWithoutQs()
+    {
+        System.out.println("获取物流信息-签收不获取");
+        parcelService.getParcelMsgTaskWithoutQs(new Parcel());
+    }
+
     public void dpdTaskGetAllParcelMsg()
     {
         System.out.println("获取物流信息");

@@ -181,6 +181,41 @@ public class ParcelServiceImpl implements IParcelService
 
     @Override
     @Async
+    public void getParcelMsgTaskWithoutQs(Parcel parcel) {
+        log.info("getParcelMsgTaskWithoutQs start");
+        List<Parcel> needParcels = parcelMapper.selectParcelListNeedDeal(parcel);
+//        Date lastMonth = DateUtils.getDateBeforeNow(dayNum);
+        List<Parcel> parcels = needParcels.stream().filter(
+                item -> !(SysWaybill.YQS.getCode().equals(item.getStatus()))).collect(Collectors.toList());
+//        List<Parcel> parcels = needParcels;
+        log.info("getParcelMsgTaskWithoutQs size" + parcels.size());
+
+        List<List<Parcel>> cfList = StringUtils.splitList(parcels, getnum);
+
+//        parcels.parallelStream().forEach(item -> {
+//                    try {
+//                        log.info("getParcelMsgTask running");
+//                        dpdInfoXMLClient.getEventsForOneWaybill(item);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//        );
+
+        cfList.stream().forEach(item -> {
+                    try {
+                        log.info("getParcelMsgTaskWithoutQs running");
+                        dpdInfoXMLClient.batchUpdateParcel(item, false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+        log.info("getParcelMsgTaskWithoutQs end");
+    }
+
+    @Override
+    @Async
     public void getParcelMsgTrans(Parcel parcel) {
         log.info("getParcelMsgTrans start");
         List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);

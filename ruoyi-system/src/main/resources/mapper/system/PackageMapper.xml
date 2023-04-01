@@ -22,11 +22,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isDelete"    column="is_delete"    />
         <result property="downloadNum"    column="download_num"    />
         <result property="parcelWaybill"    column="parcel_waybill"    />
+        <result property="qtyPackages"    column="qty_packages"    />
     </resultMap>
 
     <sql id="selectPackageVo">
         select id, payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, batch_id,
-        create_user, update_user, created_time, updated_time, download_num, is_delete, parcel_waybill from package
+        create_user, update_user, created_time, updated_time, download_num, is_delete, parcel_waybill, qty_packages from package
     </sql>
 
     <select id="selectPackageList" parameterType="Package" resultMap="PackageResult">
@@ -131,6 +132,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         pac.updated_time,
         pac.download_num,
         pac.parcel_waybill,
+        pac.qty_packages,
         pac.is_delete
         from package pac
         inner join pack_rel_local rel
@@ -168,6 +170,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updatedTime != null"> and date_format(pac.updated_time,'%Y-%m-%d') = date_format(#{updatedTime},'%Y-%m-%d')</if>
             <if test="paramMonth != null  and paramMonth != ''">and date_format(pac.created_time,'%Y%m') = #{paramMonth}</if>
             <if test="parcelWaybill != null  and parcelWaybill != ''"> and pac.parcel_waybill = #{parcelWaybill}</if>
+            <if test="qtyPackages != null  and qtyPackages != ''"> and pac.qty_packages = #{qtyPackages}</if>
         </where>
         order by updated_time desc
     </select>
@@ -212,6 +215,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postalCode != null">postal_code,</if>
             <if test="batchId != null">batch_id,</if>
             <if test="parcelWaybill != null">parcel_waybill,</if>
+            <if test="qtyPackages != null">qty_packages,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
             created_time,
@@ -228,6 +232,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postalCode != null">#{postalCode},</if>
             <if test="batchId != null">#{batchId},</if>
             <if test="parcelWaybill != null">#{parcelWaybill},</if>
+            <if test="qtyPackages != null">#{qtyPackages},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
             sysdate(),
@@ -249,6 +254,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postalCode != null">postal_code,</if>
             <if test="batchId != null">batch_id,</if>
             <if test="parcelWaybill != null">parcel_waybill,</if>
+            <if test="qtyPackages != null">qty_packages,</if>
             <if test="createUser != null">create_user,</if>
             <if test="updateUser != null">update_user,</if>
             created_time,
@@ -266,6 +272,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postalCode != null">#{postalCode},</if>
             <if test="batchId != null">#{batchId},</if>
             <if test="parcelWaybill != null">#{parcelWaybill},</if>
+            <if test="qtyPackages != null">#{qtyPackages},</if>
             <if test="createUser != null">#{createUser},</if>
             <if test="updateUser != null">#{updateUser},</if>
             sysdate(),
@@ -274,7 +281,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <insert id="batchInsert" >
-        insert into package (id, payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, batch_id, parcel_waybill, mb_code, create_user, update_user, created_time, updated_time)
+        insert into package (id, payer_type, sender_id, receiver_id, ref1, ref2, services_id, phone, postal_code, batch_id, parcel_waybill, qty_packages, mb_code, create_user, update_user, created_time, updated_time)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
@@ -289,6 +296,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.postalCode},
             #{item.batchId},
             #{item.parcelWaybill},
+            #{item.qtyPackages},
             #{item.mbCode},
             #{item.createUser},
             #{item.updateUser},
@@ -310,6 +318,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postalCode != null">postal_code = #{postalCode},</if>
             <if test="batchId != null">batch_id = #{batchId},</if>
             <if test="parcelWaybill != null">parcel_waybill = #{parcelWaybill},</if>
+            <if test="qtyPackages != null">qty_packages = #{qtyPackages},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
             <if test="downloadNum != null">download_num = #{downloadNum},</if>
             updated_time = sysdate(),

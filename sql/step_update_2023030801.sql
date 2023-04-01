@@ -71,3 +71,7 @@ CREATE TABLE `import_logic_content_backup` (
 
 alter table package
     add column parcel_waybill varchar(100)  default null comment '物流单号';
+
+alter table package
+    add column qty_packages varchar(100)  default null comment 'Qty packages';
+
