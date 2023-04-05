@@ -184,4 +184,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <delete id="deleteRedirectRelByNewPackageIds" parameterType="String">
+        delete from redirect_rel where new_package_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and new_waybill is null
+    </delete>
 </mapper>

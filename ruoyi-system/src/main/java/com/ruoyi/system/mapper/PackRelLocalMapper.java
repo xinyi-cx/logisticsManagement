@@ -61,4 +61,7 @@ public interface PackRelLocalMapper
      * @return 结果
      */
     public int deletePackRelLocalByIds(Long[] ids);
+
+    public int deletePackRelLocalByOldPackageIds(Long[] ids);
+
 }

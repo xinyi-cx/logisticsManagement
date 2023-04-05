@@ -155,7 +155,7 @@ public class SysUserController extends BaseController {
 //            return AjaxResult.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
 //        }
         SysUser oldUser = userService.selectUserById(user.getUserId());
-        if (!oldUser.getCustomerName().equals(user.getUserName())){
+        if (!oldUser.getCustomerName().equals(user.getCustomerName())){
             if (UserConstants.NOT_UNIQUE.equals(userService.checkCustomerNameAndCountryUnique(user.getCustomerName(), user.getCountry()))) {
                 return AjaxResult.error("新增用户'" + user.getCustomerName() + "'失败，登录账号已存在");
             }

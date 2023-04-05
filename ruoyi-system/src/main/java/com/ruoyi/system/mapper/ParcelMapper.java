@@ -77,6 +77,10 @@ public interface ParcelMapper
 
     public int deleteParcelByPackIds(Long[] ids);
 
+    public int deleteParcelByWlNull();
+
+    public List<Parcel> selectParcelListWithNull();
+
     /**
      * 批量更新
      * @param list

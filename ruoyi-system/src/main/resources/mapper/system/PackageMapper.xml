@@ -338,4 +338,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </update>
+
+    <delete id="deletePackageByIdsReal" parameterType="String">
+        delete from package
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and parcel_waybill is null
+    </delete>
+
 </mapper>

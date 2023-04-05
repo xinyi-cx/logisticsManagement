@@ -89,6 +89,8 @@ public interface IParcelService
      */
     public void getAllParcelMsg();
 
+    public void deleteParcelWithWaybillIsNull();
+
     /**
      * 根据物流单号获取物流信息
      * @param waybill

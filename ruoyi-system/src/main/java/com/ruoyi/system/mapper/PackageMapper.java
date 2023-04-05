@@ -87,10 +87,18 @@ public interface PackageMapper {
     public int deletePackageById(Long id);
 
     /**
-     * 批量删除面单
+     * 逻辑删除批量删除面单
      *
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
     public int deletePackageByIds(Long[] ids);
+
+    /**
+     * 物理删除
+     * @param ids
+     * @return
+     */
+    public int deletePackageByIdsReal(Long[] ids);
+
 }

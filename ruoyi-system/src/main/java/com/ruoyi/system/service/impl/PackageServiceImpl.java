@@ -576,14 +576,14 @@ public class PackageServiceImpl implements IPackageService {
                 idPackRelLocalMap = packRelLocals.stream().collect(toMap(PackRelLocal::getOldPackageId, Function.identity()));
 //                packagesAll = packageMapper.selectPackageList(pkg);
             }else {
-                redisCache.setCacheObject(numRedisKey, 0);
+                redisCache.setCacheObject(numRedisKey, Long.parseLong("0"));
                 return new ArrayList<>();
             }
         }else {
             packagesAll = packageMapper.selectPackageList(pkg);
         }
         if (CollectionUtils.isEmpty(packagesAll)) {
-            redisCache.setCacheObject(numRedisKey, 0);
+            redisCache.setCacheObject(numRedisKey, Long.parseLong("0"));
             return new ArrayList<>();
         }else {
             redisCache.setCacheObject(numRedisKey, new PageInfo(packagesAll).getTotal());

@@ -71,6 +71,8 @@ public interface LogisticsInfoMapper
 
     public int deleteLogisticsInfoByWaybills(List<String> waybills);
 
+    public int deleteLogisticsInfoByPackIds(List<Long> packIds);
+
     public int updateRedirectNumByWaybills(List<String> waybills);
 
     public int updateRedirectNumByIds(List<Long> ids);

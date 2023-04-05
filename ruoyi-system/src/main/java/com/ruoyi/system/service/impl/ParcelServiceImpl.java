@@ -7,8 +7,7 @@ import com.ruoyi.system.DPDServicesExample.client.DPDInfoXMLClient;
 import com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events.Exception_Exception;
 import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.Parcel;
-import com.ruoyi.system.mapper.LogisticsInfoMapper;
-import com.ruoyi.system.mapper.ParcelMapper;
+import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IParcelService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -36,6 +35,18 @@ public class ParcelServiceImpl implements IParcelService
     
     @Autowired
     private ParcelMapper parcelMapper;
+
+    @Autowired
+    private PackRelLocalMapper packRelLocalMapper;
+
+    @Autowired
+    private PackageMapper packageMapper;
+
+    @Autowired
+    private RedirectRelMapper redirectRelMapper;
+
+    @Autowired
+    private ImportLogicContentMapper importLogicContentMapper;
 
     @Autowired
     private LogisticsInfoMapper logisticsInfoMapper;
@@ -310,6 +321,23 @@ public class ParcelServiceImpl implements IParcelService
                 }
         );
         log.info("getParcelMsg end");
+    }
+
+    @Override
+    public void deleteParcelWithWaybillIsNull() {
+        log.info("deleteParcelWithWaybillIsNull start");
+        List<Parcel> parcels = parcelMapper.selectParcelListWithNull();
+        if (CollectionUtils.isEmpty(parcels)){
+            return;
+        }
+        Long[] ids = parcels.stream().map(Parcel::getPackId).filter(ObjectUtils::isNotEmpty).collect(Collectors.toList()).toArray(new Long[parcels.size()]);
+
+        packageMapper.deletePackageByIdsReal(ids);
+        packRelLocalMapper.deletePackRelLocalByOldPackageIds(ids);
+        redirectRelMapper.deleteRedirectRelByNewPackageIds(ids);
+        importLogicContentMapper.deleteImportLogicContentByPackIds(ids);
+        parcelMapper.deleteParcelByWlNull();
+        log.info("deleteParcelWithWaybillIsNull end");
     }
 
 }

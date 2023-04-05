@@ -62,6 +62,7 @@ public interface RedirectRelMapper
      */
     public int deleteRedirectRelByIds(Long[] ids);
 
+    public int deleteRedirectRelByNewPackageIds(Long[] ids);
 
     /**
      * 批量添加

@@ -214,4 +214,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </update>
+
+    <delete id="deleteParcelByWlNull">
+        delete from parcel
+        where waybill is null
+    </delete>
+
+    <select id="selectParcelListWithNull" resultMap="ParcelResult">
+        <include refid="selectParcelVo"/>
+        where waybill is null
+    </select>
+
 </mapper>

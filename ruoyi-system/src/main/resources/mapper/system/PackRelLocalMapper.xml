@@ -132,4 +132,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <delete id="deletePackRelLocalByOldPackageIds" parameterType="String">
+        delete from pack_rel_local where old_package_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
 </mapper>
