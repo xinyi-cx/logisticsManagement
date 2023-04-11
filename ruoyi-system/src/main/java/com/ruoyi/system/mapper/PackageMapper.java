@@ -36,6 +36,8 @@ public interface PackageMapper {
      */
     public List<Package> selectPackageList(Package pkg);
 
+    public List<Package> selectPackageListForZf(Package pkg);
+
     public List<Package> selectPackageListForRel(Package pkg);
 
     public List<Package> selectPackageListForLocal(Package pkg);

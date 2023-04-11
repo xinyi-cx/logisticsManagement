@@ -550,6 +550,7 @@ public class DPDServicesXMLClient {
             parcel.setPackageId(sourse.getPackageId());
             parcel.setParcelId(parcelPGRV2.getParcelId());
             targetPackage.setParcelWaybill(parcelPGRV2.getWaybill());
+            targetPackage.setParcelReference(parcel.getReference());
         }
 
         ImportLogicContent importLogicContent = targetPackage.getImportLogicContent();

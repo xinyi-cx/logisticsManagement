@@ -26,6 +26,15 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="内部单号" prop="reference">
+        <el-input
+          v-model="queryParams.reference"
+          placeholder="请输入内部单号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="发件人" prop="showSenderName">
         <el-input
           v-model="queryParams.showSenderName"
@@ -516,6 +525,7 @@ export default {
         updatedTime: null,
         showSenderName: null,
         waybill: null,
+        reference: null,
         ids:[]
       },
       // 表单参数

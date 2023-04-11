@@ -75,3 +75,6 @@ alter table package
 alter table package
     add column qty_packages varchar(100)  default null comment 'Qty packages';
 
+alter table package
+    add column parcel_reference varchar(500)  default null comment '内部引用号';
+

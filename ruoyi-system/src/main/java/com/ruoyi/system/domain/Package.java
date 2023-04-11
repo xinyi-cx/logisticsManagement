@@ -51,7 +51,17 @@ public class Package extends BaseEntity
 
     private String parcelWaybill;
 
+    private String parcelReference ;
+
     private String qtyPackages;
+
+    public String getParcelReference() {
+        return parcelReference;
+    }
+
+    public void setParcelReference(String parcelReference) {
+        this.parcelReference = parcelReference;
+    }
 
     public String getQtyPackages() {
         return qtyPackages;

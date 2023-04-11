@@ -384,6 +384,9 @@ public class PackageServiceImpl implements IPackageService {
         if (ObjectUtils.isNotEmpty(packageVo.getWaybill())){
             pkg.setParcelWaybill(packageVo.getWaybill());
         }
+        if (ObjectUtils.isNotEmpty(packageVo.getReference())){
+            pkg.setParcelReference(packageVo.getReference());
+        }
         pkg.setBatchId(hisId);
         if ((!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) && ObjectUtils.isEmpty(hisId)) {
             pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
@@ -442,7 +445,7 @@ public class PackageServiceImpl implements IPackageService {
                 return 0;
             }
         }else {
-            packagesAll = packageMapper.selectPackageList(pkg);
+            packagesAll = packageMapper.selectPackageListForZf(pkg);
         }
         if (CollectionUtils.isEmpty(packagesAll)) {
             return 0;
@@ -498,6 +501,9 @@ public class PackageServiceImpl implements IPackageService {
         BeanUtils.copyProperties(packageVo, pkg);
         if (ObjectUtils.isNotEmpty(packageVo.getWaybill())){
             pkg.setParcelWaybill(packageVo.getWaybill());
+        }
+        if (ObjectUtils.isNotEmpty(packageVo.getReference())){
+            pkg.setParcelReference(packageVo.getReference());
         }
         pkg.setBatchId(hisId);
 //        if (ObjectUtils.isNotEmpty(hisId)){
@@ -580,7 +586,7 @@ public class PackageServiceImpl implements IPackageService {
                 return new ArrayList<>();
             }
         }else {
-            packagesAll = packageMapper.selectPackageList(pkg);
+            packagesAll = packageMapper.selectPackageListForZf(pkg);
         }
         if (CollectionUtils.isEmpty(packagesAll)) {
             redisCache.setCacheObject(numRedisKey, Long.parseLong("0"));

@@ -53,6 +53,24 @@
           placeholder="选择更新时间">
         </el-date-picker>
       </el-form-item>
+      <el-form-item label="物流单号" prop="waybill">
+        <el-input
+          v-model="queryParams.waybill"
+          placeholder="请输入物流单号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="内部单号" prop="reference">
+        <el-input
+          v-model="queryParams.reference"
+          placeholder="请输入内部单号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -455,6 +473,8 @@ export default {
         servicesId: null,
         phone: null,
         postalCode: null,
+        reference: null,
+        waybill: null,
         createUser: null,
         updateUser: null,
         createdTime: null,

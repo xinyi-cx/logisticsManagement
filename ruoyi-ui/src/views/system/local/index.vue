@@ -19,6 +19,32 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="创建时间" prop="createdTime">
+        <el-date-picker clearable size="small"
+                        v-model="queryParams.createdTime"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择创建时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="物流单号" prop="waybill">
+        <el-input
+          v-model="queryParams.waybill"
+          placeholder="请输入物流单号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="内部单号" prop="reference">
+        <el-input
+          v-model="queryParams.reference"
+          placeholder="请输入内部单号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -294,6 +320,8 @@ export default {
         code1: null,
         code2: null,
         code3: null,
+        reference: null,
+        waybill: null,
         countryCode: null,
         createUser: null,
         updateUser: null,
