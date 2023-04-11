@@ -21,6 +21,8 @@ public interface PackageMapper {
 
     public List<Package> selectPackageByIdIn(List<Long> ids);
 
+    public List<Package> selectPackageByBatchIdIn(List<Long> ids);
+
     /**
      * 查询面单
      *

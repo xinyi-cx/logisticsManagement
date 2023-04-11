@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,15 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
 
     @Autowired
     private ParcelMapper parcelMapper;
+
+    @Autowired
+    private ImportLogicContentMapper importLogicContentMapper;
+
+    @Autowired
+    private PackRelLocalMapper packRelLocalMapper;
+
+    @Autowired
+    private RedirectRelMapper redirectRelMapper;
 
     @Autowired
     private DocumentsMapper documentsMapper;
@@ -107,13 +117,22 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     /**
      * 批量删除批量任务历史
      * 
-     * @param ids 需要删除的批量任务历史主键
+     * @param hisIds 需要删除的批量任务历史主键
      * @return 结果
      */
     @Override
-    public int deleteBatchTaskHistoryByIds(Long[] ids)
+    public int deleteBatchTaskHistoryByIds(Long[] hisIds)
     {
-        return batchTaskHistoryMapper.deleteBatchTaskHistoryByIds(ids);
+        List<Package> packages = packageMapper.selectPackageByBatchIdIn(Arrays.asList(hisIds));
+        Long[] ids = packages.stream().map(Package::getId).collect(Collectors.toList()).toArray(new Long[packages.size()]);
+
+        parcelMapper.deleteParcelByPackIdsReal(ids);
+        importLogicContentMapper.deleteImportLogicContentByPackIdsReal(ids);
+        packageMapper.deletePackageByIdsReal(ids);
+        packRelLocalMapper.deletePackRelLocalByOldPackageIds(ids);
+        redirectRelMapper.deleteRedirectRelByNewPackageIds(ids);
+
+        return batchTaskHistoryMapper.deleteBatchTaskHistoryByIds(hisIds);
     }
 
     /**

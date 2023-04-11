@@ -220,6 +220,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where waybill is null
     </delete>
 
+    <delete id="deleteParcelByPackIdsReal" parameterType="String">
+        delete from parcel
+        where pack_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
     <select id="selectParcelListWithNull" resultMap="ParcelResult">
         <include refid="selectParcelVo"/>
         where waybill is null

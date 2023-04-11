@@ -259,6 +259,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </select>
 
+    <select id="selectPackageByBatchIdIn" parameterType="list" resultMap="PackageResult">
+        <include refid="selectPackageVo"/>
+        where batch_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <select id="selectMaxId"  resultType="long">
         select max(id)
             from package
