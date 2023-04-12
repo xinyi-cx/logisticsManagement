@@ -239,7 +239,7 @@ public class SysUserServiceImpl implements ISysUserService
         paramUser.setCountry(country);
         paramUser.setCustomerName(customerName);
         int count = userMapper.selectUserListByParam(paramUser).size();
-        if (count > 1)
+        if (count > 0)
         {
             return UserConstants.NOT_UNIQUE;
         }
