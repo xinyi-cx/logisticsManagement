@@ -157,7 +157,7 @@ public class SysUserController extends BaseController {
         SysUser oldUser = userService.selectUserById(user.getUserId());
         if (!oldUser.getCustomerName().equals(user.getCustomerName())){
             if (UserConstants.NOT_UNIQUE.equals(userService.checkCustomerNameAndCountryUnique(user.getCustomerName(), user.getCountry()))) {
-                return AjaxResult.error("新增用户'" + user.getCustomerName() + "'失败，登录账号已存在");
+                return AjaxResult.error("更新用户'" + user.getCustomerName() + "'失败，登录账号已存在");
             }
         }
         user.setUpdateBy(getUsername());
