@@ -85,8 +85,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         pac.parcel_reference,
         pac.is_delete
         from package pac
-        Select *
-        from package pac
         where Not Exists
         (
         Select rel.new_package_id
@@ -97,7 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (
         Select localRel.old_package_id
         from pack_rel_local localRel
-        on pac.id = localRel.old_package_id
+        where pac.id = localRel.old_package_id
         )
         and
             pac.is_delete = 0

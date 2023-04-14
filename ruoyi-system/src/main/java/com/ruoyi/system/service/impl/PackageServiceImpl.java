@@ -105,6 +105,9 @@ public class PackageServiceImpl implements IPackageService {
     @Autowired
     private RedisCache redisCache;
 
+    @Value("${ybwlflag}")
+    private Boolean ybwlflag;
+
     /**
      * 查询面单
      *
@@ -1243,7 +1246,9 @@ public class PackageServiceImpl implements IPackageService {
             batchTaskHistory.setSuccessNum(importLogicContents.size());
             batchTaskHistory.setFailNum(0);
             // 异步查询一下物流信息
-            dpdInfoXMLClient.getLogic(parcels);
+            if (Boolean.TRUE.equals(ybwlflag)){
+                dpdInfoXMLClient.getLogic(parcels);
+            }
             return "物流信息导入成功，请稍后查询最新物流信息";
 //                    +
 //                    batchTaskHistory.getSuccessNum() + "条，失败" +
