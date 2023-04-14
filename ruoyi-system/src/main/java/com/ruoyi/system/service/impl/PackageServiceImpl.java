@@ -1249,7 +1249,10 @@ public class PackageServiceImpl implements IPackageService {
             if (Boolean.TRUE.equals(ybwlflag)){
                 dpdInfoXMLClient.getLogic(parcels);
             }
-            return "物流信息导入成功，请稍后查询最新物流信息";
+            if (Boolean.TRUE.equals(ybwlflag)){
+                return "物流信息导入成功，请稍后查询最新物流信息";
+            }
+            return "物流信息导入成功，请手动查询最新物流信息";
 //                    +
 //                    batchTaskHistory.getSuccessNum() + "条，失败" +
 //                    batchTaskHistory.getFailNum() + "条。\n";
