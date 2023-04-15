@@ -124,14 +124,22 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     public int deleteBatchTaskHistoryByIds(Long[] hisIds)
     {
         List<Package> packages = packageMapper.selectPackageByBatchIdIn(Arrays.asList(hisIds));
-        Long[] ids = packages.stream().map(Package::getId).collect(Collectors.toList()).toArray(new Long[packages.size()]);
+        if (CollectionUtils.isEmpty(packages)){
 
-        parcelMapper.deleteParcelByPackIdsReal(ids);
-        importLogicContentMapper.deleteImportLogicContentByPackIdsReal(ids);
-        packageMapper.deletePackageByIdsReal(ids);
-        packRelLocalMapper.deletePackRelLocalByOldPackageIds(ids);
-        redirectRelMapper.deleteRedirectRelByNewPackageIds(ids);
+            List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentByBatIdsIn(Arrays.asList(hisIds));
+            List<String> waybills = importLogicContents.stream().map(ImportLogicContent::getNewWaybill).collect(Collectors.toList());
+            parcelMapper.deleteParcelByWaybillssReal(waybills);
+            importLogicContentMapper.deleteImportLogicContentByIds(
+                    importLogicContents.stream().map(ImportLogicContent::getId).collect(Collectors.toList()).toArray(new Long[importLogicContents.size()]));
+        }else {
+            Long[] ids = packages.stream().map(Package::getId).collect(Collectors.toList()).toArray(new Long[packages.size()]);
 
+            parcelMapper.deleteParcelByPackIdsReal(ids);
+            importLogicContentMapper.deleteImportLogicContentByPackIdsReal(ids);
+            packageMapper.deletePackageByIdsReal(ids);
+            packRelLocalMapper.deletePackRelLocalByOldPackageIds(ids);
+            redirectRelMapper.deleteRedirectRelByNewPackageIds(ids);
+        }
         return batchTaskHistoryMapper.deleteBatchTaskHistoryByIds(hisIds);
     }
 

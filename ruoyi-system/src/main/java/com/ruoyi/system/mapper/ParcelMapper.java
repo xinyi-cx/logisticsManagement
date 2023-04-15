@@ -79,6 +79,8 @@ public interface ParcelMapper
 
     public int deleteParcelByPackIdsReal(Long[] ids);
 
+    public int deleteParcelByWaybillssReal(List<String> waybills);
+
     public int deleteParcelByWlNull();
 
     public List<Parcel> selectParcelListWithNull();

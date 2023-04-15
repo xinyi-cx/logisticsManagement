@@ -24,6 +24,8 @@ public interface ImportLogicContentMapper
 
     public List<ImportLogicContent> selectImportLogicContentByNewWaybillIn(List<String> waybills);
 
+    public List<ImportLogicContent> selectImportLogicContentByBatIdsIn(List<Long> batIds);
+
     /**
      * 查询导入查询物流列表
      * 
