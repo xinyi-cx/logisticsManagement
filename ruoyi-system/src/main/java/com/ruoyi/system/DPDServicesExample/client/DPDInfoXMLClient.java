@@ -80,8 +80,6 @@ public class DPDInfoXMLClient {
     //    @PostConstruct
     public void runExamples() {
         Parcel parcel = new Parcel();
-//        0000368219706W
-//        0000368219709W
         parcel.setWaybill("0000370741582W");
 //        getEventsForOneWaybill(parcel);
         getEventsForWaybills();
@@ -101,9 +99,10 @@ public class DPDInfoXMLClient {
         WaybillLRel waybillLRel = new WaybillLRel();
         waybillLRel.setWaybill(logisticsInfo.getWaybill());
         List<WaybillLRel> waybillLRelList = waybillLRelMapper.selectWaybillLRelList(waybillLRel);
+        String oldStatus = logisticsInfo.getStatus();
 
         try {
-            if (!CollectionUtils.isEmpty(waybillLRelList)){
+            if ((!SysWaybill.YTJ.getCode().equals(oldStatus)) && (!CollectionUtils.isEmpty(waybillLRelList))) {
                 dealForWaybillL(new Parcel(), waybillLRelList, logisticsInfo);
                 return;
             }
@@ -214,7 +213,7 @@ public class DPDInfoXMLClient {
 
         String oldStatus = parcel.getStatus();
         try {
-            if (!CollectionUtils.isEmpty(waybillLRelList)){
+            if ((!SysWaybill.YTJ.getCode().equals(oldStatus)) && (!CollectionUtils.isEmpty(waybillLRelList))) {
                 dealForWaybillLByBatch(parcel, waybillLRelList, logisticsInfo,
                         dealParcels,
                         updateWaybillLRels,
@@ -477,7 +476,7 @@ public class DPDInfoXMLClient {
 
         String oldStatus = parcel.getStatus();
         try {
-            if (!CollectionUtils.isEmpty(waybillLRelList)){
+            if ((!SysWaybill.YTJ.getCode().equals(oldStatus)) && (!CollectionUtils.isEmpty(waybillLRelList))) {
                 dealForWaybillL(parcel, waybillLRelList, logisticsInfo);
                 return;
             }
@@ -573,9 +572,10 @@ public class DPDInfoXMLClient {
         WaybillLRel waybillLRel = new WaybillLRel();
         waybillLRel.setWaybill(parcel.getWaybill());
         List<WaybillLRel> waybillLRelList = waybillLRelMapper.selectWaybillLRelList(waybillLRel);
+        String oldStatus = parcel.getStatus();
 
         try {
-            if (!CollectionUtils.isEmpty(waybillLRelList)){
+            if ((!SysWaybill.YTJ.getCode().equals(oldStatus)) && (!CollectionUtils.isEmpty(waybillLRelList))) {
                 dealForWaybillL(parcel, waybillLRelList, logisticsInfo);
                 return;
             }

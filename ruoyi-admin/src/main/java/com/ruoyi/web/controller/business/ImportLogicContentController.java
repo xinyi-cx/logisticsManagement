@@ -82,16 +82,6 @@ public class ImportLogicContentController extends BaseController {
         return AjaxResult.success(importLogicContentService.importLogicContentForTj(file, importLogicContents));
     }
 
-//    @Log(title = "面单导入", businessType = BusinessType.IMPORT)
-//    @PreAuthorize("@ss.hasPermi('system:package:add')")
-//    @PostMapping("/importData")
-//    public AjaxResult importData(MultipartFile file) throws Exception
-//    {
-//        ExcelUtil<ImportLogicContentVo> util = new ExcelUtil<ImportLogicContentVo>(ImportLogicContentVo.class);
-//        List<ImportLogicContentVo> importLogicContentVos = util.importExcel(file.getInputStream());
-//        return AjaxResult.success(importLogicContentService.importPackage(file, importLogicContentVos));
-//    }
-
     /**
      * 导出导入查询物流列表
      */
