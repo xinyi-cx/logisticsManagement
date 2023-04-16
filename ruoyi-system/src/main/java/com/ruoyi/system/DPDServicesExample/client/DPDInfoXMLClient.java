@@ -799,7 +799,7 @@ public class DPDInfoXMLClient {
             return "";
         }
         List<CustomerEventDataV3> customerEventDataV3sL =
-                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) &&
+                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && !item.getValue().contains("@") ||
                         (item.getValue().endsWith("L") || item.getValue().endsWith("l"))).collect(Collectors.toList());
         for (CustomerEventDataV3 item : customerEventDataV3sL) {
             return item.getValue().trim();
@@ -813,7 +813,7 @@ public class DPDInfoXMLClient {
         }
         List<WaybillLRel> returnList = new ArrayList<>();
         List<CustomerEventDataV3> customerEventDataV3sL =
-                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue())
+                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && !item.getValue().contains("@")
                         && (item.getValue().endsWith("L") || item.getValue().endsWith("l"))).collect(Collectors.toList());
         List<String> lStrings = new ArrayList<>();
         for (CustomerEventDataV3 item : customerEventDataV3sL) {
