@@ -122,4 +122,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{waybill}
         </foreach>
     </update>
+
+    <delete id="deleteWaybillLRelByWaybillsRel" parameterType="list">
+        delete from waybill_l_rel
+        where waybill in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>

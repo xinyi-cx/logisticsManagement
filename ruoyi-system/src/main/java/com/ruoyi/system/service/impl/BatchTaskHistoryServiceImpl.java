@@ -43,6 +43,9 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     private ParcelMapper parcelMapper;
 
     @Autowired
+    private WaybillLRelMapper waybillLRelMapper;
+
+    @Autowired
     private ImportLogicContentMapper importLogicContentMapper;
 
     @Autowired
@@ -124,11 +127,12 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     public int deleteBatchTaskHistoryByIds(Long[] hisIds)
     {
         List<Package> packages = packageMapper.selectPackageByBatchIdIn(Arrays.asList(hisIds));
+        List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentByBatIdsIn(Arrays.asList(hisIds));
+        List<String> waybills = importLogicContents.stream().map(ImportLogicContent::getNewWaybill).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(packages)){
 
-            List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentByBatIdsIn(Arrays.asList(hisIds));
-            List<String> waybills = importLogicContents.stream().map(ImportLogicContent::getNewWaybill).collect(Collectors.toList());
             parcelMapper.deleteParcelByWaybillssReal(waybills);
+            waybillLRelMapper.deleteWaybillLRelByWaybillsRel(waybills);
             importLogicContentMapper.deleteImportLogicContentByIds(
                     importLogicContents.stream().map(ImportLogicContent::getId).collect(Collectors.toList()).toArray(new Long[importLogicContents.size()]));
         }else {
@@ -136,6 +140,7 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
 
             parcelMapper.deleteParcelByPackIdsReal(ids);
             importLogicContentMapper.deleteImportLogicContentByPackIdsReal(ids);
+            waybillLRelMapper.deleteWaybillLRelByWaybillsRel(waybills);
             packageMapper.deletePackageByIdsReal(ids);
             packRelLocalMapper.deletePackRelLocalByOldPackageIds(ids);
             redirectRelMapper.deleteRedirectRelByNewPackageIds(ids);
