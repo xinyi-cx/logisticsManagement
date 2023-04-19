@@ -100,6 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ) tba
         <where>
             is_delete = 0
+            and new_waybill is not null
             <choose>
             <when  test="ids!= null and ids.size()>0" >
                 AND id in
