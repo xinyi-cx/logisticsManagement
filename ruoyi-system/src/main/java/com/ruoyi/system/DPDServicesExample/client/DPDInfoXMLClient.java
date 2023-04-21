@@ -102,6 +102,10 @@ public class DPDInfoXMLClient {
         String oldStatus = logisticsInfo.getStatus();
 
         try {
+            if (SysWaybill.YTJ.getCode().equals(oldStatus)){
+                log.info("+++getEventsByLogisticsInfo+++parcel id string: {} 已经退件，不再获取物流", logisticsInfo.getWaybill());
+                return;
+            }
             if ((!SysWaybill.YTJ.getCode().equals(oldStatus)) && (!CollectionUtils.isEmpty(waybillLRelList))) {
                 dealForWaybillL(new Parcel(), waybillLRelList, logisticsInfo);
                 return;
@@ -213,6 +217,10 @@ public class DPDInfoXMLClient {
 
         String oldStatus = parcel.getStatus();
         try {
+            if (SysWaybill.YTJ.getCode().equals(oldStatus)){
+                log.info("+++getEventsForOneWaybillByBatch+++parcel id string: {} 已经退件，不再获取物流", parcel.getWaybill());
+                return;
+            }
             if ((!SysWaybill.YTJ.getCode().equals(oldStatus)) && (!CollectionUtils.isEmpty(waybillLRelList))) {
                 dealForWaybillLByBatch(parcel, waybillLRelList, logisticsInfo,
                         dealParcels,
@@ -476,6 +484,10 @@ public class DPDInfoXMLClient {
 
         String oldStatus = parcel.getStatus();
         try {
+            if (SysWaybill.YTJ.getCode().equals(oldStatus)){
+                log.info("+++getEventsForOneWaybill+++parcel id string: {} 已经退件，不再获取物流", parcel.getWaybill());
+                return;
+            }
             if ((!SysWaybill.YTJ.getCode().equals(oldStatus)) && (!CollectionUtils.isEmpty(waybillLRelList))) {
                 dealForWaybillL(parcel, waybillLRelList, logisticsInfo);
                 return;
@@ -575,6 +587,10 @@ public class DPDInfoXMLClient {
         String oldStatus = parcel.getStatus();
 
         try {
+            if (SysWaybill.YTJ.getCode().equals(oldStatus)){
+                log.info("+++getEventsForOneWaybillByBatch+++parcel id string: {} 已经退件，不再获取物流", parcel.getWaybill());
+                return;
+            }
             if ((!SysWaybill.YTJ.getCode().equals(oldStatus)) && (!CollectionUtils.isEmpty(waybillLRelList))) {
                 dealForWaybillL(parcel, waybillLRelList, logisticsInfo);
                 return;
