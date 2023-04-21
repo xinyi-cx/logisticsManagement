@@ -671,6 +671,9 @@ public class DPDInfoXMLClient {
      */
     private void dealForWaybillL(Parcel parcel, List<WaybillLRel> waybillLRels, LogisticsInfo logisticsInfo) throws Exception_Exception {
         log.info("+++dealForWaybillL+++parcel waybill string: {}", parcel.getWaybill());
+        if (SysWaybill.YTJ.getCode().equals(parcel.getStatus())){
+            return;
+        }
         AuthDataV1 authData = getAuthData();
         WaybillLRel waybillLRel = waybillLRels.get(0);
         List<CustomerEventDataV3> allEventDataList = new ArrayList<>();
