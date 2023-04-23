@@ -393,6 +393,10 @@ public class DPDInfoXMLClient {
         CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
         List<CustomerEventV3> customerEventV3s = ret.getEventsList();
         String status = getStatus(customerEventV3s);
+        if (SysWaybill.WJH.getCode().equals(status)){
+            log.info("转寄未激活");
+            return;
+        }
         if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus()) && !parcel.isUpdateFlag()){
             log.info("+++dealForWaybillLByBatch+++parcel waybill same status: {}", status);
             return;
@@ -680,6 +684,10 @@ public class DPDInfoXMLClient {
         CustomerEventsResponseV3 ret = dpdInfoServicesObjEvents.getEventsForWaybillV1(waybillLRel.getWaybillL(), EventsSelectTypeEnum.ALL, "EN", authData);
         List<CustomerEventV3> customerEventV3s = ret.getEventsList();
         String status = getStatus(customerEventV3s);
+        if (SysWaybill.WJH.getCode().equals(status)){
+            log.info("转寄未激活");
+            return;
+        }
         if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus()) && !parcel.isUpdateFlag()) {
             log.info("+++dealForWaybillL+++parcel waybill same status: {}", status);
             return;
@@ -818,7 +826,7 @@ public class DPDInfoXMLClient {
             return "";
         }
         List<CustomerEventDataV3> customerEventDataV3sL =
-                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && !item.getValue().contains("@") ||
+                allEventDataList.stream().filter(item -> StringUtils.isNotEmpty(item.getValue()) && !item.getValue().contains("@") &&
                         (item.getValue().endsWith("L") || item.getValue().endsWith("l"))).collect(Collectors.toList());
         for (CustomerEventDataV3 item : customerEventDataV3sL) {
             return item.getValue().trim();
