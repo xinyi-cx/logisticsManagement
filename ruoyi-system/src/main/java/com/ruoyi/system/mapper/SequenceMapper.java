@@ -1,7 +1,9 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
 import com.ruoyi.system.domain.Sequence;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 【请填写功能名称】Mapper接口
@@ -42,6 +44,8 @@ public interface SequenceMapper
      * @return 【请填写功能名称】集合
      */
     public Long selectCurrvalByName(String seqName);
+
+    public Long selectNextvalWithSizeByName(Map paramMap);
 
     /**
      * 新增【请填写功能名称】

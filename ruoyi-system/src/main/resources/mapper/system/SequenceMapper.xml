@@ -18,6 +18,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select nextval(#{seqName})
     </select>
 
+    <select id="selectNextvalWithSizeByName" resultType="long">
+        select nextvalWithSize(#{seqName}, #{seqSize})
+    </select>
+
     <select id="selectCurrvalByName" parameterType="String" resultType="long">
         select currval(#{seqName})
     </select>
