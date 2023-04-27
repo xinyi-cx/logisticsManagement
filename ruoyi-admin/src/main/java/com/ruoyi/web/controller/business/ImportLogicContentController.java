@@ -44,7 +44,6 @@ public class ImportLogicContentController extends BaseController {
     /**
      * 查询导入查询物流列表
      */
-    @PreAuthorize("@ss.hasPermi('system:content:list')")
     @GetMapping("/list")
     public TableDataInfo list(ImportLogicContent importLogicContent) {
         startPage();
