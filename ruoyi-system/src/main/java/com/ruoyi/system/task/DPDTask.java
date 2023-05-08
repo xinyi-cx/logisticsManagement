@@ -1,5 +1,6 @@
 package com.ruoyi.system.task;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.Parcel;
 import com.ruoyi.system.service.IParcelService;
@@ -52,6 +53,12 @@ public class DPDTask
     {
         System.out.println("删除物流信息-不包含物流单号");
         parcelService.deleteParcelWithWaybillIsNull();
+    }
+
+    public void clearDocuments(Integer dayBefore)
+    {
+        System.out.println("清除Documents表文件数据");
+        parcelService.clearDocuments(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.getDateBeforeNow(dayBefore)));
     }
 
 }

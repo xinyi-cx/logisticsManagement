@@ -147,6 +147,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="clearDocuments" parameterType="String">
+        update documents
+        set file_data = null
+        where left(created_time,10) &lt;= #{endDate}
+    </update>
+
     <delete id="deleteDocumentsById" parameterType="Long">
         delete from documents where id = #{id}
     </delete>

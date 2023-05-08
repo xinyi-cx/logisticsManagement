@@ -51,6 +51,20 @@ public class ImportLogicContentController extends BaseController {
         return getDataTable(list);
     }
 
+    @GetMapping("/listNoReport")
+    public TableDataInfo listNoReport(ImportLogicContent importLogicContent) {
+        startPage();
+        List<ImportLogicContent> list = importLogicContentService.selectImportLogicContentListNoReport(importLogicContent);
+        return getDataTable(list);
+    }
+
+    @GetMapping("/listReport")
+    public TableDataInfo listReport(ImportLogicContent importLogicContent) {
+        startPage();
+        List<ImportLogicContent> list = importLogicContentService.selectImportLogicContentListReport(importLogicContent);
+        return getDataTable(list);
+    }
+
     @PostMapping("/importTemplateNoGen")
     public void importTemplateNoGen(HttpServletResponse response)
     {
@@ -89,6 +103,22 @@ public class ImportLogicContentController extends BaseController {
     public void export(HttpServletResponse response, ImportLogicContent importLogicContent) {
         List<ExportLogicContentVo> list = importLogicContentService.exportImportLogicContentList(importLogicContent);
         ExcelUtil<ExportLogicContentVo> util = new ExcelUtil<ExportLogicContentVo>(ExportLogicContentVo.class);
+        util.exportExcel(response, list, "sheet1");
+    }
+
+    @Log(title = "导出", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportNoReport")
+    public void exportNoReport(HttpServletResponse response, ImportLogicContent importLogicContent) {
+        List<ExportLogicContentCODVo> list = importLogicContentService.exportImportLogicContentListNoReport(importLogicContent);
+        ExcelUtil<ExportLogicContentCODVo> util = new ExcelUtil<ExportLogicContentCODVo>(ExportLogicContentCODVo.class);
+        util.exportExcel(response, list, "sheet1");
+    }
+
+    @Log(title = "导出", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportReport")
+    public void exportReport(HttpServletResponse response, ImportLogicContent importLogicContent) {
+        List<ExportLogicContentCODVo> list = importLogicContentService.exportImportLogicContentListReport(importLogicContent);
+        ExcelUtil<ExportLogicContentCODVo> util = new ExcelUtil<ExportLogicContentCODVo>(ExportLogicContentCODVo.class);
         util.exportExcel(response, list, "sheet1");
     }
 

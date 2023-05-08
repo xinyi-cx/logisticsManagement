@@ -2,7 +2,7 @@ drop table if exists user_fid_rel;
 CREATE TABLE user_fid_rel
 (
     id            bigint(20) unsigned NOT NULL AUTO_INCREMENT comment '主键',
-    user_id       bigint(20) not null auto_increment comment '用户ID',
+    user_id       bigint(20) not null comment '用户ID',
     user_name     varchar(30)  default null comment '用户账号',
     customer_name varchar(30)  default null comment '用户账号',
     nick_name     varchar(30)  default null comment '用户昵称',

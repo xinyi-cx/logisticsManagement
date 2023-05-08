@@ -21,7 +21,7 @@ CREATE TABLE `cod_report`
     `postal_code`                   varchar(200) DEFAULT NULL comment '邮政编码',
     `area`                          varchar(200) DEFAULT NULL comment '地区',
     `street`                        varchar(200) DEFAULT NULL comment '街',
-    `unisoft_Client_content_field`  varchar(500) DEFAULT NULL comment 'Unisoft-Client 中的内容字段',
+    `unisoft_Client_content_field`  varchar(500) DEFAULT NULL comment 'Unisoft-Client中的内容字段',
     `batch_transmission`            varchar(200) DEFAULT NULL comment '批量传输',
     `collective_transfer_date`      varchar(200) DEFAULT NULL comment '集体移送日期',
     `settlement_number`             varchar(200) DEFAULT NULL comment '结算编号 （怀俄明州）',
@@ -44,4 +44,33 @@ CREATE TABLE `cod_report`
 ) engine = innodb
   CHARSET = utf8
   auto_increment = 200 comment = 'COD报告表';
+
+CREATE INDEX index_cod_report_waybill ON cod_report (waybill);
+
+INSERT INTO business.sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+VALUES (13, '报告管理', 0, 4, 'report', null, '', 1, 0, 'M', '0', '0', '', 'monitor', 'admin', '2023-05-02 17:58:27', '', null, '报告管理目录');
+
+
+-- 菜单 SQL
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('COD报告', '13', '1', 'report', 'system/report/index', 1, 0, 'C', '0', '0', 'system:report:list', '#', 'admin', sysdate(), '', null, 'COD报告菜单');
+
+-- 按钮父菜单ID
+SELECT @parentId := LAST_INSERT_ID();
+
+-- 按钮 SQL
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('COD报告查询', @parentId, '1',  '#', '', 1, 0, 'F', '0', '0', 'system:report:query',        '#', 'admin', sysdate(), '', null, '');
+
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('COD报告新增', @parentId, '2',  '#', '', 1, 0, 'F', '0', '0', 'system:report:add',          '#', 'admin', sysdate(), '', null, '');
+
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('COD报告修改', @parentId, '3',  '#', '', 1, 0, 'F', '0', '0', 'system:report:edit',         '#', 'admin', sysdate(), '', null, '');
+
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('COD报告删除', @parentId, '4',  '#', '', 1, 0, 'F', '0', '0', 'system:report:remove',       '#', 'admin', sysdate(), '', null, '');
+
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('COD报告导出', @parentId, '5',  '#', '', 1, 0, 'F', '0', '0', 'system:report:export',       '#', 'admin', sysdate(), '', null, '');
 

@@ -118,6 +118,11 @@ public class ImportLogicContent extends BaseEntity
     @Excel(name = "最近物流时间")
     private String lastStatusDate;
 
+    /**
+     * COD报告时间
+     */
+    private String collectiveTransferDate;
+
     /** 状态 */
     @Excel(name = "状态")
     private String status;
@@ -142,6 +147,14 @@ public class ImportLogicContent extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date activeTimeEnd;
+
+    public String getCollectiveTransferDate() {
+        return collectiveTransferDate;
+    }
+
+    public void setCollectiveTransferDate(String collectiveTransferDate) {
+        this.collectiveTransferDate = collectiveTransferDate;
+    }
 
     public String getFileName() {
         return fileName;

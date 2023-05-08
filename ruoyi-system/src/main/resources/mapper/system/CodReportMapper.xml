@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CodReportMapper">
+    
+    <resultMap type="CodReport" id="CodReportResult">
+        <result property="id"    column="id"    />
+        <result property="documentFileId"    column="document_file_id"    />
+        <result property="packId"    column="pack_id"    />
+        <result property="batchId"    column="batch_id"    />
+        <result property="logicId"    column="logic_id"    />
+        <result property="client"    column="client"    />
+        <result property="country"    column="country"    />
+        <result property="importType"    column="import_type"    />
+        <result property="loginid"    column="loginId"    />
+        <result property="nrKlienta"    column="nr_klienta"    />
+        <result property="downloadRecipient"    column="download_recipient"    />
+        <result property="waybill"    column="waybill"    />
+        <result property="waybillPostingDate"    column="waybill_posting_date"    />
+        <result property="cashOnDelivery"    column="cash_on_delivery"    />
+        <result property="goodsEffectiveDeliveryDate"    column="goods_effective_delivery_date"    />
+        <result property="addressee"    column="addressee"    />
+        <result property="postalCode"    column="postal_code"    />
+        <result property="area"    column="area"    />
+        <result property="street"    column="street"    />
+        <result property="unisoftClientContentField"    column="unisoft_Client_content_field"    />
+        <result property="batchTransmission"    column="batch_transmission"    />
+        <result property="collectiveTransferDate"    column="collective_transfer_date"    />
+        <result property="settlementNumber"    column="settlement_number"    />
+        <result property="sysActivedDate"    column="sys_actived_date"    />
+        <result property="sysLastStatusDate"    column="sys_last_status_date"    />
+        <result property="sysSignDate"    column="sys_sign_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="remark2"    column="remark2"    />
+        <result property="remark3"    column="remark3"    />
+        <result property="remark4"    column="remark4"    />
+        <result property="remark5"    column="remark5"    />
+        <result property="isDelete"    column="is_delete"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCodReportVo">
+        select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type, loginId, nr_klienta, download_recipient, waybill, waybill_posting_date, cash_on_delivery, goods_effective_delivery_date, addressee, postal_code, area, street, unisoft_Client_content_field, batch_transmission, collective_transfer_date, settlement_number, sys_actived_date, sys_last_status_date, sys_sign_date, remark, remark2, remark3, remark4, remark5, is_delete, create_by, create_time, update_by, update_time from cod_report
+    </sql>
+
+    <select id="selectCodReportList" parameterType="CodReport" resultMap="CodReportResult">
+        <include refid="selectCodReportVo"/>
+        <where>  
+            <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
+            <if test="packId != null "> and pack_id = #{packId}</if>
+            <if test="batchId != null "> and batch_id = #{batchId}</if>
+            <if test="logicId != null "> and logic_id = #{logicId}</if>
+            <if test="client != null  and client != ''"> and client = #{client}</if>
+            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="importType != null  and importType != ''"> and import_type = #{importType}</if>
+            <if test="loginid != null  and loginid != ''"> and loginId = #{loginid}</if>
+            <if test="nrKlienta != null  and nrKlienta != ''"> and nr_klienta = #{nrKlienta}</if>
+            <if test="downloadRecipient != null  and downloadRecipient != ''"> and download_recipient = #{downloadRecipient}</if>
+            <if test="waybill != null  and waybill != ''"> and waybill = #{waybill}</if>
+            <if test="waybillPostingDate != null  and waybillPostingDate != ''"> and waybill_posting_date = #{waybillPostingDate}</if>
+            <if test="cashOnDelivery != null  and cashOnDelivery != ''"> and cash_on_delivery = #{cashOnDelivery}</if>
+            <if test="goodsEffectiveDeliveryDate != null  and goodsEffectiveDeliveryDate != ''"> and goods_effective_delivery_date = #{goodsEffectiveDeliveryDate}</if>
+            <if test="addressee != null  and addressee != ''"> and addressee = #{addressee}</if>
+            <if test="postalCode != null  and postalCode != ''"> and postal_code = #{postalCode}</if>
+            <if test="area != null  and area != ''"> and area = #{area}</if>
+            <if test="street != null  and street != ''"> and street = #{street}</if>
+            <if test="unisoftClientContentField != null  and unisoftClientContentField != ''"> and unisoft_Client_content_field = #{unisoftClientContentField}</if>
+            <if test="batchTransmission != null  and batchTransmission != ''"> and batch_transmission = #{batchTransmission}</if>
+            <if test="collectiveTransferDate != null  and collectiveTransferDate != ''"> and collective_transfer_date = #{collectiveTransferDate}</if>
+            <if test="settlementNumber != null  and settlementNumber != ''"> and settlement_number = #{settlementNumber}</if>
+            <if test="sysActivedDate != null  and sysActivedDate != ''"> and sys_actived_date = #{sysActivedDate}</if>
+            <if test="sysLastStatusDate != null  and sysLastStatusDate != ''"> and sys_last_status_date = #{sysLastStatusDate}</if>
+            <if test="sysSignDate != null  and sysSignDate != ''"> and sys_sign_date = #{sysSignDate}</if>
+            <if test="remark2 != null  and remark2 != ''"> and remark2 = #{remark2}</if>
+            <if test="remark3 != null  and remark3 != ''"> and remark3 = #{remark3}</if>
+            <if test="remark4 != null  and remark4 != ''"> and remark4 = #{remark4}</if>
+            <if test="remark5 != null  and remark5 != ''"> and remark5 = #{remark5}</if>
+            <if test="isDelete != null "> and is_delete = #{isDelete}</if>
+        </where>
+    </select>
+    
+    <select id="selectCodReportById" parameterType="Long" resultMap="CodReportResult">
+        <include refid="selectCodReportVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCodReport" parameterType="CodReport" useGeneratedKeys="true" keyProperty="id">
+        insert into cod_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="documentFileId != null">document_file_id,</if>
+            <if test="packId != null">pack_id,</if>
+            <if test="batchId != null">batch_id,</if>
+            <if test="logicId != null">logic_id,</if>
+            <if test="client != null">client,</if>
+            <if test="country != null">country,</if>
+            <if test="importType != null">import_type,</if>
+            <if test="loginid != null">loginId,</if>
+            <if test="nrKlienta != null">nr_klienta,</if>
+            <if test="downloadRecipient != null">download_recipient,</if>
+            <if test="waybill != null">waybill,</if>
+            <if test="waybillPostingDate != null">waybill_posting_date,</if>
+            <if test="cashOnDelivery != null">cash_on_delivery,</if>
+            <if test="goodsEffectiveDeliveryDate != null">goods_effective_delivery_date,</if>
+            <if test="addressee != null">addressee,</if>
+            <if test="postalCode != null">postal_code,</if>
+            <if test="area != null">area,</if>
+            <if test="street != null">street,</if>
+            <if test="unisoftClientContentField != null">unisoft_Client_content_field,</if>
+            <if test="batchTransmission != null">batch_transmission,</if>
+            <if test="collectiveTransferDate != null">collective_transfer_date,</if>
+            <if test="settlementNumber != null">settlement_number,</if>
+            <if test="sysActivedDate != null">sys_actived_date,</if>
+            <if test="sysLastStatusDate != null">sys_last_status_date,</if>
+            <if test="sysSignDate != null">sys_sign_date,</if>
+            <if test="remark != null">remark,</if>
+            <if test="remark2 != null">remark2,</if>
+            <if test="remark3 != null">remark3,</if>
+            <if test="remark4 != null">remark4,</if>
+            <if test="remark5 != null">remark5,</if>
+            <if test="isDelete != null">is_delete,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="documentFileId != null">#{documentFileId},</if>
+            <if test="packId != null">#{packId},</if>
+            <if test="batchId != null">#{batchId},</if>
+            <if test="logicId != null">#{logicId},</if>
+            <if test="client != null">#{client},</if>
+            <if test="country != null">#{country},</if>
+            <if test="importType != null">#{importType},</if>
+            <if test="loginid != null">#{loginid},</if>
+            <if test="nrKlienta != null">#{nrKlienta},</if>
+            <if test="downloadRecipient != null">#{downloadRecipient},</if>
+            <if test="waybill != null">#{waybill},</if>
+            <if test="waybillPostingDate != null">#{waybillPostingDate},</if>
+            <if test="cashOnDelivery != null">#{cashOnDelivery},</if>
+            <if test="goodsEffectiveDeliveryDate != null">#{goodsEffectiveDeliveryDate},</if>
+            <if test="addressee != null">#{addressee},</if>
+            <if test="postalCode != null">#{postalCode},</if>
+            <if test="area != null">#{area},</if>
+            <if test="street != null">#{street},</if>
+            <if test="unisoftClientContentField != null">#{unisoftClientContentField},</if>
+            <if test="batchTransmission != null">#{batchTransmission},</if>
+            <if test="collectiveTransferDate != null">#{collectiveTransferDate},</if>
+            <if test="settlementNumber != null">#{settlementNumber},</if>
+            <if test="sysActivedDate != null">#{sysActivedDate},</if>
+            <if test="sysLastStatusDate != null">#{sysLastStatusDate},</if>
+            <if test="sysSignDate != null">#{sysSignDate},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="remark2 != null">#{remark2},</if>
+            <if test="remark3 != null">#{remark3},</if>
+            <if test="remark4 != null">#{remark4},</if>
+            <if test="remark5 != null">#{remark5},</if>
+            <if test="isDelete != null">#{isDelete},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="batchInsert" >
+        insert into cod_report (
+        document_file_id, pack_id, batch_id, logic_id, client, country, import_type, loginId,
+                                nr_klienta, download_recipient, waybill, waybill_posting_date, cash_on_delivery,
+                                goods_effective_delivery_date, addressee, postal_code, area, street, unisoft_Client_content_field,
+                                batch_transmission, collective_transfer_date, settlement_number, sys_actived_date, sys_last_status_date,
+                                sys_sign_date, remark, remark2, remark3, remark4, remark5,
+                                is_delete, create_by, create_time, update_by, update_time
+                                    )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.documentFileId},
+            #{item.packId},
+            #{item.batchId},
+            #{item.logicId},
+            #{item.client},
+            #{item.country},
+            #{item.importType},
+            #{item.loginid},
+            #{item.nrKlienta},
+            #{item.downloadRecipient},
+            #{item.waybill},
+            #{item.waybillPostingDate},
+            #{item.cashOnDelivery},
+            #{item.goodsEffectiveDeliveryDate},
+            #{item.addressee},
+            #{item.postalCode},
+            #{item.area},
+            #{item.street},
+            #{item.unisoftClientContentField},
+            #{item.batchTransmission},
+            #{item.collectiveTransferDate},
+            #{item.settlementNumber},
+            #{item.sysActivedDate},
+            #{item.sysLastStatusDate},
+            #{item.sysSignDate},
+            #{item.remark},
+            #{item.remark2},
+            #{item.remark3},
+            #{item.remark4},
+            #{item.remark5},
+            0,
+            #{item.createBy},
+            sysdate(),
+            #{item.updateBy},
+            sysdate())
+        </foreach>
+    </insert>
+
+    <update id="updateCodReport" parameterType="CodReport">
+        update cod_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="documentFileId != null">document_file_id = #{documentFileId},</if>
+            <if test="packId != null">pack_id = #{packId},</if>
+            <if test="batchId != null">batch_id = #{batchId},</if>
+            <if test="logicId != null">logic_id = #{logicId},</if>
+            <if test="client != null">client = #{client},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="importType != null">import_type = #{importType},</if>
+            <if test="loginid != null">loginId = #{loginid},</if>
+            <if test="nrKlienta != null">nr_klienta = #{nrKlienta},</if>
+            <if test="downloadRecipient != null">download_recipient = #{downloadRecipient},</if>
+            <if test="waybill != null">waybill = #{waybill},</if>
+            <if test="waybillPostingDate != null">waybill_posting_date = #{waybillPostingDate},</if>
+            <if test="cashOnDelivery != null">cash_on_delivery = #{cashOnDelivery},</if>
+            <if test="goodsEffectiveDeliveryDate != null">goods_effective_delivery_date = #{goodsEffectiveDeliveryDate},</if>
+            <if test="addressee != null">addressee = #{addressee},</if>
+            <if test="postalCode != null">postal_code = #{postalCode},</if>
+            <if test="area != null">area = #{area},</if>
+            <if test="street != null">street = #{street},</if>
+            <if test="unisoftClientContentField != null">unisoft_Client_content_field = #{unisoftClientContentField},</if>
+            <if test="batchTransmission != null">batch_transmission = #{batchTransmission},</if>
+            <if test="collectiveTransferDate != null">collective_transfer_date = #{collectiveTransferDate},</if>
+            <if test="settlementNumber != null">settlement_number = #{settlementNumber},</if>
+            <if test="sysActivedDate != null">sys_actived_date = #{sysActivedDate},</if>
+            <if test="sysLastStatusDate != null">sys_last_status_date = #{sysLastStatusDate},</if>
+            <if test="sysSignDate != null">sys_sign_date = #{sysSignDate},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="remark2 != null">remark2 = #{remark2},</if>
+            <if test="remark3 != null">remark3 = #{remark3},</if>
+            <if test="remark4 != null">remark4 = #{remark4},</if>
+            <if test="remark5 != null">remark5 = #{remark5},</if>
+            <if test="isDelete != null">is_delete = #{isDelete},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCodReportById" parameterType="Long">
+        delete from cod_report where id = #{id}
+    </delete>
+
+    <delete id="deleteCodReportByIds" parameterType="String">
+        delete from cod_report where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

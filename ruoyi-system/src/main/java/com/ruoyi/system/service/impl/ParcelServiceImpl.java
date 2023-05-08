@@ -52,6 +52,9 @@ public class ParcelServiceImpl implements IParcelService
     private LogisticsInfoMapper logisticsInfoMapper;
 
     @Autowired
+    private DocumentsMapper documentsMapper;
+
+    @Autowired
     private DPDInfoXMLClient dpdInfoXMLClient;
 
     @Value("${getnum}")
@@ -135,6 +138,11 @@ public class ParcelServiceImpl implements IParcelService
     @Override
     public String getStringByWaybill(String waybill) throws Exception_Exception {
         return dpdInfoXMLClient.getE(waybill);
+    }
+
+    @Override
+    public int clearDocuments(String endDate){
+        return documentsMapper.clearDocuments(endDate);
     }
 
     @Override

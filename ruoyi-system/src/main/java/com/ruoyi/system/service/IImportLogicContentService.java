@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.ImportLogicContent;
+import com.ruoyi.system.domain.vo.ExportLogicContentCODVo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,15 @@ public interface IImportLogicContentService
      */
     public List<ImportLogicContent> selectImportLogicContentList(ImportLogicContent importLogicContent);
 
+    public List<ImportLogicContent> selectImportLogicContentListNoReport(ImportLogicContent importLogicContent);
+
+    public List<ImportLogicContent> selectImportLogicContentListReport(ImportLogicContent importLogicContent);
+
     public List<ExportLogicContentVo> exportImportLogicContentList(ImportLogicContent importLogicContent);
+
+    public List<ExportLogicContentCODVo> exportImportLogicContentListNoReport(ImportLogicContent importLogicContent);
+
+    public List<ExportLogicContentCODVo> exportImportLogicContentListReport(ImportLogicContent importLogicContent);
 
     /**
      * 新增导入查询物流

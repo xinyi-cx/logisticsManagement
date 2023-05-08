@@ -80,6 +80,45 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fileName"    column="file_name"    />
     </resultMap>
 
+    <resultMap type="ImportLogicContent" id="ImportLogicContentResult3">
+        <result property="id"    column="id"    />
+        <result property="documentFileId"    column="document_file_id"    />
+        <result property="packId"    column="pack_id"    />
+        <result property="batchId"    column="batch_id"    />
+        <result property="logicId"    column="logic_id"    />
+        <result property="client"    column="client"    />
+        <result property="country"    column="country"    />
+        <result property="importType"    column="import_type"    />
+        <result property="loginid"    column="loginId"    />
+        <result property="newWaybill"    column="new_waybill"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="valuePlnCod"    column="value_pln_cod"    />
+        <result property="weightKg"    column="weight_kg"    />
+        <result property="recipientName"    column="recipient_name"    />
+        <result property="recipientPhone"    column="recipient_phone"    />
+        <result property="recipientEmail"    column="recipient_email"    />
+        <result property="description"    column="description"    />
+        <result property="needBox"    column="need_box"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="remark2"    column="remark2"    />
+        <result property="remark3"    column="remark3"    />
+        <result property="remark4"    column="remark4"    />
+        <result property="remark5"    column="remark5"    />
+        <result property="activedDate"    column="actived_date"    />
+        <result property="lastStatusDate"    column="last_status_date"    />
+        <result property="status"    column="status"    />
+        <result property="newNumber"    column="new_number"    />
+        <result property="returnNumber"    column="return_number"    />
+        <result property="isDelete"    column="is_delete"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+
+        <result property="collectiveTransferDate"    column="collective_transfer_date"    />
+    </resultMap>
+
     <sql id="selectImportLogicContentVo">
         select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type, loginId, new_waybill,
         order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone, recipient_email, description,
@@ -168,7 +207,135 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by create_time desc
     </select>
-    
+
+    <select id="selectImportLogicContentListNoReport" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult3">
+        select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type,
+        loginId, new_waybill, order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
+        recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5, actived_date,
+        last_status_date, status, new_number, return_number, is_delete, create_by, create_time, update_by, update_time,
+               '' as collective_transfer_date
+        from import_logic_content tba
+        <where>
+            tba.is_delete = 0
+            and tba.status = '3'
+            and not exists(
+            select * from
+            cod_report cod
+            where tba.new_waybill = cod.waybill
+            )
+            <choose>
+                <when  test="ids!= null and ids.size()>0" >
+                    AND id in
+                    <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                        #{item}
+                    </foreach>
+                </when >
+                <otherwise>
+                    <if test="batchIds!= null and batchIds.size()>0" >
+                        AND batch_id in
+                        <foreach collection="batchIds" item="item" open="(" close=")" separator="," >
+                            #{item}
+                        </foreach>
+                    </if>
+                    <!--            <if test="params.beginTime != null and params.beginTime != ''">-->
+                    <!--                AND date_format(created_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')-->
+                    <!--            </if>-->
+                    <!--            <if test="params.endTime != null and params.endTime != ''">-->
+                    <!--                AND date_format(created_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')-->
+                    <!--            </if>-->
+                    <if test="params.beginTime != null and params.beginTime != ''">
+                        AND left(actived_date,10) &gt;= #{params.beginTime}
+                    </if>
+                    <if test="params.endTime != null and params.endTime != ''">
+                        AND left(actived_date,10) &lt;= #{params.endTime}
+                    </if>
+                    <if test="params.CreateDateBeginTime != null and params.CreateDateBeginTime != ''">
+                        AND left(create_date,10) &gt;= #{params.CreateDateBeginTime}
+                    </if>
+                    <if test="params.CreateDateEndTime != null and params.CreateDateEndTime != ''">
+                        AND left(create_date,10) &lt;= #{params.CreateDateEndTime}
+                    </if>
+                    <if test="params.lastStatusDateBeginTime != null and params.lastStatusDateBeginTime != ''">
+                        AND left(last_status_date,10) &gt;= #{params.lastStatusDateBeginTime}
+                    </if>
+                    <if test="params.lastStatusDateEndTime != null and params.lastStatusDateEndTime != ''">
+                        AND left(last_status_date,10) &lt;= #{params.lastStatusDateEndTime}
+                    </if>
+                    <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
+                    <if test="packId != null "> and pack_id = #{packId}</if>
+                    <if test="batchId != null "> and batch_id = #{batchId}</if>
+                    <if test="logicId != null "> and logic_id = #{logicId}</if>
+                    <if test="client != null  and client != ''"> and UPPER(client) = #{client}</if>
+                    <if test="country != null  and country != ''"> and UPPER(country)  = #{country}</if>
+                    <if test="importType != null  and importType != ''"> and import_type = #{importType}</if>
+                    <if test="loginid != null  and loginid != ''"> and loginId = #{loginid}</if>
+                    <if test="newWaybill != null  and newWaybill != ''"> and new_waybill like concat('%', #{newWaybill}, '%')</if>
+                    <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+                    <if test="valuePlnCod != null  and valuePlnCod != ''"> and value_pln_cod = #{valuePlnCod}</if>
+                    <if test="weightKg != null  and weightKg != ''"> and weight_kg = #{weightKg}</if>
+                    <if test="recipientName != null  and recipientName != ''"> and recipient_name like concat('%', #{recipientName}, '%')</if>
+                    <if test="recipientPhone != null  and recipientPhone != ''"> and recipient_phone = #{recipientPhone}</if>
+                    <if test="recipientEmail != null  and recipientEmail != ''"> and recipient_email = #{recipientEmail}</if>
+                    <if test="description != null  and description != ''"> and description = #{description}</if>
+                    <if test="needBox != null  and needBox != ''"> and need_box = #{needBox}</if>
+                    <if test="activedDate != null  and activedDate != ''"> and actived_date = #{activedDate}</if>
+                    <if test="lastStatusDate != null  and lastStatusDate != ''"> and last_status_date = #{lastStatusDate}</if>
+                    <if test="status != null  and status != ''"> and status = #{status}</if>
+                    <if test="newNumber != null  and newNumber != ''"> and new_number = #{newNumber}</if>
+                    <if test="returnNumber != null  and returnNumber != ''"> and return_number = #{returnNumber}</if>
+                    <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+                </otherwise>
+            </choose>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectImportLogicContentListReport" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult3">
+        select cod.id, tba.client, tba.country,
+         tba.new_waybill,
+               cod.cash_on_delivery as value_pln_cod,
+        cod.waybill_posting_date as actived_date,
+        goods_effective_delivery_date as last_status_date,
+        collective_transfer_date
+        from import_logic_content tba
+            join cod_report cod
+        on tba.new_waybill = cod.waybill
+        <where>
+            tba.is_delete = 0
+            and tba.status = '3'
+            <choose>
+                <when  test="ids!= null and ids.size()>0" >
+                    AND tba.id in
+                    <foreach collection="ids" item="item" open="(" close=")" separator="," >
+                        #{item}
+                    </foreach>
+                </when >
+                <otherwise>
+                    <if test="batchIds!= null and batchIds.size()>0" >
+                        AND cod.batch_id in
+                        <foreach collection="batchIds" item="item" open="(" close=")" separator="," >
+                            #{item}
+                        </foreach>
+                    </if>
+                    <!--            <if test="params.beginTime != null and params.beginTime != ''">-->
+                    <!--                AND date_format(created_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')-->
+                    <!--            </if>-->
+                    <!--            <if test="params.endTime != null and params.endTime != ''">-->
+                    <!--                AND date_format(created_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')-->
+                    <!--            </if>-->
+                    <if test="params.beginTime != null and params.beginTime != ''">
+                        AND left(waybill_posting_date,10) &gt;= #{params.beginTime}
+                    </if>
+                    <if test="params.endTime != null and params.endTime != ''">
+                        AND left(waybill_posting_date,10) &lt;= #{params.endTime}
+                    </if>
+                    <if test="createBy != null  and createBy != ''"> and cod.create_by = #{createBy}</if>
+                </otherwise>
+            </choose>
+        </where>
+        order by cod.create_time desc
+    </select>
+
     <select id="selectImportLogicContentById" parameterType="Long" resultMap="ImportLogicContentResult">
         <include refid="selectImportLogicContentVo"/>
         where id = #{id}

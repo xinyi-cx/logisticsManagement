@@ -32,7 +32,7 @@ insert into user_fid_rel
  nick_name,
  country,
  fid,
- status)
+ is_active)
 select user_id,
        user_name,
        nick_name,

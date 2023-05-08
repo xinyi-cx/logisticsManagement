@@ -57,6 +57,8 @@ public interface DocumentsMapper
      */
     public int updateDocuments(Documents documents);
 
+    public int clearDocuments(String endDate);
+
     /**
      * 删除文件
      * 

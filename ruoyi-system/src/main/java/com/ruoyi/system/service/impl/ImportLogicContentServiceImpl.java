@@ -8,6 +8,7 @@ import com.ruoyi.system.domain.BatchTaskHistory;
 import com.ruoyi.system.domain.Documents;
 import com.ruoyi.system.domain.ImportLogicContent;
 import com.ruoyi.system.domain.LogisticsInfo;
+import com.ruoyi.system.domain.vo.ExportLogicContentCODVo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IImportLogicContentService;
@@ -76,6 +77,28 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
         return importLogicContentMapper.selectImportLogicContentList(importLogicContent);
     }
 
+    @Override
+    public List<ImportLogicContent> selectImportLogicContentListNoReport(ImportLogicContent importLogicContent) {
+        //对账
+        if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
+            importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        }
+        Map<Long, String> idFileNameMap = new HashMap<>();
+        dealParam(importLogicContent, idFileNameMap);
+        return importLogicContentMapper.selectImportLogicContentListNoReport(importLogicContent);
+    }
+
+    @Override
+    public List<ImportLogicContent> selectImportLogicContentListReport(ImportLogicContent importLogicContent) {
+        //对账
+        if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
+            importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        }
+        Map<Long, String> idFileNameMap = new HashMap<>();
+        dealParam(importLogicContent, idFileNameMap);
+        return importLogicContentMapper.selectImportLogicContentListReport(importLogicContent);
+    }
+
     private void dealParam(ImportLogicContent importLogicContent, Map<Long, String> idFileNameMap){
         if (StringUtils.isNotEmpty(importLogicContent.getCountry())) {
             importLogicContent.setCountry(importLogicContent.getCountry().toUpperCase());
@@ -133,6 +156,42 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
 //                    exportLogicContentVo.setReturnNumber(tjLogisticsInfo.getWaybill());
 //                }
 //            }
+            returnList.add(exportLogicContentVo);
+        }
+        return returnList;
+    }
+
+    @Override
+    public List<ExportLogicContentCODVo> exportImportLogicContentListReport(ImportLogicContent importLogicContent) {
+        if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
+            importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        }
+        Map<Long, String> idFileNameMap = new HashMap<>();
+        dealParam(importLogicContent, idFileNameMap);
+        List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentListReport(importLogicContent);
+
+        List<ExportLogicContentCODVo> returnList = new ArrayList<>();
+        for (ImportLogicContent logicContent : importLogicContents) {
+            ExportLogicContentCODVo exportLogicContentVo = new ExportLogicContentCODVo();
+            BeanUtils.copyProperties(logicContent, exportLogicContentVo);
+            returnList.add(exportLogicContentVo);
+        }
+        return returnList;
+    }
+
+    @Override
+    public List<ExportLogicContentCODVo> exportImportLogicContentListNoReport(ImportLogicContent importLogicContent) {
+        if (!(SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId()) || "Tracking".equals(SecurityUtils.getLoginUser().getUsername()))) {
+            importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        }
+        Map<Long, String> idFileNameMap = new HashMap<>();
+        dealParam(importLogicContent, idFileNameMap);
+        List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentListNoReport(importLogicContent);
+
+        List<ExportLogicContentCODVo> returnList = new ArrayList<>();
+        for (ImportLogicContent logicContent : importLogicContents) {
+            ExportLogicContentCODVo exportLogicContentVo = new ExportLogicContentCODVo();
+            BeanUtils.copyProperties(logicContent, exportLogicContentVo);
             returnList.add(exportLogicContentVo);
         }
         return returnList;

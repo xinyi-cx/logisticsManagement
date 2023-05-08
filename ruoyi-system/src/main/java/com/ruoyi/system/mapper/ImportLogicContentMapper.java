@@ -34,6 +34,10 @@ public interface ImportLogicContentMapper
      */
     public List<ImportLogicContent> selectImportLogicContentList(ImportLogicContent importLogicContent);
 
+    public List<ImportLogicContent> selectImportLogicContentListNoReport(ImportLogicContent importLogicContent);
+
+    public List<ImportLogicContent> selectImportLogicContentListReport(ImportLogicContent importLogicContent);
+
     /**
      * 新增导入查询物流
      * 

@@ -751,10 +751,11 @@ public class OuterServiceImpl implements IOuterService {
         Map<String, Sequence> nameMap = sequences.stream().collect(toMap(Sequence::getSeqName, Function.identity()));
         for (String seqName : SEQ_NAMES) {
             if (nameMap.containsKey(seqName)) {
-                Sequence sequence = new Sequence();
-                BeanUtils.copyProperties(nameMap.get(seqName), sequence);
-                sequence.setCurrentVal(sequence.getCurrentVal() + addNum * sequence.getIncrementVal());
-                sequenceMapper.updateSequence(sequence);
+                Sequence sequence = nameMap.get(seqName);
+                Map<String, Object> paramMap = new HashMap();
+                paramMap.put("seqName", sequence.getSeqName());
+                paramMap.put("seqSize", addNum);
+                sequenceMapper.selectNextvalWithSizeByName(paramMap);
             }
         }
         return nameMap;

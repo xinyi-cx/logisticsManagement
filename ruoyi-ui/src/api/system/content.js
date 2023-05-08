@@ -9,6 +9,24 @@ export function listContent(query) {
   })
 }
 
+// 查询导入查询物流列表
+export function listContentNoReport(query) {
+  return request({
+    url: '/system/content/listNoReport',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询导入查询物流列表
+export function listContentReport(query) {
+  return request({
+    url: '/system/content/listReport',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询导入查询物流详细
 export function getContent(id) {
   return request({

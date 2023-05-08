@@ -100,4 +100,7 @@ public interface IParcelService
     public void getMsgByWaybills(List<String> waybills);
 
     public String getStringByWaybill(String waybill) throws Exception_Exception;
+
+    public int clearDocuments(String date);
+
 }
