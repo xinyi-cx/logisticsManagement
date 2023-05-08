@@ -254,6 +254,12 @@
 <!--            icon="el-icon-view"-->
 <!--            @click="refreshByBatch(scope.row)"-->
 <!--          >获取最新物流信息</el-button>-->
+                    <el-button
+                      size="mini"
+                      type="text"
+                      icon="el-icon-edit"
+                      @click="handleUpdate(scope.row)"
+                    >修改文件名称</el-button>
         </template>
       </el-table-column>
     </el-table>
