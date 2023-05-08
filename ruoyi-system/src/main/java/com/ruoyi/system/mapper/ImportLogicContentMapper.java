@@ -54,6 +54,8 @@ public interface ImportLogicContentMapper
      */
     public int updateImportLogicContent(ImportLogicContent importLogicContent);
 
+    public int updateImportLogicContentForFileName(ImportLogicContent importLogicContent);
+
     public int updateImportLogicContentByWayBill(ImportLogicContent importLogicContent);
 
     /**

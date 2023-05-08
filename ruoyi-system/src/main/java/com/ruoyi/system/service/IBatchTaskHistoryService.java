@@ -45,7 +45,7 @@ public interface IBatchTaskHistoryService
      * @param batchTaskHistory 批量任务历史
      * @return 结果
      */
-    public int updateBatchTaskHistory(BatchTaskHistory batchTaskHistory);
+    public int updateBatchTaskHistory(BatchTaskHistory batchTaskHistory) throws Exception;
 
     /**
      * 批量删除批量任务历史

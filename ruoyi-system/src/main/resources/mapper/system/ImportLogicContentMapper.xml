@@ -477,6 +477,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="updateImportLogicContentForFileName" parameterType="ImportLogicContent">
+        update import_logic_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="client != null">client = #{client},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="importType != null">import_type = #{importType},</if>
+            <if test="needBox != null">need_box = #{needBox},</if>
+            update_time = sysdate()
+        </trim>
+        where batch_id = #{batchId}
+    </update>
+
     <update id="updateImportLogicContentByWayBill" parameterType="ImportLogicContent">
         update import_logic_content
         <trim prefix="SET" suffixOverrides=",">

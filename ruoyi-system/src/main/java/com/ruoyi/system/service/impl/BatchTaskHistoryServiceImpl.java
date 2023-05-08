@@ -112,11 +112,39 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
      * @return 结果
      */
     @Override
-    public int updateBatchTaskHistory(BatchTaskHistory batchTaskHistory)
+    public int updateBatchTaskHistory(BatchTaskHistory batchTaskHistory) throws Exception
     {
 //        BatchTaskHistory updateBatchTaskHistory = batchTaskHistoryMapper.selectBatchTaskHistoryById(batchTaskHistory.getId());
 //        updateBatchTaskHistory.setFileName(batchTaskHistory.getFileName());
+        String fileName = batchTaskHistory.getFileName();
+        List<String> listFile = Arrays.asList(fileName.split(" "));
+        if (org.apache.commons.collections4.CollectionUtils.isEmpty(listFile) || listFile.size()<6 || !(
+                "resend".equalsIgnoreCase(listFile.get(1)) || "local".equalsIgnoreCase(listFile.get(1)) || "original".equalsIgnoreCase(listFile.get(1))) ){
+            throw new Exception("文件命名错误");
+        }
+        ImportLogicContent importLogicContent = new ImportLogicContent();
+        importLogicContent.setClient(listFile.get(2));
+        String type =  getType(listFile.get(1));
+        importLogicContent.setCountry(type.equals("本地")?listFile.get(4):listFile.get(3));
+        importLogicContent.setImportType(type);
+        String box = type.equals("本地")?listFile.get(6):listFile.get(5);
+        importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
+        importLogicContent.setBatchId(batchTaskHistory.getId());
+        importLogicContentMapper.updateImportLogicContentForFileName(importLogicContent);
         return batchTaskHistoryMapper.updateBatchTaskHistory(batchTaskHistory);
+    }
+
+    private String getType(String engType){
+//        业务会有resend local original三种
+        if ("local".equalsIgnoreCase(engType)){
+            return "本地";
+        }
+
+        if ("resend".equalsIgnoreCase(engType)){
+            return "转寄";
+        }
+
+        return "直发";
     }
 
     /**

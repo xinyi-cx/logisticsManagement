@@ -76,7 +76,7 @@ public class BatchTaskHistoryController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:history:edit')")
     @PutMapping
-    public AjaxResult edit(@RequestBody BatchTaskHistory batchTaskHistory)
+    public AjaxResult edit(@RequestBody BatchTaskHistory batchTaskHistory) throws Exception
     {
         return toAjax(batchTaskHistoryService.updateBatchTaskHistory(batchTaskHistory));
     }
