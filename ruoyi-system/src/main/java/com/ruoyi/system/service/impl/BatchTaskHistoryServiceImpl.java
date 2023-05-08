@@ -114,6 +114,8 @@ public class BatchTaskHistoryServiceImpl implements IBatchTaskHistoryService
     @Override
     public int updateBatchTaskHistory(BatchTaskHistory batchTaskHistory)
     {
+//        BatchTaskHistory updateBatchTaskHistory = batchTaskHistoryMapper.selectBatchTaskHistoryById(batchTaskHistory.getId());
+//        updateBatchTaskHistory.setFileName(batchTaskHistory.getFileName());
         return batchTaskHistoryMapper.updateBatchTaskHistory(batchTaskHistory);
     }
 

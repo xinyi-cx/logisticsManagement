@@ -296,6 +296,25 @@
       </div>
     </el-dialog>
 
+<!--    修改对话框-->
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="导入文件名称" prop="fileName">
+          <el-input v-model="form.fileName" placeholder="请输入导入文件名称" />
+        </el-form-item>
+<!--        <el-form-item label="运单" prop="waybillPostingDate">-->
+<!--          <el-input v-model="form.waybillPostingDate" placeholder="请输入运单" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="货到付款金额 " prop="cashOnDelivery">-->
+<!--          <el-input v-model="form.cashOnDelivery" placeholder="请输入货到付款金额 " />-->
+<!--        </el-form-item>-->
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
