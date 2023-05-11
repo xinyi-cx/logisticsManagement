@@ -9,7 +9,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -130,7 +129,7 @@ public class DPDInfoXMLClient {
             List<WaybillLRel> waybillLRels = getRL(logisticsInfo.getWaybill(), allEventDataList);
             String status = getStatus(customerEventV3s);
             if(StringUtils.isNotEmpty(status)){
-                logisticsInfo.setStatus(status);
+                logisticsInfo.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
             }
 
             List<String> waybills = new ArrayList<>();
@@ -275,8 +274,8 @@ public class DPDInfoXMLClient {
 //            }
 
             if(StringUtils.isNotEmpty(status)){
-                parcel.setStatus(status);
-                logisticsInfo.setStatus(status);
+                parcel.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
+                logisticsInfo.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
             }
             logisticsInfo.setLastTime(customerEventV3.getEventTime());
 
@@ -401,9 +400,9 @@ public class DPDInfoXMLClient {
             log.info("+++dealForWaybillLByBatch+++parcel waybill same status: {}", status);
             return;
         }
-        parcel.setStatus(status);
+        parcel.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
         logisticsInfo.setOldWaybill(parcel.getWaybill());
-        logisticsInfo.setStatus(status);
+        logisticsInfo.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
         logisticsInfo.setWaybill(waybillLRel.getWaybillL());
         if (CollectionUtils.isEmpty(customerEventV3s)){
             logisticsInfo.setLastMsg("未查询到物流信息");
@@ -542,8 +541,8 @@ public class DPDInfoXMLClient {
 //            }
 
             if(StringUtils.isNotEmpty(status)){
-                parcel.setStatus(status);
-                logisticsInfo.setStatus(status);
+                parcel.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
+                logisticsInfo.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
             }
             logisticsInfo.setLastTime(customerEventV3.getEventTime());
 
@@ -641,8 +640,8 @@ public class DPDInfoXMLClient {
 //            }
 
             if(StringUtils.isNotEmpty(status)){
-                parcel.setStatus(status);
-                logisticsInfo.setStatus(status);
+                parcel.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
+                logisticsInfo.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
             }
             logisticsInfo.setLastTime(customerEventV3.getEventTime());
 
@@ -692,9 +691,9 @@ public class DPDInfoXMLClient {
             log.info("+++dealForWaybillL+++parcel waybill same status: {}", status);
             return;
         }
-        parcel.setStatus(status);
+        parcel.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
         logisticsInfo.setOldWaybill(parcel.getWaybill());
-        logisticsInfo.setStatus(status);
+        logisticsInfo.setStatus(SysWaybill.GP.getCode().equals(status) ? SysWaybill.YSZ.getCode() : status);
         logisticsInfo.setWaybill(waybillLRel.getWaybillL());
         if (CollectionUtils.isEmpty(customerEventV3s)){
             logisticsInfo.setLastMsg("未查询到物流信息");
