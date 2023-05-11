@@ -44,7 +44,7 @@
           icon="el-icon-upload2"
           size="mini"
           @click="handleImportForNo"
-          v-hasPermi="['system:content:add']"
+          v-hasPermi="['system:report:add']"
         >导入</el-button>
       </el-col>
       <el-col :span="1.5">
