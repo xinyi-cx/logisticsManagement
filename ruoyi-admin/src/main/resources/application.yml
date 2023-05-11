@@ -59,7 +59,7 @@ spring:
 #        username: root
 #        password: root1234
         username: test
-        password: test
+        password: Test*admin@1707
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
@@ -236,3 +236,7 @@ gpcode: 230402
 
 getnum: 500
 dayNum: -5
+
+ybwlflag: false
+
+allJurisdictionUserNames: Tracking,reporter
