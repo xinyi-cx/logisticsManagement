@@ -116,104 +116,104 @@
     />
 
     <!-- 添加或修改COD报告对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="document表id" prop="documentFileId">
-          <el-input v-model="form.documentFileId" placeholder="请输入document表id" />
-        </el-form-item>
-        <el-form-item label="package表id" prop="packId">
-          <el-input v-model="form.packId" placeholder="请输入package表id" />
-        </el-form-item>
-        <el-form-item label="batch_id" prop="batchId">
-          <el-input v-model="form.batchId" placeholder="请输入batch_id" />
-        </el-form-item>
-        <el-form-item label="logic_id" prop="logicId">
-          <el-input v-model="form.logicId" placeholder="请输入logic_id" />
-        </el-form-item>
-        <el-form-item label="CLIENT" prop="client">
-          <el-input v-model="form.client" placeholder="请输入CLIENT" />
-        </el-form-item>
-        <el-form-item label="Country" prop="country">
-          <el-input v-model="form.country" placeholder="请输入Country" />
-        </el-form-item>
-        <el-form-item label="LoginID" prop="loginid">
-          <el-input v-model="form.loginid" placeholder="请输入LoginID" />
-        </el-form-item>
-        <el-form-item label="nr_klienta" prop="nrKlienta">
-          <el-input v-model="form.nrKlienta" placeholder="请输入nr_klienta" />
-        </el-form-item>
-        <el-form-item label="下载收件人" prop="downloadRecipient">
-          <el-input v-model="form.downloadRecipient" placeholder="请输入下载收件人" />
-        </el-form-item>
-        <el-form-item label="运单号码" prop="waybill">
-          <el-input v-model="form.waybill" placeholder="请输入运单号码" />
-        </el-form-item>
-        <el-form-item label="运单" prop="waybillPostingDate">
-          <el-input v-model="form.waybillPostingDate" placeholder="请输入运单" />
-        </el-form-item>
-        <el-form-item label="货到付款金额 " prop="cashOnDelivery">
-          <el-input v-model="form.cashOnDelivery" placeholder="请输入货到付款金额 " />
-        </el-form-item>
-        <el-form-item label="货件有效交付日期" prop="goodsEffectiveDeliveryDate">
-          <el-input v-model="form.goodsEffectiveDeliveryDate" placeholder="请输入货件有效交付日期" />
-        </el-form-item>
-        <el-form-item label="货件收件人" prop="addressee">
-          <el-input v-model="form.addressee" placeholder="请输入货件收件人" />
-        </el-form-item>
-        <el-form-item label="邮政编码" prop="postalCode">
-          <el-input v-model="form.postalCode" placeholder="请输入邮政编码" />
-        </el-form-item>
-        <el-form-item label="地区" prop="area">
-          <el-input v-model="form.area" placeholder="请输入地区" />
-        </el-form-item>
-        <el-form-item label="街" prop="street">
-          <el-input v-model="form.street" placeholder="请输入街" />
-        </el-form-item>
-        <el-form-item label="Unisoft-Client中的内容字段" prop="unisoftClientContentField">
-          <el-input v-model="form.unisoftClientContentField" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="批量传输" prop="batchTransmission">
-          <el-input v-model="form.batchTransmission" placeholder="请输入批量传输" />
-        </el-form-item>
-        <el-form-item label="集体移送日期" prop="collectiveTransferDate">
-          <el-input v-model="form.collectiveTransferDate" placeholder="请输入集体移送日期" />
-        </el-form-item>
-        <el-form-item label="结算编号 " prop="settlementNumber">
-          <el-input v-model="form.settlementNumber" placeholder="请输入结算编号 " />
-        </el-form-item>
-        <el-form-item label="激活时间" prop="sysActivedDate">
-          <el-input v-model="form.sysActivedDate" placeholder="请输入激活时间" />
-        </el-form-item>
-        <el-form-item label="最近物流时间" prop="sysLastStatusDate">
-          <el-input v-model="form.sysLastStatusDate" placeholder="请输入最近物流时间" />
-        </el-form-item>
-        <el-form-item label="签收时间" prop="sysSignDate">
-          <el-input v-model="form.sysSignDate" placeholder="请输入签收时间" />
-        </el-form-item>
-        <el-form-item label="备注1" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注1" />
-        </el-form-item>
-        <el-form-item label="备注2" prop="remark2">
-          <el-input v-model="form.remark2" placeholder="请输入备注2" />
-        </el-form-item>
-        <el-form-item label="备注3" prop="remark3">
-          <el-input v-model="form.remark3" placeholder="请输入备注3" />
-        </el-form-item>
-        <el-form-item label="备注4" prop="remark4">
-          <el-input v-model="form.remark4" placeholder="请输入备注4" />
-        </el-form-item>
-        <el-form-item label="备注5" prop="remark5">
-          <el-input v-model="form.remark5" placeholder="请输入备注5" />
-        </el-form-item>
-        <el-form-item label="是否删除" prop="isDelete">
-          <el-input v-model="form.isDelete" placeholder="请输入是否删除" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+<!--    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>-->
+<!--      <el-form ref="form" :model="form" :rules="rules" label-width="80px">-->
+<!--        <el-form-item label="document表id" prop="documentFileId">-->
+<!--          <el-input v-model="form.documentFileId" placeholder="请输入document表id" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="package表id" prop="packId">-->
+<!--          <el-input v-model="form.packId" placeholder="请输入package表id" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="batch_id" prop="batchId">-->
+<!--          <el-input v-model="form.batchId" placeholder="请输入batch_id" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="logic_id" prop="logicId">-->
+<!--          <el-input v-model="form.logicId" placeholder="请输入logic_id" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="CLIENT" prop="client">-->
+<!--          <el-input v-model="form.client" placeholder="请输入CLIENT" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="Country" prop="country">-->
+<!--          <el-input v-model="form.country" placeholder="请输入Country" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="LoginID" prop="loginid">-->
+<!--          <el-input v-model="form.loginid" placeholder="请输入LoginID" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="nr_klienta" prop="nrKlienta">-->
+<!--          <el-input v-model="form.nrKlienta" placeholder="请输入nr_klienta" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="下载收件人" prop="downloadRecipient">-->
+<!--          <el-input v-model="form.downloadRecipient" placeholder="请输入下载收件人" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="运单号码" prop="waybill">-->
+<!--          <el-input v-model="form.waybill" placeholder="请输入运单号码" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="运单" prop="waybillPostingDate">-->
+<!--          <el-input v-model="form.waybillPostingDate" placeholder="请输入运单" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="货到付款金额 " prop="cashOnDelivery">-->
+<!--          <el-input v-model="form.cashOnDelivery" placeholder="请输入货到付款金额 " />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="货件有效交付日期" prop="goodsEffectiveDeliveryDate">-->
+<!--          <el-input v-model="form.goodsEffectiveDeliveryDate" placeholder="请输入货件有效交付日期" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="货件收件人" prop="addressee">-->
+<!--          <el-input v-model="form.addressee" placeholder="请输入货件收件人" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="邮政编码" prop="postalCode">-->
+<!--          <el-input v-model="form.postalCode" placeholder="请输入邮政编码" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="地区" prop="area">-->
+<!--          <el-input v-model="form.area" placeholder="请输入地区" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="街" prop="street">-->
+<!--          <el-input v-model="form.street" placeholder="请输入街" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="Unisoft-Client中的内容字段" prop="unisoftClientContentField">-->
+<!--          <el-input v-model="form.unisoftClientContentField" type="textarea" placeholder="请输入内容" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="批量传输" prop="batchTransmission">-->
+<!--          <el-input v-model="form.batchTransmission" placeholder="请输入批量传输" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="集体移送日期" prop="collectiveTransferDate">-->
+<!--          <el-input v-model="form.collectiveTransferDate" placeholder="请输入集体移送日期" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="结算编号 " prop="settlementNumber">-->
+<!--          <el-input v-model="form.settlementNumber" placeholder="请输入结算编号 " />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="激活时间" prop="sysActivedDate">-->
+<!--          <el-input v-model="form.sysActivedDate" placeholder="请输入激活时间" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="最近物流时间" prop="sysLastStatusDate">-->
+<!--          <el-input v-model="form.sysLastStatusDate" placeholder="请输入最近物流时间" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="签收时间" prop="sysSignDate">-->
+<!--          <el-input v-model="form.sysSignDate" placeholder="请输入签收时间" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="备注1" prop="remark">-->
+<!--          <el-input v-model="form.remark" placeholder="请输入备注1" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="备注2" prop="remark2">-->
+<!--          <el-input v-model="form.remark2" placeholder="请输入备注2" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="备注3" prop="remark3">-->
+<!--          <el-input v-model="form.remark3" placeholder="请输入备注3" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="备注4" prop="remark4">-->
+<!--          <el-input v-model="form.remark4" placeholder="请输入备注4" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="备注5" prop="remark5">-->
+<!--          <el-input v-model="form.remark5" placeholder="请输入备注5" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="是否删除" prop="isDelete">-->
+<!--          <el-input v-model="form.isDelete" placeholder="请输入是否删除" />-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <div slot="footer" class="dialog-footer">-->
+<!--        <el-button type="primary" @click="submitForm">确 定</el-button>-->
+<!--        <el-button @click="cancel">取 消</el-button>-->
+<!--      </div>-->
+<!--    </el-dialog>-->
 
     <!--    导入匹配 importPackageForNoGen-->
     <el-dialog :title="uploadNo.title" :visible.sync="uploadNo.open" width="400px" append-to-body>
@@ -232,11 +232,6 @@
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip text-center" slot="tip">
-<!--          <div><span style="color: red;">*各业务文件命名规则示例：</span><br/>-->
-<!--            <div style="text-align: left;">本地货：DPD Local Wolin coat pol 20221212 34box export xls</div>-->
-<!--            <div style="text-align: left;">转 寄：DPD Resend Wolin pol 20221212 34box export xls</div>-->
-<!--            <div style="text-align: left;">直 发：DPD Origianl Wolin pol 20221212 34b export xls</div>-->
-<!--          </div>-->
           <div>
             <span style="color: red;">仅允许导入xls、xlsx格式文件。</span>
             <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplateForNo">下载模板</el-link>

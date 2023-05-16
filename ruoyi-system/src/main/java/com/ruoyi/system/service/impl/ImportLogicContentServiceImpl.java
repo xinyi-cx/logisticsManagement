@@ -307,9 +307,9 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
         if (org.apache.commons.collections4.CollectionUtils.isEmpty(importLogicContents)) {
             return "导入数据不能为空";
         }
-        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(importLogicContents) && importLogicContents.size() > 300) {
-            return "单次导入最多300条";
-        }
+//        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(importLogicContents) && importLogicContents.size() > 300) {
+//            return "单次导入最多300条";
+//        }
         Documents documents = getDocuments(file);
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         batchTaskHistory.setType("退件物流导入");

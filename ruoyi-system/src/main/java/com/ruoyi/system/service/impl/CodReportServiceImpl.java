@@ -1,29 +1,28 @@
 package com.ruoyi.system.service.impl;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.file.FileUtils;
-import com.ruoyi.system.domain.*;
-import com.ruoyi.system.domain.Package;
-import com.ruoyi.system.domain.vo.ExportPackageVo;
+import com.ruoyi.system.domain.BatchTaskHistory;
+import com.ruoyi.system.domain.CodReport;
+import com.ruoyi.system.domain.Documents;
 import com.ruoyi.system.domain.vo.ImportCodReportVo;
-import com.ruoyi.system.domain.vo.PackageVo;
-import com.ruoyi.system.dpdservices.ValidationInfoPGRV2;
-import com.ruoyi.system.mapper.*;
+import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
+import com.ruoyi.system.mapper.CodReportMapper;
+import com.ruoyi.system.mapper.DocumentsMapper;
+import com.ruoyi.system.mapper.SequenceMapper;
+import com.ruoyi.system.service.ICodReportService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.service.ICodReportService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * COD报告Service业务层处理
@@ -100,9 +99,9 @@ public class CodReportServiceImpl implements ICodReportService
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String importCodReport(MultipartFile file, List<ImportCodReportVo> importCodReportVos) throws Exception {
-        if (CollectionUtils.isNotEmpty(importCodReportVos) && importCodReportVos.size() > 300) {
-            return "单次导入最多300条";
-        }
+//        if (CollectionUtils.isNotEmpty(importCodReportVos) && importCodReportVos.size() > 300) {
+//            return "单次导入最多300条";
+//        }
 //        String fileName = file.getOriginalFilename();
 //        List<String> listFile = Arrays.asList(fileName.split(" "));
 //        if (CollectionUtils.isEmpty(listFile) || listFile.size()<6 || !(
