@@ -24,7 +24,7 @@
       </el-form-item>
 
       <el-form-item label="查询内容" prop="selectType">
-        <el-select v-model="selectType" placeholder="请选择" filterable>
+        <el-select v-model="queryParams.selectTypeFlag" placeholder="请选择" filterable>
           <el-option label="未回COD报告" value="未回COD报告"/>
           <el-option label="已回COD报告" value="已回COD报告"/>
         </el-select>
@@ -282,6 +282,7 @@ export default {
         pageSize: 10,
         sysActivedDate: null,
         sysLastStatusDate: null,
+        selectTypeFlag: "已回COD报告"
       },
       // 导入时点击确定后置灰，避免重复点击
       submitDisabled: false,
@@ -311,6 +312,7 @@ export default {
     /** 查询COD报告列表 */
     getList() {
       this.loading = true;
+      this.selectType = this.queryParams.selectTypeFlag;
       if (this.selectType === '已回COD报告'){
         listContentReport(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.reportList = response.rows;

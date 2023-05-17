@@ -131,8 +131,10 @@ public class CodReportServiceImpl implements ICodReportService
             codReport.setBatchId(batchTaskHistory.getId());
             Date goodsEffectiveDeliveryDate = new Date(codReport.getGoodsEffectiveDeliveryDate());
             Date waybillPostingDate = new Date(codReport.getWaybillPostingDate());
+            Date collectiveTransferDate = new Date(codReport.getCollectiveTransferDate());
             codReport.setGoodsEffectiveDeliveryDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, goodsEffectiveDeliveryDate));
             codReport.setWaybillPostingDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, waybillPostingDate));
+            codReport.setCollectiveTransferDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, collectiveTransferDate));
 
             List<String> waybills = Arrays.asList(importCodReportVo.getWaybill().replace(" ","").split(","));
             String waybill = waybills.get(waybills.size()-1);
