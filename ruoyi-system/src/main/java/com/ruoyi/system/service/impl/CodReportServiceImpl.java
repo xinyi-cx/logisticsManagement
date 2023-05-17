@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -128,6 +129,10 @@ public class CodReportServiceImpl implements ICodReportService
 
             codReport.setDocumentFileId(documents.getId());
             codReport.setBatchId(batchTaskHistory.getId());
+            Date goodsEffectiveDeliveryDate = new Date(codReport.getGoodsEffectiveDeliveryDate());
+            Date waybillPostingDate = new Date(codReport.getWaybillPostingDate());
+            codReport.setGoodsEffectiveDeliveryDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, goodsEffectiveDeliveryDate));
+            codReport.setWaybillPostingDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, waybillPostingDate));
 
             List<String> waybills = Arrays.asList(importCodReportVo.getWaybill().replace(" ","").split(","));
             String waybill = waybills.get(waybills.size()-1);
