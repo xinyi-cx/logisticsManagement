@@ -91,6 +91,8 @@ public interface IParcelService
 
     public void deleteParcelWithWaybillIsNull();
 
+    public void syncStatus();
+
     /**
      * 根据物流单号获取物流信息
      * @param waybill

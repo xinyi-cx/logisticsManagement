@@ -92,4 +92,8 @@ public interface ParcelMapper
      */
     public int batchUpdate(List<Parcel> list);
 
+    public int syncStatus();
+
+    public int deleteNoSyncRel();
+
 }

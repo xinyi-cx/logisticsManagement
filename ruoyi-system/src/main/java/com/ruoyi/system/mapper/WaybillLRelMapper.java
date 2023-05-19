@@ -69,5 +69,7 @@ public interface WaybillLRelMapper
      */
     public int deleteWaybillLRelByWaybills(String[] waybills);
 
+    public int deleteNoSyncRel();
+
     public int deleteWaybillLRelByWaybillsRel(List<String> waybills);
 }

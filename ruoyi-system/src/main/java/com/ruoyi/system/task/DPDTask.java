@@ -61,4 +61,10 @@ public class DPDTask
         parcelService.clearDocuments(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.getDateBeforeNow(dayBefore)));
     }
 
+    public void dpdTaskSyncStatus()
+    {
+        System.out.println("删除物流信息-不包含物流单号");
+        parcelService.syncStatus();
+    }
+
 }

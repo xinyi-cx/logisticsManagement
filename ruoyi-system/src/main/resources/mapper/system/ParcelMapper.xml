@@ -241,4 +241,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where waybill is null
     </select>
 
+    <update id="syncStatus">
+        update parcel
+    </update>
+
+    <delete id="deleteNoSyncRel">
+        delete from waybill_l_rel
+    </delete>
 </mapper>

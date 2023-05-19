@@ -348,4 +348,11 @@ public class ParcelServiceImpl implements IParcelService
         log.info("deleteParcelWithWaybillIsNull end");
     }
 
+    @Override
+    public void syncStatus() {
+        parcelMapper.deleteNoSyncRel();
+        parcelMapper.syncStatus();
+    }
+
+
 }
