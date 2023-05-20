@@ -242,10 +242,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <update id="syncStatus">
-        update parcel
+        update import_logic_content con,
+            parcel par
+        set par.status = con.status
+        where con.new_waybill = par.waybill
+          and par.status != con.status
     </update>
 
     <delete id="deleteNoSyncRel">
         delete from waybill_l_rel
+        where waybill in (select con.new_waybill from
+                                                     import_logic_content con,
+                                                     parcel par
+                          where con.new_waybill = par.waybill
+                            and par.status != con.status
+            )
     </delete>
 </mapper>

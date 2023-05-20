@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.BatchTaskHistory;
 import com.ruoyi.system.domain.CodReport;
 import com.ruoyi.system.domain.Documents;
@@ -129,12 +130,18 @@ public class CodReportServiceImpl implements ICodReportService
 
             codReport.setDocumentFileId(documents.getId());
             codReport.setBatchId(batchTaskHistory.getId());
-            Date goodsEffectiveDeliveryDate = new Date(codReport.getGoodsEffectiveDeliveryDate());
-            Date waybillPostingDate = new Date(codReport.getWaybillPostingDate());
-            Date collectiveTransferDate = new Date(codReport.getCollectiveTransferDate());
-            codReport.setGoodsEffectiveDeliveryDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, goodsEffectiveDeliveryDate));
-            codReport.setWaybillPostingDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, waybillPostingDate));
-            codReport.setCollectiveTransferDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, collectiveTransferDate));
+            if (StringUtils.isNotEmpty(codReport.getGoodsEffectiveDeliveryDate())){
+                Date goodsEffectiveDeliveryDate = new Date(codReport.getGoodsEffectiveDeliveryDate());
+                codReport.setGoodsEffectiveDeliveryDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, goodsEffectiveDeliveryDate));
+            }
+            if (StringUtils.isNotEmpty(codReport.getWaybillPostingDate())){
+                Date waybillPostingDate = new Date(codReport.getWaybillPostingDate());
+                codReport.setWaybillPostingDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, waybillPostingDate));
+            }
+            if (StringUtils.isNotEmpty(codReport.getCollectiveTransferDate())){
+                Date collectiveTransferDate = new Date(codReport.getCollectiveTransferDate());
+                codReport.setCollectiveTransferDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, collectiveTransferDate));
+            }
 
             List<String> waybills = Arrays.asList(importCodReportVo.getWaybill().replace(" ","").split(","));
             String waybill = waybills.get(waybills.size()-1);

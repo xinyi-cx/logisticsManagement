@@ -149,6 +149,7 @@
         plain
         size="mini"
         @click="refreshToday"
+        v-hasPermi="['system:content:add']"
       >获取当日导入物流信息</el-button>
     </el-col>
       <el-col :span="1.5">
@@ -157,6 +158,7 @@
           plain
           size="mini"
           @click="refreshQuery"
+          v-hasPermi="['system:content:add']"
         >获取当前查询物流信息</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
