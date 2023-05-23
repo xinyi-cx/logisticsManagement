@@ -35,6 +35,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -392,6 +393,7 @@ public class OuterServiceImpl implements IOuterService {
         if ("orderChange".equals(notify)) {
             List<String> existCodes = mbReturnDtoMapper.selectMbReturnDtoCodeListByCodes(codes);
             List<Parcel> parcelList = parcelMapper.selectParcelListByReferenceIn(mbReturnDtos.stream().map(MbReturnDto::getPlatformTradeCode).collect(Collectors.toList()));
+            sendSuccessForParcel(mbReturnDtos, parcelList);
             List<String> parcelCodesList =
                     CollectionUtils.isEmpty(parcelList) ? new ArrayList<>() : parcelList.stream().map(Parcel::getReference).collect(Collectors.toList());
 
@@ -441,6 +443,41 @@ public class OuterServiceImpl implements IOuterService {
     }
 
     private static final Logger log = LoggerFactory.getLogger(OuterServiceImpl.class);
+
+    private void sendSuccessForParcel(List<MbReturnDto> mbReturnDtos, List<Parcel> parcelList){
+        if (CollectionUtils.isEmpty(mbReturnDtos) || CollectionUtils.isEmpty(parcelList)){
+            return;
+        }
+        log.info("sendSuccessForParcel: {}", parcelList.stream().map(Parcel::getReference).collect(joining(",")));
+        Map<String, String> codeMap = mbReturnDtos.stream().collect(toMap(MbReturnDto::getPlatformTradeCode, MbReturnDto::getCode));
+        parcelList.parallelStream().forEach(
+                item ->{
+                    if (codeMap.containsKey(item.getReference())){
+                        SysUser sysUser = userMapper.selectUserById(item.getId());
+                        changeOneForParcel(codeMap.get(item.getReference()), item, sysUser);
+                    }
+                }
+        );
+    }
+
+    private void changeOneForParcel(String code, Parcel parcel, SysUser user) {
+        MbAccept mbAccept = new MbAccept();
+        mbAccept.setCode(code);
+        mbAccept.setChangeStatus("accept");
+        mbAccept.setExpressChannelCode(parcel.getWaybill());
+        mbAccept.setSupplierInnerCode(parcel.getWaybill());
+        mbAccept.setLabelPDFUrl(localIp + parcel.getPackageId().toString() + ".pdf");
+
+        saveMbMsg(code + "sendBefore" , "mbAccept" , JSONObject.toJSONString(mbAccept), "");
+
+        //不为空就可以 用来拼接参数确定的
+        Map<String, String> encodeParamsMap = new HashMap<>();
+        encodeParamsMap.put("changeStatus" , "accept");
+        String enStr = net.arnx.jsonic.JSON.encode(mbAccept);
+        String res = HttpUtils.sendPost(url, getParamStr("api.biaoju.order.update" , null == user ? apiAccountId : user.getApiAccountId(), null == user ? apiKey : user.getApiKey(), encodeParamsMap, enStr));
+        JSONObject jsonObject = JSON.parseObject(res);
+        saveMbMsg(code + "accept" , jsonObject.get("ErrorCode").toString(), jsonObject.get("Data").toString(), mbAccept.toString());
+    }
 
     /**
      * 校验里面的customer数据 是否是咱们系统的客户
