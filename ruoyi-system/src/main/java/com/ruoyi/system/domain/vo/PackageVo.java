@@ -458,6 +458,11 @@ public class PackageVo extends BaseEntity {
     private Long localId;
 
     /**
+     * 有值说明查询的是马帮数据
+     */
+    private Long mbId;
+
+    /**
      * 原面单主键
      */
 //    @Excel(name = "原面单物流单号")
@@ -568,6 +573,14 @@ public class PackageVo extends BaseEntity {
 
     public void setOriginalWaybill(String originalWaybill) {
         this.originalWaybill = originalWaybill;
+    }
+
+    public Long getMbId() {
+        return mbId;
+    }
+
+    public void setMbId(Long mbId) {
+        this.mbId = mbId;
     }
 
     public Long getLocalId() {

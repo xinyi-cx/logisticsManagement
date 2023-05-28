@@ -15,6 +15,7 @@ import com.ruoyi.system.DPDServicesExample.client.DPDInfoXMLClient;
 import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
+import com.ruoyi.system.domain.mb.MbReturnDto;
 import com.ruoyi.system.domain.vo.ExportTwoPackageVo;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.dpdservices.DocumentGenerationResponseV1;
@@ -56,6 +57,9 @@ public class PackageServiceImpl implements IPackageService {
 
     @Autowired
     private PackRelLocalMapper packRelLocalMapper;
+
+    @Autowired
+    private MbReturnDtoMapper mbReturnDtoMapper;
 
     @Autowired
     private AddressSenderMapper addressSenderMapper;
@@ -447,6 +451,21 @@ public class PackageServiceImpl implements IPackageService {
             }else {
                 return 0;
             }
+        }else if (ObjectUtils.isNotEmpty(packageVo.getMbId())) {
+//            MbReturnDto mbReturnDtoParam = new MbReturnDto();
+//            if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+//                mbReturnDtoParam.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+//            }
+////            mbReturnDtoParam.setExportFlag(pkg.getExportFlag());
+////            mbReturnDtoParam.setIds(pkg.getIds());
+////            List<PackRelLocal> packRelLocals = mbReturnDtoMapper.selectPackRelLocalList(packRelLocalParam);
+//            if (CollectionUtils.isNotEmpty(packRelLocals)) {
+//                pkg.setExportFlag(1);
+////                pkg.setIds(packRelLocals.stream().map(PackRelLocal::getOldPackageId).collect(toList()));
+                packagesAll = packageMapper.selectPackageListForMb(pkg);
+//            }else {
+//                return 0;
+//            }
         }else {
             packagesAll = packageMapper.selectPackageListForZf(pkg);
         }
@@ -588,6 +607,22 @@ public class PackageServiceImpl implements IPackageService {
                 redisCache.setCacheObject(numRedisKey, Long.parseLong("0"));
                 return new ArrayList<>();
             }
+        }else if (ObjectUtils.isNotEmpty(packageVo.getMbId())) {
+            MbReturnDto mbReturnDtoParam = new MbReturnDto();
+            if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
+                mbReturnDtoParam.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+            }
+//            mbReturnDtoParam.setExportFlag(pkg.getExportFlag());
+//            mbReturnDtoParam.setIds(pkg.getIds());
+//            List<PackRelLocal> packRelLocals = mbReturnDtoMapper.selectPackRelLocalList(packRelLocalParam);
+            packagesAll = packageMapper.selectPackageListForMb(pkg);
+//            if (CollectionUtils.isNotEmpty(packRelLocals)) {
+//                pkg.setExportFlag(1);
+//                pkg.setIds(packRelLocals.stream().map(PackRelLocal::getOldPackageId).collect(toList()));
+//                packagesAll = packageMapper.selectPackageListForMb(pkg);
+//            }else {
+//                return 0;
+//            }
         }else {
             packagesAll = packageMapper.selectPackageListForZf(pkg);
         }

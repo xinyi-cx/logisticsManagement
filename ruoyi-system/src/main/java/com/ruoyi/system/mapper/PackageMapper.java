@@ -44,6 +44,8 @@ public interface PackageMapper {
 
     public List<Package> selectPackageListForLocal(Package pkg);
 
+    public List<Package> selectPackageListForMb(Package pkg);
+
     /**
      * 更细下载数量
      * @param ids
