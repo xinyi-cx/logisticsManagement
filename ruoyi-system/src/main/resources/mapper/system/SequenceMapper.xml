@@ -15,15 +15,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectNextvalByName" parameterType="String" resultType="long">
-        select nextval(#{seqName})
+        select nextval(#{seqName});
+        commit;
     </select>
 
     <select id="selectNextvalWithSizeByName" resultType="long">
-        select nextvalWithSize(#{seqName}, #{seqSize})
+        select nextvalWithSize(#{seqName}, #{seqSize});
+        commit;
     </select>
 
     <select id="selectCurrvalByName" parameterType="String" resultType="long">
-        select currval(#{seqName})
+        select currval(#{seqName});
+        commit;
     </select>
 
     <select id="selectSequenceList" parameterType="Sequence" resultMap="SequenceResult">

@@ -28,6 +28,8 @@ public interface CodReportMapper
      */
     public List<CodReport> selectCodReportList(CodReport codReport);
 
+    public List<String> selectWaybillList(CodReport codReport);
+
     /**
      * 新增COD报告
      * 

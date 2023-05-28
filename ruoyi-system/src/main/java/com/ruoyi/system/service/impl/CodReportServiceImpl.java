@@ -20,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -87,7 +84,7 @@ public class CodReportServiceImpl implements ICodReportService
     public Documents getDocuments(MultipartFile file) throws IOException {
         Documents documents = new Documents();
         documents.setId(sequenceMapper.selectNextvalByName("doc_seq"));
-        documents.setFileData(file.getBytes());
+//        documents.setFileData(file.getBytes());
         documents.setFileName(file.getName());
         documents.setContentType(file.getContentType());
         documents.setFileSize(file.getSize());
@@ -120,39 +117,16 @@ public class CodReportServiceImpl implements ICodReportService
         batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
 
-        List<CodReport> all = codReportMapper.selectCodReportList(new CodReport());
-        List<String> exWaybills = all.stream().map(CodReport::getWaybill).collect(Collectors.toList());
+//        List<CodReport> all = codReportMapper.selectCodReportList(new CodReport());
+//        List<String> exWaybills = all.parallelStream().map(CodReport::getWaybill).collect(Collectors.toList());
 
-        List<CodReport> codReportList = new ArrayList<>();
-        for (ImportCodReportVo importCodReportVo : importCodReportVos) {
-            CodReport codReport = new CodReport();
-            BeanUtils.copyProperties(importCodReportVo, codReport);
+        List<String> exWaybills = codReportMapper.selectWaybillList(new CodReport());
 
-            codReport.setDocumentFileId(documents.getId());
-            codReport.setBatchId(batchTaskHistory.getId());
-            if (StringUtils.isNotEmpty(codReport.getGoodsEffectiveDeliveryDate())){
-                Date goodsEffectiveDeliveryDate = new Date(codReport.getGoodsEffectiveDeliveryDate());
-                codReport.setGoodsEffectiveDeliveryDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, goodsEffectiveDeliveryDate));
-            }
-            if (StringUtils.isNotEmpty(codReport.getWaybillPostingDate())){
-                Date waybillPostingDate = new Date(codReport.getWaybillPostingDate());
-                codReport.setWaybillPostingDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, waybillPostingDate));
-            }
-            if (StringUtils.isNotEmpty(codReport.getCollectiveTransferDate())){
-                Date collectiveTransferDate = new Date(codReport.getCollectiveTransferDate());
-                codReport.setCollectiveTransferDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, collectiveTransferDate));
-            }
+        List<CodReport> codReportList = importCodReportVos.stream().map(
+                item -> genCodReport(exWaybills, item, documents, batchTaskHistory)
+        ).filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-            List<String> waybills = Arrays.asList(importCodReportVo.getWaybill().replace(" ","").split(","));
-            String waybill = waybills.get(waybills.size()-1);
-            if (CollectionUtils.isNotEmpty(exWaybills) && exWaybills.contains(waybill)){
-                continue;
-            }
-            codReport.setWaybill(waybill);
-            codReport.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
-            codReport.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
-            codReportList.add(codReport);
-        }
         try {
             StringBuilder returnStrBuf = new StringBuilder();
             if (CollectionUtils.isNotEmpty(codReportList)){
@@ -169,6 +143,36 @@ public class CodReportServiceImpl implements ICodReportService
         }finally {
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
         }
+    }
+
+    private CodReport genCodReport(List<String> exWaybills, ImportCodReportVo importCodReportVo, Documents documents, BatchTaskHistory batchTaskHistory){
+        CodReport codReport = new CodReport();
+        BeanUtils.copyProperties(importCodReportVo, codReport);
+
+        codReport.setDocumentFileId(documents.getId());
+        codReport.setBatchId(batchTaskHistory.getId());
+        if (StringUtils.isNotEmpty(codReport.getGoodsEffectiveDeliveryDate())){
+            Date goodsEffectiveDeliveryDate = new Date(codReport.getGoodsEffectiveDeliveryDate());
+            codReport.setGoodsEffectiveDeliveryDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, goodsEffectiveDeliveryDate));
+        }
+        if (StringUtils.isNotEmpty(codReport.getWaybillPostingDate())){
+            Date waybillPostingDate = new Date(codReport.getWaybillPostingDate());
+            codReport.setWaybillPostingDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, waybillPostingDate));
+        }
+        if (StringUtils.isNotEmpty(codReport.getCollectiveTransferDate())){
+            Date collectiveTransferDate = new Date(codReport.getCollectiveTransferDate());
+            codReport.setCollectiveTransferDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, collectiveTransferDate));
+        }
+
+        List<String> waybills = Arrays.asList(importCodReportVo.getWaybill().replace(" ","").split(","));
+        String waybill = waybills.get(waybills.size()-1);
+        if (CollectionUtils.isNotEmpty(exWaybills) && exWaybills.contains(waybill)){
+            return null;
+        }
+        codReport.setWaybill(waybill);
+        codReport.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        codReport.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        return codReport;
     }
 
     /**

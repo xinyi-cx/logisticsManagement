@@ -97,6 +97,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from pack_rel_local localRel
         where pac.id = localRel.old_package_id
         )
+        and Not Exists
+        (
+        Select mrd.platform_trade_code
+        from mb_return_dto mrd
+        where pac.parcel_reference = mrd.platform_trade_code
+        )
         and
             pac.is_delete = 0
             <choose>
@@ -265,8 +271,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         pac.qty_packages,
         pac.is_delete
         from package pac
-        inner join parcel on pac.id = parcel.package_id
-        inner join mb_return_dto mrd on parcel.reference = mrd.platform_trade_code
+        inner join mb_return_dto mrd on pac.parcel_reference = mrd.platform_trade_code
         <where>
             pac.is_delete = 0
             <choose>
@@ -292,7 +297,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phone != null  and phone != ''"> and pac.phone = #{phone}</if>
             <if test="postalCode != null  and postalCode != ''"> and pac.postal_code = #{postalCode}</if>
             <if test="batchId != null "> and pac.batch_id = #{batchId}</if>
-            <if test="createUser != null  and createUser != ''"> and pac.create_user = #{createUser}</if>
+            <if test="createUser != null  and createUser != ''"> and mrd.create_by = #{createUser}</if>
             <if test="updateUser != null  and updateUser != ''"> and pac.update_user = #{updateUser}</if>
             <if test="createdTime != null"> and date_format(pac.created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
             <if test="updatedTime != null"> and date_format(pac.updated_time,'%Y-%m-%d') = date_format(#{updatedTime},'%Y-%m-%d')</if>

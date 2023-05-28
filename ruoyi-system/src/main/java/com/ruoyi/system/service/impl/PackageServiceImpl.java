@@ -611,6 +611,7 @@ public class PackageServiceImpl implements IPackageService {
             MbReturnDto mbReturnDtoParam = new MbReturnDto();
             if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
                 mbReturnDtoParam.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+                pkg.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
             }
 //            mbReturnDtoParam.setExportFlag(pkg.getExportFlag());
 //            mbReturnDtoParam.setIds(pkg.getIds());

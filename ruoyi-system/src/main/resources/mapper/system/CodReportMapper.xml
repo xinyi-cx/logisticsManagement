@@ -82,7 +82,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isDelete != null "> and is_delete = #{isDelete}</if>
         </where>
     </select>
-    
+
+    <select id="selectWaybillList" parameterType="CodReport" resultType="java.lang.String">
+        select  waybill
+        from cod_report
+        <where>
+            <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
+            <if test="packId != null "> and pack_id = #{packId}</if>
+            <if test="batchId != null "> and batch_id = #{batchId}</if>
+            <if test="logicId != null "> and logic_id = #{logicId}</if>
+            <if test="client != null  and client != ''"> and client = #{client}</if>
+            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="importType != null  and importType != ''"> and import_type = #{importType}</if>
+            <if test="loginid != null  and loginid != ''"> and loginId = #{loginid}</if>
+            <if test="nrKlienta != null  and nrKlienta != ''"> and nr_klienta = #{nrKlienta}</if>
+            <if test="downloadRecipient != null  and downloadRecipient != ''"> and download_recipient = #{downloadRecipient}</if>
+            <if test="waybill != null  and waybill != ''"> and waybill = #{waybill}</if>
+            <if test="waybillPostingDate != null  and waybillPostingDate != ''"> and waybill_posting_date = #{waybillPostingDate}</if>
+            <if test="cashOnDelivery != null  and cashOnDelivery != ''"> and cash_on_delivery = #{cashOnDelivery}</if>
+            <if test="goodsEffectiveDeliveryDate != null  and goodsEffectiveDeliveryDate != ''"> and goods_effective_delivery_date = #{goodsEffectiveDeliveryDate}</if>
+            <if test="addressee != null  and addressee != ''"> and addressee = #{addressee}</if>
+            <if test="postalCode != null  and postalCode != ''"> and postal_code = #{postalCode}</if>
+            <if test="area != null  and area != ''"> and area = #{area}</if>
+            <if test="street != null  and street != ''"> and street = #{street}</if>
+            <if test="unisoftClientContentField != null  and unisoftClientContentField != ''"> and unisoft_Client_content_field = #{unisoftClientContentField}</if>
+            <if test="batchTransmission != null  and batchTransmission != ''"> and batch_transmission = #{batchTransmission}</if>
+            <if test="collectiveTransferDate != null  and collectiveTransferDate != ''"> and collective_transfer_date = #{collectiveTransferDate}</if>
+            <if test="settlementNumber != null  and settlementNumber != ''"> and settlement_number = #{settlementNumber}</if>
+            <if test="sysActivedDate != null  and sysActivedDate != ''"> and sys_actived_date = #{sysActivedDate}</if>
+            <if test="sysLastStatusDate != null  and sysLastStatusDate != ''"> and sys_last_status_date = #{sysLastStatusDate}</if>
+            <if test="sysSignDate != null  and sysSignDate != ''"> and sys_sign_date = #{sysSignDate}</if>
+            <if test="remark2 != null  and remark2 != ''"> and remark2 = #{remark2}</if>
+            <if test="remark3 != null  and remark3 != ''"> and remark3 = #{remark3}</if>
+            <if test="remark4 != null  and remark4 != ''"> and remark4 = #{remark4}</if>
+            <if test="remark5 != null  and remark5 != ''"> and remark5 = #{remark5}</if>
+            <if test="isDelete != null "> and is_delete = #{isDelete}</if>
+        </where>
+    </select>
+
     <select id="selectCodReportById" parameterType="Long" resultMap="CodReportResult">
         <include refid="selectCodReportVo"/>
         where id = #{id}

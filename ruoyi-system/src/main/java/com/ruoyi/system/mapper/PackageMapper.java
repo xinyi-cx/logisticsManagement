@@ -38,12 +38,32 @@ public interface PackageMapper {
      */
     public List<Package> selectPackageList(Package pkg);
 
+    /**
+     * 直发
+     * @param pkg
+     * @return
+     */
     public List<Package> selectPackageListForZf(Package pkg);
 
+    /**
+     * 转寄
+     * @param pkg
+     * @return
+     */
     public List<Package> selectPackageListForRel(Package pkg);
 
+    /**
+     * 本地
+     * @param pkg
+     * @return
+     */
     public List<Package> selectPackageListForLocal(Package pkg);
 
+    /**
+     * 马帮
+     * @param pkg
+     * @return
+     */
     public List<Package> selectPackageListForMb(Package pkg);
 
     /**
