@@ -18,7 +18,6 @@ import com.ruoyi.system.service.IOuterService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -75,19 +74,34 @@ public class OuterServiceImpl implements IOuterService {
     private PackageMapper packageMapper;
 
     @Autowired
+    private MbPackageMapper mbPackageMapper;
+
+    @Autowired
     private AddressSenderMapper addressSenderMapper;
 
     @Autowired
     private AddressReceiverMapper addressReceiverMapper;
 
     @Autowired
+    private MbAddressReceiverMapper mbAddressReceiverMapper;
+
+    @Autowired
     private ServicesMapper servicesMapper;
+
+    @Autowired
+    private MbServicesMapper mbServicesMapper;
 
     @Autowired
     private BatchTaskHistoryMapper batchTaskHistoryMapper;
 
+//    @Autowired
+//    private MbBatchTaskHistoryMapper mbBatchTaskHistoryMapper;
+
     @Autowired
     private ImportLogicContentMapper importLogicContentMapper;
+
+    @Autowired
+    private MbImportLogicContentMapper mbImportLogicContentMapper;
 
     @Autowired
     private SequenceMapper sequenceMapper;
@@ -96,10 +110,16 @@ public class OuterServiceImpl implements IOuterService {
     private ParcelMapper parcelMapper;
 
     @Autowired
+    private MbParcelMapper mbParcelMapper;
+
+    @Autowired
     private PackagesGenerationResponseMapper packagesGenerationResponseMapper;
 
     @Autowired
     private DocumentsMapper documentsMapper;
+
+//    @Autowired
+//    private MbDocumentsMapper mbDocumentsMapper;
 
     @Autowired
     private DPDServicesXMLClient dpdServicesXMLClient;
@@ -676,12 +696,12 @@ public class OuterServiceImpl implements IOuterService {
             for (Package aPackage : packages) {
                 importLogicContents.add(aPackage.getImportLogicContent());
             }
-            importLogicContentMapper.batchInsert(importLogicContents);
+            mbImportLogicContentMapper.batchInsert(importLogicContents);
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
-            packageMapper.batchInsert(packages);
-            addressReceiverMapper.batchInsert(addressReceivers);
-            servicesMapper.batchInsert(servicesList);
-            parcelMapper.batchInsert(parcels);
+            mbPackageMapper.batchInsert(packages);
+            mbAddressReceiverMapper.batchInsert(addressReceivers);
+            mbServicesMapper.batchInsert(servicesList);
+            mbParcelMapper.batchInsert(parcels);
             packagesGenerationResponseMapper.batchInsert(returnResponses);
         } catch (Exception e) {
             batchTaskHistory.setStatus("导入失败");

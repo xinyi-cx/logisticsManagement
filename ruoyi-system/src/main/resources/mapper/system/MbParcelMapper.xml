@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MbParcelMapper">
+    
+    <resultMap type="Parcel" id="ParcelResult">
+        <result property="id"    column="id"    />
+        <result property="sizeX"    column="size_x"    />
+        <result property="sizeY"    column="size_y"    />
+        <result property="sizeZ"    column="size_z"    />
+        <result property="content"    column="content"    />
+        <result property="customerData1"    column="customer_data1"    />
+        <result property="reference"    column="reference"    />
+        <result property="weight"    column="weight"    />
+        <result property="packId"    column="pack_id"    />
+        <result property="waybill"    column="waybill"    />
+        <result property="status"    column="status"    />
+        <result property="packageId"    column="package_id"    />
+        <result property="parcelId"    column="parcel_id"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+    </resultMap>
+
+    <sql id="selectParcelVo">
+        select id, size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time from mb_parcel
+    </sql>
+
+    <select id="selectParcelList" parameterType="Parcel" resultMap="ParcelResult">
+        <include refid="selectParcelVo"/>
+        <where>
+            is_delete = 0
+            <if test="sizeX != null "> and size_x = #{sizeX}</if>
+            <if test="sizeY != null "> and size_y = #{sizeY}</if>
+            <if test="sizeZ != null "> and size_z = #{sizeZ}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="customerData1 != null  and customerData1 != ''"> and customer_data1 = #{customerData1}</if>
+            <if test="reference != null  and reference != ''"> and reference = #{reference}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="packId != null "> and pack_id = #{packId}</if>
+            <if test="waybill != null  and waybill != ''"> and waybill = #{waybill}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="packageId != null "> and package_id = #{packageId}</if>
+            <if test="parcelId != null "> and parcel_id = #{parcelId}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+        </where>
+    </select>
+
+    <select id="selectParcelListNeedDeal" parameterType="Parcel" resultMap="ParcelResult">
+        <include refid="selectParcelVo"/>
+        <where>
+            waybill is not null
+            and status != '4'
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="customerData1 != null  and customerData1 != ''"> and customer_data1 = #{customerData1}</if>
+            <if test="reference != null  and reference != ''"> and reference = #{reference}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="packId != null "> and pack_id = #{packId}</if>
+            <if test="waybill != null  and waybill != ''"> and waybill = #{waybill}</if>
+            <if test="packageId != null "> and package_id = #{packageId}</if>
+            <if test="parcelId != null "> and parcel_id = #{parcelId}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="createdTime != null"> and date_format(created_time,'%Y-%m-%d') = date_format(#{createdTime},'%Y-%m-%d')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectParcelById" parameterType="Long" resultMap="ParcelResult">
+        <include refid="selectParcelVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectParcelListByPackIdIn" resultMap="ParcelResult" parameterType="list">
+        <include refid="selectParcelVo"/>
+        where pack_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectParcelListByWaybillIn" resultMap="ParcelResult" parameterType="list">
+        <include refid="selectParcelVo"/>
+        where waybill in
+        <foreach item="waybill" collection="list" open="(" separator="," close=")">
+            #{waybill}
+        </foreach>
+    </select>
+
+    <select id="selectParcelListByReferenceIn" resultMap="ParcelResult" parameterType="list">
+        <include refid="selectParcelVo"/>
+        where reference in
+        <foreach item="reference" collection="list" open="(" separator="," close=")">
+            #{reference}
+        </foreach>
+    </select>
+
+    <insert id="insertParcel" parameterType="Parcel" useGeneratedKeys="true" keyProperty="id">
+        insert into mb_parcel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sizeX != null">size_x,</if>
+            <if test="sizeY != null">size_y,</if>
+            <if test="sizeZ != null">size_z,</if>
+            <if test="content != null">content,</if>
+            <if test="customerData1 != null">customer_data1,</if>
+            <if test="reference != null">reference,</if>
+            <if test="weight != null">weight,</if>
+            <if test="packId != null">pack_id,</if>
+            <if test="waybill != null">waybill,</if>
+            <if test="status != null">status,</if>
+            <if test="packageId != null">package_id,</if>
+            <if test="parcelId != null">parcel_id,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            created_time,
+            updated_time,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sizeX != null">#{sizeX},</if>
+            <if test="sizeY != null">#{sizeY},</if>
+            <if test="sizeZ != null">#{sizeZ},</if>
+            <if test="content != null">#{content},</if>
+            <if test="customerData1 != null">#{customerData1},</if>
+            <if test="reference != null">#{reference},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="packId != null">#{packId},</if>
+            <if test="waybill != null">#{waybill},</if>
+            <if test="status != null">#{status},</if>
+            <if test="packageId != null">#{packageId},</if>
+            <if test="parcelId != null">#{parcelId},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            sysdate(),
+            sysdate(),
+         </trim>
+    </insert>
+
+    <insert id="batchInsert">
+        insert into mb_parcel (size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.sizeX},
+            #{item.sizeY},
+            #{item.sizeZ},
+            #{item.content},
+            #{item.customerData1},
+            #{item.reference},
+            #{item.weight},
+            #{item.packId},
+            #{item.waybill},
+            #{item.status},
+            #{item.packageId},
+            #{item.parcelId},
+            #{item.createUser},
+            #{item.updateUser},
+            sysdate(),
+            sysdate()
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateParcel" parameterType="Parcel">
+        update mb_parcel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sizeX != null">size_x = #{sizeX},</if>
+            <if test="sizeY != null">size_y = #{sizeY},</if>
+            <if test="sizeZ != null">size_z = #{sizeZ},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="customerData1 != null">customer_data1 = #{customerData1},</if>
+            <if test="reference != null">reference = #{reference},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="packId != null">pack_id = #{packId},</if>
+            <if test="waybill != null">waybill = #{waybill},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="packageId != null">package_id = #{packageId},</if>
+            <if test="parcelId != null">parcel_id = #{parcelId},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            updated_time = sysdate(),
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="batchUpdate" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+        update mb_parcel
+        set
+            <if test="item.waybill != null">waybill = #{item.waybill},</if>
+            <if test="item.status != null">status = #{item.status},</if>
+            updated_time = sysdate()
+        where id = #{item.id}
+        </foreach>
+    </update>
+
+    <update id="deleteParcelById" parameterType="Long">
+        update mb_parcel set is_delete = 1, updated_time = sysdate()
+        where id = #{id}
+    </update>
+
+    <update id="deleteParcelByIds" parameterType="String">
+        update mb_parcel set is_delete = 1, updated_time = sysdate()   where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="deleteParcelByPackIds" parameterType="String">
+        update mb_parcel set is_delete = 1, updated_time = sysdate()
+        where pack_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deleteParcelByWlNull">
+        delete from mb_parcel
+        where waybill is null
+    </delete>
+
+    <delete id="deleteParcelByPackIdsReal" parameterType="String">
+        delete from mb_parcel
+        where pack_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteParcelByWaybillssReal" parameterType="list">
+        delete from mb_parcel
+        where waybill in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectParcelListWithNull" resultMap="ParcelResult">
+        <include refid="selectParcelVo"/>
+        where waybill is null
+    </select>
+
+    <update id="syncStatus">
+        update import_logic_content con,
+            mb_parcel par
+        set par.status = con.status
+        where con.new_waybill = par.waybill
+          and par.status != con.status
+    </update>
+
+    <delete id="deleteNoSyncRel">
+        delete from waybill_l_rel
+        where waybill in (select con.new_waybill from
+                                                     import_logic_content con,
+                                                     mb_parcel par
+                          where con.new_waybill = par.waybill
+                            and par.status != con.status
+            )
+    </delete>
+</mapper>
