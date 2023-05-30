@@ -62,4 +62,9 @@ public interface MbBatchTaskHistoryMapper
      * @return 结果
      */
     public int deleteBatchTaskHistoryByIds(Long[] ids);
+
+    public int insertInToWithOutMb();
+
+    public int deleteMbData();
+
 }

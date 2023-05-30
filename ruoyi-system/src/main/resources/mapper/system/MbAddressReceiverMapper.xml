@@ -182,4 +182,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </insert>
 
+    <insert id="insertInToWithOutMb">
+        insert into address_receiver
+        select * from mb_address_receiver
+    </insert>
+
+
+    <delete id="deleteMbData">
+       delete from mb_address_receiver par
+        where exists(
+            select * from address_receiver par2
+            where par.id = par2.id
+                  )
+    </delete>
+
 </mapper>

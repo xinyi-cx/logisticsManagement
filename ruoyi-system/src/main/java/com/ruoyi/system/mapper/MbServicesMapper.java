@@ -65,4 +65,9 @@ public interface MbServicesMapper
      * @return 结果
      */
     public int deleteServicesByIds(Long[] ids);
+
+    public int insertInToWithOutMb();
+
+    public int deleteMbData();
+
 }

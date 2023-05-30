@@ -96,4 +96,8 @@ public interface MbParcelMapper
 
     public int deleteNoSyncRel();
 
+    public int insertInToWithOutMb();
+
+    public int deleteMbData();
+
 }

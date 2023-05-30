@@ -126,4 +126,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <insert id="insertInToWithOutMb">
+        insert into batch_task_history
+        select * from mb_batch_task_history
+    </insert>
+
+
+    <delete id="deleteMbData">
+       delete from mb_batch_task_history par
+        where exists(
+            select * from batch_task_history par2
+            where par.id = par2.id
+                  )
+    </delete>
+
 </mapper>

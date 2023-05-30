@@ -657,4 +657,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </insert>
 
+    <insert id="insertInToWithOutMb">
+        insert into import_logic_content
+        select * from mb_import_logic_content
+    </insert>
+
+
+    <delete id="deleteMbData">
+       delete from mb_import_logic_content par
+        where exists(
+            select * from import_logic_content par2
+            where par.id = par2.id
+                  )
+    </delete>
+
 </mapper>

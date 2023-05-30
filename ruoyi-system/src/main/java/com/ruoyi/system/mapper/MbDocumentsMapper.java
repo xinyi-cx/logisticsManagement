@@ -74,4 +74,9 @@ public interface MbDocumentsMapper
      * @return 结果
      */
     public int deleteDocumentsByIds(Long[] ids);
+
+    public int insertInToWithOutMb();
+
+    public int deleteMbData();
+
 }

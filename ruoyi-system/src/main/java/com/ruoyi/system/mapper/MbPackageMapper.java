@@ -127,4 +127,8 @@ public interface MbPackageMapper {
      */
     public int deletePackageByIdsReal(Long[] ids);
 
+    public int insertInToWithOutMb();
+
+    public int deleteMbData();
+
 }

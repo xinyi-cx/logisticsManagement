@@ -82,4 +82,9 @@ public interface MbAddressReceiverMapper
      * @return 结果
      */
     public int deleteAddressReceiverByIds(Long[] ids);
+
+    public int insertInToWithOutMb();
+
+    public int deleteMbData();
+
 }

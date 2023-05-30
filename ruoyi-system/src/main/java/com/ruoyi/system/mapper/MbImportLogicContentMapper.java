@@ -92,4 +92,8 @@ public interface MbImportLogicContentMapper
 
     public int batchInsert(List<ImportLogicContent> list);
 
+    public int insertInToWithOutMb();
+
+    public int deleteMbData();
+
 }
