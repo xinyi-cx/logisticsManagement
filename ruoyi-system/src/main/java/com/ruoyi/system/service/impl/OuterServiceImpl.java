@@ -413,6 +413,10 @@ public class OuterServiceImpl implements IOuterService {
         if ("orderChange".equals(notify)) {
             List<String> existCodes = mbReturnDtoMapper.selectMbReturnDtoCodeListByCodes(codes);
             List<Parcel> parcelList = parcelMapper.selectParcelListByReferenceIn(mbReturnDtos.stream().map(MbReturnDto::getPlatformTradeCode).collect(Collectors.toList()));
+            List<Parcel> mbParcelList = mbParcelMapper.selectParcelListByReferenceIn(mbReturnDtos.stream().map(MbReturnDto::getPlatformTradeCode).collect(Collectors.toList()));
+            if (!CollectionUtils.isEmpty(mbParcelList)){
+                parcelList.addAll(mbParcelList);
+            }
             sendSuccessForParcel(mbReturnDtos, parcelList);
             List<String> parcelCodesList =
                     CollectionUtils.isEmpty(parcelList) ? new ArrayList<>() : parcelList.stream().map(Parcel::getReference).collect(Collectors.toList());
