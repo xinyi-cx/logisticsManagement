@@ -218,6 +218,20 @@ export const dynamicRoutes = [
     ]
   },
   {
+    path: '/system/mabang',
+    component: Layout,
+    hidden: true,
+    permissions: ['system:package:list'],
+    children: [
+      {
+        path: 'index/:hisParam(\\d+)',
+        component: () => import('@/views/system/mabang/index'),
+        name: 'mabangDataPackage',//name 重复2
+        meta: { title: '马帮面单列表', activeMenu: '/system/history' }
+      }
+    ]
+  },
+  {
     path: '/system/info',
     component: Layout,
     hidden: true,

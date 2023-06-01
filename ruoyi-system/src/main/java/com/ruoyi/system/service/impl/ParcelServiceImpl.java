@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
@@ -354,5 +355,45 @@ public class ParcelServiceImpl implements IParcelService
         parcelMapper.syncStatus();
     }
 
+    @Autowired
+    private MbAddressReceiverMapper mbAddressReceiverMapper;
+    @Autowired
+    private MbPackageMapper mbPackageMapper;
+    @Autowired
+    private MbImportLogicContentMapper mbImportLogicContentMapper;
+    @Autowired
+    private MbDocumentsMapper mbDocumentsMapper;
+    @Autowired
+    private MbParcelMapper mbParcelMapper;
+    @Autowired
+    private MbBatchTaskHistoryMapper mbBatchTaskHistoryMapper;
+    @Autowired
+    private MbServicesMapper mbServicesMapper;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void syncMb() {
+        mbPackageMapper.insertInToWithOutMb();
+        mbPackageMapper.deleteMbData();
+
+        mbAddressReceiverMapper.insertInToWithOutMb();
+        mbAddressReceiverMapper.deleteMbData();
+
+        mbServicesMapper.insertInToWithOutMb();
+        mbServicesMapper.deleteMbData();
+
+        mbParcelMapper.insertInToWithOutMb();
+        mbParcelMapper.deleteMbData();
+
+        mbDocumentsMapper.insertInToWithOutMb();
+        mbDocumentsMapper.deleteMbData();
+
+        mbBatchTaskHistoryMapper.insertInToWithOutMb();
+        mbBatchTaskHistoryMapper.deleteMbData();
+
+        mbImportLogicContentMapper.insertInToWithOutMb();
+        mbImportLogicContentMapper.deleteMbData();
+
+    }
 
 }

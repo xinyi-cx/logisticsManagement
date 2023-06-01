@@ -407,42 +407,6 @@ export default {
   name: "Package",
   dicts: ['sys_country'],
   data() {
-    // 重量校验（不能大于10Kg）
-    let checkWeight = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('重量不能为空'));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'));
-        } else {
-          if (value < 1) {
-            callback(new Error('重量须大于等于1kg'));
-          } else if(value > 10) {
-            callback(new Error('重量不能超过10kg'));
-          } else {
-            callback();
-          }
-        }
-      }, 1000);
-    };
-    // cod校验（不能大于 6000）
-    let checkPln = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('COD金额不能为空'));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'));
-        } else {
-          if (value >6000) {
-            callback(new Error('COD金额不能超过6000'));
-          } else {
-            callback();
-          }
-        }
-      }, 1000);
-    };
     return {
       countryCodePlFlag: true,
       countryCodeCzFlag: false,

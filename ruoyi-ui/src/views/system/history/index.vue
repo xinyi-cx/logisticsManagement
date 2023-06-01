@@ -111,7 +111,7 @@
       <el-table-column label="成功面单数" align="center" prop="successNum">
         <template slot-scope="scope">
           <!-- 待添加点击处理事件 跳转至成功面单列表 -->
-          <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
+          <router-link :to="'/system/package/index/000' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入'">
            <span>{{ scope.row.successNum }}</span>
           </router-link>
           <router-link :to="'/system/redirect/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '转寄面单导入'">
@@ -120,13 +120,16 @@
           <router-link :to="'/system/local/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '本地面单导入'">
             <span>{{ scope.row.successNum }}</span>
           </router-link>
+          <router-link :to="'/system/mabang/index/000' + scope.row.id" class="link-type" v-else-if="scope.row.type == '马帮主动通知'">
+            <span>{{ scope.row.successNum }}</span>
+          </router-link>
           <span v-else >{{ scope.row.successNum }}</span>
         </template>
       </el-table-column>
       <el-table-column label="失败面单数" align="center" prop="failNum">
         <template slot-scope="scope">
           <!-- 待添加点击处理事件 跳转至失败面单列表-->
-          <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入' || scope.row.type == '马帮主动通知'">
+          <router-link :to="'/system/package/index/111' + scope.row.id" class="link-type" v-if="scope.row.type == '面单导入'">
            <span>{{ scope.row.failNum }}</span>
           </router-link>
           <router-link :to="'/system/redirect/index/111' + scope.row.id" class="link-type" v-else-if="scope.row.type == '转寄面单导入'">
@@ -134,6 +137,9 @@
           </router-link>
           <router-link :to="'/system/local/index/111' + scope.row.id" class="link-type" v-else-if="scope.row.type == '本地面单导入'">
             <span>{{ scope.row.failNum }}</span>
+          </router-link>
+          <router-link :to="'/system/mabang/index/111' + scope.row.id" class="link-type" v-else-if="scope.row.type == '马帮主动通知'">
+            <span>{{ scope.row.successNum }}</span>
           </router-link>
           <span v-else >{{ scope.row.failNum }}</span>
         </template>
@@ -308,12 +314,6 @@
         <el-form-item label="导入文件名称" prop="fileName">
           <el-input v-model="form.fileName" placeholder="请输入导入文件名称" />
         </el-form-item>
-<!--        <el-form-item label="运单" prop="waybillPostingDate">-->
-<!--          <el-input v-model="form.waybillPostingDate" placeholder="请输入运单" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="货到付款金额 " prop="cashOnDelivery">-->
-<!--          <el-input v-model="form.cashOnDelivery" placeholder="请输入货到付款金额 " />-->
-<!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>

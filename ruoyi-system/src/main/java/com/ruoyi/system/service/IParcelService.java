@@ -93,6 +93,8 @@ public interface IParcelService
 
     public void syncStatus();
 
+    public void syncMb();
+
     /**
      * 根据物流单号获取物流信息
      * @param waybill

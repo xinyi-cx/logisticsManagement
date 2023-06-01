@@ -63,8 +63,14 @@ public class DPDTask
 
     public void dpdTaskSyncStatus()
     {
-        System.out.println("删除物流信息-不包含物流单号");
+        System.out.println("同步两表状态信息");
         parcelService.syncStatus();
+    }
+
+    public void dpdTaskSyncMbInfo()
+    {
+        System.out.println("同步马帮信息");
+        parcelService.syncMb();
     }
 
 }
