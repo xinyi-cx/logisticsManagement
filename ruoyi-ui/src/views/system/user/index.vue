@@ -116,14 +116,18 @@
       <el-table-column label="用户编号" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
       <el-table-column label="用户名" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
       <el-table-column label="昵称" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
-      <el-table-column label="客户名称" align="center" key="customerName" prop="customerName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
-      <el-table-column label="所在国家" align="center" key="country" prop="country" v-if="columns[3].visible" :show-overflow-tooltip="true" >
+      <el-table-column label="客户名称" align="center" key="customerName" prop="customerName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
+      <el-table-column label="所在国家" align="center" key="country" prop="country" v-if="columns[4].visible" :show-overflow-tooltip="true" >
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_country" :value="scope.row.country"/>
         </template>
       </el-table-column>
-      <el-table-column label="手机号" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" />
-      <el-table-column label="状态" align="center" key="status" v-if="columns[5].visible">
+      <el-table-column label="手机号" align="center" key="phonenumber" prop="phonenumber" v-if="columns[5].visible" />
+
+      <el-table-column label="masterId" align="center" key="masterId" prop="masterId" v-if="columns[6].visible" :show-overflow-tooltip="true" />
+      <el-table-column label="masterPwd" align="center" key="masterPwd" prop="masterPwd" v-if="columns[7].visible" :show-overflow-tooltip="true" />
+
+      <el-table-column label="状态" align="center" key="status" v-if="columns[8].visible">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.status"
@@ -133,7 +137,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[6].visible">
+      <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[9].visible">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
@@ -276,6 +280,18 @@
           <el-col :span="12">
             <el-form-item label="手机号码" prop="phonenumber">
               <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="masterId" prop="masterId">
+              <el-input v-model="form.masterId" placeholder="请输入masterId" maxlength="50" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="masterPwd" prop="masterPwd">
+              <el-input v-model="form.masterPwd" placeholder="请输入masterPwd" maxlength="11" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -454,10 +470,13 @@ export default {
         { key: 0, label: `用户编号`, visible: true },
         { key: 1, label: `用户名`, visible: true },
         { key: 2, label: `昵称`, visible: true },
-        { key: 3, label: `所在国家`, visible: true },
-        { key: 4, label: `手机号`, visible: true },
-        { key: 5, label: `状态`, visible: true },
-        { key: 6, label: `创建时间`, visible: true }
+        { key: 3, label: `客户名称`, visible: true },
+        { key: 4, label: `所在国家`, visible: true },
+        { key: 5, label: `手机号`, visible: true },
+        { key: 6, label: `masterId`, visible: true },
+        { key: 7, label: `masterPwd`, visible: true },
+        { key: 8, label: `状态`, visible: true },
+        { key: 9, label: `创建时间`, visible: true }
       ],
       // 表单校验
       rules: {
@@ -563,6 +582,8 @@ export default {
         userName: undefined,
         nickName: undefined,
         customerName: undefined,
+        masterId: undefined,
+        masterPwd: undefined,
         password: undefined,
         phonenumber: undefined,
         email: undefined,

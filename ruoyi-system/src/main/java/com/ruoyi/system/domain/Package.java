@@ -19,6 +19,26 @@ public class Package extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    private String masterPwd;
+
+    private String masterId;
+
+    public String getMasterPwd() {
+        return masterPwd;
+    }
+
+    public void setMasterPwd(String masterPwd) {
+        this.masterPwd = masterPwd;
+    }
+
+    public String getMasterId() {
+        return masterId;
+    }
+
+    public void setMasterId(String masterId) {
+        this.masterId = masterId;
+    }
+
     /** 面单主键 */
     private List<Long> ids;
 

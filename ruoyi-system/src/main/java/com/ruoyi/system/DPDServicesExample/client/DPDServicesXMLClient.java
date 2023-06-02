@@ -20,7 +20,6 @@ import com.ruoyi.system.mapper.SequenceMapper;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -250,6 +249,8 @@ public class DPDServicesXMLClient {
      */
     public List<PackagesGenerationResponse> generatePackagesNumberByBusiness(List<Package> packages) throws Exception {
         Integer methodFid = null;
+        String masterPwd = null;
+        String masterId = null;
         OpenUMLFeV3 umlf = new OpenUMLFeV3(); // Ilość przesyłek
         Map<String, String> dpdPackageMap = getPackageDpdMap(packages.get(0).getSender().getCountryCode());
         boolean notEmpty = !CollectionUtils.isEmpty(dpdPackageMap);
@@ -273,6 +274,8 @@ public class DPDServicesXMLClient {
             addressSender.setCountryCode(sender.getCountryCode());
             addressSender.setEmail(sender.getEmail());
             addressSender.setFid(Integer.valueOf(sender.getFid().toString()));
+             masterPwd = aPackage.getMasterPwd();
+             masterId = aPackage.getMasterId();
             methodFid = Integer.valueOf(sender.getFid().toString());
             addressSender.setName(sender.getName());
             addressSender.setPhone(sender.getPhone());
@@ -324,7 +327,7 @@ public class DPDServicesXMLClient {
             }
             umlf.getPackages().add(pkg);
         }
-        AuthDataV1 authData = getAuthDataByFid(methodFid);
+        AuthDataV1 authData = getAuthDataByMasterAndFid(masterId, masterPwd, methodFid);
         PackagesGenerationResponseV2 documentGenerationResponse = null;
         try {
             log.info("gen DPD" + JSONObject.toJSONString(umlf));
@@ -829,10 +832,10 @@ public class DPDServicesXMLClient {
         return authDataV1;
     }
 
-    private AuthDataV1 getAuthDataByFid(Integer fid) {
+    private AuthDataV1 getAuthDataByMasterAndFid(String masterId, String masterPwd, Integer fid) {
         AuthDataV1 authDataV1 = new AuthDataV1();
-        authDataV1.setLogin(login);
-        authDataV1.setPassword(password);
+        authDataV1.setLogin(StringUtils.isEmpty(masterId) ? login : masterId);
+        authDataV1.setPassword(StringUtils.isEmpty(masterPwd) ? password : masterPwd);
         authDataV1.setMasterFid(fid);
         return authDataV1;
     }

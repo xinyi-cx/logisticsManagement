@@ -811,6 +811,8 @@ public class PackageServiceImpl implements IPackageService {
         pac.setId(sequenceMapper.selectNextvalByName("package_seq"));
         pac.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
         pac.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        pac.setMasterId(SecurityUtils.getLoginUser().getUser().getMasterId());
+        pac.setMasterPwd(SecurityUtils.getLoginUser().getUser().getMasterPwd());
 
         if (ObjectUtils.isNotEmpty(pkg.getOriginalId())) {
             RedirectPackage redirectPackage = new RedirectPackage();
@@ -1004,6 +1006,8 @@ public class PackageServiceImpl implements IPackageService {
             pac.setId(getId(nameMap, "package_seq"));
             pac.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
             pac.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            pac.setMasterId(SecurityUtils.getLoginUser().getUser().getMasterId());
+            pac.setMasterPwd(SecurityUtils.getLoginUser().getUser().getMasterPwd());
             Parcel parcel = new Parcel();
             BeanUtils.copyProperties(packageVo, parcel);
             parcel.setPackId(pac.getId());

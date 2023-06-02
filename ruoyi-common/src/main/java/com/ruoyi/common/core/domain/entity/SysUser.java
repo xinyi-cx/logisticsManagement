@@ -140,6 +140,26 @@ public class SysUser extends BaseEntity
     /** 发件人邮政编码 */
     private String postalCode;
 
+    private String masterId;
+
+    private String masterPwd;
+
+    public String getMasterId() {
+        return masterId;
+    }
+
+    public void setMasterId(String masterId) {
+        this.masterId = masterId;
+    }
+
+    public String getMasterPwd() {
+        return masterPwd;
+    }
+
+    public void setMasterPwd(String masterPwd) {
+        this.masterPwd = masterPwd;
+    }
+
     public String getCustomerName() {
         return customerName;
     }

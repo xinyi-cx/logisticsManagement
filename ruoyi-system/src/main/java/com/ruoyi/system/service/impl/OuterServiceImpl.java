@@ -638,6 +638,8 @@ public class OuterServiceImpl implements IOuterService {
         for (Package packageVo : packages) {
 //            AddressSender addressSender = getSender(packageVo.getCreateUser());
 
+            packageVo.setMasterId(null != user1 ? user1.getMasterId() : "");
+            packageVo.setMasterPwd(null != user1 ? user1.getMasterPwd() : "");
             AddressReceiver addressReceiver = packageVo.getReceiver();
             addressReceiver.setCreateUser(packageVo.getCreateUser());
             addressReceiver.setUpdateUser(packageVo.getUpdateUser());
