@@ -130,6 +130,36 @@ public class REPackageVo extends BaseEntity
     @Excel(name = "old return number")
     private String backOrder;
 
+    private String boxRemarkOne;
+
+    private String boxRemarkTwo;
+
+    private String boxRemarkThree;
+
+    public String getBoxRemarkOne() {
+        return boxRemarkOne;
+    }
+
+    public void setBoxRemarkOne(String boxRemarkOne) {
+        this.boxRemarkOne = boxRemarkOne;
+    }
+
+    public String getBoxRemarkTwo() {
+        return boxRemarkTwo;
+    }
+
+    public void setBoxRemarkTwo(String boxRemarkTwo) {
+        this.boxRemarkTwo = boxRemarkTwo;
+    }
+
+    public String getBoxRemarkThree() {
+        return boxRemarkThree;
+    }
+
+    public void setBoxRemarkThree(String boxRemarkThree) {
+        this.boxRemarkThree = boxRemarkThree;
+    }
+
     /** 新物流单号 */
 //    @Excel(name = "New Waybill")
     private String newWaybill;
@@ -167,73 +197,56 @@ public class REPackageVo extends BaseEntity
     }
 
     /** 服务id */
-//    @Excel(name = "服务id")
     private Long servicesId;
 
     /** 手机号码 */
-//    @Excel(name = "手机号码")
     private String phone;
 
     /** 邮政编码 */
-//    @Excel(name = "邮政编码")
     private String postalCode;
 
     /** 创建人 */
-//    @Excel(name = "创建人")
     private String createUser;
 
     /** 更新人 */
-//    @Excel(name = "更新人")
     private String updateUser;
 
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-//    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date createdTime;
 
     /** 更新时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-//    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
 
     /** 下载次数 */
-//    @Excel(name = "下载次数")
     private Integer downloadNum;
 
     /** 收件人公司 */
-//    @Excel(name = "收件人公司")
     private String receiverCompany;
 
     /** 长 */
-//    @Excel(name = "长")
     private Integer sizeX;
 
     /** 宽 */
-//    @Excel(name = "宽")
     private Integer sizeY;
 
     /** 高 */
-//    @Excel(name = "高")
     private Integer sizeZ;
 
     /** 客户数据1 */
-//    @Excel(name = "客户数据1")
     private String content;
 
     /** pack_id */
-//    @Excel(name = "pack_id")
     private Long packId;
 
     /** waybill 运货单 */
-//    @Excel(name = "waybill 运货单")
     private String waybill;
 
     /** 包裹状态 */
-//    @Excel(name = "包裹状态")
     private String status;
 
     /** package_id */
-//    @Excel(name = "package_id")
     private Long packageId;
 
     private Long parcelId;
@@ -247,19 +260,15 @@ public class REPackageVo extends BaseEntity
     private String pkgStatus;
 
     /** 原面单主键 */
-//    @Excel(name = "原面单id")
     private Long originalId;
 
     /** 付款人类型 */
-//    @Excel(name = "付款人类型")
     private String payerType;
 
     /** 发件人id */
-//    @Excel(name = "发件人id")
     private Long senderId;
 
     /** 收货人id */
-//    @Excel(name = "收货人id")
     private Long receiverId;
 
     private String hisParam;

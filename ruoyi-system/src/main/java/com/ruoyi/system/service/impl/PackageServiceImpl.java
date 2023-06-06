@@ -956,12 +956,6 @@ public class PackageServiceImpl implements IPackageService {
 
         if(!reflag){
             batchTaskHistory.setType("转寄面单导入");
-//            boolean checkForReFlag = checkForRe(packageVos);
-//            if (!checkForReFlag){
-//                batchTaskHistory.setStatus("上传失败");
-//                batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
-//                throw new Exception("原面单物流单号不能为空，或者原面单物流单号不正确");
-//            }
         }
 
         List<PackageVo> judgeList = packageVos.stream().filter(item -> StringUtils.isNotEmpty(item.getCode1()) || StringUtils.isNotEmpty(item.getCode2())).collect(Collectors.toList());

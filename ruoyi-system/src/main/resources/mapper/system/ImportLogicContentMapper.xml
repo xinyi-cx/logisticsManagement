@@ -29,6 +29,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark3"    column="remark3"    />
         <result property="remark4"    column="remark4"    />
         <result property="remark5"    column="remark5"    />
+        <result property="box_remark_one"    column="boxRemarkOne"    />
+        <result property="box_remark_two"    column="boxRemarkTwo"    />
+        <result property="box_remark_three"    column="boxRemarkThree"    />
         <result property="activedDate"    column="actived_date"    />
         <result property="lastStatusDate"    column="last_status_date"    />
         <result property="status"    column="status"    />
@@ -66,6 +69,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark3"    column="remark3"    />
         <result property="remark4"    column="remark4"    />
         <result property="remark5"    column="remark5"    />
+        <result property="box_remark_one"    column="boxRemarkOne"    />
+        <result property="box_remark_two"    column="boxRemarkTwo"    />
+        <result property="box_remark_three"    column="boxRemarkThree"    />
         <result property="activedDate"    column="actived_date"    />
         <result property="lastStatusDate"    column="last_status_date"    />
         <result property="status"    column="status"    />
@@ -105,6 +111,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark3"    column="remark3"    />
         <result property="remark4"    column="remark4"    />
         <result property="remark5"    column="remark5"    />
+        <result property="box_remark_one"    column="boxRemarkOne"    />
+        <result property="box_remark_two"    column="boxRemarkTwo"    />
+        <result property="box_remark_three"    column="boxRemarkThree"    />
         <result property="activedDate"    column="actived_date"    />
         <result property="lastStatusDate"    column="last_status_date"    />
         <result property="status"    column="status"    />
@@ -122,7 +131,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectImportLogicContentVo">
         select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type, loginId, new_waybill,
         order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone, recipient_email, description,
-        need_box, create_date, remark, remark2, remark3, remark4, remark5, actived_date, last_status_date, status,
+        need_box, create_date, remark, remark2, remark3, remark4, remark5, box_remark_one, box_remark_two, box_remark_three,
+        actived_date, last_status_date, status,
         new_number, return_number, is_delete, create_by, create_time, update_by, update_time
         from import_logic_content
     </sql>
@@ -130,7 +140,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectImportLogicContentList" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult2">
         select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type,
         loginId, new_waybill, order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
-        recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5, actived_date,
+        recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5,
+        box_remark_one, box_remark_two, box_remark_three, actived_date,
         last_status_date, status, new_number, return_number, is_delete, create_by, create_time, update_by, update_time, file_name
         from (
         select imcontent.*,  bathis.file_name
@@ -211,7 +222,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectImportLogicContentListNoReport" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult3">
         select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type,
         loginId, new_waybill, order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
-        recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5, actived_date,
+        recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5,
+        box_remark_one, box_remark_two, box_remark_three, actived_date,
         last_status_date, status, new_number, return_number, is_delete, create_by, create_time, update_by, update_time,
                '' as collective_transfer_date
         from import_logic_content tba
@@ -389,6 +401,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark3 != null">remark3,</if>
             <if test="remark4 != null">remark4,</if>
             <if test="remark5 != null">remark5,</if>
+            <if test="boxRemarkOne != null">box_remark_one,</if>
+            <if test="boxRemarkTwo != null">box_remark_two,</if>
+            <if test="boxRemarkThree != null">box_remark_three,</if>
             <if test="activedDate != null">actived_date,</if>
             <if test="lastStatusDate != null">last_status_date,</if>
             <if test="status != null">status,</if>
@@ -424,6 +439,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark3 != null">#{remark3},</if>
             <if test="remark4 != null">#{remark4},</if>
             <if test="remark5 != null">#{remark5},</if>
+            <if test="boxRemarkOne != null">#{boxRemarkOne},</if>
+            <if test="boxRemarkTwo != null">#{boxRemarkTwo},</if>
+            <if test="boxRemarkThree != null">#{boxRemarkThree},</if>
             <if test="activedDate != null">#{activedDate},</if>
             <if test="lastStatusDate != null">#{lastStatusDate},</if>
             <if test="status != null">#{status},</if>
@@ -463,6 +481,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark3 != null">remark3 = #{remark3},</if>
             <if test="remark4 != null">remark4 = #{remark4},</if>
             <if test="remark5 != null">remark5 = #{remark5},</if>
+            <if test="boxRemarkOne != null">box_remark_one = #{boxRemarkOne},</if>
+            <if test="boxRemarkTwo != null">box_remark_two = #{boxRemarkTwo},</if>
+            <if test="boxRemarkThree != null">box_remark_three = #{boxRemarkThree},</if>
             <if test="activedDate != null">actived_date = #{activedDate},</if>
             <if test="lastStatusDate != null">last_status_date = #{lastStatusDate},</if>
             <if test="status != null">status = #{status},</if>
@@ -536,6 +557,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark3 != null">remark3 = #{remark3},</if>
             <if test="remark4 != null">remark4 = #{remark4},</if>
             <if test="remark5 != null">remark5 = #{remark5},</if>
+            <if test="boxRemarkOne != null">box_remark_one = #{boxRemarkOne},</if>
+            <if test="boxRemarkTwo != null">box_remark_two = #{boxRemarkTwo},</if>
+            <if test="boxRemarkThree != null">box_remark_three = #{boxRemarkThree},</if>
             <if test="activedDate != null">actived_date = #{activedDate},</if>
             <if test="lastStatusDate != null">last_status_date = #{lastStatusDate},</if>
             <if test="status != null">status = #{status},</if>
@@ -572,6 +596,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="item.remark3 != null">remark3 = #{item.remark3},</if>
                 <if test="item.remark4 != null">remark4 = #{item.remark4},</if>
                 <if test="item.remark5 != null">remark5 = #{item.remark5},</if>
+                <if test="item.boxRemarkOne != null">box_remark_one = #{item.boxRemarkOne},</if>
+                <if test="item.boxRemarkTwo != null">box_remark_two = #{item.boxRemarkTwo},</if>
+                <if test="item.boxRemarkThree != null">box_remark_three = #{item.boxRemarkThree},</if>
                 <if test="item.activedDate != null">actived_date = #{item.activedDate},</if>
                 <if test="item.lastStatusDate != null">last_status_date = #{item.lastStatusDate},</if>
                 <if test="item.status != null">status = #{item.status},</if>
@@ -616,7 +643,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         logic_id, client, country, import_type, loginId, new_waybill,
         order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
         recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5,
-        actived_date, last_status_date, status, new_number, return_number,
+        box_remark_one, box_remark_two, box_remark_three, actived_date, last_status_date, status, new_number, return_number,
         create_by, create_time, update_by, update_time)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
@@ -644,6 +671,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.remark3},
             #{item.remark4},
             #{item.remark5},
+            #{item.boxRemarkOne},
+            #{item.boxRemarkTwo},
+            #{item.boxRemarkThree},
             #{item.activedDate},
             #{item.lastStatusDate},
             #{item.status},

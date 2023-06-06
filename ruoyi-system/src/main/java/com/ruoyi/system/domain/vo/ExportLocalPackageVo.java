@@ -218,6 +218,36 @@ public class ExportLocalPackageVo extends BaseEntity {
 
     private String pkgStatus;
 
+    private String boxRemarkOne;
+
+    private String boxRemarkTwo;
+
+    private String boxRemarkThree;
+
+    public String getBoxRemarkOne() {
+        return boxRemarkOne;
+    }
+
+    public void setBoxRemarkOne(String boxRemarkOne) {
+        this.boxRemarkOne = boxRemarkOne;
+    }
+
+    public String getBoxRemarkTwo() {
+        return boxRemarkTwo;
+    }
+
+    public void setBoxRemarkTwo(String boxRemarkTwo) {
+        this.boxRemarkTwo = boxRemarkTwo;
+    }
+
+    public String getBoxRemarkThree() {
+        return boxRemarkThree;
+    }
+
+    public void setBoxRemarkThree(String boxRemarkThree) {
+        this.boxRemarkThree = boxRemarkThree;
+    }
+
     /**
      * 发件人id
      */

@@ -21,3 +21,8 @@ create table mb_import_logic_content like import_logic_content;
 
 alter table sys_user add column master_id varchar(100) default null;
 alter table sys_user add column master_pwd varchar(100) default null;
+
+
+alter table import_logic_content add column box_remark_three varchar(200) default null;
+alter table import_logic_content add column box_remark_one varchar(200) default null;
+alter table import_logic_content add column box_remark_two varchar(200) default null;

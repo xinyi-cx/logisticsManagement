@@ -110,6 +110,15 @@ public class ImportLogicContent extends BaseEntity
     @Excel(name = "备注5")
     private String remark5;
 
+    @Excel(name = "盒子备注1")
+    private String boxRemarkOne;
+
+    @Excel(name = "盒子备注2")
+    private String boxRemarkTwo;
+
+    @Excel(name = "盒子备注3")
+    private String boxRemarkThree;
+
     /** 激活时间 */
     @Excel(name = "激活时间")
     private String activedDate;
@@ -147,6 +156,30 @@ public class ImportLogicContent extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date activeTimeEnd;
+
+    public String getBoxRemarkOne() {
+        return boxRemarkOne;
+    }
+
+    public void setBoxRemarkOne(String boxRemarkOne) {
+        this.boxRemarkOne = boxRemarkOne;
+    }
+
+    public String getBoxRemarkTwo() {
+        return boxRemarkTwo;
+    }
+
+    public void setBoxRemarkTwo(String boxRemarkTwo) {
+        this.boxRemarkTwo = boxRemarkTwo;
+    }
+
+    public String getBoxRemarkThree() {
+        return boxRemarkThree;
+    }
+
+    public void setBoxRemarkThree(String boxRemarkThree) {
+        this.boxRemarkThree = boxRemarkThree;
+    }
 
     public String getCollectiveTransferDate() {
         return collectiveTransferDate;
