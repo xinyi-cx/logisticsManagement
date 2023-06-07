@@ -219,6 +219,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by create_time desc
     </select>
 
+    <select id="selectAllImportLogicContentListByParam" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult">
+        <include refid="selectImportLogicContentVo"/>
+        <where>
+            is_delete = 0
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="createTime != null"> and date_format(create_time,'%Y-%m-%d') = date_format(#{createTime},'%Y-%m-%d')</if>
+            <if test="paramMonth != null  and paramMonth != ''">and date_format(created_time,'%Y%m') = #{paramMonth}</if>
+        </where>
+    </select>
+
     <select id="selectImportLogicContentListNoReport" parameterType="ImportLogicContent" resultMap="ImportLogicContentResult3">
         select id, document_file_id, pack_id, batch_id, logic_id, client, country, import_type,
         loginId, new_waybill, order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,

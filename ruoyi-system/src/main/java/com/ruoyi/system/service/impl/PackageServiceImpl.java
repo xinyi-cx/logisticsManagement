@@ -148,15 +148,20 @@ public class PackageServiceImpl implements IPackageService {
         }
 
         Package paramPackage = new Package();
+        ImportLogicContent paramContent = new ImportLogicContent();
         if (!StringUtils.isEmpty(dateStr) && !"null".equals(dateStr) && dateStr.length() == 6){
             //按照月度统计
             paramPackage.setParamMonth(dateStr);
+            paramContent.setParamMonth(dateStr);
         }else {
             paramPackage.setCreatedTime(paramDate);
+            paramContent.setCreateTime(paramDate);
         }
         if (!SecurityUtils.isAdmin(SecurityUtils.getLoginUser().getUserId())) {
             paramPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            paramContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
         }
+        /*
 //       直接查询物流表
         List<Package> packages = packageMapper.selectPackageList(paramPackage);
         if (CollectionUtils.isEmpty(packages)) {
@@ -192,6 +197,9 @@ public class PackageServiceImpl implements IPackageService {
             return new HashMap();
         }
         Map<String, Long> collect = parcels.stream().collect(Collectors.groupingBy(Parcel::getStatus, Collectors.counting()));
+        */
+        List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectAllImportLogicContentListByParam(paramContent);
+        Map<String, Long> collect = importLogicContents.stream().collect(Collectors.groupingBy(ImportLogicContent::getStatus, Collectors.counting()));
 
         Map<String, List<String>> returnList = new HashMap<>();
         List<String> xAxisData = new ArrayList<>();
@@ -213,24 +221,26 @@ public class PackageServiceImpl implements IPackageService {
         }
 
         Package paramPackage = new Package();
+        ImportLogicContent paramContent = new ImportLogicContent();
         if (!StringUtils.isEmpty(dateStr) && !"null".equals(dateStr) && dateStr.length() == 6){
             //按照月度统计
             paramPackage.setParamMonth(dateStr);
+            paramContent.setParamMonth(dateStr);
         }else {
             paramPackage.setCreatedTime(paramDate);
+            paramContent.setCreateTime(paramDate);
         }
-        //查看所有用户的
-//        paramPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-        List<Package> packages = packageMapper.selectPackageList(paramPackage);
-        if (CollectionUtils.isEmpty(packages)) {
-            return new HashMap();
-        }
-        List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
-        if (CollectionUtils.isEmpty(parcels)) {
-            return new HashMap();
-        }
-        Map<String, Long> collect = parcels.stream().collect(Collectors.groupingBy(Parcel::getStatus, Collectors.counting()));
-        Map<String, Long> userCountMap = parcels.stream().collect(Collectors.groupingBy(Parcel::getCreateUser, Collectors.counting()));
+//        List<Package> packages = packageMapper.selectPackageList(paramPackage);
+//        if (CollectionUtils.isEmpty(packages)) {
+//            return new HashMap();
+//        }
+//        List<Parcel> parcels = parcelMapper.selectParcelListByPackIdIn(packages.stream().map(Package::getId).collect(toList()));
+//        if (CollectionUtils.isEmpty(parcels)) {
+//            return new HashMap();
+//        }
+        List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectAllImportLogicContentListByParam(paramContent);
+        Map<String, Long> collect = importLogicContents.stream().collect(Collectors.groupingBy(ImportLogicContent::getStatus, Collectors.counting()));
+        Map<String, Long> userCountMap = importLogicContents.stream().collect(Collectors.groupingBy(ImportLogicContent::getCreateBy, Collectors.counting()));
         List<SysUser> allUsers = sysUserMapper.selectUserList(new SysUser());
         Map<String, String> idNameMap = allUsers.stream().collect(toMap(item -> item.getUserId().toString(), SysUser::getName));
 
