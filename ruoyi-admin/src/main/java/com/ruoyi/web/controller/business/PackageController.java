@@ -8,6 +8,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.domain.Package;
+import com.ruoyi.system.domain.busenum.ImportTypeEnum;
 import com.ruoyi.system.domain.vo.*;
 import com.ruoyi.system.service.IPackageService;
 import org.springframework.beans.BeanUtils;
@@ -330,7 +331,7 @@ public class PackageController extends BaseController
     {
         ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
         List<PackageVo> packageVos = util.importExcel(file.getInputStream());
-        return AjaxResult.success(packageService.importPackage(file, packageVos));
+        return AjaxResult.success(packageService.importPackage(file, packageVos, ImportTypeEnum.original));
     }
 
     @Log(title = "面单导入-其他国家", businessType = BusinessType.IMPORT)
@@ -345,7 +346,7 @@ public class PackageController extends BaseController
             BeanUtils.copyProperties(packageCzVo, packageVo);
             packageVos.add(packageVo);
         }
-        return AjaxResult.success(packageService.importPackage(file, packageVos));
+        return AjaxResult.success(packageService.importPackage(file, packageVos, ImportTypeEnum.original));
     }
 
     /**

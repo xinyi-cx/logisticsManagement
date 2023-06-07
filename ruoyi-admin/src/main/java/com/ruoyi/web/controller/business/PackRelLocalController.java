@@ -7,6 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.PackRelLocal;
+import com.ruoyi.system.domain.busenum.ImportTypeEnum;
 import com.ruoyi.system.domain.vo.*;
 import com.ruoyi.system.service.IPackRelLocalService;
 import com.ruoyi.system.service.IPackageService;
@@ -113,7 +114,7 @@ public class PackRelLocalController extends BaseController {
                     return packageVo;
                 }
         ).collect(toList());
-        return AjaxResult.success(packageService.importPackage(file, packageVos));
+        return AjaxResult.success(packageService.importPackage(file, packageVos, ImportTypeEnum.local));
     }
 
     @Log(title = "本地面单导入", businessType = BusinessType.IMPORT)
@@ -128,7 +129,7 @@ public class PackRelLocalController extends BaseController {
                     return packageVo;
                 }
         ).collect(toList());
-        return AjaxResult.success(packageService.importPackage(file, packageVos));
+        return AjaxResult.success(packageService.importPackage(file, packageVos, ImportTypeEnum.local));
     }
 
     @PostMapping("/importTemplate")

@@ -15,6 +15,7 @@ import com.ruoyi.system.DPDServicesExample.client.DPDInfoXMLClient;
 import com.ruoyi.system.DPDServicesExample.client.DPDServicesXMLClient;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
+import com.ruoyi.system.domain.busenum.ImportTypeEnum;
 import com.ruoyi.system.domain.mb.MbReturnDto;
 import com.ruoyi.system.domain.vo.ExportTwoPackageVo;
 import com.ruoyi.system.domain.vo.PackageVo;
@@ -909,7 +910,7 @@ public class PackageServiceImpl implements IPackageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception {
+    public String importPackage(MultipartFile file, List<PackageVo> packageVos, ImportTypeEnum importTypeEnum) throws Exception {
         if (CollectionUtils.isNotEmpty(packageVos) && packageVos.size() > 300) {
             return "单次导入最多300条";
         }
@@ -952,15 +953,15 @@ public class PackageServiceImpl implements IPackageService {
         }
 
         Set<String> oldWaybills = packageVos.stream().map(PackageVo::getOldWaybill).filter(Objects::nonNull).collect(Collectors.toSet());
-        boolean reflag =  oldWaybills.isEmpty();
-
+//        boolean reflag =  oldWaybills.isEmpty();
+        boolean reflag = !ImportTypeEnum.ref.equals(importTypeEnum);
         if(!reflag){
             batchTaskHistory.setType("转寄面单导入");
         }
 
         List<PackageVo> judgeList = packageVos.stream().filter(item -> StringUtils.isNotEmpty(item.getCode1()) || StringUtils.isNotEmpty(item.getCode2())).collect(Collectors.toList());
-        boolean localFlag = CollectionUtils.isNotEmpty(judgeList);
-
+//        boolean localFlag = CollectionUtils.isNotEmpty(judgeList);
+        boolean localFlag = ImportTypeEnum.local.equals(importTypeEnum);
         if(localFlag){
             batchTaskHistory.setType("本地面单导入");
         }

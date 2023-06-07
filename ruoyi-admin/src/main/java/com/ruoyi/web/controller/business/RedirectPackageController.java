@@ -7,6 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import com.ruoyi.system.domain.busenum.ImportTypeEnum;
 import com.ruoyi.system.domain.vo.ExportPackageVo;
 import com.ruoyi.system.domain.vo.PackageVo;
 import com.ruoyi.system.domain.vo.REPackageCzVo;
@@ -127,7 +128,7 @@ public class RedirectPackageController extends BaseController
                     return packageVo;
                 }
         ).collect(toList());
-        return AjaxResult.success(packageService.importPackage(file, packageVos));
+        return AjaxResult.success(packageService.importPackage(file, packageVos, ImportTypeEnum.ref));
     }
 
     @Log(title = "转寄面单导入", businessType = BusinessType.IMPORT)
@@ -143,7 +144,7 @@ public class RedirectPackageController extends BaseController
                     return packageVo;
                 }
         ).collect(toList());
-        return AjaxResult.success(packageService.importPackage(file, packageVos));
+        return AjaxResult.success(packageService.importPackage(file, packageVos, ImportTypeEnum.ref));
     }
 
     @PostMapping("/importTemplate")

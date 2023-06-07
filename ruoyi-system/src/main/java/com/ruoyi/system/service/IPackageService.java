@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.Package;
+import com.ruoyi.system.domain.busenum.ImportTypeEnum;
 import com.ruoyi.system.domain.vo.PackageVo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -120,7 +121,7 @@ public interface IPackageService
      * @param packageVos 面单
      * @return 结果
      */
-    public String importPackage(MultipartFile file, List<PackageVo> packageVos) throws Exception;
+    public String importPackage(MultipartFile file, List<PackageVo> packageVos, ImportTypeEnum importTypeEnum) throws Exception;
 
     public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVos) throws Exception;
 
