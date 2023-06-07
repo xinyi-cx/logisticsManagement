@@ -1064,6 +1064,9 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setImportType(type);
             String box = type.equals("本地")?list.get(6):list.get(5);
             importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
+            importLogicContent.setBoxRemarkOne(packageVo.getBoxRemarkOne());
+            importLogicContent.setBoxRemarkTwo(packageVo.getBoxRemarkTwo());
+            importLogicContent.setBoxRemarkThree(packageVo.getBoxRemarkThree());
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setStatus(SysWaybill.WJH.getCode());
@@ -1251,6 +1254,9 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setImportType(type);
             String box = type.equals("本地")?list.get(6):list.get(5);
             importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
+            importLogicContent.setBoxRemarkOne(packageVo.getBoxRemarkOne());
+            importLogicContent.setBoxRemarkTwo(packageVo.getBoxRemarkTwo());
+            importLogicContent.setBoxRemarkThree(packageVo.getBoxRemarkThree());
             importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
             importLogicContent.setStatus(SysWaybill.WJH.getCode());
