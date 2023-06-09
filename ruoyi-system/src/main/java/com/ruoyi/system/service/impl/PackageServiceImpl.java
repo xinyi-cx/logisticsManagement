@@ -1173,6 +1173,13 @@ public class PackageServiceImpl implements IPackageService {
         }
     }
 
+    /**
+     * 导入物流 只新增parcel表与importLogicContent
+     * @param file
+     * @param packageVosOri
+     * @return
+     * @throws Exception
+     */
     @Override
 //    @Transactional(rollbackFor = Exception.class)
     public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVosOri) throws Exception {
@@ -1304,9 +1311,6 @@ public class PackageServiceImpl implements IPackageService {
                 return "物流信息导入成功，请稍后查询最新物流信息";
             }
             return "物流信息导入成功，请手动查询最新物流信息";
-//                    +
-//                    batchTaskHistory.getSuccessNum() + "条，失败" +
-//                    batchTaskHistory.getFailNum() + "条。\n";
         }catch (Exception e){
             batchTaskHistory.setStatus("上传失败");
             e.printStackTrace();
@@ -1329,10 +1333,6 @@ public class PackageServiceImpl implements IPackageService {
         return "直发";
     }
 
-//    public void getLogic(List<Parcel> parcels){
-//        parcels.parallelStream().forEach(item -> dpdInfoXMLClient.getEventsForOneWaybill(item));
-//    }
-
     private Map<String, String> getFileNameMap(String countryCode) {
         PackageDpdMapping packageDpdMapping = new PackageDpdMapping();
         packageDpdMapping.setCountryCode(countryCode);
@@ -1341,12 +1341,6 @@ public class PackageServiceImpl implements IPackageService {
             return new HashMap<>();
         }
         return packageDpdMappings.stream().collect(toMap(PackageDpdMapping::getDpdField, PackageDpdMapping::getImportName, (o1, o2) -> o1));
-    }
-
-    private List<String> checkCountryAndZip(List<PackageVo> packageVos){
-        return packageVos.parallelStream()
-                .map(item -> dpdServicesXMLClient.findPostalCode(item.getReceiverCountryCode(), item.getReceiverPostalCode()))
-                .collect(toList());
     }
 
     private Boolean checkWeight(List<PackageVo> packageVos){
