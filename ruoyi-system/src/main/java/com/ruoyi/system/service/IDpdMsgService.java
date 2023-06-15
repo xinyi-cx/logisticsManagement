@@ -29,22 +29,6 @@ public interface IDpdMsgService
     public List<DpdMsg> selectDpdMsgList(DpdMsg dpdMsg);
 
     /**
-     * 新增DPD返回值
-     * 
-     * @param dpdMsg DPD返回值
-     * @return 结果
-     */
-    public int insertDpdMsg(DpdMsg dpdMsg);
-
-    /**
-     * 修改DPD返回值
-     * 
-     * @param dpdMsg DPD返回值
-     * @return 结果
-     */
-    public int updateDpdMsg(DpdMsg dpdMsg);
-
-    /**
      * 批量删除DPD返回值
      * 
      * @param ids 需要删除的DPD返回值主键集合
@@ -52,11 +36,4 @@ public interface IDpdMsgService
      */
     public int deleteDpdMsgByIds(Long[] ids);
 
-    /**
-     * 删除DPD返回值信息
-     * 
-     * @param id DPD返回值主键
-     * @return 结果
-     */
-    public int deleteDpdMsgById(Long id);
 }

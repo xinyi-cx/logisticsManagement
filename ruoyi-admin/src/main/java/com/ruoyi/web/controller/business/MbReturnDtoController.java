@@ -84,26 +84,6 @@ public class MbReturnDtoController extends BaseController {
     }
 
     /**
-     * 新增马帮订单信息
-     */
-    @PreAuthorize("@ss.hasPermi('system:dto:add')")
-    @Log(title = "马帮订单信息", businessType = BusinessType.INSERT)
-    @PostMapping
-    public AjaxResult add(@RequestBody MbReturnDto mbReturnDto) {
-        return toAjax(mbReturnDtoService.insertMbReturnDto(mbReturnDto));
-    }
-
-    /**
-     * 修改马帮订单信息
-     */
-    @PreAuthorize("@ss.hasPermi('system:dto:edit')")
-    @Log(title = "马帮订单信息", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody MbReturnDto mbReturnDto) {
-        return toAjax(mbReturnDtoService.updateMbReturnDto(mbReturnDto));
-    }
-
-    /**
      * 删除马帮订单信息
      */
     @PreAuthorize("@ss.hasPermi('system:dto:remove')")
@@ -150,7 +130,6 @@ public class MbReturnDtoController extends BaseController {
                     "其余导入成功"
             );
         }
-
     }
 
 

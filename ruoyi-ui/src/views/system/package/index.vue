@@ -51,16 +51,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="primary"-->
-<!--          plain-->
-<!--          icon="el-icon-plus"-->
-<!--          size="mini"-->
-<!--          @click="handleAdd"-->
-<!--          v-hasPermi="['system:package:add']"-->
-<!--        >新增</el-button>-->
-<!--      </el-col>-->
       <el-col :span="1.5" v-if="countryCodePlFlag">
         <el-button
           type="success"
@@ -206,109 +196,6 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
-    <!-- 添加或修改面单对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-row>
-          <h3 class="headline">收件人信息</h3>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="姓名" prop="receiverName">
-              <el-input v-model="form.receiverName" placeholder="请输入收件人全名" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="国家" prop="receiverCountryCode">
-              <el-select v-model="form.receiverCountryCode" placeholder="请选择" clearable filterable>
-                <el-option
-                  v-for="dict in dict.type.sys_country"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-              <el-form-item label="城市" prop="receiverCity">
-                <el-input v-model="form.receiverCity" placeholder="请输入城市名" maxlength="30" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="街道" prop="receiverAddress">
-                <el-input v-model="form.receiverAddress" placeholder="请输入街道信息" />
-              </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="邮编" prop="receiverPostalCode">
-              <el-input v-model.number="form.receiverPostalCode" placeholder="请输入5位数的邮政编码" maxlength="30" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="手机号" prop="receiverPhone">
-              <el-input v-model="form.receiverPhone" placeholder="请输入手机号码" maxlength="30" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="邮箱" prop="receiverEmail">
-              <el-input v-model="form.receiverEmail" placeholder="请输入邮箱信息" maxlength="30" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="COD(pln)" prop="pln" label-width="90px">
-              <el-input v-model.number="form.pln" placeholder="max:6000" maxlength="30" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <h3 class="headline">其他</h3>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="Order" prop="reference">
-              <el-input v-model="form.reference" placeholder="请输入内部引用号" maxlength="30" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="重量(KG)" prop="weight">
-              <el-input v-model.number="form.weight" placeholder="不足1kg按1kg计算，不能大于10kg" maxlength="30" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="售后电话" prop="ref1">
-              <el-input v-model="form.ref1" placeholder="请输入售后电话" maxlength="30" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="售后邮箱" prop="ref2">
-              <el-input v-model="form.ref2" placeholder="请输入售后邮箱" maxlength="30" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="商品描述" prop="content">
-              <el-input v-model="form.content" placeholder="请输入商品描述信息" maxlength="30" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm" :disabled="disabled">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
 
 <!--    导入波兰对话框-->
     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>

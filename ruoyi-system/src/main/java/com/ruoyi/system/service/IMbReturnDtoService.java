@@ -29,35 +29,11 @@ public interface IMbReturnDtoService
     public List<MbReturnDto> selectMbReturnDtoList(MbReturnDto mbReturnDto);
 
     /**
-     * 新增马帮订单信息
-     * 
-     * @param mbReturnDto 马帮订单信息
-     * @return 结果
-     */
-    public int insertMbReturnDto(MbReturnDto mbReturnDto);
-
-    /**
-     * 修改马帮订单信息
-     * 
-     * @param mbReturnDto 马帮订单信息
-     * @return 结果
-     */
-    public int updateMbReturnDto(MbReturnDto mbReturnDto);
-
-    /**
      * 批量删除马帮订单信息
      * 
      * @param codes 需要删除的马帮订单信息主键集合
      * @return 结果
      */
     public int deleteMbReturnDtoByCodes(String[] codes);
-
-    /**
-     * 删除马帮订单信息信息
-     * 
-     * @param code 马帮订单信息主键
-     * @return 结果
-     */
-    public int deleteMbReturnDtoByCode(String code);
 
 }

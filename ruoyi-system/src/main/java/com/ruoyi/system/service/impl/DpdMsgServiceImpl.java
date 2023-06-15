@@ -1,6 +1,5 @@
 package com.ruoyi.system.service.impl;
 
-import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.DpdMsg;
 import com.ruoyi.system.mapper.DpdMsgMapper;
 import com.ruoyi.system.service.IDpdMsgService;
@@ -46,32 +45,6 @@ public class DpdMsgServiceImpl implements IDpdMsgService
     }
 
     /**
-     * 新增DPD返回值
-     * 
-     * @param dpdMsg DPD返回值
-     * @return 结果
-     */
-    @Override
-    public int insertDpdMsg(DpdMsg dpdMsg)
-    {
-        dpdMsg.setCreateTime(DateUtils.getNowDate());
-        return dpdMsgMapper.insertDpdMsg(dpdMsg);
-    }
-
-    /**
-     * 修改DPD返回值
-     * 
-     * @param dpdMsg DPD返回值
-     * @return 结果
-     */
-    @Override
-    public int updateDpdMsg(DpdMsg dpdMsg)
-    {
-        dpdMsg.setUpdateTime(DateUtils.getNowDate());
-        return dpdMsgMapper.updateDpdMsg(dpdMsg);
-    }
-
-    /**
      * 批量删除DPD返回值
      * 
      * @param ids 需要删除的DPD返回值主键
@@ -83,15 +56,4 @@ public class DpdMsgServiceImpl implements IDpdMsgService
         return dpdMsgMapper.deleteDpdMsgByIds(ids);
     }
 
-    /**
-     * 删除DPD返回值信息
-     * 
-     * @param id DPD返回值主键
-     * @return 结果
-     */
-    @Override
-    public int deleteDpdMsgById(Long id)
-    {
-        return dpdMsgMapper.deleteDpdMsgById(id);
-    }
 }

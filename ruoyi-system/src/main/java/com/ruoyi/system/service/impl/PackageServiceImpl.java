@@ -797,17 +797,6 @@ public class PackageServiceImpl implements IPackageService {
      * @return 结果
      */
     @Override
-    public int insertPackage(Package pkg) {
-        return packageMapper.insertPackage(pkg);
-    }
-
-    /**
-     * 新增面单
-     *
-     * @param pkg 面单
-     * @return 结果
-     */
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertPackage(PackageVo pkg) throws Exception {
         Package pac = new Package();
@@ -1181,7 +1170,6 @@ public class PackageServiceImpl implements IPackageService {
      * @throws Exception
      */
     @Override
-//    @Transactional(rollbackFor = Exception.class)
     public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVosOri) throws Exception {
         if (CollectionUtils.isEmpty(packageVosOri)){
             return "导入数据不能为空";

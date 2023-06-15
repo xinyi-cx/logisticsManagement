@@ -9,6 +9,7 @@ CREATE TABLE `product_info`
     `product_key_word`    varchar(500)   DEFAULT NULL comment '产品搜索关键字',
     `product_code`        varchar(200)   DEFAULT NULL comment '产品代码',
     `need_box`            varchar(10)    DEFAULT NULL comment 'need_box',
+    price DECIMAL(10,2) DEFAULT NULL comment '价格',
     `size_x`              int(10)        DEFAULT NULL comment '长',
     `size_y`              int(10)        DEFAULT NULL comment '宽',
     `size_z`              int(10)        DEFAULT NULL comment '高',

@@ -551,7 +551,7 @@ public class OuterServiceImpl implements IOuterService {
         if (errorFlag) {
             changeStatusToException(errorMap, errMsgList, user1);
         }
-        log.info("checkUser end" + JSONObject.toJSONString(correctInsertMbReturnDto));
+        log.info("checkUser end");
         return correctInsertMbReturnDto;
 
     }

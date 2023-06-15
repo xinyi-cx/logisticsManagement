@@ -235,15 +235,6 @@ public class PackageController extends BaseController
     /**
      * 新增面单
      */
-    @PostMapping
-    public AjaxResult add(@RequestBody Package pkg)
-    {
-        return toAjax(packageService.insertPackage(pkg));
-    }
-
-    /**
-     * 新增面单
-     */
     @PostMapping(value = "/addAll")
     public AjaxResult addAll(@RequestBody @Valid PackageVo pkg) throws Exception
     {

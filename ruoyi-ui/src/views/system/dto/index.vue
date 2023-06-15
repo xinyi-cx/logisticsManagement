@@ -53,27 +53,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="primary"-->
-<!--          plain-->
-<!--          icon="el-icon-plus"-->
-<!--          size="mini"-->
-<!--          @click="handleAdd"-->
-<!--          v-hasPermi="['system:dto:add']"-->
-<!--        >新增</el-button>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="success"-->
-<!--          plain-->
-<!--          icon="el-icon-edit"-->
-<!--          size="mini"-->
-<!--          :disabled="single"-->
-<!--          @click="handleUpdate"-->
-<!--          v-hasPermi="['system:dto:edit']"-->
-<!--        >修改</el-button>-->
-<!--      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="danger"
@@ -148,73 +127,6 @@
         </template>
       </el-table-column>
 
-
-
-      <!--
-      <el-table-column label="内部订单号" align="center" prop="code" />
-      <el-table-column label="ERP自定义单号" align="center" prop="customizeCode" />
-      <el-table-column label="平台订单编号：例如ebay,wish 等订单编号" align="center" prop="platformTradeCode" />
-      <el-table-column label="订单状态" align="center" prop="status" />
-      <el-table-column label="是否有异常" align="center" prop="hasException" />
-      <el-table-column label="异常信息，物流供应商处理信息" align="center" prop="processMessage" />
-      <el-table-column label="package_id" align="center" prop="packageId" />
-      <el-table-column label="预计订单运费" align="center" prop="priceForcast" />
-      <el-table-column label="实际订单运费" align="center" prop="priceReal" />
-      <el-table-column label="包裹地址国家代码" align="center" prop="shippingCountryCode" />
-      <el-table-column label="订单生成时间" align="center" prop="timeCreated" />
-      <el-table-column label="客户预报订单重量" align="center" prop="weightForcast" />
-      <el-table-column label="供应商实际称重订单重量" align="center" prop="weightReal" />
-      <el-table-column label="包裹长度" align="center" prop="length" />
-      <el-table-column label="包裹宽度" align="center" prop="width" />
-      <el-table-column label="包裹高度" align="center" prop="height" />
-      <el-table-column label="订单申报物品中文名" align="center" prop="productNameCn" />
-      <el-table-column label="订单申报物品英文名" align="center" prop="productNameEn" />
-      <el-table-column label="订单申报价值(US_d)" align="center" prop="productValue" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="货物数量" align="center" prop="itemListQuantity" />
-      <el-table-column label="订单项数量" align="center" prop="itemListCount" />
-      <el-table-column label="申报币种" align="center" prop="currencyCode" />
-      <el-table-column label="交易平台付款时间" align="center" prop="platformPayTime" />
-      <el-table-column label="AUSDetails" align="center" prop="AUSDetails" />
-      <el-table-column label="cod 订单标识  1:是;2:否" align="center" prop="codFlag" />
-      <el-table-column label="cod 订单金额" align="center" prop="codValue" />
-      <el-table-column label="商家税号" align="center" prop="vatNo" />
-      <el-table-column label="商家税号类型 1.欧盟国_iOSS 编号；2.非_iOSS或其他国家税号 编号；3.空表示other" align="center" prop="vatType" />
-      <el-table-column label="订单是否带电 1.是 2.否" align="center" prop="hasBattery" />
-      <el-table-column label="订单是否含磁 1.是 2.否" align="center" prop="hasMagnetic" />
-      <el-table-column label="订单是否含粉末 1.是 2.否" align="center" prop="hasPowder" />
-      <el-table-column label="customer" align="center" prop="customer" />
-      <el-table-column label="物流产品运单号" align="center" prop="expressChannelCode" />
-      <el-table-column label="物流商内部单" align="center" prop="supplierInnerCode" />
-      <el-table-column label="expressChannel" align="center" prop="expressChannel" />
-      <el-table-column label="myExpressChannel" align="center" prop="myExpressChannel" />
-      <el-table-column label="labelHTMLUrl" align="center" prop="labelHTMLUrl" />
-      <el-table-column label="labelPDFUrl" align="center" prop="labelPDFUrl" />
-      <el-table-column label="extendFieldsStr" align="center" prop="extendFieldsStr" />
-      <el-table-column label="商品SKU" align="center" prop="itemListStr" />
-      <el-table-column label="发件人" align="center" prop="addressPickupStr" />
-      <el-table-column label="收件人" align="center" prop="addressReceiveStr" />
-      <el-table-column label="退件人" align="center" prop="addressBackStr" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:dto:edit']"
-          >查看详情</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:dto:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-
--->
     </el-table>
     <pagination
       v-show="total>0"

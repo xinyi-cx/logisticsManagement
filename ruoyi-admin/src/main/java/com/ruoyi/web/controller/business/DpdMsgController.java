@@ -64,28 +64,6 @@ public class DpdMsgController extends BaseController
     }
 
     /**
-     * 新增DPD返回值
-     */
-    @PreAuthorize("@ss.hasPermi('system:msg:add')")
-    @Log(title = "DPD返回值", businessType = BusinessType.INSERT)
-    @PostMapping
-    public AjaxResult add(@RequestBody DpdMsg dpdMsg)
-    {
-        return toAjax(dpdMsgService.insertDpdMsg(dpdMsg));
-    }
-
-    /**
-     * 修改DPD返回值
-     */
-    @PreAuthorize("@ss.hasPermi('system:msg:edit')")
-    @Log(title = "DPD返回值", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody DpdMsg dpdMsg)
-    {
-        return toAjax(dpdMsgService.updateDpdMsg(dpdMsg));
-    }
-
-    /**
      * 删除DPD返回值
      */
     @PreAuthorize("@ss.hasPermi('system:msg:remove')")

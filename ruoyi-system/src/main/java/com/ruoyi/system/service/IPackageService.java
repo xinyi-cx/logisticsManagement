@@ -92,14 +92,6 @@ public interface IPackageService
      */
     public void updateDownloadNum(List<Long> ids);
 
-  /**
-     * 新增面单
-     * 
-     * @param pkg 面单
-     * @return 结果
-     */
-    public int insertPackage(Package pkg);
-
     /**
      * 新增面单
      *
