@@ -321,7 +321,8 @@ public class DPDInfoXMLClient {
                 if (SysWaybill.YTJ.getCode().equals(logicContent.getStatus())){
                     logicContent.setReturnNumber(logisticsInfo.getWaybillLRel().getWaybillL());
                 }
-                if (SysWaybill.ZJ.getCode().equals(logicContent.getStatus()) || SysWaybill.GP.getCode().equals(logicContent.getStatus())) {
+                if ( SysWaybill.YSZ.getCode().equals(logicContent.getStatus())
+                        ||SysWaybill.ZJ.getCode().equals(logicContent.getStatus()) || SysWaybill.GP.getCode().equals(logicContent.getStatus())) {
                     logicContent.setNewNumber(logisticsInfo.getWaybillLRel().getWaybillL());
                     Map<String, Object> lMap = logisticsInfo.getlMap();
                     //转寄需要获取最新物流信息

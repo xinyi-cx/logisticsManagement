@@ -74,3 +74,7 @@ values('COD报告删除', @parentId, '4',  '#', '', 1, 0, 'F', '0', '0', 'system
 insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 values('COD报告导出', @parentId, '5',  '#', '', 1, 0, 'F', '0', '0', 'system:report:export',       '#', 'admin', sysdate(), '', null, '');
 
+
+CREATE INDEX index_package_parcel_reference ON package (parcel_reference);
+
+CREATE INDEX index_mb_return_dto_platform_trade_code ON mb_return_dto (platform_trade_code);

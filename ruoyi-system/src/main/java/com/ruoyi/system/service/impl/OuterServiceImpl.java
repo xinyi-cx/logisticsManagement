@@ -674,9 +674,11 @@ public class OuterServiceImpl implements IOuterService {
             importLogicContent.setWeightKg(parcel.getWeight().toString());
 //            importLogicContent.setClient(addressSender.getName());
 //            importLogicContent.setCountry(addressSender.getCountryCode());
-            importLogicContent.setClient(addressSender.getName());
+            importLogicContent.setClient(Objects.nonNull(addressSender.getName()) ?
+                    addressSender.getName().substring(0, addressSender.getName().indexOf("-")).toLowerCase()
+                    : StringUtils.EMPTY);
 //            String type =  getType(list.get(1));
-            importLogicContent.setCountry(addressReceiver.getCountryCode());
+            importLogicContent.setCountry("PL".equalsIgnoreCase(addressReceiver.getCountryCode()) ? "POL" : addressReceiver.getCountryCode());
             importLogicContent.setImportType("马帮");
             importLogicContent.setNeedBox("N");
             importLogicContent.setCreateBy(packageVo.getCreateUser());
