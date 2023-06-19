@@ -2,15 +2,18 @@ package com.ruoyi.system.domain.vo;
 
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
 /**
  * 面单对象 package
  * 
- * @author ruoyi
  * @date 2022-01-02
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class PackageImportVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -77,139 +80,4 @@ public class PackageImportVo extends BaseEntity
 
     private String boxRemarkThree;
 
-    public String getBoxRemarkOne() {
-        return boxRemarkOne;
-    }
-
-    public void setBoxRemarkOne(String boxRemarkOne) {
-        this.boxRemarkOne = boxRemarkOne;
-    }
-
-    public String getBoxRemarkTwo() {
-        return boxRemarkTwo;
-    }
-
-    public void setBoxRemarkTwo(String boxRemarkTwo) {
-        this.boxRemarkTwo = boxRemarkTwo;
-    }
-
-    public String getBoxRemarkThree() {
-        return boxRemarkThree;
-    }
-
-    public void setBoxRemarkThree(String boxRemarkThree) {
-        this.boxRemarkThree = boxRemarkThree;
-    }
-
-    public BigDecimal getPln() {
-        return pln;
-    }
-
-    public void setPln(BigDecimal pln) {
-        this.pln = pln;
-    }
-
-    public String getRef1() {
-        return ref1;
-    }
-
-    public void setRef1(String ref1) {
-        this.ref1 = ref1;
-    }
-
-    public String getRef2() {
-        return ref2;
-    }
-
-    public void setRef2(String ref2) {
-        this.ref2 = ref2;
-    }
-
-    public String getReceiverAddress() {
-        return receiverAddress;
-    }
-
-    public void setReceiverAddress(String receiverAddress) {
-        this.receiverAddress = receiverAddress;
-    }
-
-    public String getReceiverCity() {
-        return receiverCity;
-    }
-
-    public void setReceiverCity(String receiverCity) {
-        this.receiverCity = receiverCity;
-    }
-
-    public String getReceiverCountryCode() {
-        return receiverCountryCode;
-    }
-
-    public void setReceiverCountryCode(String receiverCountryCode) {
-        this.receiverCountryCode = receiverCountryCode;
-    }
-
-    public String getReceiverEmail() {
-        return receiverEmail;
-    }
-
-    public void setReceiverEmail(String receiverEmail) {
-        this.receiverEmail = receiverEmail;
-    }
-
-    public String getReceiverName() {
-        return receiverName;
-    }
-
-    public void setReceiverName(String receiverName) {
-        this.receiverName = receiverName;
-    }
-
-    public String getReceiverPhone() {
-        return receiverPhone;
-    }
-
-    public void setReceiverPhone(String receiverPhone) {
-        this.receiverPhone = receiverPhone;
-    }
-
-    public String getReceiverPostalCode() {
-        return receiverPostalCode;
-    }
-
-    public void setReceiverPostalCode(String receiverPostalCode) {
-        this.receiverPostalCode = receiverPostalCode;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getCustomerData1() {
-        return customerData1;
-    }
-
-    public void setCustomerData1(String customerData1) {
-        this.customerData1 = customerData1;
-    }
-
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    public BigDecimal getWeight() {
-        return weight;
-    }
-
-    public void setWeight(BigDecimal weight) {
-        this.weight = weight;
-    }
 }

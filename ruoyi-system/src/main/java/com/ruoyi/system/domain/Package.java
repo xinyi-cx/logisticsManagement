@@ -3,8 +3,8 @@ package com.ruoyi.system.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +15,8 @@ import java.util.List;
  * @author ruoyi
  * @date 2022-01-11
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class Package extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -23,42 +25,10 @@ public class Package extends BaseEntity
 
     private String masterId;
 
-    public String getMasterPwd() {
-        return masterPwd;
-    }
-
-    public void setMasterPwd(String masterPwd) {
-        this.masterPwd = masterPwd;
-    }
-
-    public String getMasterId() {
-        return masterId;
-    }
-
-    public void setMasterId(String masterId) {
-        this.masterId = masterId;
-    }
-
     /** 面单主键 */
     private List<Long> ids;
 
-    public List<Long> getIds() {
-        return ids;
-    }
-
-    public void setIds(List<Long> ids) {
-        this.ids = ids;
-    }
-
     private Integer exportFlag;
-
-    public Integer getExportFlag() {
-        return exportFlag;
-    }
-
-    public void setExportFlag(Integer exportFlag) {
-        this.exportFlag = exportFlag;
-    }
 
     /** code1 */
     private String code1;
@@ -75,66 +45,10 @@ public class Package extends BaseEntity
 
     private String qtyPackages;
 
-    public String getParcelReference() {
-        return parcelReference;
-    }
-
-    public void setParcelReference(String parcelReference) {
-        this.parcelReference = parcelReference;
-    }
-
-    public String getQtyPackages() {
-        return qtyPackages;
-    }
-
-    public void setQtyPackages(String qtyPackages) {
-        this.qtyPackages = qtyPackages;
-    }
-
-    public String getParcelWaybill() {
-        return parcelWaybill;
-    }
-
-    public void setParcelWaybill(String parcelWaybill) {
-        this.parcelWaybill = parcelWaybill;
-    }
-
-    public String getCode1() {
-        return code1;
-    }
-
-    public void setCode1(String code1) {
-        this.code1 = code1;
-    }
-
-    public String getCode2() {
-        return code2;
-    }
-
-    public void setCode2(String code2) {
-        this.code2 = code2;
-    }
-
-    public String getCode3() {
-        return code3;
-    }
-
-    public void setCode3(String code3) {
-        this.code3 = code3;
-    }
-
     /** 面单主键 */
     private Long id;
 
     private String mbCode;
-
-    public String getMbCode() {
-        return mbCode;
-    }
-
-    public void setMbCode(String mbCode) {
-        this.mbCode = mbCode;
-    }
 
     /** 付款人类型 */
     @Excel(name = "付款人类型")
@@ -202,26 +116,10 @@ public class Package extends BaseEntity
 
     private ImportLogicContent importLogicContent;
 
-    public ImportLogicContent getImportLogicContent() {
-        return importLogicContent;
-    }
-
-    public void setImportLogicContent(ImportLogicContent importLogicContent) {
-        this.importLogicContent = importLogicContent;
-    }
-
     /**
      * 安月查询参数 yyyyMM
      */
     private String paramMonth;
-
-    public String getParamMonth() {
-        return paramMonth;
-    }
-
-    public void setParamMonth(String paramMonth) {
-        this.paramMonth = paramMonth;
-    }
 
     private AddressReceiver receiver;
 
@@ -235,218 +133,4 @@ public class Package extends BaseEntity
 
     private Documents documents;
 
-    public Documents getDocuments() {
-        return documents;
-    }
-
-    public void setDocuments(Documents documents) {
-        this.documents = documents;
-    }
-
-    public PackagesGenerationResponse getPackagesGenerationResponse() {
-        return packagesGenerationResponse;
-    }
-
-    public void setPackagesGenerationResponse(PackagesGenerationResponse packagesGenerationResponse) {
-        this.packagesGenerationResponse = packagesGenerationResponse;
-    }
-
-    public AddressReceiver getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(AddressReceiver receiver) {
-        this.receiver = receiver;
-    }
-
-    public AddressSender getSender() {
-        return sender;
-    }
-
-    public void setSender(AddressSender sender) {
-        this.sender = sender;
-    }
-
-    public Services getService() {
-        return service;
-    }
-
-    public void setService(Services service) {
-        this.service = service;
-    }
-
-    public List<Parcel> getParcels() {
-        return parcels;
-    }
-
-    public void setParcels(List<Parcel> parcels) {
-        this.parcels = parcels;
-    }
-
-    public void setDownloadNum(Integer downloadNum)
-    {
-        this.downloadNum = downloadNum;
-    }
-
-    public Integer getDownloadNum()
-    {
-        return downloadNum;
-    }
-
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
-
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setPayerType(String payerType) 
-    {
-        this.payerType = payerType;
-    }
-
-    public String getPayerType() 
-    {
-        return payerType;
-    }
-    public void setSenderId(Long senderId) 
-    {
-        this.senderId = senderId;
-    }
-
-    public Long getSenderId() 
-    {
-        return senderId;
-    }
-    public void setReceiverId(Long receiverId) 
-    {
-        this.receiverId = receiverId;
-    }
-
-    public Long getReceiverId() 
-    {
-        return receiverId;
-    }
-    public void setRef1(String ref1) 
-    {
-        this.ref1 = ref1;
-    }
-
-    public String getRef1() 
-    {
-        return ref1;
-    }
-    public void setRef2(String ref2) 
-    {
-        this.ref2 = ref2;
-    }
-
-    public String getRef2() 
-    {
-        return ref2;
-    }
-    public void setServicesId(Long servicesId) 
-    {
-        this.servicesId = servicesId;
-    }
-
-    public Long getServicesId() 
-    {
-        return servicesId;
-    }
-    public void setPhone(String phone) 
-    {
-        this.phone = phone;
-    }
-
-    public String getPhone() 
-    {
-        return phone;
-    }
-    public void setPostalCode(String postalCode) 
-    {
-        this.postalCode = postalCode;
-    }
-
-    public String getPostalCode() 
-    {
-        return postalCode;
-    }
-    public void setBatchId(Long batchId) 
-    {
-        this.batchId = batchId;
-    }
-
-    public Long getBatchId() 
-    {
-        return batchId;
-    }
-    public void setCreateUser(String createUser) 
-    {
-        this.createUser = createUser;
-    }
-
-    public String getCreateUser() 
-    {
-        return createUser;
-    }
-    public void setUpdateUser(String updateUser) 
-    {
-        this.updateUser = updateUser;
-    }
-
-    public String getUpdateUser() 
-    {
-        return updateUser;
-    }
-    public void setCreatedTime(Date createdTime) 
-    {
-        this.createdTime = createdTime;
-    }
-
-    public Date getCreatedTime() 
-    {
-        return createdTime;
-    }
-    public void setUpdatedTime(Date updatedTime) 
-    {
-        this.updatedTime = updatedTime;
-    }
-
-    public Date getUpdatedTime() 
-    {
-        return updatedTime;
-    }
-    public void setIsDelete(Integer isDelete) 
-    {
-        this.isDelete = isDelete;
-    }
-
-    public Integer getIsDelete() 
-    {
-        return isDelete;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("payerType", getPayerType())
-            .append("senderId", getSenderId())
-            .append("receiverId", getReceiverId())
-            .append("ref1", getRef1())
-            .append("ref2", getRef2())
-            .append("servicesId", getServicesId())
-            .append("phone", getPhone())
-            .append("postalCode", getPostalCode())
-            .append("batchId", getBatchId())
-            .append("createUser", getCreateUser())
-            .append("updateUser", getUpdateUser())
-            .append("createdTime", getCreatedTime())
-            .append("updatedTime", getUpdatedTime())
-            .append("isDelete", getIsDelete())
-            .toString();
-    }
 }

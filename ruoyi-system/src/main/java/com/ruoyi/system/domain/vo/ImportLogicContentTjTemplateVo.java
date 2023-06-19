@@ -2,6 +2,8 @@ package com.ruoyi.system.domain.vo;
 
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 导入查询物流对象 import_logic_content
@@ -9,6 +11,8 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2022-11-20
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class ImportLogicContentTjTemplateVo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -21,19 +25,4 @@ public class ImportLogicContentTjTemplateVo extends BaseEntity {
     @Excel(name = "ReturnParcel")
     private String returnNumber;
 
-    public String getNewWaybill() {
-        return newWaybill;
-    }
-
-    public void setNewWaybill(String newWaybill) {
-        this.newWaybill = newWaybill;
-    }
-
-    public String getReturnNumber() {
-        return returnNumber;
-    }
-
-    public void setReturnNumber(String returnNumber) {
-        this.returnNumber = returnNumber;
-    }
 }
