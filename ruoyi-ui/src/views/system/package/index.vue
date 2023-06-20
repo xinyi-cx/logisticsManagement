@@ -294,42 +294,6 @@ export default {
   name: "Package",
   dicts: ['sys_country'],
   data() {
-    // 重量校验（不能大于10Kg）
-    let checkWeight = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('重量不能为空'));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'));
-        } else {
-          if (value < 1) {
-            callback(new Error('重量须大于等于1kg'));
-          } else if(value > 10) {
-            callback(new Error('重量不能超过10kg'));
-          } else {
-            callback();
-          }
-        }
-      }, 1000);
-    };
-    // cod校验（不能大于 6000）
-    let checkPln = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('COD金额不能为空'));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'));
-        } else {
-          if (value >6000) {
-            callback(new Error('COD金额不能超过6000'));
-          } else {
-            callback();
-          }
-        }
-      }, 1000);
-    };
     return {
       countryCodePlFlag: true,
       countryCodeCzFlag: false,
@@ -416,46 +380,7 @@ export default {
         ids:[]
       },
       // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-        receiverName: [
-          { required: true, message: "请输入收件人全名", trigger: "blur" },
-          // { min: 2, max: 20, message: '用户名长度必须介于 2 和 20 之间', trigger: 'blur' }
-        ],
-        receiverCountryCode:[
-          { required: true, message: "请选择所在国家", trigger: "blur" }
-        ],
-        receiverCity: [
-          { required: true, message: "请输入收件人所在城市", trigger: "blur" },
-          // 这块需要校验么？
-        ],
-        receiverAddress: [
-          { required: true, message: "请输入收件人详细地址", trigger: "blur" }
-        ],
-        receiverPostalCode: [
-          { required: true, message: "请输入邮政编码", trigger: "blur" }
-        ],
-        pln: [
-          { required: true, message: "请输入COD", trigger: "blur" },
-          { validator: checkPln, trigger: "blur"}
-        ],
-        receiverEmail: [
-          { required: true, message: "邮箱信息不能为空", trigger: "blur"},
-          { type: "email", message: "请输入正确的邮箱地址", trigger: ["blur", "change"] }
-        ],
-        receiverPhone: [
-          { required: true, message: "手机号不能为空", trigger: "blur"},
-         // { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: "请输入正确的手机号码", trigger: "blur" }
-        ],
-        reference: [
-          { required: true, message: "请输入内部引用号", trigger: "blur" }
-        ],
-        weight: [
-          { required: true, message: "请输入重量信息", trigger: "blur" },
-          { validator: checkWeight, trigger: "blur"}
-        ],
-      }
+      form: {}
     };
   },
   created() {
