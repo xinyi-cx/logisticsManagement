@@ -181,6 +181,74 @@ public class HttpUtils
         return result.toString();
     }
 
+    public static FileOutputStream sendPostReturnFile(String url, String param)
+    {
+        PrintWriter out = null;
+        InputStream inn = null;
+        FileOutputStream oout = null;
+        try
+        {
+            String urlNameString = url;
+            log.info("sendPost - {}", urlNameString);
+            URL realUrl = new URL(urlNameString);
+            URLConnection conn = realUrl.openConnection();
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            conn.setRequestProperty("Accept-Charset", "utf-8");
+            conn.setRequestProperty("contentType", "utf-8");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            out = new PrintWriter(conn.getOutputStream());
+            out.print(param);
+            out.flush();
+
+            inn = conn.getInputStream();
+            oout = new FileOutputStream("C:/ruoyi/uploadPath/packagePdf//user.csv");
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inn.read(buffer)) != -1) {
+                oout.write(buffer, 0, bytesRead);
+            }
+            out.close();
+        }
+        catch (ConnectException e)
+        {
+            log.error("调用HttpUtils.sendPost ConnectException, url=" + url + ",param=" + param, e);
+        }
+        catch (SocketTimeoutException e)
+        {
+            log.error("调用HttpUtils.sendPost SocketTimeoutException, url=" + url + ",param=" + param, e);
+        }
+        catch (IOException e)
+        {
+            log.error("调用HttpUtils.sendPost IOException, url=" + url + ",param=" + param, e);
+        }
+        catch (Exception e)
+        {
+            log.error("调用HttpsUtil.sendPost Exception, url=" + url + ",param=" + param, e);
+        }
+        finally
+        {
+            try
+            {
+                if (out != null)
+                {
+                    out.close();
+                }
+                if (inn != null)
+                {
+                    inn.close();
+                }
+            }
+            catch (IOException ex)
+            {
+                log.error("调用in.close Exception, url=" + url + ",param=" + param, ex);
+            }
+        }
+        return oout;
+    }
+
     public static String sendSSLPost(String url, String param)
     {
         StringBuilder result = new StringBuilder();
