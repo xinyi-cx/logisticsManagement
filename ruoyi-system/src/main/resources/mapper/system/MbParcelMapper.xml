@@ -260,8 +260,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <insert id="insertInToWithOutMb">
-        insert into parcel
-        select * from mb_parcel
+        insert into parcel (size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time )
+        select size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time
+            from mb_parcel
     </insert>
 
 

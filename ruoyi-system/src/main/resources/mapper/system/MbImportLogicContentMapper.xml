@@ -658,8 +658,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <insert id="insertInToWithOutMb">
-        insert into import_logic_content
-        select * from mb_import_logic_content
+        insert into import_logic_content (
+            document_file_id, pack_id, batch_id,
+            logic_id, client, country, import_type, loginId, new_waybill,
+            order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
+            recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5,
+            actived_date, last_status_date, status, new_number, return_number,
+            create_by, create_time, update_by, update_time)
+        select
+                document_file_id, pack_id, batch_id,
+                logic_id, client, country, import_type, loginId, new_waybill,
+                order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
+                recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5,
+                actived_date, last_status_date, status, new_number, return_number,
+                create_by, create_time, update_by, update_time from mb_import_logic_content
     </insert>
 
 
