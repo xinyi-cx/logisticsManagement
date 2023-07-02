@@ -374,33 +374,37 @@ public class ParcelServiceImpl implements IParcelService
     @Transactional(rollbackFor = Exception.class)
     public void syncMb() {
         mbPackageMapper.insertInToWithOutMb();
-        mbPackageMapper.deleteMbData();
         log.info("mbPackageMapper success1");
 
         mbAddressReceiverMapper.insertInToWithOutMb();
-        mbAddressReceiverMapper.deleteMbData();
         log.info("mbAddressReceiverMapper success2");
 
         mbServicesMapper.insertInToWithOutMb();
-        mbServicesMapper.deleteMbData();
         log.info("mbServicesMapper success3");
 
         mbParcelMapper.insertInToWithOutMb();
-        mbParcelMapper.deleteMbData();
         log.info("mbParcelMapper success4");
 
         mbDocumentsMapper.insertInToWithOutMb();
-        mbDocumentsMapper.deleteMbData();
         log.info("mbDocumentsMapper success5");
 
         mbBatchTaskHistoryMapper.insertInToWithOutMb();
-        mbBatchTaskHistoryMapper.deleteMbData();
         log.info("mbBatchTaskHistoryMapper success6");
 
         mbImportLogicContentMapper.insertInToWithOutMb();
-        mbImportLogicContentMapper.deleteMbData();
         log.info("mbImportLogicContentMapper success7");
 
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delMb() {
+        mbPackageMapper.deleteMbData();
+        mbAddressReceiverMapper.deleteMbData();
+        mbServicesMapper.deleteMbData();
+        mbParcelMapper.deleteMbData();
+        mbDocumentsMapper.deleteMbData();
+        mbBatchTaskHistoryMapper.deleteMbData();
+        mbImportLogicContentMapper.deleteMbData();
+    }
 }

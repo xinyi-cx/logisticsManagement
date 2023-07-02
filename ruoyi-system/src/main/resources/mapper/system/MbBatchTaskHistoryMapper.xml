@@ -129,15 +129,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <insert id="insertInToWithOutMb">
         insert into batch_task_history
-        select * from mb_batch_task_history
+        select par2.* from mb_batch_task_history par2
+        where  not exists(
+            select 1 from batch_task_history par
+            where par2.id = par.id
+            )
     </insert>
 
 
     <delete id="deleteMbData">
-       delete from mb_batch_task_history par
+       delete from mb_batch_task_history
         where exists(
-            select * from batch_task_history par2
-            where par.id = par2.id
+            select 1 from batch_task_history par2
+            where mb_batch_task_history.id = par2.id
                   )
     </delete>
 

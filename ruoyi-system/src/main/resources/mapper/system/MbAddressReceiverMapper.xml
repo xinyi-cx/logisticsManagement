@@ -184,15 +184,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <insert id="insertInToWithOutMb">
         insert into address_receiver
-        select * from mb_address_receiver
+        select par2.* from mb_address_receiver par2
+        where  not exists(
+            select 1 from address_receiver par
+            where par2.id = par.id
+            )
     </insert>
 
 
     <delete id="deleteMbData">
-       delete from mb_address_receiver par
+       delete from mb_address_receiver
         where exists(
-            select * from address_receiver par2
-            where par.id = par2.id
+            select 1 from address_receiver par2
+            where mb_address_receiver.id = par2.id
                   )
     </delete>
 

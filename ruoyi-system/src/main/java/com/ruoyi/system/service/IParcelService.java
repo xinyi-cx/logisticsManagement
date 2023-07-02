@@ -95,6 +95,8 @@ public interface IParcelService
 
     public void syncMb();
 
+    public void delMb();
+
     /**
      * 根据物流单号获取物流信息
      * @param waybill

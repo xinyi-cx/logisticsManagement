@@ -73,4 +73,11 @@ public class DPDTask
         parcelService.syncMb();
     }
 
+    public void dpdTaskDelMbInfo()
+    {
+        System.out.println("删除马帮信息");
+        parcelService.delMb();
+    }
+
+
 }

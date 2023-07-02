@@ -395,7 +395,8 @@ public class DPDInfoXMLClient {
         String status = getStatus(customerEventV3s);
         if (SysWaybill.WJH.getCode().equals(status)){
             log.info("转寄未激活");
-            return;
+            status = SysWaybill.YSZ.getCode();
+//            return;
         }
         if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus()) && !parcel.isUpdateFlag()){
             log.info("+++dealForWaybillLByBatch+++parcel waybill same status: {}", status);
@@ -410,8 +411,8 @@ public class DPDInfoXMLClient {
         }else {
             logisticsInfo.setLastMsg(customerEventV3s.get(0).getDescription());
             logisticsInfo.setLastTime(customerEventV3s.get(0).getEventTime());
+            customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
         }
-        customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
 
         String newRel = "";
         if (SysWaybill.YTJ.getCode().equals(status) || SysWaybill.GP.getCode().equals(status) || SysWaybill.ZJ.getCode().equals(status)){
@@ -686,7 +687,8 @@ public class DPDInfoXMLClient {
         String status = getStatus(customerEventV3s);
         if (SysWaybill.WJH.getCode().equals(status)){
             log.info("转寄未激活");
-            return;
+            status = SysWaybill.YSZ.getCode();
+//            return;
         }
         if (!SysWaybill.GP.getCode().equals(status) && status.equals(parcel.getStatus()) && !parcel.isUpdateFlag()) {
             log.info("+++dealForWaybillL+++parcel waybill same status: {}", status);
@@ -701,8 +703,8 @@ public class DPDInfoXMLClient {
         }else {
             logisticsInfo.setLastMsg(customerEventV3s.get(0).getDescription());
             logisticsInfo.setLastTime(customerEventV3s.get(0).getEventTime());
+            customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
         }
-        customerEventV3s.forEach(item -> allEventDataList.addAll(item.getEventDataList()));
 
         String newRel = "";
         if (SysWaybill.YTJ.getCode().equals(status) || SysWaybill.GP.getCode().equals(status) || SysWaybill.ZJ.getCode().equals(status)){

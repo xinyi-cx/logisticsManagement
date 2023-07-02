@@ -499,15 +499,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <insert id="insertInToWithOutMb">
         insert into package
-        select * from mb_package
+        select par2.* from mb_package par2
+        where  not exists(
+            select 1 from package par
+            where par2.id = par.id
+            )
     </insert>
 
 
     <delete id="deleteMbData">
-       delete from mb_package par
+        delete from mb_package
         where exists(
-            select * from package par2
-            where par.id = par2.id
+                      select 1 from package par2
+                      where mb_package.id = par2.id
                   )
     </delete>
 

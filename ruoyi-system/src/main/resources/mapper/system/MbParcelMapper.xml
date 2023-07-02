@@ -261,16 +261,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <insert id="insertInToWithOutMb">
         insert into parcel (size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time )
-        select size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time
-            from mb_parcel
+        select par2.size_x, par2.size_y, par2.size_z, par2.content, par2.customer_data1, par2.reference, par2.weight, par2.pack_id, par2.waybill, par2.status, par2.package_id, par2.parcel_id, par2.create_user, par2.update_user, par2.created_time, par2.updated_time
+            from mb_parcel par2
+        where  not exists(
+            select 1 from parcel par
+            where par2.waybill = par.waybill
+            )
     </insert>
 
 
     <delete id="deleteMbData">
-       delete from mb_parcel par
+       delete from mb_parcel
         where exists(
-            select * from parcel par2
-            where par.id = par2.id
+            select 1 from parcel par2
+            where mb_parcel.waybill = par2.waybill
                   )
     </delete>
 

@@ -126,15 +126,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <insert id="insertInToWithOutMb">
         insert into services
-        select * from mb_services
+        select par2.* from mb_services par2
+        where  not exists(
+            select 1 from services par
+            where par2.id = par.id
+            )
     </insert>
 
 
     <delete id="deleteMbData">
-       delete from mb_services par
+       delete from mb_services
         where exists(
-            select * from services par2
-            where par.id = par2.id
+            select 1 from services par2
+            where mb_services.id = par2.id
                   )
     </delete>
 

@@ -198,6 +198,7 @@
           <dict-tag :options="dict.type.sys_waybill" :value="scope.row.status"/>
         </template>
       </el-table-column>
+      <el-table-column label="更新时间" align="center" prop="updateTime" width="120px" show-overflow-tooltip/>
       <el-table-column fixed label="NewParcel" align="center" width="180px">
         <template slot-scope="scope">
           <el-link :href="'https://t.17track.net/zh-cn#nums=' + scope.row.newNumber" target="_blank">{{scope.row.newNumber}}</el-link>

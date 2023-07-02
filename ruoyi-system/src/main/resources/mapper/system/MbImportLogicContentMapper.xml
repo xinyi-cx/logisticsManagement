@@ -666,20 +666,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             actived_date, last_status_date, status, new_number, return_number,
             create_by, create_time, update_by, update_time)
         select
-                document_file_id, pack_id, batch_id,
-                logic_id, client, country, import_type, loginId, new_waybill,
-                order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone,
-                recipient_email, description, need_box, create_date, remark, remark2, remark3, remark4, remark5,
-                actived_date, last_status_date, status, new_number, return_number,
-                create_by, create_time, update_by, update_time from mb_import_logic_content
+            par2.document_file_id, par2.pack_id, par2.batch_id,
+            par2.logic_id, par2.client, par2.country, par2.import_type, par2.loginId, par2.new_waybill,
+            par2.order_number, par2.value_pln_cod, par2.weight_kg, par2.recipient_name, par2.recipient_phone,
+            par2.recipient_email, par2.description, par2.need_box, par2.create_date, par2.remark, par2.remark2, par2.remark3, par2.remark4, par2.remark5,
+            par2.actived_date, par2.last_status_date, par2.status, par2.new_number, par2.return_number,
+            par2.create_by, par2.create_time, par2.update_by, par2.update_time from mb_import_logic_content par2
+        where  not exists(
+                select 1 from import_logic_content par
+                where par2.new_waybill = par.new_waybill
+            )
     </insert>
 
 
     <delete id="deleteMbData">
-       delete from mb_import_logic_content par
+       delete from mb_import_logic_content
         where exists(
-            select * from import_logic_content par2
-            where par.id = par2.id
+            select 1 from import_logic_content par2
+            where mb_import_logic_content.id = par2.id
                   )
     </delete>
 
