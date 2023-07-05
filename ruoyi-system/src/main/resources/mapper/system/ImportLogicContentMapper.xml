@@ -190,6 +190,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="params.lastStatusDateEndTime != null and params.lastStatusDateEndTime != ''">
                     AND left(last_status_date,10) &lt;= #{params.lastStatusDateEndTime}
                 </if>
+                <if test="params.updateBeginTime != null and params.updateBeginTime != ''">
+                    AND left(update_time,10) &gt;= #{params.updateBeginTime}
+                </if>
+                <if test="params.updateEndTime != null and params.updateEndTime != ''">
+                    AND left(update_time,10) &lt;= #{params.updateEndTime}
+                </if>
             <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
             <if test="packId != null "> and pack_id = #{packId}</if>
             <if test="batchId != null "> and batch_id = #{batchId}</if>
@@ -282,6 +288,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     </if>
                     <if test="params.lastStatusDateEndTime != null and params.lastStatusDateEndTime != ''">
                         AND left(last_status_date,10) &lt;= #{params.lastStatusDateEndTime}
+                    </if>
+                    <if test="params.updateBeginTime != null and params.updateBeginTime != ''">
+                        AND left(update_time,10) &gt;= #{params.updateBeginTime}
+                    </if>
+                    <if test="params.updateEndTime != null and params.updateEndTime != ''">
+                        AND left(update_time,10) &lt;= #{params.updateEndTime}
                     </if>
                     <if test="documentFileId != null "> and document_file_id = #{documentFileId}</if>
                     <if test="packId != null "> and pack_id = #{packId}</if>

@@ -47,6 +47,18 @@
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
+      <el-form-item label="更新时间" label-width="118px">
+        <el-date-picker
+          v-model="dateRange4"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
       <el-form-item label="客户" prop="client">
         <el-input
           v-model="queryParams.client"
@@ -342,6 +354,7 @@ export default {
       dateRange: [],
       dateRange2:[],
       dateRange3:[],
+      dateRange4:[],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -418,6 +431,8 @@ export default {
       this.queryParams.params['CreateDateEndTime'] = this.dateRange2[1];
       this.queryParams.params['lastStatusDateBeginTime'] = this.dateRange3[0];
       this.queryParams.params['lastStatusDateEndTime'] = this.dateRange3[1];
+      this.queryParams.params['updateBeginTime'] = this.dateRange4[0];
+      this.queryParams.params['updateEndTime'] = this.dateRange4[1];
       this.loading = true;
       // debugger;
       listContent(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
