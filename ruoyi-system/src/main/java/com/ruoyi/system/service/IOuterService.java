@@ -19,6 +19,8 @@ public interface IOuterService
 
     public void testSendEmail();
 
+    public void sendEmail();
+
     public void test();
 
     /**

@@ -3,6 +3,7 @@ package com.ruoyi.system.task;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.Parcel;
+import com.ruoyi.system.service.IOuterService;
 import com.ruoyi.system.service.IParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,9 @@ public class DPDTask
 {
     @Autowired
     private IParcelService parcelService;
+
+    @Autowired
+    private IOuterService outerService;
 
     public void ryMultipleParams(String s, Boolean b, Long l, Double d, Integer i)
     {
@@ -79,5 +83,10 @@ public class DPDTask
         parcelService.delMb();
     }
 
+    public void dpdTaskSendWaybillTodayEmail()
+    {
+        System.out.println("发送物流今日状态统计");
+        outerService.sendEmail();
+    }
 
 }

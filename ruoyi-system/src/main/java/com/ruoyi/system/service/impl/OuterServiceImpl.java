@@ -14,6 +14,7 @@ import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.mb.*;
 import com.ruoyi.system.mapper.*;
+import com.ruoyi.system.service.IImportLogicContentService;
 import com.ruoyi.system.service.IOuterService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -149,6 +150,17 @@ public class OuterServiceImpl implements IOuterService {
         String title = "文本邮件发送测试";
         String content = "文本邮件发送测试";
         emailUtil.sendMessage(to.toArray(new String[0]), cc.toArray(new String[0]), title, content);
+    }
+
+    @Autowired
+    private IImportLogicContentService importLogicContentService;
+
+    @Override
+    public void sendEmail(){
+        // 测试文本邮件发送（无附件）
+//        String to = "1097700731@qq.com"; // 这是个假邮箱，写成你自己的邮箱地址就可以
+        Map<String, String> mailMap = importLogicContentService.getStateStatistics();
+        emailUtil.sendMessage(to.toArray(new String[0]), cc.toArray(new String[0]), mailMap.get("title"), mailMap.get("content"));
     }
 
     private void saveMbMsg(String code, String msgCode, String msg, String remark) {

@@ -12,6 +12,7 @@ import com.ruoyi.system.domain.vo.ExportLogicContentCODVo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IImportLogicContentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @date 2022-11-20
  */
 @Service
+@Slf4j
 public class ImportLogicContentServiceImpl implements IImportLogicContentService {
     @Autowired
     private ImportLogicContentMapper importLogicContentMapper;
@@ -343,5 +345,35 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
     public void backupImportLogicContent(){
 
     }
+
+    @Override
+    public Map<String, String> getStateStatistics(){
+        Map<String, Object> params = new HashMap<>();
+        String updateBeginTime = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+        log.info("getStateStatistics updateBeginTime {}", updateBeginTime);
+        params.put("updateBeginTime", updateBeginTime);
+        ImportLogicContent importLogicContent = new ImportLogicContent();
+        importLogicContent.setParams(params);
+        List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentList(importLogicContent);
+
+        StringBuffer content = new StringBuffer();
+        Map<String, Long> statusNumMap = importLogicContents.stream().collect(Collectors.groupingBy(ImportLogicContent::getStatus, Collectors.counting()));
+        content.append("物流信息状态统计：").append("\r\n").append("统计时间：").append(updateBeginTime).append("\r\n");
+        for (SysWaybill sysWaybill : SysWaybill.values()) {
+            if (statusNumMap.containsKey(sysWaybill.getCode())){
+                content.append("物流状态：")
+                        .append(sysWaybill.getInfo())
+                        .append(",当日更新数量：")
+                        .append(statusNumMap.get(sysWaybill.getCode()))
+                        .append(";")
+                        .append("\r\n");
+            }
+        }
+        Map<String, String> mailMpa = new HashMap<>();
+        mailMpa.put("content", content.toString());
+        mailMpa.put("title", "物流状态变更通知");
+        return mailMpa;
+    }
+
 
 }

@@ -6,6 +6,7 @@ import com.ruoyi.system.domain.vo.ExportLogicContentVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 导入查询物流Service接口
@@ -77,4 +78,5 @@ public interface IImportLogicContentService
 
     public void backupImportLogicContent();
 
+    public Map<String, String> getStateStatistics();
 }
