@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ public class UserMoney {
     public void taoBao() throws Exception {
 //        http://chromedriver.storage.googleapis.com/index.html
         //浏览器驱动路径
-        System.setProperty("webdriver.chrome.driver","D:\\JDK\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "D:\\JDK\\chromedriver.exe");
 
         //设置秒杀时间
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSSSSSSSS");
@@ -45,12 +46,12 @@ public class UserMoney {
         browser.findElement(By.xpath("//*[@id=\"J_Order_s_2207407355826_1\"]/div[1]/div/div/label")).click();
 
         Thread.sleep(2000);
-        while (true){
+        while (true) {
             //当前时间
             Date now = new Date();
             System.out.println(now);
-            if(now.after(date)){
-                if(browser.findElement(By.linkText("结 算")).isEnabled()){
+            if (now.after(date)) {
+                if (browser.findElement(By.linkText("结 算")).isEnabled()) {
                     browser.findElement(By.linkText("结 算")).click();
                     System.out.println("结算成功");
                     break;
@@ -62,6 +63,54 @@ public class UserMoney {
         Thread.sleep(5000);
     }
 
+//    https://blog.csdn.net/m0_72717197/article/details/127007853
+    public static void main(String[] args) throws ParseException, InterruptedException {
+        //将下载的浏览器驱动 路径拷贝到这里
+        System.setProperty("webdriver.chrome.driver", "D:\\gugequdong\\chromedriver.exe");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS");
+        //设置将要秒杀商品的时间
+        Date date = sdf.parse("2022-09-23 11:18:30 000");
+        ChromeDriver browser = new ChromeDriver();
+        //这里以淘宝为例
+        browser.get("https://www.taobao.com");
+        browser.findElement(By.linkText("亲，请登录")).click();
+        browser.findElement(By.className("icon-qrcode")).click();
+        Thread.sleep(15000);
+        browser.get("https://cart.taobao.com/cart.htm");
+        //店铺的xpath
+        browser.findElement(By.xpath("//*[@id=\"J_Order_s_2256022143_1\"]/div[1]/div/div/label")).click();
+        while (true) {
+//            大于等于10秒 线程等待
+            if (date.getTime() > System.currentTimeMillis()) {
+                long a = date.getTime() - System.currentTimeMillis();
+                if (a > 101000) {
+                    System.out.println("当前时间：" + sdf.format(new Date()) + "; 秒杀时间为：" + sdf.format(date) + "; 距离轮循模式还有：" + a / 1000 + "秒；");
+                    Thread.sleep(100000);
+                }
+                if (a > 10000) {
+                    System.out.println("当前时间：" + sdf.format(new Date()) + "; 秒杀时间为：" + sdf.format(date) + "; 距离秒杀还有：" + a / 1000 + "秒");
+                    Thread.sleep(5000);
+                }
+            }
+            //小于等于10秒 进入轮询模式
+            Date now = new Date();
+            if ((date.getTime() - now.getTime()) <= 10000) {
+                System.out.println("进入轮询模式：距离秒杀还有:" + (date.getTime() - now.getTime()) / 1000 + "秒");
+            }
+            //当前时间 >= 秒杀时间
+            if (now.getTime() >= date.getTime()) {
+                if (browser.findElement(By.linkText("结 算")).isEnabled()) {
+                    browser.findElement(By.linkText("结 算")).click();
+                    System.out.println("已结算");
+                    browser.findElement(By.className("go-btn")).click();
+                    System.out.println("订单已提交");
+                    break;
+                }
+            }
+        }
+        Thread.sleep(10000);
+        System.out.println("请尽快付款...");
+    }
 
 
 }
