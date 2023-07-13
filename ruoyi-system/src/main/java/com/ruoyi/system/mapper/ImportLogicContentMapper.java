@@ -94,4 +94,6 @@ public interface ImportLogicContentMapper
 
     public int batchInsert(List<ImportLogicContent> list);
 
+    public int updateStatusByWeb(ImportLogicContent importLogicContent);
+
 }

@@ -4,10 +4,7 @@ import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.BatchTaskHistory;
-import com.ruoyi.system.domain.Documents;
-import com.ruoyi.system.domain.ImportLogicContent;
-import com.ruoyi.system.domain.LogisticsInfo;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.vo.ExportLogicContentCODVo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
 import com.ruoyi.system.mapper.*;
@@ -17,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +37,9 @@ import java.util.stream.Collectors;
 public class ImportLogicContentServiceImpl implements IImportLogicContentService {
     @Autowired
     private ImportLogicContentMapper importLogicContentMapper;
+
+    @Autowired
+    private ParcelMapper parcelMapper;
 
     @Autowired
     private LogisticsInfoMapper logisticsInfoMapper;
@@ -274,6 +275,17 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
         importLogicContent.setUpdateTime(DateUtils.getNowDate());
         return importLogicContentMapper.updateImportLogicContent(importLogicContent);
     }
+
+    @Override
+    @Transactional
+    public int updateStatusByWeb(ImportLogicContent importLogicContent) {
+        Parcel parcel = new Parcel();
+        parcel.setStatus(importLogicContent.getStatus());
+        parcel.setWaybill(importLogicContent.getNewWaybill());
+        parcelMapper.updateParcel(parcel);
+        return importLogicContentMapper.updateStatusByWeb(importLogicContent);
+    }
+
 
     /**
      * 批量删除导入查询物流

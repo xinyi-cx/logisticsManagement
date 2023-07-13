@@ -258,4 +258,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                             and par.status != con.status
             )
     </delete>
+
+    <update id="updateStatusByWeb" parameterType="Parcel">
+        update parcel
+        SET
+        <if test="status != null">status = #{status},</if>
+        update_last_flag = '1',
+        update_time = sysdate()
+        where waybill = #{waybill}
+    </update>
+
 </mapper>

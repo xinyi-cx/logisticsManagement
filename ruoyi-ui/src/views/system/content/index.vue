@@ -231,6 +231,15 @@
             v-hasPermi="['system:content:remove']"
           >删除</el-button>
         </template>
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['system:content:remove']"
+          >修改物流状态</el-button>
+        </template>
       </el-table-column>
     </el-table>
 
@@ -310,6 +319,31 @@
       </div>
     </el-dialog>
 
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="96px">
+        <el-form-item label="物流状态" prop="userName">
+          <el-select v-model="form.status" placeholder="请选择" clearable filterable>
+            <el-option
+              v-for="dict in dict.type.sys_waybill"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <!--        <el-form-item label="用户授权token" prop="userToken">-->
+        <!--          <el-input v-model="form.userToken" placeholder="请输入用户授权token" />-->
+        <!--        </el-form-item>-->
+        <el-form-item label="newWaybill" prop="newWaybill" :hidden="true">
+          <el-input v-model="form.newWaybill" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForUpdateStatus">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -324,7 +358,7 @@
 </style>
 
 <script>
-import { listContent, getContent, delContent, addContent, updateContent, refreshToday, refreshQuery } from "@/api/system/content";
+import { listContent, getContent, delContent, addContent, updateContent, updateStatusByWeb, refreshToday, refreshQuery } from "@/api/system/content";
 import { getToken } from "@/utils/auth";
 
 export default {
@@ -528,12 +562,10 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
-      getContent(id).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改导入查询物流";
-      });
+      const newWaybill = row.newWaybill;
+      this.form.newWaybill = newWaybill;
+      this.open = true;
+      this.title = "修改物流状态";
     },
     /** 提交按钮 */
     submitForm() {
@@ -552,6 +584,17 @@ export default {
               this.getList();
             });
           }
+        }
+      });
+    },
+    submitForUpdateStatus() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          updateStatusByWeb(this.form).then(response => {
+            this.$modal.msgSuccess("修改成功");
+            this.open = false;
+            this.getList();
+          });
         }
       });
     },

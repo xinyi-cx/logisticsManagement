@@ -151,6 +151,13 @@ public class ImportLogicContentController extends BaseController {
         return toAjax(importLogicContentService.updateImportLogicContent(importLogicContent));
     }
 
+    @PreAuthorize("@ss.hasPermi('system:content:edit')")
+    @Log(title = "修改物流状态", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateStatusByWeb")
+    public AjaxResult updateStatusByWeb(@RequestBody ImportLogicContent importLogicContent) {
+        return toAjax(importLogicContentService.updateStatusByWeb(importLogicContent));
+    }
+
     /**
      * 删除导入查询物流
      */

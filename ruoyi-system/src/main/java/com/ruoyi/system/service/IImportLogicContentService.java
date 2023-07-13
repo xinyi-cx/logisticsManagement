@@ -58,6 +58,8 @@ public interface IImportLogicContentService
      */
     public int updateImportLogicContent(ImportLogicContent importLogicContent);
 
+    public int updateStatusByWeb(ImportLogicContent importLogicContent);
+
     /**
      * 批量删除导入查询物流
      * 

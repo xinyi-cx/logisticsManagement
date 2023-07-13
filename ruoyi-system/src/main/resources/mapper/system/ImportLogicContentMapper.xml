@@ -42,6 +42,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+
+        <result property="updateLastFlag"    column="update_last_flag"    />
     </resultMap>
 
     <resultMap type="ImportLogicContent" id="ImportLogicContentResult2">
@@ -84,6 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
 
         <result property="fileName"    column="file_name"    />
+        <result property="updateLastFlag"    column="update_last_flag"    />
     </resultMap>
 
     <resultMap type="ImportLogicContent" id="ImportLogicContentResult3">
@@ -126,6 +129,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
 
         <result property="collectiveTransferDate"    column="collective_transfer_date"    />
+        <result property="updateLastFlag"    column="update_last_flag"    />
     </resultMap>
 
     <sql id="selectImportLogicContentVo">
@@ -133,7 +137,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order_number, value_pln_cod, weight_kg, recipient_name, recipient_phone, recipient_email, description,
         need_box, create_date, remark, remark2, remark3, remark4, remark5, box_remark_one, box_remark_two, box_remark_three,
         actived_date, last_status_date, status,
-        new_number, return_number, is_delete, create_by, create_time, update_by, update_time
+        new_number, return_number, is_delete, create_by, create_time, update_by, update_time, update_last_flag
         from import_logic_content
     </sql>
 
@@ -708,5 +712,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             )
         </foreach>
     </insert>
+
+
+    <update id="updateStatusByWeb" parameterType="ImportLogicContent">
+        update import_logic_content
+        SET
+            <if test="status != null">status = #{status},</if>
+            update_last_flag = '1',
+            update_time = sysdate()
+        where new_waybill = #{newWaybill}
+    </update>
 
 </mapper>

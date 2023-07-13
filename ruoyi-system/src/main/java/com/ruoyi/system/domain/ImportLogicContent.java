@@ -1,12 +1,10 @@
 package com.ruoyi.system.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.List;
@@ -17,8 +15,8 @@ import java.util.List;
  * @author ruoyi
  * @date 2022-11-27
  */
-@Getter
-@Setter
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class ImportLogicContent extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -167,43 +165,7 @@ public class ImportLogicContent extends BaseEntity
     @Excel(name = "是否删除")
     private Integer isDelete;
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("documentFileId", getDocumentFileId())
-            .append("packId", getPackId())
-            .append("batchId", getBatchId())
-            .append("logicId", getLogicId())
-            .append("client", getClient())
-            .append("country", getCountry())
-            .append("importType", getImportType())
-            .append("loginid", getLoginid())
-            .append("newWaybill", getNewWaybill())
-            .append("orderNumber", getOrderNumber())
-            .append("valuePlnCod", getValuePlnCod())
-            .append("weightKg", getWeightKg())
-            .append("recipientName", getRecipientName())
-            .append("recipientPhone", getRecipientPhone())
-            .append("recipientEmail", getRecipientEmail())
-            .append("description", getDescription())
-            .append("needBox", getNeedBox())
-            .append("createDate", getCreateDate())
-            .append("remark", getRemark())
-            .append("remark2", getRemark2())
-            .append("remark3", getRemark3())
-            .append("remark4", getRemark4())
-            .append("remark5", getRemark5())
-            .append("activedDate", getActivedDate())
-            .append("lastStatusDate", getLastStatusDate())
-            .append("status", getStatus())
-            .append("newNumber", getNewNumber())
-            .append("returnNumber", getReturnNumber())
-            .append("isDelete", getIsDelete())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
+    //    update_last_flag
+    private String updateLastFlag;
+
 }

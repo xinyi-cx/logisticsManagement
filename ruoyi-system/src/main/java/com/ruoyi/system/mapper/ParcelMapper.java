@@ -96,4 +96,6 @@ public interface ParcelMapper
 
     public int deleteNoSyncRel();
 
+    public int updateStatusByWeb(Parcel parcel);
+
 }

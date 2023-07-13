@@ -53,6 +53,14 @@ export function updateContent(data) {
   })
 }
 
+export function updateStatusByWeb(data) {
+  return request({
+    url: '/system/content/updateStatusByWeb',
+    method: 'put',
+    data: data
+  })
+}
+
 // 删除导入查询物流
 export function delContent(id) {
   return request({
