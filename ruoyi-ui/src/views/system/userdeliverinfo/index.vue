@@ -1,49 +1,17 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="用户运单号" prop="waybill">
-        <el-input
-          v-model="queryParams.waybill"
-          placeholder="请输入用户运单号"
-          clearable
+      <el-form-item label="查询日期">
+        <el-date-picker
+          v-model="dateRange"
           size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="用户邮箱" prop="email">
-        <el-input
-          v-model="queryParams.email"
-          placeholder="请输入用户邮箱"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="信息提交时间" prop="inserttime">
-        <el-date-picker clearable size="small"
-          v-model="queryParams.inserttime"
-          type="date"
+          style="width: 240px"
           value-format="yyyy-MM-dd"
-          placeholder="选择信息提交时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="运单国别" prop="country">
-        <el-input
-          v-model="queryParams.country"
-          placeholder="请输入运单国别"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="运单物流商" prop="logistics">
-        <el-input
-          v-model="queryParams.logistics"
-          placeholder="请输入运单物流商"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -52,38 +20,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['system:userdeliverinfo:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['system:userdeliverinfo:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:userdeliverinfo:remove']"
-        >删除</el-button>
-      </el-col>
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -110,26 +46,8 @@
       </el-table-column>
       <el-table-column label="运单国别" align="center" prop="country" />
       <el-table-column label="运单物流商" align="center" prop="logistics" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:userdeliverinfo:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:userdeliverinfo:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -138,38 +56,6 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改user deliver infomation table对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="用户运单号" prop="waybill">
-          <el-input v-model="form.waybill" placeholder="请输入用户运单号" />
-        </el-form-item>
-        <el-form-item label="用户邮箱" prop="email">
-          <el-input v-model="form.email" placeholder="请输入用户邮箱" />
-        </el-form-item>
-        <el-form-item label="用户问题描述" prop="issuedesc">
-          <el-input v-model="form.issuedesc" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="信息提交时间" prop="inserttime">
-          <el-date-picker clearable size="small"
-            v-model="form.inserttime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择信息提交时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="运单国别" prop="country">
-          <el-input v-model="form.country" placeholder="请输入运单国别" />
-        </el-form-item>
-        <el-form-item label="运单物流商" prop="logistics">
-          <el-input v-model="form.logistics" placeholder="请输入运单物流商" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -201,7 +87,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 100,
         waybill: null,
         email: null,
         issuedesc: null,
@@ -209,6 +95,7 @@ export default {
         country: null,
         logistics: null
       },
+      dateRange:[],
       // 表单参数
       form: {},
       // 表单校验
@@ -238,6 +125,8 @@ export default {
     /** 查询user deliver infomation table列表 */
     getList() {
       this.loading = true;
+      this.queryParams.begintime = this.dateRange[0];
+      this.queryParams.endtime = this.dateRange[1];
       listUserdeliverinfo(this.queryParams).then(response => {
         this.userdeliverinfoList = response.rows;
         this.total = response.total;

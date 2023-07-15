@@ -1,12 +1,13 @@
 package com.ruoyi.system.domain.mb;
 
 import com.ruoyi.common.annotation.Excel;
+import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Userdeliverinfo {
+public class Userdeliverinfo extends BaseEntity {
 
     @Excel(name = "id")
     private String id;
