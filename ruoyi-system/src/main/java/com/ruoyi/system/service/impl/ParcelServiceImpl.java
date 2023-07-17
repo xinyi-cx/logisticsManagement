@@ -206,7 +206,7 @@ public class ParcelServiceImpl implements IParcelService
         List<Parcel> needParcels = parcelMapper.selectParcelListNeedDeal(parcel);
 //        Date lastMonth = DateUtils.getDateBeforeNow(dayNum);
         List<Parcel> parcels = needParcels.stream().filter(
-                item -> !(SysWaybill.YQS.getCode().equals(item.getStatus()))).collect(Collectors.toList());
+                item -> !(SysWaybill.YQS.getCode().equals(item.getStatus())) && (!"1".equals(item.getUpdateLastFlag())) ).collect(Collectors.toList());
 //        List<Parcel> parcels = needParcels;
         log.info("getParcelMsgTaskWithoutQs size" + parcels.size());
 
@@ -238,7 +238,8 @@ public class ParcelServiceImpl implements IParcelService
     @Async
     public void getParcelMsgTrans(Parcel parcel) {
         log.info("getParcelMsgTrans start");
-        List<Parcel> parcels = parcelMapper.selectParcelListNeedDeal(parcel);
+        List<Parcel> parcelsAll = parcelMapper.selectParcelListNeedDeal(parcel);
+        List<Parcel> parcels = parcelsAll.stream().filter(item -> !"1".equals(item.getUpdateLastFlag())).collect(Collectors.toList());
         log.info("getParcelMsgTrans size" + parcels.size());
         parcels.parallelStream().forEach(item -> {
                     try {
@@ -310,7 +311,8 @@ public class ParcelServiceImpl implements IParcelService
     @Async
     public void getMsgByWaybills(List<String> waybills) {
         log.info("getParcelMsg start");
-        List<Parcel> parcels = parcelMapper.selectParcelListByWaybillIn(waybills);
+        List<Parcel> parcelsAll = parcelMapper.selectParcelListByWaybillIn(waybills);
+        List<Parcel> parcels = parcelsAll.stream().filter(item -> !"1".equals(item.getUpdateLastFlag())).collect(Collectors.toList());
         log.info("getParcelMsg size"+parcels.size());
         List<List<Parcel>> cfList = StringUtils.splitList(parcels, 100);
 //        parcels.parallelStream().forEach(item -> {

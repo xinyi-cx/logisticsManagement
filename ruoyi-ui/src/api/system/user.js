@@ -149,3 +149,10 @@ export function userCountry() {
     method: 'get'
   })
 }
+
+export function userLogisticsAuthority() {
+  return request({
+    url: '/system/user/logisticsAuthority',
+    method: 'get'
+  })
+}

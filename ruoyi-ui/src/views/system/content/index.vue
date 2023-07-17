@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="业务" prop="importType">
+      <el-form-item label="业务" prop="importType" v-show="logisticsAuthority === 'all'">
         <el-select v-model="queryParams.importType" placeholder="请选择" clearable filterable>
           <el-option
             v-for="dict in dict.type.sys_waybill_import"
@@ -359,6 +359,7 @@
 
 <script>
 import { listContent, getContent, delContent, addContent, updateContent, updateStatusByWeb, refreshToday, refreshQuery } from "@/api/system/content";
+import { userLogisticsAuthority } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 
 export default {
@@ -366,6 +367,7 @@ export default {
   dicts: ['sys_waybill','sys_waybill_import'],
   data() {
     return {
+      logisticsAuthority: "all",
       // 遮罩层
       loading: true,
       // 选中数组
@@ -452,9 +454,15 @@ export default {
     };
   },
   created() {
+    this.getLogisticsAuthority();
     this.getList();
   },
   methods: {
+    getLogisticsAuthority() {
+      userLogisticsAuthority().then(response => {
+        this.logisticsAuthority = response.msg;
+      });
+    },
     /** 查询导入查询物流列表 */
     getList() {
       this.ids = [];
@@ -469,6 +477,9 @@ export default {
       this.queryParams.params['updateEndTime'] = this.dateRange4[1];
       this.loading = true;
       // debugger;
+      if (this.logisticsAuthority === 'local'){
+        this.queryParams.importType = '本地';
+      }
       listContent(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.contentList = response.rows;
         this.total = response.total;

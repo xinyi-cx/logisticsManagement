@@ -22,10 +22,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateUser"    column="update_user"    />
         <result property="createdTime"    column="created_time"    />
         <result property="updatedTime"    column="updated_time"    />
+
+        <result property="updateLastFlag"    column="update_last_flag"    />
     </resultMap>
 
     <sql id="selectParcelVo">
-        select id, size_x, size_y, size_z, content, customer_data1, reference, weight, pack_id, waybill, status, package_id, parcel_id, create_user, update_user, created_time, updated_time from parcel
+        select id, size_x, size_y, size_z, content, customer_data1,
+        reference, weight, pack_id, waybill, status, package_id, parcel_id,
+        create_user, update_user, created_time, updated_time, update_last_flag
+        from parcel
     </sql>
 
     <select id="selectParcelList" parameterType="Parcel" resultMap="ParcelResult">

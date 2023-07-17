@@ -222,4 +222,6 @@ public interface ISysUserService
 
     public String getCurrentCountry();
 
+    public String getLogisticsAuthority();
+
 }

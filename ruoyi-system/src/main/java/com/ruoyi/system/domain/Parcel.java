@@ -3,7 +3,6 @@ package com.ruoyi.system.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.ObjectUtils;
@@ -129,7 +128,6 @@ public class Parcel extends BaseEntity {
     @Excel(name = "是否删除")
     private Integer isDelete;
 
-//    update_last_flag
     private String updateLastFlag;
 
     private boolean updateFlag = false;

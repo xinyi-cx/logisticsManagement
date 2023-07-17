@@ -678,4 +678,15 @@ public class SysUserServiceImpl implements ISysUserService
         return currentUser.getCountry();
     }
 
+
+    @Override
+    public String getLogisticsAuthority(){
+        SysUser currentUser = SecurityUtils.getLoginUser().getUser();
+        String localUserId = configService.selectConfigByKey("sys.user.local.userId");
+        if (currentUser.getUserId().toString().equals(localUserId)){
+            return "local";
+        }
+        return "all";
+    }
+
 }

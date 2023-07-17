@@ -232,4 +232,10 @@ public class SysUserController extends BaseController {
         return AjaxResult.success(userService.getCurrentCountry());
     }
 
+    @GetMapping("/logisticsAuthority")
+    public AjaxResult getLogisticsAuthority() {
+        return AjaxResult.success(userService.getLogisticsAuthority());
+    }
+
+
 }
