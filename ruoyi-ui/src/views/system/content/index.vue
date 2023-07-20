@@ -479,6 +479,12 @@ export default {
       // debugger;
       if (this.logisticsAuthority === 'local'){
         this.queryParams.importType = '本地';
+      } else
+      if (this.logisticsAuthority === 'zj'){
+        this.queryParams.importType = '转寄';
+      } else
+      if (this.logisticsAuthority === 'zf'){
+        this.queryParams.importType = '直发';
       }
       listContent(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.contentList = response.rows;

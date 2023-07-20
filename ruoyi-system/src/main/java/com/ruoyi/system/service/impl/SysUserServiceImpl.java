@@ -686,6 +686,14 @@ public class SysUserServiceImpl implements ISysUserService
         if (currentUser.getUserId().toString().equals(localUserId)){
             return "local";
         }
+        String zj = configService.selectConfigByKey("sys.user.zj.userId");
+        if (currentUser.getUserId().toString().equals(zj)){
+            return "zj";
+        }
+        String zf = configService.selectConfigByKey("sys.user.zf.userId");
+        if (currentUser.getUserId().toString().equals(zf)){
+            return "zf";
+        }
         return "all";
     }
 
