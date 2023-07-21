@@ -16,6 +16,7 @@ import com.ruoyi.system.domain.mb.*;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IImportLogicContentService;
 import com.ruoyi.system.service.IOuterService;
+import com.ruoyi.system.service.ISysConfigService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,30 +138,43 @@ public class OuterServiceImpl implements IOuterService {
     @Autowired
     private EmailUtil emailUtil;
 
-    @Value("#{'${dpd.email.to}'.split(',')}")
-    private List<String> to;
-
-    @Value("#{'${dpd.email.cc}'.split(',')}")
-    private List<String> cc;
+//    @Value("#{'${dpd.email.to}'.split(',')}")
+//    private List<String> to;
+//
+//    @Value("#{'${dpd.email.cc}'.split(',')}")
+//    private List<String> cc;
 
     @Override
-    public void testSendEmail(){
+    public void testSendEmail() {
         // 测试文本邮件发送（无附件）
 //        String to = "1097700731@qq.com"; // 这是个假邮箱，写成你自己的邮箱地址就可以
         String title = "文本邮件发送测试";
         String content = "文本邮件发送测试";
-        emailUtil.sendMessage(to.toArray(new String[0]), cc.toArray(new String[0]), title, content);
+        String toStr = configService.selectConfigByKey("sys.mail.to");
+        String ccStr = configService.selectConfigByKey("sys.mail.cc");
+        String[] to = toStr.split(",");
+        String[] cc = ccStr.split(",");
+        emailUtil.sendMessage(to, cc, title, content);
     }
 
     @Autowired
     private IImportLogicContentService importLogicContentService;
 
+    @Autowired
+    private ISysConfigService configService;
+
     @Override
-    public void sendEmail(){
+    public void sendEmail() {
         // 测试文本邮件发送（无附件）
 //        String to = "1097700731@qq.com"; // 这是个假邮箱，写成你自己的邮箱地址就可以
-        Map<String, String> mailMap = importLogicContentService.getStateStatistics();
-        emailUtil.sendMessage(to.toArray(new String[0]), cc.toArray(new String[0]), mailMap.get("title"), mailMap.get("content"));
+        String toStr = configService.selectConfigByKey("sys.mail.to");
+        String ccStr = configService.selectConfigByKey("sys.mail.cc");
+        if (StringUtils.isNotEmpty(toStr) && StringUtils.isNotEmpty(ccStr)) {
+            String[] to = toStr.split(",");
+            String[] cc = ccStr.split(",");
+            Map<String, String> mailMap = importLogicContentService.getStateStatistics();
+            emailUtil.sendMessage(to, cc, mailMap.get("title"), mailMap.get("content"));
+        }
     }
 
     private void saveMbMsg(String code, String msgCode, String msg, String remark) {
