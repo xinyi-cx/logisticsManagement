@@ -47,6 +47,12 @@ public class DPDTask
         parcelService.getParcelMsgTaskWithoutQs(new Parcel());
     }
 
+    public void dpdTaskGetParcelMsgTaskStatusIsNull()
+    {
+        System.out.println("获取物流状态为空的物流信息");
+        parcelService.getParcelMsgTaskStatusIsNull();
+    }
+
     public void dpdTaskGetAllParcelMsg()
     {
         System.out.println("获取物流信息");

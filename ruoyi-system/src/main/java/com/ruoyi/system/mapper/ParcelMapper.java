@@ -30,6 +30,8 @@ public interface ParcelMapper
 
     public List<Parcel> selectParcelListNeedDeal(Parcel parcel);
 
+    public List<Parcel> selectParcelListStatusNull();
+
     public List<Parcel> selectParcelListByPackIdIn(List<Long> ids);
 
     public List<Parcel> selectParcelListByWaybillIn(List<String> waybills);

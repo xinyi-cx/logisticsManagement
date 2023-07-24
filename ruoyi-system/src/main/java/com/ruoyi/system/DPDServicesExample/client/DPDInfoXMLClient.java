@@ -251,7 +251,7 @@ public class DPDInfoXMLClient {
             CustomerEventV3 customerEventV3 = customerEventV3s.get(0);
             logisticsInfo.setLastMsg(customerEventV3.getDescription());
             String status = getStatus(customerEventV3s);
-            if (!SysWaybill.GP.getCode().equals(status) && oldStatus.equals(status) && !parcel.isUpdateFlag()){
+            if (!SysWaybill.GP.getCode().equals(status) && status.equals(oldStatus) && !parcel.isUpdateFlag()){
                 log.info("+++getEventsForOneWaybillByBatch+++getStatusSame waybill: {}, status: {}", parcel.getWaybill(), status);
                 return;
             }

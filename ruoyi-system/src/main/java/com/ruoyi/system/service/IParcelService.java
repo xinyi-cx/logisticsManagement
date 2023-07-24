@@ -71,6 +71,8 @@ public interface IParcelService
 
     public void getParcelMsgTaskWithoutQs(Parcel parcel);
 
+    public void getParcelMsgTaskStatusIsNull();
+
     public void getParcelMsgTrans(Parcel parcel);
 
     public void getParcelMsgByLogisticsInfo(LogisticsInfo param);

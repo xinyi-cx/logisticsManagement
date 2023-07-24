@@ -235,6 +235,24 @@ public class ParcelServiceImpl implements IParcelService
     }
 
     @Override
+    public void getParcelMsgTaskStatusIsNull() {
+        log.info("getParcelMsgTaskStatusIsNull start");
+        List<Parcel> parcels = parcelMapper.selectParcelListStatusNull();
+        log.info("getParcelMsgTaskStatusIsNull size" + parcels.size());
+        List<List<Parcel>> cfList = StringUtils.splitList(parcels, getnum);
+        cfList.stream().forEach(item -> {
+                    try {
+                        log.info("getParcelMsgTaskWithoutQs running");
+                        dpdInfoXMLClient.batchUpdateParcel(item, false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+        log.info("getParcelMsgTaskStatusIsNull end");
+    }
+
+    @Override
     @Async
     public void getParcelMsgTrans(Parcel parcel) {
         log.info("getParcelMsgTrans start");
