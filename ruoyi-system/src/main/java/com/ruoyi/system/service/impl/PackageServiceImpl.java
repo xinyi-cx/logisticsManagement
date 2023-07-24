@@ -474,7 +474,7 @@ public class PackageServiceImpl implements IPackageService {
 //            if (CollectionUtils.isNotEmpty(packRelLocals)) {
 //                pkg.setExportFlag(1);
 ////                pkg.setIds(packRelLocals.stream().map(PackRelLocal::getOldPackageId).collect(toList()));
-                packagesAll = packageMapper.selectPackageListForMb(pkg);
+            packagesAll = packageMapper.selectPackageListForMb(pkg);
 //            }else {
 //                return 0;
 //            }
@@ -646,9 +646,7 @@ public class PackageServiceImpl implements IPackageService {
             redisCache.setCacheObject(numRedisKey, new PageInfo(packagesAll).getTotal(), 5, TimeUnit.MINUTES);
         }
         List<Parcel> parcels;
-        List<Long> pkIds = packagesAll.stream().map(Package::getId).collect(toList());
-        List<Parcel> selectParcels = parcelMapper.selectParcelList(new Parcel())
-                .stream().filter(item -> pkIds.contains(item.getPackId())).collect(toList());
+        List<Parcel> selectParcels = parcelMapper.selectParcelListByPackIdIn(packagesAll.stream().map(Package::getId).collect(toList()));
         List<Parcel> allParcels;
         if (ObjectUtils.isNotEmpty(packageVo.getWaybill())){
             allParcels = selectParcels.stream().filter(item -> item.getWaybill().contains(packageVo.getWaybill())).collect(toList());
@@ -696,7 +694,6 @@ public class PackageServiceImpl implements IPackageService {
 //        }
         Map<Long, List<RedirectRel>> finalOrderListMap = idRedirectRelMap;
         Map<Long, PackRelLocal> finalIdPackRelLocalMap = idPackRelLocalMap;
-
         List<PackageVo> resultList = packages.stream().map(item -> this.getPackageVo(packageVo, item, addressSenderMap,
                 addressReceiverMap, idServicesMap, idParcelMap, packagesGenerationResponseMap, finalBatchTaskHistoryMap, finalOrderListMap, finalIdPackRelLocalMap))
                 .filter(Objects::nonNull).collect(Collectors.toList());
@@ -966,13 +963,13 @@ public class PackageServiceImpl implements IPackageService {
             batchTaskHistory.setType("转寄面单导入");
         }
 
-//        List<PackageVo> judgeList = packageVos.stream().filter(item -> StringUtils.isNotEmpty(item.getCode1()) || StringUtils.isNotEmpty(item.getCode2())).collect(Collectors.toList());
+        List<PackageVo> judgeList = packageVos.stream().filter(item -> StringUtils.isNotEmpty(item.getCode1()) || StringUtils.isNotEmpty(item.getCode2())).collect(Collectors.toList());
 //        boolean localFlag = CollectionUtils.isNotEmpty(judgeList);
         boolean localFlag = ImportTypeEnum.local.equals(importTypeEnum);
         if(localFlag){
             batchTaskHistory.setType("本地面单导入");
         }
-        
+
         /**
          * 一系列处理
          */
