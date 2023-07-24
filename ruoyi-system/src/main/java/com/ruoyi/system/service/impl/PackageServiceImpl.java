@@ -133,7 +133,7 @@ public class PackageServiceImpl implements IPackageService {
 
         List<PackagesGenerationResponse> packagesGenerationResponses = packagesGenerationResponseMapper.selectPackagesGenerationResponseByPackIdIn(Collections.singletonList(pkg.getId()));
         Map<Long, PackagesGenerationResponse> packagesGenerationResponseMap = packagesGenerationResponses.stream().collect(toMap(PackagesGenerationResponse::getPackId, Function.identity()));
-        Map<Long, List<Parcel>> idParcelMap = parcels.parallelStream().collect(groupingBy(Parcel::getPackId));
+        Map<Long, List<Parcel>> idParcelMap = parcels.stream().collect(groupingBy(Parcel::getPackId));
         return getPackageVo(new PackageVo(), pkg, addressSenderMap, addressReceiverMap, idServicesMap, idParcelMap, packagesGenerationResponseMap, new HashMap<>(), new HashMap<>(), new HashMap<>());
     }
 
@@ -583,8 +583,8 @@ public class PackageServiceImpl implements IPackageService {
             packagesAll = packageMapper.selectPackageListForRel(pkg);
             List<RedirectRel> redirectRelList = redirectRelMapper.selectRedirectRelList(redirectRelParam);
             if (CollectionUtils.isNotEmpty(redirectRelList)) {
-                newWaybills = redirectRelList.parallelStream().map(RedirectRel::getNewWaybill).collect(toList());
-                idRedirectRelMap = redirectRelList.parallelStream().collect(groupingBy(RedirectRel::getNewPackageId));
+                newWaybills = redirectRelList.stream().map(RedirectRel::getNewWaybill).collect(toList());
+                idRedirectRelMap = redirectRelList.stream().collect(groupingBy(RedirectRel::getNewPackageId));
             }
 //            RedirectPackage redirectPackage = new RedirectPackage();
 //            redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
@@ -646,9 +646,9 @@ public class PackageServiceImpl implements IPackageService {
             redisCache.setCacheObject(numRedisKey, new PageInfo(packagesAll).getTotal(), 5, TimeUnit.MINUTES);
         }
         List<Parcel> parcels;
-        List<Long> pkIds = packagesAll.parallelStream().map(Package::getId).collect(toList());
+        List<Long> pkIds = packagesAll.stream().map(Package::getId).collect(toList());
         List<Parcel> selectParcels = parcelMapper.selectParcelList(new Parcel())
-                .parallelStream().filter(item -> pkIds.contains(item.getPackId())).collect(toList());
+                .stream().filter(item -> pkIds.contains(item.getPackId())).collect(toList());
         List<Parcel> allParcels;
         if (ObjectUtils.isNotEmpty(packageVo.getWaybill())){
             allParcels = selectParcels.stream().filter(item -> item.getWaybill().contains(packageVo.getWaybill())).collect(toList());
@@ -661,7 +661,7 @@ public class PackageServiceImpl implements IPackageService {
                 return new ArrayList<>();
             }
             List<String> finalNewWaybills = newWaybills;
-            parcels = allParcels.parallelStream().filter(item -> finalNewWaybills.contains(item.getWaybill())).collect(toList());
+            parcels = allParcels.stream().filter(item -> finalNewWaybills.contains(item.getWaybill())).collect(toList());
         }else {
             parcels = allParcels;
         }
@@ -672,7 +672,7 @@ public class PackageServiceImpl implements IPackageService {
             return new ArrayList<>();
         }
 
-        Map<Long, List<Parcel>> idParcelMap = parcels.parallelStream().collect(groupingBy(Parcel::getPackId));
+        Map<Long, List<Parcel>> idParcelMap = parcels.stream().collect(groupingBy(Parcel::getPackId));
 
         List<AddressSender> addressSenders = addressSenderMapper.selectAddressSenderByIdIn(packages.stream().map(Package::getSenderId).collect(Collectors.toList()));
         Map<Long, AddressSender> addressSenderMap = addressSenders.stream().collect(toMap(AddressSender::getId, Function.identity()));
@@ -743,7 +743,7 @@ public class PackageServiceImpl implements IPackageService {
             packageVo.setPln(new BigDecimal(idServicesMap.get(pac.getServicesId()).getCodAmount()));
         }
 
-//        List<Parcel> parcelList = parcels.parallelStream().filter(item -> item.getPackId().equals(pac.getId())).collect(toList());
+//        List<Parcel> parcelList = parcels.stream().filter(item -> item.getPackId().equals(pac.getId())).collect(toList());
         List<Parcel> parcelList = idParcelMap.containsKey(pac.getId()) ? idParcelMap.get(pac.getId()) : new ArrayList<>();
         if (CollectionUtils.isNotEmpty(parcelList)) {
             Parcel parcel = parcelList.get(0);
@@ -966,7 +966,7 @@ public class PackageServiceImpl implements IPackageService {
             batchTaskHistory.setType("转寄面单导入");
         }
 
-        List<PackageVo> judgeList = packageVos.stream().filter(item -> StringUtils.isNotEmpty(item.getCode1()) || StringUtils.isNotEmpty(item.getCode2())).collect(Collectors.toList());
+//        List<PackageVo> judgeList = packageVos.stream().filter(item -> StringUtils.isNotEmpty(item.getCode1()) || StringUtils.isNotEmpty(item.getCode2())).collect(Collectors.toList());
 //        boolean localFlag = CollectionUtils.isNotEmpty(judgeList);
         boolean localFlag = ImportTypeEnum.local.equals(importTypeEnum);
         if(localFlag){
