@@ -220,7 +220,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="activedDate != null  and activedDate != ''"> and actived_date = #{activedDate}</if>
             <if test="lastStatusDate != null  and lastStatusDate != ''"> and last_status_date = #{lastStatusDate}</if>
             <if test="status != null  and status != '' and status != '10'"> and status = #{status}</if>
-            <if test="status != null  and status != '' and status = '10'"> and (status is null or status = '')</if>
+            <if test="status != null  and status != '' and status == '10'"> and (status is null or status = '')</if>
             <if test="newNumber != null  and newNumber != ''"> and new_number = #{newNumber}</if>
             <if test="returnNumber != null  and returnNumber != ''"> and return_number = #{returnNumber}</if>
             <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
