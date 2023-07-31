@@ -39,11 +39,11 @@
       <el-table-column label="用户运单号" align="center" prop="waybill" />
       <el-table-column label="用户邮箱" align="center" prop="email" />
       <el-table-column label="用户问题描述" align="center" prop="issuedesc" />
-      <el-table-column label="信息提交时间" align="center" prop="inserttime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.inserttime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="信息提交时间" align="center" prop="inserttime" width="180" />
+<!--        <template slot-scope="scope">-->
+<!--          <span>{{ parseTime(scope.row.inserttime, '{y}-{m}-{d}') }}</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="运单国别" align="center" prop="country" />
       <el-table-column label="运单物流商" align="center" prop="logistics" />
     </el-table>

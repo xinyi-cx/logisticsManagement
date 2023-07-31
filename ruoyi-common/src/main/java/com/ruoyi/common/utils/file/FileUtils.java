@@ -4,8 +4,11 @@ import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,13 +17,14 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 文件处理工具类
  *
- * @author ruoyi
  */
+@Slf4j
 public class FileUtils {
     public static String FILENAME_PATTERN = "[a-zA-Z0-9_\\-\\|\\.\\u4e00-\\u9fa5]+";
 
@@ -292,4 +296,53 @@ public class FileUtils {
             System.out.println("生成txt文件失败" + e);
         }
     }
+
+    //获取表信息，获取所有已经执行过的文件
+    // 获取所有文件  根据已经执行过的文件获取需要执行的文件
+    // 生成执行记录 一个文件名字一条记录
+    // 处理文件信息  try catch catch信息也需要存数据库
+    // 删除文件
+
+
+    public static List<MultipartFile> getMultipartFilesByPath(String filePath) {
+        // Get a list of files from the folder
+        List<File> files = getFilesFromFolder(filePath);
+        // Convert files to MultipartFile objects
+        return convertToMultipartFiles(files);
+    }
+
+    private static List<File> getFilesFromFolder(String folderPath) {
+        List<File> files = new ArrayList<>();
+        File folder = new File(folderPath);
+        if (folder.exists()) {
+            File[] fileList = folder.listFiles();
+            if (fileList != null) {
+                for (File file : fileList) {
+                    if (file.isFile()) {
+                        files.add(file);
+                    }
+                }
+            }
+        } else {
+            log.error("The specified folder does not exist.");
+        }
+        return files;
+    }
+
+    private static List<MultipartFile> convertToMultipartFiles(List<File> files) {
+        List<MultipartFile> multipartFiles = new ArrayList<>();
+        for (File file : files) {
+            try {
+                FileInputStream input = new FileInputStream(file);
+                MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), null, input);
+                multipartFiles.add(multipartFile);
+            } catch (IOException e) {
+                log.error("convertToMultipartFiles error");
+                e.printStackTrace();
+            }
+        }
+        return multipartFiles;
+    }
+
+
 }
