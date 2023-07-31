@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import com.ruoyi.system.domain.BatchTaskHistory;
 import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.busenum.ImportTypeEnum;
 import com.ruoyi.system.domain.vo.PackageVo;
@@ -114,6 +115,8 @@ public interface IPackageService
      * @return 结果
      */
     public String importPackage(MultipartFile file, List<PackageVo> packageVos, ImportTypeEnum importTypeEnum) throws Exception;
+
+    public BatchTaskHistory importPackage(MultipartFile file, ImportTypeEnum importTypeEnum, String country) throws Exception;
 
     public String importPackageForNoGen(MultipartFile file, List<PackageVo> packageVos) throws Exception;
 

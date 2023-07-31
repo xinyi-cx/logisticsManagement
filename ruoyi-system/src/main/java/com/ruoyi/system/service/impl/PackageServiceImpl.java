@@ -17,8 +17,7 @@ import com.ruoyi.system.domain.Package;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.domain.busenum.ImportTypeEnum;
 import com.ruoyi.system.domain.mb.MbReturnDto;
-import com.ruoyi.system.domain.vo.ExportTwoPackageVo;
-import com.ruoyi.system.domain.vo.PackageVo;
+import com.ruoyi.system.domain.vo.*;
 import com.ruoyi.system.dpdservices.DocumentGenerationResponseV1;
 import com.ruoyi.system.dpdservices.ValidationInfoPGRV2;
 import com.ruoyi.system.mapper.*;
@@ -1166,6 +1165,70 @@ public class PackageServiceImpl implements IPackageService {
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
         }
     }
+
+    @Override
+    public BatchTaskHistory importPackage(MultipartFile file, ImportTypeEnum importTypeEnum, String country) throws Exception {
+        List<PackageVo> packageVos;
+        if (ImportTypeEnum.local.equals(importTypeEnum) && "pl".equalsIgnoreCase(country)) {
+            ExcelUtil<LocalPackageVo> util = new ExcelUtil<LocalPackageVo>(LocalPackageVo.class);
+            List<LocalPackageVo> localPackageVos = util.importExcel(file.getInputStream());
+            packageVos = localPackageVos.stream().map(item ->
+                    {
+                        PackageVo packageVo = new PackageVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        } else if (ImportTypeEnum.local.equals(importTypeEnum) && "cz".equalsIgnoreCase(country)) {
+            ExcelUtil<LocalPackageCzVo> util = new ExcelUtil<LocalPackageCzVo>(LocalPackageCzVo.class);
+            List<LocalPackageCzVo> localPackageCzVos = util.importExcel(file.getInputStream());
+            packageVos = localPackageCzVos.stream().map(item ->
+                    {
+                        PackageVo packageVo = new PackageVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        } else if (ImportTypeEnum.ref.equals(importTypeEnum) && "cz".equalsIgnoreCase(country)) {
+            ExcelUtil<REPackageCzVo> util = new ExcelUtil<REPackageCzVo>(REPackageCzVo.class);
+            List<REPackageCzVo> rePackageVos = util.importExcel(file.getInputStream());
+            packageVos = rePackageVos.stream().map(item ->
+                    {
+                        PackageVo packageVo = new PackageVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        } else if (ImportTypeEnum.ref.equals(importTypeEnum) && "pl".equalsIgnoreCase(country)) {
+            ExcelUtil<REPackageVo> util = new ExcelUtil<REPackageVo>(REPackageVo.class);
+            List<REPackageVo> rePackageVos = util.importExcel(file.getInputStream());
+            packageVos = rePackageVos.stream().map(item ->
+                    {
+                        PackageVo packageVo = new PackageVo();
+                        BeanUtils.copyProperties(item, packageVo);
+                        return packageVo;
+                    }
+            ).collect(toList());
+        } else if (ImportTypeEnum.original.equals(importTypeEnum) && "cz".equalsIgnoreCase(country)) {
+            ExcelUtil<PackageCzVo> util = new ExcelUtil<PackageCzVo>(PackageCzVo.class);
+            List<PackageCzVo> packageCzVoList = util.importExcel(file.getInputStream());
+            packageVos = new ArrayList<>();
+            for (PackageCzVo packageCzVo : packageCzVoList) {
+                PackageVo packageVo = new PackageVo();
+                BeanUtils.copyProperties(packageCzVo, packageVo);
+                packageVos.add(packageVo);
+            }
+        } else if (ImportTypeEnum.original.equals(importTypeEnum) && "pl".equalsIgnoreCase(country)) {
+            ExcelUtil<PackageVo> util = new ExcelUtil<PackageVo>(PackageVo.class);
+            packageVos = util.importExcel(file.getInputStream());
+        } else {
+            packageVos = new ArrayList<>();
+        }
+
+
+        return null;
+    }
+
 
     /**
      * 导入物流 只新增parcel表与importLogicContent
