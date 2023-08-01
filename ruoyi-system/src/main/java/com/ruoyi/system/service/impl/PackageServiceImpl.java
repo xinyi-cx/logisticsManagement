@@ -914,6 +914,14 @@ public class PackageServiceImpl implements IPackageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String importPackage(MultipartFile file, List<PackageVo> packageVos, ImportTypeEnum importTypeEnum) throws Exception {
+        return importPackage(file, packageVos, importTypeEnum, new BatchTaskHistory(), SecurityUtils.getLoginUser().getUserId().toString());
+    }
+
+    private String importPackage(MultipartFile file,
+                                 List<PackageVo> packageVos,
+                                 ImportTypeEnum importTypeEnum,
+                                 BatchTaskHistory batchTaskHistory,
+                                 String userId) throws Exception {
         if (CollectionUtils.isNotEmpty(packageVos) && packageVos.size() > 300) {
             return "单次导入最多300条";
         }
@@ -924,13 +932,15 @@ public class PackageServiceImpl implements IPackageService {
             return "文件命名错误";
         }
         Documents documents = getDocuments(file);
-        BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
+        if (Objects.isNull(batchTaskHistory)){
+            batchTaskHistory = new BatchTaskHistory();
+        }
         batchTaskHistory.setType("面单导入");
         batchTaskHistory.setStatus("上传成功");
         batchTaskHistory.setExcelUrl(documents.getId().toString());
         batchTaskHistory.setFileName(documents.getDisplayName());
-        batchTaskHistory.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-        batchTaskHistory.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+        batchTaskHistory.setCreateUser(userId);
+        batchTaskHistory.setUpdateUser(userId);
         batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
 
         //国家邮编校验
@@ -1002,15 +1012,15 @@ public class PackageServiceImpl implements IPackageService {
             pac.setServicesId(services.getId());
             pac.setBatchId(batchTaskHistory.getId());
             pac.setId(getId(nameMap, "package_seq"));
-            pac.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-            pac.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            pac.setCreateUser(userId);
+            pac.setUpdateUser(userId);
             pac.setMasterId(SecurityUtils.getLoginUser().getUser().getMasterId());
             pac.setMasterPwd(SecurityUtils.getLoginUser().getUser().getMasterPwd());
             Parcel parcel = new Parcel();
             BeanUtils.copyProperties(packageVo, parcel);
             parcel.setPackId(pac.getId());
-            parcel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-            parcel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+            parcel.setCreateUser(userId);
+            parcel.setUpdateUser(userId);
 
             pac.setService(services);
             pac.setReceiver(addressReceiver);
@@ -1021,16 +1031,16 @@ public class PackageServiceImpl implements IPackageService {
 
             if(!reflag){
                 RedirectPackage redirectPackage = new RedirectPackage();
-                redirectPackage.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-                redirectPackage.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+                redirectPackage.setCreateUser(userId);
+                redirectPackage.setUpdateUser(userId);
 //                redirectPackage.setOriginalId(packageVo.getOriginalId());
                 redirectPackage.setId(pac.getId());
                 redirectPackages.add(redirectPackage);
 
                 RedirectRel redirectRel = new RedirectRel();
                 BeanUtils.copyProperties(packageVo, redirectRel);
-                redirectRel.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-                redirectRel.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+                redirectRel.setCreateUser(userId);
+                redirectRel.setUpdateUser(userId);
                 redirectRel.setNewPackageId(pac.getId());
                 redirectRel.setCountryCode(addressReceiver.getCountryCode());
                 idRedirectRelMap.put(pac.getId(), redirectRel);
@@ -1039,8 +1049,8 @@ public class PackageServiceImpl implements IPackageService {
             if(localFlag){
                 PackRelLocal packRelLocal = new PackRelLocal();
                 BeanUtils.copyProperties(packageVo, packRelLocal);
-                packRelLocal.setCreateUser(SecurityUtils.getLoginUser().getUserId().toString());
-                packRelLocal.setUpdateUser(SecurityUtils.getLoginUser().getUserId().toString());
+                packRelLocal.setCreateUser(userId);
+                packRelLocal.setUpdateUser(userId);
                 packRelLocal.setId(pac.getId());
                 packRelLocal.setOldPackageId(pac.getId());
                 packRelLocal.setCountryCode(addressReceiver.getCountryCode());
@@ -1070,8 +1080,8 @@ public class PackageServiceImpl implements IPackageService {
             importLogicContent.setBoxRemarkOne(packageVo.getBoxRemarkOne());
             importLogicContent.setBoxRemarkTwo(packageVo.getBoxRemarkTwo());
             importLogicContent.setBoxRemarkThree(packageVo.getBoxRemarkThree());
-            importLogicContent.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
-            importLogicContent.setUpdateBy(SecurityUtils.getLoginUser().getUserId().toString());
+            importLogicContent.setCreateBy(userId);
+            importLogicContent.setUpdateBy(userId);
             importLogicContent.setStatus(SysWaybill.WJH.getCode());
             importLogicContent.setLoginid(SecurityUtils.getLoginUser().getUsername());
             importLogicContent.setOrderNumber(packageVo.getReference());
@@ -1225,8 +1235,10 @@ public class PackageServiceImpl implements IPackageService {
             packageVos = new ArrayList<>();
         }
 
+        BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
+        importPackage(file, packageVos, importTypeEnum, batchTaskHistory, "1");
 
-        return null;
+        return batchTaskHistory;
     }
 
 
