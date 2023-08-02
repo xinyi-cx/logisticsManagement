@@ -325,7 +325,7 @@ public class FileUtils {
                 }
             }
         } else {
-            log.error("The specified folder does not exist.");
+//            log.error("The specified folder does not exist.");
         }
         return files;
     }
@@ -338,7 +338,7 @@ public class FileUtils {
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), null, input);
                 multipartFiles.add(multipartFile);
             } catch (IOException e) {
-                log.error("convertToMultipartFiles error");
+//                log.error("convertToMultipartFiles error");
                 e.printStackTrace();
             }
         }
