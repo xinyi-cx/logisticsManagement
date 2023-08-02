@@ -1,7 +1,8 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
 import com.ruoyi.system.domain.SyncHistoryDpd;
+
+import java.util.List;
 
 /**
  * 同步历史记录Service接口
@@ -58,4 +59,8 @@ public interface ISyncHistoryDpdService
      * @return 结果
      */
     public int deleteSyncHistoryDpdById(Long id);
+
+    public void delSyncFile();
+
+    public void syncDpdFile(String filePath);
 }

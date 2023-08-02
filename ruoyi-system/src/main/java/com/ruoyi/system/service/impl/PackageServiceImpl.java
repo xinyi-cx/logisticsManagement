@@ -22,6 +22,7 @@ import com.ruoyi.system.dpdservices.DocumentGenerationResponseV1;
 import com.ruoyi.system.dpdservices.ValidationInfoPGRV2;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IPackageService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -49,6 +50,7 @@ import static java.util.stream.Collectors.*;
  * @date 2022-01-02
  */
 @Service
+@Slf4j
 public class PackageServiceImpl implements IPackageService {
     @Autowired
     private PackageMapper packageMapper;
@@ -1178,6 +1180,7 @@ public class PackageServiceImpl implements IPackageService {
 
     @Override
     public BatchTaskHistory importPackage(MultipartFile file, ImportTypeEnum importTypeEnum, String country) throws Exception {
+        log.info("start genSyncHistoryDpd");
         List<PackageVo> packageVos;
         if (ImportTypeEnum.local.equals(importTypeEnum) && "pl".equalsIgnoreCase(country)) {
             ExcelUtil<LocalPackageVo> util = new ExcelUtil<LocalPackageVo>(LocalPackageVo.class);
@@ -1237,7 +1240,7 @@ public class PackageServiceImpl implements IPackageService {
 
         BatchTaskHistory batchTaskHistory = new BatchTaskHistory();
         importPackage(file, packageVos, importTypeEnum, batchTaskHistory, "1");
-
+        log.info("end genSyncHistoryDpd");
         return batchTaskHistory;
     }
 

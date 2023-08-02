@@ -1,7 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
 import com.ruoyi.system.domain.SyncHistoryDpd;
+
+import java.util.List;
 
 /**
  * 同步历史记录Mapper接口
@@ -37,6 +38,8 @@ public interface SyncHistoryDpdMapper
      */
     public int insertSyncHistoryDpd(SyncHistoryDpd syncHistoryDpd);
 
+    public int batchInsert(List<SyncHistoryDpd> syncHistoryDpd);
+
     /**
      * 修改同步历史记录
      * 
@@ -44,6 +47,8 @@ public interface SyncHistoryDpdMapper
      * @return 结果
      */
     public int updateSyncHistoryDpd(SyncHistoryDpd syncHistoryDpd);
+
+    public int updateSyncHistoryDpdToDel(List<Long> ids);
 
     /**
      * 删除同步历史记录

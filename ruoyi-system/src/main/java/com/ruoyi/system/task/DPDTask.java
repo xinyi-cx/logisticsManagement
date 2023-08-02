@@ -5,6 +5,8 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.Parcel;
 import com.ruoyi.system.service.IOuterService;
 import com.ruoyi.system.service.IParcelService;
+import com.ruoyi.system.service.ISyncHistoryDpdService;
+import com.ruoyi.system.service.ISysConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,12 @@ public class DPDTask
 
     @Autowired
     private IOuterService outerService;
+
+    @Autowired
+    private ISysConfigService configService;
+
+    @Autowired
+    private ISyncHistoryDpdService syncHistoryDpdService;
 
     public void ryMultipleParams(String s, Boolean b, Long l, Double d, Integer i)
     {
@@ -93,6 +101,20 @@ public class DPDTask
     {
         System.out.println("发送物流今日状态统计");
         outerService.sendEmail();
+    }
+
+    public void dpdTaskSyncRefPl()
+    {
+        System.out.println("同步转寄面单信息-波兰");
+        String filePath = configService.selectConfigByKey("sys.sync.dpd.ref.pl.path");
+        syncHistoryDpdService.syncDpdFile(filePath);
+    }
+
+    public void dpdTaskSyncRefCz()
+    {
+        System.out.println("同步转寄面单信息-其他国家");
+        String filePath = configService.selectConfigByKey("sys.sync.dpd.ref.cz.path");
+        syncHistoryDpdService.syncDpdFile(filePath);
     }
 
 }

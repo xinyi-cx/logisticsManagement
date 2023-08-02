@@ -1,15 +1,21 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.ruoyi.common.utils.file.FileUtils;
+import com.ruoyi.system.domain.BatchTaskHistory;
+import com.ruoyi.system.domain.SyncHistoryDpd;
+import com.ruoyi.system.domain.busenum.ImportTypeEnum;
+import com.ruoyi.system.mapper.SyncHistoryDpdMapper;
+import com.ruoyi.system.service.IPackageService;
+import com.ruoyi.system.service.ISyncHistoryDpdService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.SyncHistoryDpdMapper;
-import com.ruoyi.system.domain.SyncHistoryDpd;
-import com.ruoyi.system.service.ISyncHistoryDpdService;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 同步历史记录Service业务层处理
@@ -18,9 +24,13 @@ import org.springframework.web.multipart.MultipartFile;
  * @date 2023-08-02
  */
 @Service
+@Slf4j
 public class SyncHistoryDpdServiceImpl implements ISyncHistoryDpdService {
     @Autowired
     private SyncHistoryDpdMapper syncHistoryDpdMapper;
+
+    @Autowired
+    private IPackageService packageService;
 
     /**
      * 查询同步历史记录
@@ -88,21 +98,81 @@ public class SyncHistoryDpdServiceImpl implements ISyncHistoryDpdService {
         return syncHistoryDpdMapper.deleteSyncHistoryDpdById(id);
     }
 
+    @Override
+    public void delSyncFile(){
+        SyncHistoryDpd param = SyncHistoryDpd.builder().syncStatus("1").fileDeleteStatus("0").build();
+        List<SyncHistoryDpd> needDelFile = syncHistoryDpdMapper.selectSyncHistoryDpdList(param);
 
-    private void tttt() {
-        //获取表信息，获取所有已经执行过的文件
-        // 获取所有文件  根据已经执行过的文件获取需要执行的文件
-        // 生成执行记录 一个文件名字一条记录
-        // 处理文件信息  try catch catch信息也需要存数据库
-        // 删除文件
+        if (CollectionUtils.isEmpty(needDelFile)){
+            return;
+        }
+
+        needDelFile.forEach(
+                file -> FileUtils.deleteFile(file.getFilePath() + file.getFileName())
+        );
+        syncHistoryDpdMapper.updateSyncHistoryDpdToDel(needDelFile.stream().map(SyncHistoryDpd::getId).collect(Collectors.toList()));
+    }
+
+    /**
+     * //获取表信息，获取所有已经执行过的文件
+     *         // 获取所有文件  根据已经执行过的文件获取需要执行的文件
+     *         // 生成执行记录 一个文件名字一条记录
+     *         // 处理文件信息  try catch catch信息也需要存数据库
+     *         // 删除文件
+     * @param filePath
+     */
+    @Override
+    public void syncDpdFile(String filePath) {
+        log.info("start syncDpdFile");
         List<SyncHistoryDpd> syncHistoryDpds = syncHistoryDpdMapper.selectNoNeedSyncHistoryDpdList();
         List<String> fileNames = syncHistoryDpds.stream().map(SyncHistoryDpd::getFileName).collect(Collectors.toList());
-        List<MultipartFile> files = FileUtils.getMultipartFilesByPath("");
+        List<MultipartFile> files = FileUtils.getMultipartFilesByPath(filePath).stream()
+                .filter(item -> !fileNames.contains(item.getOriginalFilename())).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(files)){
+            log.info("start syncDpdFile empty");
+            return;
+        }
+        ImportTypeEnum importTypeEnum;
+        if (filePath.contains("local")){
+            importTypeEnum = ImportTypeEnum.local;
+        } else if (filePath.contains("ref")){
+            importTypeEnum = ImportTypeEnum.ref;
+        }else {
+            importTypeEnum = ImportTypeEnum.original;
+        }
+        String country;
+        if (filePath.contains("pl")){
+            country = "pl";
+        }else {
+            country = "cz";
+        }
+        List<SyncHistoryDpd> syncHistoryDpds1 = files.stream().map(
+                item -> genSyncHistoryDpd(item, importTypeEnum, country, filePath)
+        ).collect(Collectors.toList());
+        syncHistoryDpdMapper.batchInsert(syncHistoryDpds);
+        log.info("end syncDpdFile");
+    }
 
-
-
-
-
+    private SyncHistoryDpd genSyncHistoryDpd(MultipartFile file, ImportTypeEnum importTypeEnum, String country, String filePath) {
+        String uuid = UUID.randomUUID().toString();
+        log.info("start genSyncHistoryDpd uuid: {}", uuid);
+        SyncHistoryDpd syncHistoryDpd = SyncHistoryDpd.builder()
+                .messageId(uuid)
+                .filePath(filePath)
+                .fileName(file.getOriginalFilename())
+                .fileDeleteStatus("0")
+                .build();
+        try {
+            BatchTaskHistory taskHistory = packageService.importPackage(file, importTypeEnum, country);
+            syncHistoryDpd.setBatId(taskHistory.getId());
+            log.info("end genSyncHistoryDpd with no error uuid: {}", uuid);
+        } catch (Exception e) {
+            syncHistoryDpd.setErrorMsg(e.getMessage());
+            syncHistoryDpd.setSyncStatus("0");
+            log.info("end genSyncHistoryDpd with error uuid: {}", uuid);
+        }finally {
+            return syncHistoryDpd;
+        }
     }
 
 

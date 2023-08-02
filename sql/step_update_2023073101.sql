@@ -5,6 +5,7 @@ create table sync_history_dpd
     bat_id      bigint(20) default null comment '批量任务历史Id',
     message_id varchar(500) default null comment '信息id',
     file_name   varchar(500) not null comment '文件名称',
+    file_path   varchar(500) not null comment '文件路径',
     sync_status char(1)      default '0' comment '同步状态 1-同步成功 0-同步失败 2-部分成功',
     file_delete_status   char(1)      default '0' comment '文件是否删除 0-未删除 1-已经删除',
     error_msg   varchar(500) default null comment '错误信息',

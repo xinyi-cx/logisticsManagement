@@ -1,14 +1,13 @@
 package com.ruoyi.system.domain;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.Date;
 
 /**
  * 同步历史记录对象 sync_history_dpd
@@ -18,6 +17,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
 public class SyncHistoryDpd extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -36,6 +36,9 @@ public class SyncHistoryDpd extends BaseEntity
     /** 文件名称 */
     @Excel(name = "文件名称")
     private String fileName;
+
+    @Excel(name = "文件路径")
+    private String filePath;
 
     /** 同步状态 1-同步成功 0-同步失败 2-部分成功 */
     @Excel(name = "同步状态 1-同步成功 0-同步失败 2-部分成功")
