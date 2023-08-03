@@ -149,7 +149,7 @@ public class SyncHistoryDpdServiceImpl implements ISyncHistoryDpdService {
         List<SyncHistoryDpd> syncHistoryDpds1 = files.stream().map(
                 item -> genSyncHistoryDpd(item, importTypeEnum, country, filePath)
         ).collect(Collectors.toList());
-        syncHistoryDpdMapper.batchInsert(syncHistoryDpds);
+        syncHistoryDpdMapper.batchInsert(syncHistoryDpds1);
         log.info("end syncDpdFile");
     }
 

@@ -117,4 +117,9 @@ public class DPDTask
         syncHistoryDpdService.syncDpdFile(filePath);
     }
 
+    public void dpdTaskDelSyncFile()
+    {
+        System.out.println("删除同步完的文件");
+        syncHistoryDpdService.delSyncFile();
+    }
 }
