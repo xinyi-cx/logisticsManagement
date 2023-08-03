@@ -45,8 +45,6 @@ CREATE TABLE `cod_report`
   CHARSET = utf8
   auto_increment = 200 comment = 'COD报告表';
 
-CREATE INDEX index_cod_report_waybill ON cod_report (waybill);
-
 INSERT INTO business.sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 VALUES (13, '报告管理', 0, 4, 'report', null, '', 1, 0, 'M', '0', '0', '', 'monitor', 'admin', '2023-05-02 17:58:27', '', null, '报告管理目录');
 
@@ -73,8 +71,3 @@ values('COD报告删除', @parentId, '4',  '#', '', 1, 0, 'F', '0', '0', 'system
 
 insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 values('COD报告导出', @parentId, '5',  '#', '', 1, 0, 'F', '0', '0', 'system:report:export',       '#', 'admin', sysdate(), '', null, '');
-
-
-CREATE INDEX index_package_parcel_reference ON package (parcel_reference);
-
-CREATE INDEX index_mb_return_dto_platform_trade_code ON mb_return_dto (platform_trade_code);

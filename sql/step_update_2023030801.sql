@@ -19,13 +19,6 @@ CREATE TABLE `pack_rel_local`
   auto_increment = 200 comment = '本地关联关系';
 
 
-CREATE INDEX index_redirect_rel_new_package_id ON redirect_rel (new_package_id);
-
-CREATE INDEX index_pack_rel_local_old_package_id ON pack_rel_local (old_package_id);
-
-CREATE INDEX index_parcel_pack_id ON parcel (pack_id);
-
-
 CREATE TABLE `import_logic_content_backup` (
   `id` bigint(20) unsigned NOT NULL COMMENT '主键',
   `document_file_id` bigint(20) DEFAULT NULL COMMENT 'document表id',
