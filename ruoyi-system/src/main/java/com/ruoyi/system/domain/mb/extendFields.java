@@ -3,22 +3,22 @@ package com.ruoyi.system.domain.mb;
 import java.util.List;
 
 public class extendFields {
-    private List<fields> fields;
-    private values values;
+    private List<String> fields;
+    private String values;
 
-    public List<com.ruoyi.system.domain.mb.fields> getFields() {
+    public List<String> getFields() {
         return fields;
     }
 
-    public void setFields(List<com.ruoyi.system.domain.mb.fields> fields) {
+    public void setFields(List<String> fields) {
         this.fields = fields;
     }
 
-    public com.ruoyi.system.domain.mb.values getValues() {
+    public String getValues() {
         return values;
     }
 
-    public void setValues(com.ruoyi.system.domain.mb.values values) {
+    public void setValues(String values) {
         this.values = values;
     }
 }
