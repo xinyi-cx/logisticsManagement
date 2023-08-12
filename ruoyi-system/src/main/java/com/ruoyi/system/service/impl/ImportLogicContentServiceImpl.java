@@ -9,6 +9,7 @@ import com.ruoyi.system.domain.vo.ExportLogicContentCODVo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IImportLogicContentService;
+import com.ruoyi.system.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,9 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
 
     @Value("#{'${allJurisdictionUserNames}'.empty ? null : '${allJurisdictionUserNames}'.split(',')}")
     private List<String> allJurisdictionUserNames;
+
+    @Autowired
+    private ISysUserService sysUserService;
 
     /**
      * 查询导入查询物流
@@ -110,6 +114,16 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
     }
 
     private void dealParam(ImportLogicContent importLogicContent, Map<Long, String> idFileNameMap){
+        String userAuth = sysUserService.getLogisticsAuthority();
+        if  ("local".equals(userAuth)){
+            importLogicContent.setImportType("'本地'");
+        } else if ("zj".equals(userAuth)){
+            importLogicContent.setImportType("转寄");
+        }else if ("zf".equals(userAuth)){
+            importLogicContent.setImportType("直发");
+        }else {
+            importLogicContent.setCreateBy(null);
+        }
         if (StringUtils.isNotEmpty(importLogicContent.getCountry())) {
             importLogicContent.setCountry(importLogicContent.getCountry().toUpperCase());
         }

@@ -310,7 +310,7 @@ public class OuterServiceImpl implements IOuterService {
             if (res.contains("ErrorCode")) {
                 JSONObject jsonObject = JSON.parseObject(res);
                 String mbMsgData = (jsonObject.containsKey("Data")) ? jsonObject.get("Data").toString():
-                        (jsonObject.containsKey("Message") ? jsonObject.get("Data").toString() : jsonObject.toString());
+                        (jsonObject.containsKey("Message") ? jsonObject.get("Message").toString() : jsonObject.toString());
                 saveMbMsg("find" , jsonObject.get("ErrorCode").toString(), mbMsgData, "主动查找");
                 if ("9999".equals(jsonObject.get("ErrorCode").toString())) {
 //                    成功了
