@@ -22,7 +22,6 @@ import ${packageName}.service.I${ClassName}Service;
 /**
  * ${functionName}Service业务层处理
  * 
- * @author ${author}
  * @date ${datetime}
  */
 @Service
