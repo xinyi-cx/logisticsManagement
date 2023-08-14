@@ -7,6 +7,7 @@ import com.ruoyi.common.utils.DateUtils;
 #break
 #end
 #end
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 #if($table.sub)
@@ -25,6 +26,7 @@ import ${packageName}.service.I${ClassName}Service;
  * @date ${datetime}
  */
 @Service
+@Slf4j
 public class ${ClassName}ServiceImpl implements I${ClassName}Service 
 {
     @Autowired
