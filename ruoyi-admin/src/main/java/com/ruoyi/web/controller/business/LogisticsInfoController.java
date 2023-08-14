@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * 物流信息Controller
  *
- * @author ruoyi
+ *
  * @date 2022-04-07
  */
 @RestController

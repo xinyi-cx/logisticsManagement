@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 /**
  * 同步历史记录Controller
  *
- * @author ruoyi
+ *
  * @date 2023-08-02
  */
 @RestController

@@ -24,7 +24,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 /**
  * 物流单号和L关联Controller
  * 
- * @author ruoyi
+ *
  * @date 2022-04-15
  */
 @RestController

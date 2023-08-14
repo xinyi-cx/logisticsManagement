@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 /**
  * user deliver infomation tableController
  * 
- * @author ruoyi
+ *
  * @date 2023-06-29
  */
 @RestController

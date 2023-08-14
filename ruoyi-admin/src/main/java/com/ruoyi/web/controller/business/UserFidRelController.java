@@ -26,7 +26,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 /**
  * 用户fid对应关系Controller
  *
- * @author ruoyi
+ *
  * @date 2023-02-20
  */
 @RestController

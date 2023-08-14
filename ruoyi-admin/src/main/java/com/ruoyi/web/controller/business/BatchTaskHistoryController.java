@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * 批量任务历史Controller
  * 
- * @author ruoyi
+ *
  * @date 2022-01-03
  */
 @RestController

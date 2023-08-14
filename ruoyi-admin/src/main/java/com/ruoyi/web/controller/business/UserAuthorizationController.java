@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * 用户授权信息Controller
  * 
- * @author ruoyi
+ *
  * @date 2022-05-18
  */
 @RestController

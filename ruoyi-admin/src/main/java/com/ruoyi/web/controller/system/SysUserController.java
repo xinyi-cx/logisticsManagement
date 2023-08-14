@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * 用户信息
  *
- * @author ruoyi
+ *
  */
 @RestController
 @RequestMapping("/system/user")

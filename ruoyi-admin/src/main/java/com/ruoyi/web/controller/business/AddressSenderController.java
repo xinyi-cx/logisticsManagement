@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * 发件人信息Controller
  *
- * @author ruoyi
+ *
  * @date 2022-01-02
  */
 @RestController
