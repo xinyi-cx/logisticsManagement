@@ -12,7 +12,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 本地关联关系对象 pack_rel_local
  * 
- * @author ruoyi
+ *
  * @date 2023-03-08
  */
 public class PackRelLocal extends BaseEntity

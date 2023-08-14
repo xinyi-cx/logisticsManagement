@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 面单返回值Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-02
  */
 public interface PackagesGenerationResponseMapper 

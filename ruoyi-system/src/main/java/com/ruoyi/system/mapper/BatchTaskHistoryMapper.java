@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 批量任务历史Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-03
  */
 public interface BatchTaskHistoryMapper 

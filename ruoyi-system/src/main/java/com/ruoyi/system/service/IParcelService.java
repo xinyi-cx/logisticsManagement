@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 包裹Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-02
  */
 public interface IParcelService 

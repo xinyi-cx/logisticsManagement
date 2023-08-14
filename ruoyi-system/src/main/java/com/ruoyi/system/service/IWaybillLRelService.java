@@ -6,7 +6,7 @@ import com.ruoyi.system.domain.WaybillLRel;
 /**
  * 物流单号和L关联Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-04-15
  */
 public interface IWaybillLRelService 

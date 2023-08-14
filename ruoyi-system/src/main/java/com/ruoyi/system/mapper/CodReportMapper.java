@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.PackRelLocal;
 /**
  * COD报告Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2023-05-02
  */
 public interface CodReportMapper 

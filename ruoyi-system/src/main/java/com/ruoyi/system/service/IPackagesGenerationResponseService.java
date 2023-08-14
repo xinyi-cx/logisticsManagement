@@ -6,7 +6,7 @@ import com.ruoyi.system.domain.PackagesGenerationResponse;
 /**
  * 面单返回值Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-02
  */
 public interface IPackagesGenerationResponseService 

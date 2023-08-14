@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 导入查询物流对象 import_logic_content
  * 
- * @author ruoyi
+ *
  * @date 2022-11-27
  */
 @EqualsAndHashCode(callSuper = true)

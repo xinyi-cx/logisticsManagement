@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * 导入查询物流Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-11-20
  */
 public interface IImportLogicContentService 

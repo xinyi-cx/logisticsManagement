@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * 包裹对象 parcel
  *
- * @author ruoyi
+ *
  * @date 2022-01-11
  */
 @EqualsAndHashCode(callSuper = true)

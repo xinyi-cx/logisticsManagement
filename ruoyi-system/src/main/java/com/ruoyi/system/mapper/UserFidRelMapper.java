@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 用户fid对应关系Mapper接口
  *
- * @author ruoyi
+ *
  * @date 2023-02-20
  */
 public interface UserFidRelMapper {

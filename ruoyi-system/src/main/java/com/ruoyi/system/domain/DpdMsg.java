@@ -8,7 +8,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * DPD返回值对象 dpd_msg
  *
- * @author ruoyi
+ *
  * @date 2022-06-23
  */
 public class DpdMsg extends BaseEntity {

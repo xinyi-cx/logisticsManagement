@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 面单对象 package
  * 
- * @author ruoyi
+ *
  * @date 2022-01-11
  */
 @EqualsAndHashCode(callSuper = true)

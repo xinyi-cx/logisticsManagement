@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * 物流信息对象 logistics_info
  * 
- * @author ruoyi
+ *
  * @date 2022-04-07
  */
 public class LogisticsInfo extends BaseEntity

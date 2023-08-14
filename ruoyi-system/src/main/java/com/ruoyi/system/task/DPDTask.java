@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 /**
  * dpd定时任务调度
  * 
- * @author ruoyi
+ *
  */
 @Component("dpdTask")
 public class DPDTask

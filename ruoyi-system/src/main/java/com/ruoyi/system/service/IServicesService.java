@@ -6,7 +6,7 @@ import com.ruoyi.system.domain.Services;
 /**
  * 【请填写功能名称】Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-02
  */
 public interface IServicesService 

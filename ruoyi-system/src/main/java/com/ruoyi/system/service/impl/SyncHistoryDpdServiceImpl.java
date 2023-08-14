@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * 同步历史记录Service业务层处理
  *
- * @author ruoyi
+ *
  * @date 2023-08-02
  */
 @Service

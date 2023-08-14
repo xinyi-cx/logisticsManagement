@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * 批量任务历史对象 batch_task_history
  * 
- * @author ruoyi
+ *
  * @date 2022-01-11
  */
 public class BatchTaskHistoryVo extends BaseEntity

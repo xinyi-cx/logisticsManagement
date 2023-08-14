@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * 同步历史记录对象 sync_history_dpd
  * 
- * @author ruoyi
+ *
  * @date 2023-08-02
  */
 @Data

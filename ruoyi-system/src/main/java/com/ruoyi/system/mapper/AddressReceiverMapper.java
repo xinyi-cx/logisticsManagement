@@ -6,7 +6,7 @@ import com.ruoyi.system.domain.AddressReceiver;
 /**
  * 收货人信息Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-02
  */
 public interface AddressReceiverMapper 

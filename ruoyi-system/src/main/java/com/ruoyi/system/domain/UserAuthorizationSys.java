@@ -8,7 +8,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 用户授权信息对象 user_authorization
  * 
- * @author ruoyi
+ *
  * @date 2022-05-18
  */
 public class UserAuthorizationSys extends BaseEntity

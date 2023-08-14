@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 转寄面单原面单关联关系Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-17
  */
 public interface RedirectPackageMapper 

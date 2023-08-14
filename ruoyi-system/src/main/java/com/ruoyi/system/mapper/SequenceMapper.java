@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 【请填写功能名称】Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-10
  */
 public interface SequenceMapper 

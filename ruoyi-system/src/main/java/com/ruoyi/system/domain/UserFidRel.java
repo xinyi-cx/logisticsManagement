@@ -8,7 +8,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 用户fid对应关系对象 user_fid_rel
  *
- * @author ruoyi
+ *
  * @date 2023-02-20
  */
 public class UserFidRel extends BaseEntity {

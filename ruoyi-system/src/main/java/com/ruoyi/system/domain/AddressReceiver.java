@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * 收货人信息对象 address_receiver
  * 
- * @author ruoyi
+ *
  * @date 2022-01-11
  */
 @Getter

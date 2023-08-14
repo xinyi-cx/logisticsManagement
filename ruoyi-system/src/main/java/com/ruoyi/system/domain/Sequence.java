@@ -8,7 +8,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 【请填写功能名称】对象 sequence
  * 
- * @author ruoyi
+ *
  * @date 2022-01-10
  */
 public class Sequence extends BaseEntity

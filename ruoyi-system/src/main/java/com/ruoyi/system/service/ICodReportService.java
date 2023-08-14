@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * COD报告Service接口
  * 
- * @author ruoyi
+ *
  * @date 2023-05-02
  */
 public interface ICodReportService 

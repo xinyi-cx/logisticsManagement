@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 /**
  * COD报告对象 cod_report
  * 
- * @author ruoyi
+ *
  * @date 2023-05-02
  */
 @EqualsAndHashCode(callSuper = true)

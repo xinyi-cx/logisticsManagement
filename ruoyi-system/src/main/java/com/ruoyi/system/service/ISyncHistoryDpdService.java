@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 同步历史记录Service接口
  * 
- * @author ruoyi
+ *
  * @date 2023-08-02
  */
 public interface ISyncHistoryDpdService 

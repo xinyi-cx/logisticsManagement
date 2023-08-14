@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 物流信息Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-04-07
  */
 public interface ILogisticsInfoService 

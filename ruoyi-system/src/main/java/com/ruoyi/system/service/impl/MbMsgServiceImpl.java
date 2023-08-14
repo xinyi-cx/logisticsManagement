@@ -11,7 +11,7 @@ import com.ruoyi.system.service.IMbMsgService;
 /**
  * 马帮信息Service业务层处理
  * 
- * @author ruoyi
+ *
  * @date 2022-05-29
  */
 @Service

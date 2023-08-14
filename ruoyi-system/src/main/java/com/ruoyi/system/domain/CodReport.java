@@ -8,7 +8,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * COD报告对象 cod_report
  * 
- * @author ruoyi
+ *
  * @date 2023-05-02
  */
 public class CodReport extends BaseEntity

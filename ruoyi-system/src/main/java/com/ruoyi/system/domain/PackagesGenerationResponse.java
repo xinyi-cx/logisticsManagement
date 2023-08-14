@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 面单返回值对象 packages_generation_response
  * 
- * @author ruoyi
+ *
  * @date 2022-01-11
  */
 public class PackagesGenerationResponse extends BaseEntity

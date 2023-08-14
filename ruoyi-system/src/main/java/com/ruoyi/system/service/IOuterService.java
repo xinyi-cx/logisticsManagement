@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 收货人信息Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-02
  */
 public interface IOuterService

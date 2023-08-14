@@ -10,7 +10,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 转寄面单原面单关联关系对象 redirect_package
  * 
- * @author ruoyi
+ *
  * @date 2022-01-17
  */
 public class RedirectPackage extends BaseEntity

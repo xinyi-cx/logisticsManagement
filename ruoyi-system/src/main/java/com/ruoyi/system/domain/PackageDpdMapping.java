@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * 面单dpd对应关系对象 package_dpd_mapping
  * 
- * @author ruoyi
+ *
  * @date 2022-07-27
  */
 public class PackageDpdMapping extends BaseEntity

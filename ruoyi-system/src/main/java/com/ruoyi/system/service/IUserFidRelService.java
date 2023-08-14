@@ -6,7 +6,7 @@ import com.ruoyi.system.domain.UserFidRel;
 /**
  * 用户fid对应关系Service接口
  * 
- * @author ruoyi
+ *
  * @date 2023-02-20
  */
 public interface IUserFidRelService 

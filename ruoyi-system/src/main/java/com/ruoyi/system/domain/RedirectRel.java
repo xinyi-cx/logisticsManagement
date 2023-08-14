@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 转寄关联关系对象 redirect_rel
  * 
- * @author ruoyi
+ *
  * @date 2022-08-12
  */
 public class RedirectRel extends BaseEntity

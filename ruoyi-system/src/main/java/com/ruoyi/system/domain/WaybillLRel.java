@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * 物流单号和L关联对象 waybill_l_rel
  * 
- * @author ruoyi
+ *
  * @date 2022-04-15
  */
 public class WaybillLRel extends BaseEntity

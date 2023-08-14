@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 批量任务历史Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-01-03
  */
 public interface IBatchTaskHistoryService 

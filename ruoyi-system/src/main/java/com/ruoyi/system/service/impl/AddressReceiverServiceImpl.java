@@ -10,7 +10,7 @@ import com.ruoyi.system.service.IAddressReceiverService;
 /**
  * 收货人信息Service业务层处理
  * 
- * @author ruoyi
+ *
  * @date 2022-01-02
  */
 @Service

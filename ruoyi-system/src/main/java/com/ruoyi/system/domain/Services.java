@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * 【请填写功能名称】对象 services
  * 
- * @author ruoyi
+ *
  * @date 2022-01-11
  */
 public class Services extends BaseEntity

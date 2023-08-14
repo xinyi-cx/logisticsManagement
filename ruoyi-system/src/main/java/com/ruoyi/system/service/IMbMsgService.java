@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 马帮信息Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-05-29
  */
 public interface IMbMsgService 

@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.RedirectPackage;
 /**
  * 本地关联关系Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2023-03-08
  */
 public interface PackRelLocalMapper 

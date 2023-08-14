@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 导入查询物流对象 import_logic_content
  *
- * @author ruoyi
+ *
  * @date 2022-11-20
  */
 @EqualsAndHashCode(callSuper = true)

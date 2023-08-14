@@ -8,7 +8,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 马帮信息对象 mb_msg
  * 
- * @author ruoyi
+ *
  * @date 2022-05-29
  */
 public class MbMsg extends BaseEntity

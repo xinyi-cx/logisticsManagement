@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 转寄关联关系Service接口
  * 
- * @author ruoyi
+ *
  * @date 2022-08-12
  */
 public interface IRedirectRelService 

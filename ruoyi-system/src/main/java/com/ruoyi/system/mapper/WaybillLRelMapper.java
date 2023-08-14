@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 物流单号和L关联Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2022-04-15
  */
 public interface WaybillLRelMapper 

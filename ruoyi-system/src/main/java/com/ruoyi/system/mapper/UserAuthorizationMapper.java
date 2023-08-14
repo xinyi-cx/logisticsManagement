@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 用户授权信息Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2022-05-18
  */
 public interface UserAuthorizationMapper 

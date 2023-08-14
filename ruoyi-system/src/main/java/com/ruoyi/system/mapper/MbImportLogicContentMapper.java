@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 导入查询物流Mapper接口
  * 
- * @author ruoyi
+ *
  * @date 2022-11-20
  */
 public interface MbImportLogicContentMapper

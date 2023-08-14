@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * 转寄面单对象 package
  * 
- * @author ruoyi
+ *
  * @date 2022-01-02
  */
 @EqualsAndHashCode(callSuper = true)
