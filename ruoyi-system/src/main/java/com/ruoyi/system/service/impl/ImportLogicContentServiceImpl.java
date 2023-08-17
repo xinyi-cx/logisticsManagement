@@ -116,13 +116,14 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
     private void dealParam(ImportLogicContent importLogicContent, Map<Long, String> idFileNameMap){
         String userAuth = sysUserService.getLogisticsAuthority();
         if  ("local".equals(userAuth)){
+            importLogicContent.setCreateBy(null);
             importLogicContent.setImportType("'本地'");
         } else if ("zj".equals(userAuth)){
+            importLogicContent.setCreateBy(null);
             importLogicContent.setImportType("转寄");
         }else if ("zf".equals(userAuth)){
-            importLogicContent.setImportType("直发");
-        }else {
             importLogicContent.setCreateBy(null);
+            importLogicContent.setImportType("直发");
         }
         if (StringUtils.isNotEmpty(importLogicContent.getCountry())) {
             importLogicContent.setCountry(importLogicContent.getCountry().toUpperCase());
