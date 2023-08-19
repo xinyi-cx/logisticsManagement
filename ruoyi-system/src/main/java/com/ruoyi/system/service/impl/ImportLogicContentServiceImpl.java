@@ -117,7 +117,7 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
         String userAuth = sysUserService.getLogisticsAuthority();
         if  ("local".equals(userAuth)){
             importLogicContent.setCreateBy(null);
-            importLogicContent.setImportType("'本地'");
+            importLogicContent.setImportType("本地");
         } else if ("zj".equals(userAuth)){
             importLogicContent.setCreateBy(null);
             importLogicContent.setImportType("转寄");
