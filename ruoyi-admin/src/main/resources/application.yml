@@ -3,16 +3,16 @@ ruoyi:
   # 名称
   name: RuoYi
   # 版本
-  version: 3.8.0
+  version: 3.8.6
   # 版权年份
-  copyrightYear: 2021
+  copyrightYear: 2023
   # 实例演示开关
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: C:/ruoyi/uploadPath
+  profile: D:/ruoyi/uploadPath
   # 获取ip地址开关
   addressEnabled: false
-  # 验证码类型 math 数组计算 char 字符验证
+  # 验证码类型 math 数字计算 char 字符验证
   captchaType: math
 
 # 开发环境配置
@@ -39,93 +39,29 @@ logging:
     com.ruoyi: debug
     org.springframework: warn
 
+# 用户配置
+user:
+  password:
+    # 密码最大错误次数
+    maxRetryCount: 5
+    # 密码锁定时间（默认10分钟）
+    lockTime: 10
+
 # Spring配置
 spring:
-  flyway:
-    url: jdbc:mysql://127.0.0.1:3306/business
-    user: root
-    password: dev
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    clean-on-validation-error: true
-  task:
-    execution:
-      pool:
-        core-size: 5
-        max-size: 10
-        keep-alive: 120s
-        queue-capacity: 1000
-        allow-core-thread-timeout: true
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.cj.jdbc.Driver
-    druid:
-      # 主库数据源
-      master:
-        url: jdbc:mysql://127.0.0.1:3306/business?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
-        username: root
-        password: dev
-#        username: test
-#        password: Test*admin@1707
-      # 从库数据源
-      slave:
-        # 从数据源开关/默认关闭
-        enabled: false
-        url:
-        username:
-        password:
-      # 初始连接数
-      initialSize: 5
-      # 最小连接池数量
-      minIdle: 10
-      # 最大连接池数量
-      maxActive: 200
-      # 配置获取连接等待超时的时间
-      maxWait: 60000
-      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-      timeBetweenEvictionRunsMillis: 60000
-      # 配置一个连接在池中最小生存的时间，单位是毫秒
-      minEvictableIdleTimeMillis: 300000
-      # 配置一个连接在池中最大生存的时间，单位是毫秒
-      maxEvictableIdleTimeMillis: 900000
-      # 配置检测连接是否有效
-      validationQuery: SELECT 1 FROM DUAL
-      testWhileIdle: true
-      testOnBorrow: false
-      testOnReturn: false
-      webStatFilter:
-        enabled: true
-      statViewServlet:
-        enabled: true
-        # 设置白名单，不填则允许所有访问
-        allow:
-        url-pattern: /druid/*
-        # 控制台管理用户名和密码
-        login-username: ruoyi
-        login-password: 123456
-      filter:
-        stat:
-          enabled: true
-          # 慢SQL记录
-          log-slow-sql: true
-          slow-sql-millis: 1000
-          merge-sql: true
-        wall:
-          config:
-            multi-statement-allow: true
   # 资源信息
   messages:
     # 国际化资源文件路径
     basename: i18n/messages
-  profiles: 
+  profiles:
     active: druid
   # 文件上传
   servlet:
-     multipart:
-       # 单个文件大小
-       max-file-size:  10MB
-       # 设置总上传的文件大小
-       max-request-size:  20MB
+    multipart:
+      # 单个文件大小
+      max-file-size: 10MB
+      # 设置总上传的文件大小
+      max-request-size: 20MB
   # 服务模块
   devtools:
     restart:
@@ -140,7 +76,7 @@ spring:
     # 数据库索引
     database: 0
     # 密码
-    password: 
+    password:
     # 连接超时时间
     timeout: 60s
     lettuce:
@@ -170,27 +106,27 @@ spring:
 
 # token配置
 token:
-    # 令牌自定义标识
-    header: Authorization
-    # 令牌密钥
-    secret: abcdefghijklmnopqrstuvwxyz
-    # 令牌有效期（默认30分钟）
-    expireTime: 30
-  
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌有效期（默认30分钟）
+  expireTime: 30
+
 # MyBatis配置
 mybatis:
-    # 搜索指定包别名
-    typeAliasesPackage: com.ruoyi.**.domain
-    # 配置mapper的扫描，找到所有的mapper.xml映射文件
-    mapperLocations: classpath*:mapper/**/*Mapper.xml
-    # 加载全局的配置文件
-    configLocation: classpath:mybatis/mybatis-config.xml
+  # 搜索指定包别名
+  typeAliasesPackage: com.ruoyi.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
 
 # PageHelper分页插件
-pagehelper: 
+pagehelper:
   helperDialect: mysql
   supportMethodsArguments: true
-  params: count=countSql 
+  params: count=countSql
 
 # Swagger配置
 swagger:
@@ -200,54 +136,10 @@ swagger:
   pathMapping: /dev-api
 
 # 防止XSS攻击
-xss: 
+xss:
   # 过滤开关
   enabled: true
   # 排除链接（多个用逗号分隔）
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
-
-dpdservices:
-  address: https://dpdservices.dpd.com.pl/DPDPackageObjServicesService/DPDPackageObjServices
-#  address: https://dpdservicesdemo.dpd.com.pl/DPDPackageObjServicesService/DPDPackageObjServices
-  addressInfo: https://dpdinfoservices.dpd.com.pl/DPDInfoServicesObjEventsService/DPDInfoServicesObjEvents
-  authdata:
-    login: 33368701
-    password: lZIVxoSrtWSZhhPJ
-    fid: 334936
-  authdataV1:
-    login: 33368701
-    password: lZIVxoSrtWSZhhPJ
-    channel: 333687
-
-mb:
-  url: https://www.i8956.com/interface/index.php
-  apiAccountId: 29689
-  apiKey: 2675166dc4b2242bf88c3ea25a452b3f
-  phone: 13888888888
-  importUserFlag: false
-  postUserFlag: false
-  senderUserId: 104
-frontPath: C:/ruoyi/uploadPath/packagePdf/
-localIp: http://118.195.237.144/dev-api/profile/packagePdf
-
-dpd:
-  email:
-    to: 1097700731@qq.com,caixin0830@163.com
-    cc: 1097700731@qq.com,caixin0830@163.com
-#  Parcel delivered  190103
-yqscode: 190101,190103,190104,190105,190205,501300,501304,501340,511901,511903,600103,701901
-ytjcode: 230403,230408,230501,240304,500611,500612,500614,500615,500616,500617,500624,500629,500630,500633,500635,500637,500639,500642,500647,500649,500661,500684,500685
-gpcode: 230402
-
-getnum: 500
-dayNum: -5
-
-ybwlflag: false
-
-allJurisdictionUserNames: Tracking,reporter
-
-
-sys:
-  url: http://www.gqserviceinfo.com

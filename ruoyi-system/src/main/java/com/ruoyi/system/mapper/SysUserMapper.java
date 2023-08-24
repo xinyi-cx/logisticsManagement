@@ -1,9 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import com.ruoyi.common.core.domain.entity.SysUser;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.ruoyi.common.core.domain.entity.SysUser;
 
 /**
  * 用户表 数据层
@@ -20,12 +19,8 @@ public interface SysUserMapper
      */
     public List<SysUser> selectUserList(SysUser sysUser);
 
-    public List<SysUser> getAll(SysUser sysUser);
-
-    public List<SysUser> selectUserListByParam(SysUser sysUser);
-
     /**
-     * 根据条件分页查询未已配用户角色列表
+     * 根据条件分页查询已配用户角色列表
      * 
      * @param user 用户信息
      * @return 用户信息集合信息
@@ -47,10 +42,6 @@ public interface SysUserMapper
      * @return 用户对象信息
      */
     public SysUser selectUserByUserName(String userName);
-
-    public SysUser selectUserByCustomerName(String userName);
-
-    public SysUser selectUserByUser(SysUser user);
 
     /**
      * 通过用户ID查询用户
@@ -116,7 +107,7 @@ public interface SysUserMapper
      * @param userName 用户名称
      * @return 结果
      */
-    public int checkUserNameUnique(String userName);
+    public SysUser checkUserNameUnique(String userName);
 
     /**
      * 校验手机号码是否唯一

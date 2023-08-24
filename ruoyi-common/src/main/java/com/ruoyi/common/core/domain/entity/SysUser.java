@@ -1,21 +1,16 @@
 package com.ruoyi.common.core.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Date;
+import java.util.List;
+import javax.validation.constraints.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.annotation.Excel.Type;
 import com.ruoyi.common.annotation.Excels;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.xss.Xss;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 用户对象 sys_user
@@ -50,10 +45,6 @@ public class SysUser extends BaseEntity
     @Excel(name = "手机号码")
     private String phonenumber;
 
-    /** 手机号码 */
-    @Excel(name = "国家")
-    private String country;
-
     /** 用户性别 */
     @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
     private String sex;
@@ -63,9 +54,6 @@ public class SysUser extends BaseEntity
 
     /** 密码 */
     private String password;
-
-    /** 盐加密 */
-    private String salt;
 
     /** 帐号状态（0正常 1停用） */
     @Excel(name = "帐号状态", readConverterExp = "0=正常,1=停用")
@@ -81,18 +69,6 @@ public class SysUser extends BaseEntity
     /** 最后登录时间 */
     @Excel(name = "最后登录时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Type.EXPORT)
     private Date loginDate;
-
-    /**
-     * 马帮token
-     */
-    private String apiKey;
-
-    /**
-     * 马帮token
-     */
-    private Long apiAccountId;
-
-    private String customerName;
 
     /** 部门对象 */
     @Excels({
@@ -112,141 +88,6 @@ public class SysUser extends BaseEntity
 
     /** 角色ID */
     private Long roleId;
-
-    /** 发件人街道？地址 */
-    private String address;
-
-    /** 发件人城市 */
-    private String city;
-
-    /** 发件人公司 */
-    private String company;
-
-    /** 发件人国家 */
-    private String countryCode;
-
-    /** 发件人邮件 */
-    private String sendEmail;
-
-    /** 发件人fid */
-    private Long fid;
-
-    /** 发件人姓名 */
-    private String name;
-
-    /** 发件人手机号码 */
-    private String phone;
-
-    /** 发件人邮政编码 */
-    private String postalCode;
-
-    private String masterId;
-
-    private String masterPwd;
-
-    public String getMasterId() {
-        return masterId;
-    }
-
-    public void setMasterId(String masterId) {
-        this.masterId = masterId;
-    }
-
-    public String getMasterPwd() {
-        return masterPwd;
-    }
-
-    public void setMasterPwd(String masterPwd) {
-        this.masterPwd = masterPwd;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public Long getApiAccountId() {
-        return apiAccountId;
-    }
-
-    public void setApiAccountId(Long apiAccountId) {
-        this.apiAccountId = apiAccountId;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
-    public String getSendEmail() {
-        return sendEmail;
-    }
-
-    public void setSendEmail(String sendEmail) {
-        this.sendEmail = sendEmail;
-    }
-
-    public Long getFid() {
-        return fid;
-    }
-
-    public void setFid(Long fid) {
-        this.fid = fid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
 
     public SysUser()
     {
@@ -356,8 +197,6 @@ public class SysUser extends BaseEntity
         this.avatar = avatar;
     }
 
-    @JsonIgnore
-    @JsonProperty
     public String getPassword()
     {
         return password;
@@ -366,16 +205,6 @@ public class SysUser extends BaseEntity
     public void setPassword(String password)
     {
         this.password = password;
-    }
-
-    public String getSalt()
-    {
-        return salt;
-    }
-
-    public void setSalt(String salt)
-    {
-        this.salt = salt;
     }
 
     public String getStatus()
@@ -468,22 +297,6 @@ public class SysUser extends BaseEntity
         this.roleId = roleId;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -496,7 +309,6 @@ public class SysUser extends BaseEntity
             .append("sex", getSex())
             .append("avatar", getAvatar())
             .append("password", getPassword())
-            .append("salt", getSalt())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
             .append("loginIp", getLoginIp())
@@ -507,7 +319,6 @@ public class SysUser extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .append("dept", getDept())
-            .append("country", getCountry())
             .toString();
     }
 }

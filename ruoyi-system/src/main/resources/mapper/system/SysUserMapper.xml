@@ -4,59 +4,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysUserMapper">
 
-	<resultMap type="SysUser" id="SysUserResult">
-		<id     property="userId"       column="user_id"      />
-		<result property="deptId"       column="dept_id"      />
-		<result property="userName"     column="user_name"    />
-		<result property="nickName"     column="nick_name"    />
-		<result property="email"        column="email"        />
-		<result property="phonenumber"  column="phonenumber"  />
-		<result property="country"      column="country"  />
-		<result property="apiKey"      column="api_key"  />
-		<result property="apiAccountId"      column="api_account_id"  />
-		<result property="masterId"      column="master_id"  />
-		<result property="masterPwd"      column="master_pwd"  />
-		<result property="customerName"      column="customer_name"  />
-		<result property="sex"          column="sex"          />
-		<result property="avatar"       column="avatar"       />
-		<result property="password"     column="password"     />
-		<result property="status"       column="status"       />
-		<result property="delFlag"      column="del_flag"     />
-		<result property="loginIp"      column="login_ip"     />
-		<result property="loginDate"    column="login_date"   />
-		<result property="createBy"     column="create_by"    />
-		<result property="createTime"   column="create_time"  />
-		<result property="updateBy"     column="update_by"    />
-		<result property="updateTime"   column="update_time"  />
-		<result property="remark"       column="remark"       />
-		<association property="dept"    column="dept_id" javaType="SysDept" resultMap="deptResult" />
-		<collection  property="roles"   javaType="java.util.List"        resultMap="RoleResult" />
-	</resultMap>
+    <resultMap type="SysUser" id="SysUserResult">
+        <id     property="userId"       column="user_id"      />
+        <result property="deptId"       column="dept_id"      />
+        <result property="userName"     column="user_name"    />
+        <result property="nickName"     column="nick_name"    />
+        <result property="email"        column="email"        />
+        <result property="phonenumber"  column="phonenumber"  />
+        <result property="sex"          column="sex"          />
+        <result property="avatar"       column="avatar"       />
+        <result property="password"     column="password"     />
+        <result property="status"       column="status"       />
+        <result property="delFlag"      column="del_flag"     />
+        <result property="loginIp"      column="login_ip"     />
+        <result property="loginDate"    column="login_date"   />
+        <result property="createBy"     column="create_by"    />
+        <result property="createTime"   column="create_time"  />
+        <result property="updateBy"     column="update_by"    />
+        <result property="updateTime"   column="update_time"  />
+        <result property="remark"       column="remark"       />
+        <association property="dept"    column="dept_id" javaType="SysDept" resultMap="deptResult" />
+        <collection  property="roles"   javaType="java.util.List"           resultMap="RoleResult" />
+    </resultMap>
 	
-	<resultMap id="deptResult" type="SysDept">
-		<id     property="deptId"   column="dept_id"     />
-		<result property="parentId" column="parent_id"   />
-		<result property="deptName" column="dept_name"   />
-		<result property="orderNum" column="order_num"   />
-		<result property="leader"   column="leader"      />
-		<result property="status"   column="dept_status" />
-	</resultMap>
+    <resultMap id="deptResult" type="SysDept">
+        <id     property="deptId"    column="dept_id"     />
+        <result property="parentId"  column="parent_id"   />
+        <result property="deptName"  column="dept_name"   />
+        <result property="ancestors" column="ancestors"   />
+        <result property="orderNum"  column="order_num"   />
+        <result property="leader"    column="leader"      />
+        <result property="status"    column="dept_status" />
+    </resultMap>
 	
-	<resultMap id="RoleResult" type="SysRole">
-		<id     property="roleId"       column="role_id"        />
-		<result property="roleName"     column="role_name"      />
-		<result property="roleKey"      column="role_key"       />
-		<result property="roleSort"     column="role_sort"      />
-		<result property="dataScope"     column="data_scope"    />
-		<result property="status"       column="role_status"    />
-	</resultMap>
-
+    <resultMap id="RoleResult" type="SysRole">
+        <id     property="roleId"       column="role_id"        />
+        <result property="roleName"     column="role_name"      />
+        <result property="roleKey"      column="role_key"       />
+        <result property="roleSort"     column="role_sort"      />
+        <result property="dataScope"     column="data_scope"    />
+        <result property="status"       column="role_status"    />
+    </resultMap>
+	
 	<sql id="selectUserVo">
-        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.country, u.api_key, u.api_account_id, customer_name,
-		u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
-        d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
-        r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status,
-        u.master_id, u.master_pwd
+        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, 
+        d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.status as dept_status,
+        r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
         from sys_user u
 		    left join sys_dept d on u.dept_id = d.dept_id
 		    left join sys_user_role ur on u.user_id = ur.user_id
@@ -64,8 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
-		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.country, u.api_key, u.api_account_id, u.master_pwd, u.master_id, u.customer_name,
-		u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0'
 		<if test="userId != null and userId != 0">
@@ -80,18 +72,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="phonenumber != null and phonenumber != ''">
 			AND u.phonenumber like concat('%', #{phonenumber}, '%')
 		</if>
-		<if test="country != null and country != ''">
-			AND u.country = #{country}
-		</if>
-		<if test="apiKey != null and apiKey != ''">
-			AND u.api_key = #{apiKey}
-		</if>
-		<if test="apiAccountId != null and apiAccountId != 0">
-			AND u.api_account_id = #{apiAccountId}
-		</if>
-		<if test="customerName != null and customerName != ''">
-			AND u.customer_name = #{customerName}
-		</if>
 		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
 			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
 		</if>
@@ -104,48 +84,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<!-- 数据范围过滤 -->
 		${params.dataScope}
 	</select>
-
-	<select id="getAll" parameterType="SysUser" resultMap="SysUserResult">
-		select u.user_id, u.user_name, u.nick_name, u.country, customer_name, master_id, master_pwd
-		from sys_user u
-		<where>
-			<if test="userId != null and userId != 0">
-				AND u.user_id = #{userId}
-			</if>
-			<if test="userName != null and userName != ''">
-				AND u.user_name like concat('%', #{userName}, '%')
-			</if>
-			<if test="country != null and country != ''">
-				AND u.country = #{country}
-			</if>
-			<if test="customerName != null and customerName != ''">
-				AND u.customer_name = like concat('%', #{customerName}, '%')
-			</if>
-			<if test="nickName != null and nickName != ''">
-				AND u.nick_name = like concat('%', #{nickName}, '%')
-			</if>
-		</where>
-	</select>
-
-	<select id="selectUserListByParam" parameterType="SysUser" resultMap="SysUserResult">
-		<include refid="selectUserVo"/>
-		<where>
-			<if test="userName != null and userName != ''">
-				AND u.user_name = #{userName}
-			</if>
-			<if test="country != null and country != ''">
-				AND u.country = #{country}
-			</if>
-			<if test="customerName != null and customerName != ''">
-				AND u.customer_name = #{customerName}
-			</if>
-		</where>
-		limit 1
-	</select>
-
+	
 	<select id="selectAllocatedList" parameterType="SysUser" resultMap="SysUserResult">
-	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.country,
-	    u.status, u.create_time, u.master_id, u.master_pwd
+	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
 	    from sys_user u
 			 left join sys_dept d on u.dept_id = d.dept_id
 			 left join sys_user_role ur on u.user_id = ur.user_id
@@ -162,8 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="selectUnallocatedList" parameterType="SysUser" resultMap="SysUserResult">
-	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.country,
-	    u.master_id, u.master_pwd, u.status, u.create_time
+	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
 	    from sys_user u
 			 left join sys_dept d on u.dept_id = d.dept_id
 			 left join sys_user_role ur on u.user_id = ur.user_id
@@ -182,36 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
 	    <include refid="selectUserVo"/>
-		where u.user_name = #{userName}
-		limit 1
-	</select>
-
-	<select id="selectUserByCustomerName" parameterType="String" resultMap="SysUserResult">
-		<include refid="selectUserVo"/>
-		where u.customer_name = #{customerName}
-		limit 1
-	</select>
-
-	<select id="selectUserByUser" parameterType="SysUser" resultMap="SysUserResult">
-		<include refid="selectUserVo"/>
-		<where>
-			<if test="userName != null and userName != ''">
-				AND u.user_name = #{userName}
-			</if>
-			<if test="country != null and country != ''">
-				AND u.country = #{country}
-			</if>
-			<if test="apiKey != null and apiKey != ''">
-				AND u.api_key = #{apiKey}
-			</if>
-			<if test="apiAccountId != null and apiAccountId != 0">
-				AND u.api_account_id = #{apiAccountId}
-			</if>
-			<if test="customerName != null and customerName != ''">
-				AND u.customer_name = #{customerName}
-			</if>
-		</where>
-		limit 1
+		where u.user_name = #{userName} and u.del_flag = '0'
 	</select>
 	
 	<select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
@@ -219,16 +130,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where u.user_id = #{userId}
 	</select>
 	
-	<select id="checkUserNameUnique" parameterType="String" resultType="int">
-		select count(1) from sys_user where user_name = #{userName} limit 1
+	<select id="checkUserNameUnique" parameterType="String" resultMap="SysUserResult">
+		select user_id, user_name from sys_user where user_name = #{userName} and del_flag = '0' limit 1
 	</select>
 	
 	<select id="checkPhoneUnique" parameterType="String" resultMap="SysUserResult">
-		select user_id, phonenumber from sys_user where phonenumber = #{phonenumber} limit 1
+		select user_id, phonenumber from sys_user where phonenumber = #{phonenumber} and del_flag = '0' limit 1
 	</select>
 	
 	<select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
-		select user_id, email from sys_user where email = #{email} limit 1
+		select user_id, email from sys_user where email = #{email} and del_flag = '0' limit 1
 	</select>
 	
 	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
@@ -240,12 +151,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="email != null and email != ''">email,</if>
  			<if test="avatar != null and avatar != ''">avatar,</if>
  			<if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
-			<if test="country != null and country != ''">country,</if>
-			<if test="apiKey != null and apiKey != ''">api_key,</if>
-			<if test="apiAccountId != null and apiAccountId != 0">api_account_id,</if>
-			<if test="masterId != null and masterId != ''">master_id,</if>
-			<if test="masterPwd != null and masterPwd != ''">master_pwd,</if>
-			<if test="customerName != null and customerName != ''">customer_name,</if>
  			<if test="sex != null and sex != ''">sex,</if>
  			<if test="password != null and password != ''">password,</if>
  			<if test="status != null and status != ''">status,</if>
@@ -260,12 +165,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="email != null and email != ''">#{email},</if>
  			<if test="avatar != null and avatar != ''">#{avatar},</if>
  			<if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
-			<if test="country != null and country != ''">#{country},</if>
-			<if test="apiKey != null and apiKey != ''">#{apiKey},</if>
-			<if test="apiAccountId != null and apiAccountId != 0">#{apiAccountId},</if>
-			<if test="masterId != null and masterId != ''">#{masterId},</if>
-			<if test="masterPwd != null and masterPwd != 0">#{masterPwd},</if>
-			<if test="customerName != null and customerName != ''">#{customerName},</if>
  			<if test="sex != null and sex != ''">#{sex},</if>
  			<if test="password != null and password != ''">#{password},</if>
  			<if test="status != null and status != ''">#{status},</if>
@@ -283,12 +182,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
  			<if test="email != null ">email = #{email},</if>
  			<if test="phonenumber != null ">phonenumber = #{phonenumber},</if>
-			<if test="country != null and country != ''">country = #{country},</if>
-			<if test="apiKey != null and apiKey != ''">api_key = #{apiKey},</if>
-			<if test="apiAccountId != null and apiAccountId != 0">api_account_id = #{apiAccountId},</if>
-			<if test="customerName != null and customerName != ''">customer_name = #{customerName},</if>
-			<if test="masterId != null and masterId != ''">master_id = #{masterId},</if>
-			<if test="masterPwd != null and masterPwd != ''">master_pwd = #{masterPwd},</if>
  			<if test="sex != null and sex != ''">sex = #{sex},</if>
  			<if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
  			<if test="password != null and password != ''">password = #{password},</if>
@@ -315,7 +208,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	
 	<delete id="deleteUserById" parameterType="Long">
-		update sys_user set del_flag = '2' where user_id = #{userId}
+ 		update sys_user set del_flag = '2' where user_id = #{userId}
  	</delete>
  	
  	<delete id="deleteUserByIds" parameterType="Long">

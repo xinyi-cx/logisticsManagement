@@ -1,74 +1,53 @@
 <template>
-  <div>
-    <div class="navbar">
-      <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+  <div class="navbar">
+    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-      <breadcrumb id="breadcrumb-container" class="breadcrumb-container" v-if="!topNav"/>
-      <top-nav id="topmenu-container" class="topmenu-container" v-if="topNav"/>
+    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" v-if="!topNav"/>
+    <top-nav id="topmenu-container" class="topmenu-container" v-if="topNav"/>
 
-      <div class="right-menu">
-        <template v-if="device!=='mobile'">
-          <search id="header-search" class="right-menu-item" />
+    <div class="right-menu">
+      <template v-if="device!=='mobile'">
+        <search id="header-search" class="right-menu-item" />
+        
+        <el-tooltip content="源码地址" effect="dark" placement="bottom">
+          <ruo-yi-git id="ruoyi-git" class="right-menu-item hover-effect" />
+        </el-tooltip>
 
-          <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <el-tooltip content="文档地址" effect="dark" placement="bottom">
+          <ruo-yi-doc id="ruoyi-doc" class="right-menu-item hover-effect" />
+        </el-tooltip>
 
-          <el-tooltip content="布局大小" effect="dark" placement="bottom">
-            <size-select id="size-select" class="right-menu-item hover-effect" />
-          </el-tooltip>
+        <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-        </template>
+        <el-tooltip content="布局大小" effect="dark" placement="bottom">
+          <size-select id="size-select" class="right-menu-item hover-effect" />
+        </el-tooltip>
 
-        <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-          <div class="avatar-wrapper">
-            <img :src="avatar" class="user-avatar">
-            <i class="el-icon-caret-bottom" />
-          </div>
-          <el-dropdown-menu slot="dropdown">
-            <router-link to="/user/profile">
-              <el-dropdown-item>个人中心</el-dropdown-item>
-            </router-link>
-<!--            <el-dropdown-item @click.native="toggleCountryInfo">-->
-<!--              <span>切换账号</span>-->
-<!--            </el-dropdown-item>-->
-            <el-dropdown-item @click.native="setting = true">
-              <span>布局设置</span>
-            </el-dropdown-item>
-            <el-dropdown-item divided @click.native="logout">
-              <span>退出登录</span>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
-    </div>
-    <div class="">
-      <el-dialog
-        title="切换账号"
-        :visible.sync="toggleAccountVisible"
-        width="30%"
-        :before-close="handleClose">
-        <el-form :model="toggleForm">
-          <el-form-item label="活动名称" label-width="">
-            <el-input v-model="toggleForm.name" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="请选择国家" label-width="">
-            <el-select v-model="toggleForm.region" placeholder="请选择活动区域">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="toggleAccountVisible = false">取 消</el-button>
-          <el-button type="primary" @click="toggleAccountVisible = false">确 定</el-button>
-        </span>
-      </el-dialog>
+      </template>
+
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+        <div class="avatar-wrapper">
+          <img :src="avatar" class="user-avatar">
+          <i class="el-icon-caret-bottom" />
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <router-link to="/user/profile">
+            <el-dropdown-item>个人中心</el-dropdown-item>
+          </router-link>
+          <el-dropdown-item @click.native="setting = true">
+            <span>布局设置</span>
+          </el-dropdown-item>
+          <el-dropdown-item divided @click.native="logout">
+            <span>退出登录</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import Cookies from "js-cookie";
 import Breadcrumb from '@/components/Breadcrumb'
 import TopNav from '@/components/TopNav'
 import Hamburger from '@/components/Hamburger'
@@ -88,15 +67,6 @@ export default {
     Search,
     RuoYiGit,
     RuoYiDoc
-  },
-  data() {
-    return {
-      toggleAccountVisible: false,
-      toggleForm: {
-        name: 'admin',
-        region: 'aaa'
-      }
-    }
   },
   computed: {
     ...mapGetters([
@@ -124,19 +94,6 @@ export default {
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
-    },
-    toggleCountryInfo() {
-      this.toggleAccountVisible = true;
-      // this.toggleAccountVisible = true;
-      // this.$refs.account.openDialog(this.toggleAccountVisible);
-      // debugger;
-      // let userName = localStorage.getItem('username');
-      // let password = localStorage.getItem("password");
-      // console.log('userName' + ' ' + userName);
-      // console.log('password'+ ' ' + password);
-    },
-    handleClose() {
-      this.toggleAccountVisible = false;
     },
     async logout() {
       this.$confirm('确定注销并退出系统吗？', '提示', {

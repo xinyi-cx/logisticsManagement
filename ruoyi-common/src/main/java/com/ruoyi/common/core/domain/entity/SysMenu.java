@@ -3,6 +3,7 @@ package com.ruoyi.common.core.domain.entity;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -30,7 +31,7 @@ public class SysMenu extends BaseEntity
     private Long parentId;
 
     /** 显示顺序 */
-    private String orderNum;
+    private Integer orderNum;
 
     /** 路由地址 */
     private String path;
@@ -53,7 +54,7 @@ public class SysMenu extends BaseEntity
     /** 显示状态（0显示 1隐藏） */
     private String visible;
     
-    /** 菜单状态（0显示 1隐藏） */
+    /** 菜单状态（0正常 1停用） */
     private String status;
 
     /** 权限字符串 */
@@ -107,13 +108,13 @@ public class SysMenu extends BaseEntity
         this.parentId = parentId;
     }
 
-    @NotBlank(message = "显示顺序不能为空")
-    public String getOrderNum()
+    @NotNull(message = "显示顺序不能为空")
+    public Integer getOrderNum()
     {
         return orderNum;
     }
 
-    public void setOrderNum(String orderNum)
+    public void setOrderNum(Integer orderNum)
     {
         this.orderNum = orderNum;
     }

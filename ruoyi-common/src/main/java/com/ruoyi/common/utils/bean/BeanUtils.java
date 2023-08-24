@@ -1,13 +1,10 @@
 package com.ruoyi.common.utils.bean;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 /**
  * Bean 工具类
@@ -110,67 +107,4 @@ public class BeanUtils extends org.springframework.beans.BeanUtils
     {
         return m1.substring(BEAN_METHOD_PROP_INDEX).equals(m2.substring(BEAN_METHOD_PROP_INDEX));
     }
-
-    /**
-     * 根据字段名称存值
-     * @param entity 实体类
-     * @param fieldName 字段名称
-     * @param value 值
-     */
-    public static void setAttribute(Object entity,String fieldName, Object value) {
-        try {
-            Field f = entity.getClass().getDeclaredField(fieldName);
-            f.setAccessible(true);
-            final Class<?> type = f.getType();
-            if("java.math.BigDecimal".equals(type.getName())){
-                f.set(entity, new BigDecimal(value.toString()));
-            } else if ("java.lang.Integer".equals(type.getName())) {
-                f.set(entity, new Integer(value.toString()));
-            } else {
-                f.set(entity, value);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 根据字段名称取值
-     * @param entity 实体类
-     * @param fieldName 字段名称
-     */
-    public static String getAttribute(Object entity,String fieldName) {
-        String r = "";
-        try {
-            Field f = entity.getClass().getDeclaredField(fieldName);
-            f.setAccessible(true);
-            r =  f.get(entity).toString();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return r;
-    }
-
-//    https://blog.csdn.net/qq_40016813/article/details/124407414
-
-//    public static void main(String[] args) {
-//        ShopApplyRecord shopApplyRecord = new ShopApplyRecord();
-//        setAttribute(shopApplyRecord,"shopApplyRecordId",1L);
-//        setAttribute(shopApplyRecord,"actualName","王大力");
-//        setAttribute(shopApplyRecord,"identityCard","5120");
-//        setAttribute(shopApplyRecord,"type",3);
-//        System.out.println(shopApplyRecord);
-//
-//        ShopApplyRecord shopApplyRecord2 = new ShopApplyRecord();
-//        setAttribute(shopApplyRecord2,"shopApplyRecordId",1L);
-//        setAttribute(shopApplyRecord2,"actualName","王大力");
-//        setAttribute(shopApplyRecord2,"identityCard","51210");
-//        setAttribute(shopApplyRecord2,"type",1);
-//        System.out.println(shopApplyRecord2);
-//        final String s = contrastEntity(shopApplyRecord, shopApplyRecord2);
-//        System.out.println(s);
-//        //输出结果[{"newValue":["51210"],"type":["identityCard"],"oldValue":["5120"]}
-//        //,{"newValue":[1],"type":["type"],"oldValue":[3]}]  //如果其中一个字段值为空则不能被对比
-//    }
-
 }

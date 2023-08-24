@@ -20,10 +20,16 @@ public class PageUtils extends PageHelper
         PageDomain pageDomain = TableSupport.buildPageRequest();
         Integer pageNum = pageDomain.getPageNum();
         Integer pageSize = pageDomain.getPageSize();
-        if (StringUtils.isNotNull(pageNum) && StringUtils.isNotNull(pageSize))
-        {
-            String orderBy = SqlUtil.escapeOrderBySql(pageDomain.getOrderBy());
-            PageHelper.startPage(pageNum, pageSize, orderBy);
-        }
+        String orderBy = SqlUtil.escapeOrderBySql(pageDomain.getOrderBy());
+        Boolean reasonable = pageDomain.getReasonable();
+        PageHelper.startPage(pageNum, pageSize, orderBy).setReasonable(reasonable);
+    }
+
+    /**
+     * 清理分页的线程变量
+     */
+    public static void clearPage()
+    {
+        PageHelper.clearPage();
     }
 }

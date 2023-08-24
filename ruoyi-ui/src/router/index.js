@@ -31,11 +31,6 @@ import Layout from '@/layout'
 // 公共路由
 export const constantRoutes = [
   {
-    path: '/dashbord',
-    component: () => import('@/views/system/dashboard/index'),
-    hidden: true
-  },
-  {
     path: '/redirect',
     component: Layout,
     hidden: true,
@@ -73,10 +68,9 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        // component: () => import('@/views/system/package/index'),
-        component: () => import('@/views/system/dashboard/index'),
+        component: () => import('@/views/index'),
         name: 'Index',
-        meta: { title: '数据看板', icon: 'dashboard', affix: true }
+        meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -147,7 +141,7 @@ export const dynamicRoutes = [
     permissions: ['monitor:job:list'],
     children: [
       {
-        path: 'index',
+        path: 'index/:jobId(\\d+)',
         component: () => import('@/views/monitor/job/log'),
         name: 'JobLog',
         meta: { title: '调度日志', activeMenu: '/monitor/job' }
@@ -161,126 +155,26 @@ export const dynamicRoutes = [
     permissions: ['tool:gen:edit'],
     children: [
       {
-        path: 'index',
+        path: 'index/:tableId(\\d+)',
         component: () => import('@/views/tool/gen/editTable'),
         name: 'GenEdit',
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  },
-  // 批量任务历史中成功面单列表
-  {
-    path: '/system/package',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:package:list'],
-    children: [
-      {
-        path: 'index/:hisParam(\\d+)',
-        component: () => import('@/views/system/package/index'),
-        name: 'DataPackage',//name 重复2
-        meta: { title: '面单列表', activeMenu: '/system/history' }
-      },
-      {
-        path: 'index/:status(\\d+)//:datStr(\\d+)',
-        component: () => import('@/views/system/package/index'),
-        name: 'PackageList',
-        meta: { title: '面单列表', activeMenu: '/system/dashboard' }
-      }
-    ]
-  },
-  {
-    path: '/system/redirect',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:package:list'],
-    children: [
-      {
-        path: 'index/:hisParam(\\d+)',
-        component: () => import('@/views/system/redirect/index'),
-        name: 'redirectDataPackage',//name 重复2
-        meta: { title: '转寄面单列表', activeMenu: '/system/history' }
-      }
-    ]
-  },
-  {
-    path: '/system/local',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:package:list'],
-    children: [
-      {
-        path: 'index/:hisParam(\\d+)',
-        component: () => import('@/views/system/local/index'),
-        name: 'redirectDataPackage',//name 重复2
-        meta: { title: '本地面单列表', activeMenu: '/system/history' }
-      }
-    ]
-  },
-  {
-    path: '/system/mabang',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:package:list'],
-    children: [
-      {
-        path: 'index/:hisParam(\\d+)',
-        component: () => import('@/views/system/mabang/index'),
-        name: 'mabangDataPackage',//name 重复2
-        meta: { title: '马帮面单列表', activeMenu: '/system/history' }
-      }
-    ]
-  },
-  {
-    path: '/system/info',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:package:list'],
-    children: [
-      {
-        path: 'index/:hisParam(\\d+)',
-        component: () => import('@/views/system/info/index'),
-        name: 'DataInfo',//name 重复2
-        meta: { title: '物流信息', activeMenu: '/system/history' }
-      },
-      {
-        path: 'index/status/:status(\\d+)',
-        component: () => import('@/views/system/info/index'),
-        name: 'DataInfo2',//name 重复2
-        meta: { title: '物流信息', activeMenu: '/system/history' }
-      }
-    ]
-  },
-  // 数据看板
-  {
-    path: '/dashboard',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:dashboard:list'],
-    children: [
-      {
-        path: '',
-        component: () => import('@/views/system/dashboard/index'),
-        name: 'DataDashBoard', //name 重复1
-        meta: { title: '数据看板', activeMenu: '/dashboard' }
-      }
-    ]
-  },
-  // {
-  //   path: '/tool/failure',
-  //   component: Layout,
-  //   hidden: true,
-  //   permissions: ['system:dict:list'],
-  //   children: [
-  //     {
-  //       path: 'index/:id(\\d+)',
-  //       component: () => import('@/views/system/history/failureDetail'),
-  //       name: 'Data',
-  //       meta: { title: '成功面单列表', activeMenu: '/tool/history' }
-  //     }
-  //   ]
-  // },
+  }
 ]
+
+// 防止连续点击多次路由报错
+let routerPush = Router.prototype.push;
+let routerReplace = Router.prototype.replace;
+// push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(err => err)
+}
+// replace
+Router.prototype.replace = function push(location) {
+  return routerReplace.call(this, location).catch(err => err)
+}
 
 export default new Router({
   mode: 'history', // 去掉url中的#

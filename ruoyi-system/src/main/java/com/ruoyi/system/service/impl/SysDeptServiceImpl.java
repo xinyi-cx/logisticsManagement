@@ -49,6 +49,19 @@ public class SysDeptServiceImpl implements ISysDeptService
     }
 
     /**
+     * 查询部门树结构信息
+     * 
+     * @param dept 部门信息
+     * @return 部门树信息集合
+     */
+    @Override
+    public List<TreeSelect> selectDeptTreeList(SysDept dept)
+    {
+        List<SysDept> depts = SpringUtils.getAopProxy(this).selectDeptList(dept);
+        return buildDeptTreeSelect(depts);
+    }
+
+    /**
      * 构建前端所需要树结构
      * 
      * @param depts 部门列表
@@ -58,14 +71,9 @@ public class SysDeptServiceImpl implements ISysDeptService
     public List<SysDept> buildDeptTree(List<SysDept> depts)
     {
         List<SysDept> returnList = new ArrayList<SysDept>();
-        List<Long> tempList = new ArrayList<Long>();
+        List<Long> tempList = depts.stream().map(SysDept::getDeptId).collect(Collectors.toList());
         for (SysDept dept : depts)
         {
-            tempList.add(dept.getDeptId());
-        }
-        for (Iterator<SysDept> iterator = depts.iterator(); iterator.hasNext();)
-        {
-            SysDept dept = (SysDept) iterator.next();
             // 如果是顶级节点, 遍历该父节点的所有子节点
             if (!tempList.contains(dept.getParentId()))
             {
@@ -163,7 +171,7 @@ public class SysDeptServiceImpl implements ISysDeptService
      * @return 结果
      */
     @Override
-    public String checkDeptNameUnique(SysDept dept)
+    public boolean checkDeptNameUnique(SysDept dept)
     {
         Long deptId = StringUtils.isNull(dept.getDeptId()) ? -1L : dept.getDeptId();
         SysDept info = deptMapper.checkDeptNameUnique(dept.getDeptName(), dept.getParentId());

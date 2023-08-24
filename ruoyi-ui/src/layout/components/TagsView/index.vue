@@ -87,7 +87,7 @@ export default {
     },
     isFirstView() {
       try {
-        return this.selectedTag.fullPath === this.visitedViews[1].fullPath || this.selectedTag.fullPath === '/index'
+        return this.selectedTag.fullPath === '/index' || this.selectedTag.fullPath === this.visitedViews[1].fullPath
       } catch (err) {
         return false
       }
@@ -133,6 +133,9 @@ export default {
       const { name } = this.$route
       if (name) {
         this.$store.dispatch('tagsView/addView', this.$route)
+        if (this.$route.meta.link) {
+          this.$store.dispatch('tagsView/addIframeView', this.$route)
+        }
       }
       return false
     },
@@ -153,6 +156,9 @@ export default {
     },
     refreshSelectedTag(view) {
       this.$tab.refreshPage(view);
+      if (this.$route.meta.link) {
+        this.$store.dispatch('tagsView/delIframeView', this.$route)
+      }
     },
     closeSelectedTag(view) {
       this.$tab.closePage(view).then(({ visitedViews }) => {
@@ -176,7 +182,7 @@ export default {
       })
     },
     closeOthersTags() {
-      this.$router.push(this.selectedTag).catch(()=>{});
+      this.$router.push(this.selectedTag.fullPath).catch(()=>{});
       this.$tab.closeOtherPage(this.selectedTag).then(() => {
         this.moveToCurrentTag()
       })

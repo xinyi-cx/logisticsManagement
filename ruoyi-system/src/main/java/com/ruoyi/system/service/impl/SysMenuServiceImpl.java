@@ -101,6 +101,27 @@ public class SysMenuServiceImpl implements ISysMenuService
     }
 
     /**
+     * 根据角色ID查询权限
+     * 
+     * @param roleId 角色ID
+     * @return 权限列表
+     */
+    @Override
+    public Set<String> selectMenuPermsByRoleId(Long roleId)
+    {
+        List<String> perms = menuMapper.selectMenuPermsByRoleId(roleId);
+        Set<String> permsSet = new HashSet<>();
+        for (String perm : perms)
+        {
+            if (StringUtils.isNotEmpty(perm))
+            {
+                permsSet.addAll(Arrays.asList(perm.trim().split(",")));
+            }
+        }
+        return permsSet;
+    }
+
+    /**
      * 根据用户ID查询菜单
      * 
      * @param userId 用户名称
@@ -154,7 +175,7 @@ public class SysMenuServiceImpl implements ISysMenuService
             router.setQuery(menu.getQuery());
             router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache()), menu.getPath()));
             List<SysMenu> cMenus = menu.getChildren();
-            if (!cMenus.isEmpty() && cMenus.size() > 0 && UserConstants.TYPE_DIR.equals(menu.getMenuType()))
+            if (StringUtils.isNotEmpty(cMenus) && UserConstants.TYPE_DIR.equals(menu.getMenuType()))
             {
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
@@ -176,7 +197,7 @@ public class SysMenuServiceImpl implements ISysMenuService
             else if (menu.getParentId().intValue() == 0 && isInnerLink(menu))
             {
                 router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon()));
-                router.setPath("/inner");
+                router.setPath("/");
                 List<RouterVo> childrenList = new ArrayList<RouterVo>();
                 RouterVo children = new RouterVo();
                 String routerPath = innerLinkReplaceEach(menu.getPath());
@@ -202,11 +223,7 @@ public class SysMenuServiceImpl implements ISysMenuService
     public List<SysMenu> buildMenuTree(List<SysMenu> menus)
     {
         List<SysMenu> returnList = new ArrayList<SysMenu>();
-        List<Long> tempList = new ArrayList<Long>();
-        for (SysMenu dept : menus)
-        {
-            tempList.add(dept.getMenuId());
-        }
+        List<Long> tempList = menus.stream().map(SysMenu::getMenuId).collect(Collectors.toList());
         for (Iterator<SysMenu> iterator = menus.iterator(); iterator.hasNext();)
         {
             SysMenu menu = (SysMenu) iterator.next();
@@ -259,7 +276,7 @@ public class SysMenuServiceImpl implements ISysMenuService
     public boolean hasChildByMenuId(Long menuId)
     {
         int result = menuMapper.hasChildByMenuId(menuId);
-        return result > 0 ? true : false;
+        return result > 0;
     }
 
     /**
@@ -272,7 +289,7 @@ public class SysMenuServiceImpl implements ISysMenuService
     public boolean checkMenuExistRole(Long menuId)
     {
         int result = roleMenuMapper.checkMenuExistRole(menuId);
-        return result > 0 ? true : false;
+        return result > 0;
     }
 
     /**
@@ -318,7 +335,7 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @return 结果
      */
     @Override
-    public String checkMenuNameUnique(SysMenu menu)
+    public boolean checkMenuNameUnique(SysMenu menu)
     {
         Long menuId = StringUtils.isNull(menu.getMenuId()) ? -1L : menu.getMenuId();
         SysMenu info = menuMapper.checkMenuNameUnique(menu.getMenuName(), menu.getParentId());
@@ -458,8 +475,8 @@ public class SysMenuServiceImpl implements ISysMenuService
     /**
      * 递归列表
      * 
-     * @param list
-     * @param t
+     * @param list 分类表
+     * @param t 子节点
      */
     private void recursionFn(List<SysMenu> list, SysMenu t)
     {
@@ -498,17 +515,17 @@ public class SysMenuServiceImpl implements ISysMenuService
      */
     private boolean hasChild(List<SysMenu> list, SysMenu t)
     {
-        return getChildList(list, t).size() > 0 ? true : false;
+        return getChildList(list, t).size() > 0;
     }
 
     /**
      * 内链域名特殊字符替换
      * 
-     * @return
+     * @return 替换后的内链域名
      */
     public String innerLinkReplaceEach(String path)
     {
-        return StringUtils.replaceEach(path, new String[] { Constants.HTTP, Constants.HTTPS },
-                new String[] { "", "" });
+        return StringUtils.replaceEach(path, new String[] { Constants.HTTP, Constants.HTTPS, Constants.WWW, "." },
+                new String[] { "", "", "", "/" });
     }
 }

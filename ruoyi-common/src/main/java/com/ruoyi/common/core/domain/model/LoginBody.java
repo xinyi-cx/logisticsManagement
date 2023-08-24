@@ -18,11 +18,6 @@ public class LoginBody
     private String password;
 
     /**
-     * 国家
-     */
-    private String country;
-
-    /**
      * 验证码
      */
     private String code;
@@ -30,7 +25,7 @@ public class LoginBody
     /**
      * 唯一标识
      */
-    private String uuid = "";
+    private String uuid;
 
     public String getUsername()
     {
@@ -70,13 +65,5 @@ public class LoginBody
     public void setUuid(String uuid)
     {
         this.uuid = uuid;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 }

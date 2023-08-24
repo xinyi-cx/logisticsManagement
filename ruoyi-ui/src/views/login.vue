@@ -1,28 +1,16 @@
 <template>
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">DPD物流管理系统</h3>
+      <h3 class="title">若依后台管理系统</h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
           type="text"
           auto-complete="off"
-          placeholder="用户名"
-          @blur="getUserCountryList()"
+          placeholder="账号"
         >
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-select v-model="loginForm.country" placeholder="请选择国家" style="width: 100%;" clearable filterable>
-          <el-option
-            v-for="item in countryList"
-            :key="item.dictValue"
-            :label="item.dictLabel"
-            :value="item.dictValue"
-          ></el-option>
-          <svg-icon slot="prefix" icon-class="country" class="el-input__icon input-icon" />
-        </el-select>
       </el-form-item>
       <el-form-item prop="password">
         <el-input
@@ -35,7 +23,7 @@
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
-      <el-form-item prop="code" v-if="captchaOnOff">
+      <el-form-item prop="code" v-if="captchaEnabled">
         <el-input
           v-model="loginForm.code"
           auto-complete="off"
@@ -68,14 +56,13 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
+      <span>Copyright © 2018-2023 ruoyi.vip All Rights Reserved.</span>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import { getCodeImg,getCountryList } from "@/api/login";
-import { listUserForLogin} from "@/api/system/user"
+import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 
@@ -84,25 +71,16 @@ export default {
   data() {
     return {
       codeUrl: "",
-      countryListCode: {},
-      countryList: [],
       loginForm: {
-        // country: "CN",
-        // username: "admin",
-        // password: "admin123",
-        country: "",
-        username: "",
-        password: "",
+        username: "admin",
+        password: "admin123",
         rememberMe: false,
         code: "",
         uuid: ""
       },
       loginRules: {
-        country: [
-          { required: true, trigger: "blur", message: "请选择所在国家" }
-        ],
         username: [
-          { required: true, trigger: "blur", message: "请输入您的用户名" }
+          { required: true, trigger: "blur", message: "请输入您的账号" }
         ],
         password: [
           { required: true, trigger: "blur", message: "请输入您的密码" }
@@ -111,7 +89,7 @@ export default {
       },
       loading: false,
       // 验证码开关
-      captchaOnOff: true,
+      captchaEnabled: true,
       // 注册开关
       register: false,
       redirect: undefined
@@ -126,65 +104,24 @@ export default {
     }
   },
   created() {
-    this.init();
     this.getCode();
     this.getCookie();
   },
   methods: {
-    // 应该有一个初始化函数，判断当前Username是否为空，不为空的话应该执行一遍获取国家列表的信息；
-    init() {
-      let user = this.loginForm.username;
-      if(user.trim() !== '') {
-        this.getUserCountryList();
-      }
-    },
-    getUserCountryList() {
-      let userName = { "userName": this.loginForm.username };
-      listUserForLogin(userName).then(res => {
-        if(res.msg == '操作成功') {
-          if(res.data.length >= 1) {
-            this.countryListCode = res.data;
-            this.getCountryList();
-          } else {
-            // 如果没有值 需要将列表清空，表单值清空。
-            this.countryList = [];
-            this.loginForm.country = '';
-            this.$message({
-              showClose: true,
-              message: '当前用户名无对应国家信息',
-              type: 'warning'
-            });
-          }
-        }
-      })
-    },
-    getCountryList() {
-      axios.get(`/data/countryList.json`).then(res =>  {
-        const data = res.data;
-        let countryListData = data.data;
-        let counstyCodes = this.countryListCode;
-        // 过滤掉
-        this.countryList = countryListData.filter(obj => counstyCodes.some(obj1 => obj1 == obj.dictValue));
-      }).catch(err => {
-        console.log('报错了');
-      })
-    },
     getCode() {
       getCodeImg().then(res => {
-        this.captchaOnOff = res.captchaOnOff === undefined ? true : res.captchaOnOff;
-        if (this.captchaOnOff) {
+        this.captchaEnabled = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+        if (this.captchaEnabled) {
           this.codeUrl = "data:image/gif;base64," + res.img;
           this.loginForm.uuid = res.uuid;
         }
       });
     },
     getCookie() {
-      const country = Cookies.get("country");
       const username = Cookies.get("username");
       const password = Cookies.get("password");
-      const rememberMe = Cookies.get('rememberMe');
+      const rememberMe = Cookies.get('rememberMe')
       this.loginForm = {
-        country: country === undefined ? this.loginForm.country : country,
         username: username === undefined ? this.loginForm.username : username,
         password: password === undefined ? this.loginForm.password : decrypt(password),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
@@ -195,12 +132,10 @@ export default {
         if (valid) {
           this.loading = true;
           if (this.loginForm.rememberMe) {
-            Cookies.set("country", this.loginForm.country, {expires: 30 });
             Cookies.set("username", this.loginForm.username, { expires: 30 });
             Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
             Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
           } else {
-            Cookies.remove("country");
             Cookies.remove("username");
             Cookies.remove("password");
             Cookies.remove('rememberMe');
@@ -209,7 +144,7 @@ export default {
             this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
           }).catch(() => {
             this.loading = false;
-            if (this.captchaOnOff) {
+            if (this.captchaEnabled) {
               this.getCode();
             }
           });

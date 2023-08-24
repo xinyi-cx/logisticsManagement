@@ -1,13 +1,5 @@
 package com.ruoyi.framework.web.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.enums.UserStatus;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.service.ISysUserService;
-import com.ruoyi.system.service.IUserFidRelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.UserStatus;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.MessageUtils;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.service.ISysUserService;
 
 /**
  * 用户验证处理
@@ -28,60 +27,40 @@ public class UserDetailsServiceImpl implements UserDetailsService
 
     @Autowired
     private ISysUserService userService;
-
+    
     @Autowired
-    private IUserFidRelService userFidRelService;
+    private SysPasswordService passwordService;
 
     @Autowired
     private SysPermissionService permissionService;
 
     @Override
-    public UserDetails loadUserByUsername(String val) throws UsernameNotFoundException
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-        JSONObject jsonObject = JSONObject.parseObject(val);
-        //更改为 customerName 登录
-        String username = jsonObject.getString("username");
-        String country = jsonObject.getString("country");
-//        UserFidRel userFidRelParam = new UserFidRel();
-//        userFidRelParam.setCustomerName(username);
-//        userFidRelParam.setCountry(country);
-//        userFidRelParam.setStatus("0");
-//        Long fid = null;
-//        List<UserFidRel> userFidRels = userFidRelService.selectUserFidRelList(userFidRelParam);
-//        if (CollectionUtils.isNotEmpty(userFidRels)){
-//            username = userFidRels.get(0).getUserName();
-//            fid = userFidRels.get(0).getFid();
-//        }
-        SysUser user = null;
-        if (StringUtils.isEmpty(country)){
-            user = userService.selectUserByCustomerName(username);
-        }else{
-            SysUser paramUser = new SysUser();
-            paramUser.setCustomerName(username);
-            paramUser.setCountry(country);
-            user = userService.selectUserByUser(paramUser);
-        }
+        SysUser user = userService.selectUserByUserName(username);
         if (StringUtils.isNull(user))
         {
             log.info("登录用户：{} 不存在.", username);
-            throw new ServiceException("登录用户：" + username + " 不存在");
+            throw new ServiceException(MessageUtils.message("user.not.exists"));
         }
         else if (UserStatus.DELETED.getCode().equals(user.getDelFlag()))
         {
             log.info("登录用户：{} 已被删除.", username);
-            throw new ServiceException("对不起，您的账号：" + username + " 已被删除");
+            throw new ServiceException(MessageUtils.message("user.password.delete"));
         }
         else if (UserStatus.DISABLE.getCode().equals(user.getStatus()))
         {
             log.info("登录用户：{} 已被停用.", username);
-            throw new ServiceException("对不起，您的账号：" + username + " 已停用");
+            throw new ServiceException(MessageUtils.message("user.blocked"));
         }
 
-        return createLoginUser(user, null);
+        passwordService.validate(user);
+
+        return createLoginUser(user);
     }
 
-    public UserDetails createLoginUser(SysUser user, Long fid)
+    public UserDetails createLoginUser(SysUser user)
     {
-        return new LoginUser(user.getUserId(), user.getDeptId(), fid, user, permissionService.getMenuPermission(user));
+        return new LoginUser(user.getUserId(), user.getDeptId(), user, permissionService.getMenuPermission(user));
     }
 }

@@ -31,13 +31,12 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      const country = userInfo.country
       const username = userInfo.username.trim()
       const password = userInfo.password
       const code = userInfo.code
       const uuid = userInfo.uuid
       return new Promise((resolve, reject) => {
-        login(country, username, password, code, uuid).then(res => {
+        login(username, password, code, uuid).then(res => {
           setToken(res.token)
           commit('SET_TOKEN', res.token)
           resolve()
@@ -52,7 +51,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
           const user = res.user
-          const avatar = user.avatar == "" ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
+          const avatar = (user.avatar == "" || user.avatar == null) ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
           if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', res.roles)
             commit('SET_PERMISSIONS', res.permissions)

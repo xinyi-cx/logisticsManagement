@@ -16,7 +16,7 @@ import com.ruoyi.common.core.domain.TreeEntity;
 
 /**
  * ${functionName}对象 ${tableName}
- * 
+ *
  * @date ${datetime}
  */
 #if($table.crud || $table.sub)

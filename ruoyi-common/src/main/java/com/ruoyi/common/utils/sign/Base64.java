@@ -1,7 +1,5 @@
 package com.ruoyi.common.utils.sign;
 
-import sun.misc.BASE64Decoder;
-
 /**
  * Base64工具类
  * 
@@ -290,15 +288,4 @@ public final class Base64
         }
         return newSize;
     }
-
-    /**
-     * BASE64解密
-     * @param key
-     * @return
-     * @throws Exception
-     */
-    public static String decryptBASE64(String key) throws Exception {
-        return new String((new BASE64Decoder()).decodeBuffer(key));
-    }
-
 }

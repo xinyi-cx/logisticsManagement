@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      title: 'DPD物流管理系统',
+      title: process.env.VUE_APP_TITLE,
       logo: logoImg
     }
   }
@@ -66,8 +66,8 @@ export default {
     width: 100%;
 
     & .sidebar-logo {
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
       vertical-align: middle;
       margin-right: 12px;
     }

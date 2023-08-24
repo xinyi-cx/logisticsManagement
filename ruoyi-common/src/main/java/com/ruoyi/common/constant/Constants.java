@@ -20,6 +20,11 @@ public class Constants
     public static final String GBK = "GBK";
 
     /**
+     * www主域
+     */
+    public static final String WWW = "www.";
+
+    /**
      * http请求
      */
     public static final String HTTP = "http://";
@@ -58,27 +63,7 @@ public class Constants
      * 登录失败
      */
     public static final String LOGIN_FAIL = "Error";
-
-    /**
-     * 验证码 redis key
-     */
-    public static final String CAPTCHA_CODE_KEY = "captcha_codes:";
-
-    /**
-     * 登录用户 redis key
-     */
-    public static final String LOGIN_TOKEN_KEY = "login_tokens:";
-
-    /**
-     * 防重提交 redis key
-     */
-    public static final String REPEAT_SUBMIT_KEY = "repeat_submit:";
-
-    /**
-     * 限流 redis key
-     */
-    public static final String RATE_LIMIT_KEY = "rate_limit:";
-
+ 
     /**
      * 验证码有效期（分钟）
      */
@@ -125,16 +110,6 @@ public class Constants
     public static final String JWT_AUTHORITIES = "authorities";
 
     /**
-     * 参数管理 cache key
-     */
-    public static final String SYS_CONFIG_KEY = "sys_config:";
-
-    /**
-     * 字典管理 cache key
-     */
-    public static final String SYS_DICT_KEY = "sys_dict:";
-
-    /**
      * 资源映射路径 前缀
      */
     public static final String RESOURCE_PREFIX = "/profile";
@@ -142,16 +117,31 @@ public class Constants
     /**
      * RMI 远程方法调用
      */
-    public static final String LOOKUP_RMI = "rmi://";
+    public static final String LOOKUP_RMI = "rmi:";
 
     /**
      * LDAP 远程方法调用
      */
-    public static final String LOOKUP_LDAP = "ldap://";
+    public static final String LOOKUP_LDAP = "ldap:";
+
+    /**
+     * LDAPS 远程方法调用
+     */
+    public static final String LOOKUP_LDAPS = "ldaps:";
+
+    /**
+     * 自动识别json对象白名单配置（仅允许解析的包名，范围越小越安全）
+     */
+    public static final String[] JSON_WHITELIST_STR = { "org.springframework", "com.ruoyi" };
+
+    /**
+     * 定时任务白名单配置（仅允许访问的包名，如其他需要可以自行添加）
+     */
+    public static final String[] JOB_WHITELIST_STR = { "com.ruoyi" };
 
     /**
      * 定时任务违规的字符
      */
     public static final String[] JOB_ERROR_STR = { "java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
-            "org.springframework.jndi" };
+            "org.springframework", "org.apache", "com.ruoyi.common.utils.file", "com.ruoyi.common.config" };
 }

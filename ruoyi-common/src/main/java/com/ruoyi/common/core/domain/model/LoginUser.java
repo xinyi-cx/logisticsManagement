@@ -1,10 +1,9 @@
 package com.ruoyi.common.core.domain.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Set;
 
@@ -62,8 +61,6 @@ public class LoginUser implements UserDetails
      */
     private String os;
 
-    private Long fid;
-
     /**
      * 权限列表
      */
@@ -74,12 +71,22 @@ public class LoginUser implements UserDetails
      */
     private SysUser user;
 
-    public Long getFid() {
-        return fid;
+    public LoginUser()
+    {
     }
 
-    public void setFid(Long fid) {
-        this.fid = fid;
+    public LoginUser(SysUser user, Set<String> permissions)
+    {
+        this.user = user;
+        this.permissions = permissions;
+    }
+
+    public LoginUser(Long userId, Long deptId, SysUser user, Set<String> permissions)
+    {
+        this.userId = userId;
+        this.deptId = deptId;
+        this.user = user;
+        this.permissions = permissions;
     }
 
     public Long getUserId()
@@ -110,33 +117,6 @@ public class LoginUser implements UserDetails
     public void setToken(String token)
     {
         this.token = token;
-    }
-
-    public LoginUser()
-    {
-    }
-
-    public LoginUser(SysUser user, Set<String> permissions)
-    {
-        this.user = user;
-        this.permissions = permissions;
-    }
-
-    public LoginUser(Long userId, Long deptId, SysUser user, Set<String> permissions)
-    {
-        this.userId = userId;
-        this.deptId = deptId;
-        this.user = user;
-        this.permissions = permissions;
-    }
-
-    public LoginUser(Long userId, Long deptId, Long fid, SysUser user, Set<String> permissions)
-    {
-        this.userId = userId;
-        this.deptId = deptId;
-        this.fid = fid;
-        this.user = user;
-        this.permissions = permissions;
     }
 
     @JSONField(serialize = false)

@@ -22,12 +22,12 @@ import ${packageName}.service.I${ClassName}Service;
 
 /**
  * ${functionName}Service业务层处理
- * 
+ *
  * @date ${datetime}
  */
 @Service
 @Slf4j
-public class ${ClassName}ServiceImpl implements I${ClassName}Service 
+public class ${ClassName}ServiceImpl implements I${ClassName}Service
 {
     @Autowired
     private ${ClassName}Mapper ${className}Mapper;
