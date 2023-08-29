@@ -934,16 +934,7 @@ public class PackageServiceImpl implements IPackageService {
             return "文件命名错误";
         }
         Documents documents = getDocuments(file);
-        if (Objects.isNull(batchTaskHistory)){
-            batchTaskHistory = new BatchTaskHistory();
-        }
-        batchTaskHistory.setType("面单导入");
-        batchTaskHistory.setStatus("上传成功");
-        batchTaskHistory.setExcelUrl(documents.getId().toString());
-        batchTaskHistory.setFileName(documents.getDisplayName());
-        batchTaskHistory.setCreateUser(userId);
-        batchTaskHistory.setUpdateUser(userId);
-        batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
+        batchTaskHistory = getBatchTaskHistory(batchTaskHistory, userId, documents);
 
         //国家邮编校验
 //        List<String> checkCountryAndZip = checkCountryAndZip(packageVos);
@@ -1007,92 +998,19 @@ public class PackageServiceImpl implements IPackageService {
 
             Services services = getServices(packageVo, getId(nameMap, "services_seq"));
 
-            Package pac = new Package();
-            BeanUtils.copyProperties(packageVo, pac);
-            pac.setReceiverId(addressReceiver.getId());
-            pac.setSenderId(addressSender.getId());
-            pac.setServicesId(services.getId());
-            pac.setBatchId(batchTaskHistory.getId());
-            pac.setId(getId(nameMap, "package_seq"));
-            pac.setCreateUser(userId);
-            pac.setUpdateUser(userId);
-            pac.setMasterId(SecurityUtils.getLoginUser().getUser().getMasterId());
-            pac.setMasterPwd(SecurityUtils.getLoginUser().getUser().getMasterPwd());
-            Parcel parcel = new Parcel();
-            BeanUtils.copyProperties(packageVo, parcel);
-            parcel.setPackId(pac.getId());
-            parcel.setCreateUser(userId);
-            parcel.setUpdateUser(userId);
-
-            pac.setService(services);
-            pac.setReceiver(addressReceiver);
-            List<Parcel> parcels1 = new ArrayList<>();
-            parcels1.add(parcel);
-            pac.setParcels(parcels1);
-            pac.setSender(addressSender);
+            Package pac = getaPackage(batchTaskHistory, userId, nameMap, addressSender, packageVo, addressReceiver, services);
 
             if(!reflag){
-                RedirectPackage redirectPackage = new RedirectPackage();
-                redirectPackage.setCreateUser(userId);
-                redirectPackage.setUpdateUser(userId);
-//                redirectPackage.setOriginalId(packageVo.getOriginalId());
-                redirectPackage.setId(pac.getId());
-                redirectPackages.add(redirectPackage);
-
-                RedirectRel redirectRel = new RedirectRel();
-                BeanUtils.copyProperties(packageVo, redirectRel);
-                redirectRel.setCreateUser(userId);
-                redirectRel.setUpdateUser(userId);
-                redirectRel.setNewPackageId(pac.getId());
-                redirectRel.setCountryCode(addressReceiver.getCountryCode());
-                idRedirectRelMap.put(pac.getId(), redirectRel);
+                extractedRef(userId, redirectPackages, idRedirectRelMap, packageVo, addressReceiver, pac);
             }
 
             if(localFlag){
-                PackRelLocal packRelLocal = new PackRelLocal();
-                BeanUtils.copyProperties(packageVo, packRelLocal);
-                packRelLocal.setCreateUser(userId);
-                packRelLocal.setUpdateUser(userId);
-                packRelLocal.setId(pac.getId());
-                packRelLocal.setOldPackageId(pac.getId());
-                packRelLocal.setCountryCode(addressReceiver.getCountryCode());
-                packRelLocals.add(packRelLocal);
+                extractedLocal(userId, packRelLocals, packageVo, addressReceiver, pac);
             }
 
             List<String> list = Arrays.asList(documents.getDisplayName().split(" "));
             //导入信息新增
-            ImportLogicContent importLogicContent = new ImportLogicContent();
-//            BeanUtils.copyProperties(packageVo, importLogicContent, "id");
-            importLogicContent.setBatchId(batchTaskHistory.getId());
-            importLogicContent.setDocumentFileId(documents.getId());
-            importLogicContent.setPackId(pac.getId());
-            importLogicContent.setRecipientName(addressReceiver.getName());
-            importLogicContent.setRecipientEmail(addressReceiver.getEmail());
-            importLogicContent.setRecipientPhone(addressReceiver.getPhone());
-            importLogicContent.setValuePlnCod(packageVo.getPln().toString());
-            importLogicContent.setWeightKg(packageVo.getWeight().toString());
-//            importLogicContent.setClient(addressSender.getName());
-//            importLogicContent.setCountry(addressSender.getCountryCode());
-            importLogicContent.setClient(list.get(2));
-            String type =  getType(list.get(1));
-            importLogicContent.setCountry(type.equals("本地")?list.get(4):list.get(3));
-            importLogicContent.setImportType(type);
-            String box = type.equals("本地")?list.get(6):list.get(5);
-            importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
-            importLogicContent.setBoxRemarkOne(packageVo.getBoxRemarkOne());
-            importLogicContent.setBoxRemarkTwo(packageVo.getBoxRemarkTwo());
-            importLogicContent.setBoxRemarkThree(packageVo.getBoxRemarkThree());
-            importLogicContent.setCreateBy(userId);
-            importLogicContent.setUpdateBy(userId);
-            importLogicContent.setStatus(SysWaybill.WJH.getCode());
-            importLogicContent.setLoginid(SecurityUtils.getLoginUser().getUsername());
-            importLogicContent.setOrderNumber(packageVo.getReference());
-            importLogicContent.setDescription(packageVo.getCustomerData1());
-            importLogicContent.setCreateDate(DateUtils.getDate2());
-            importLogicContent.setRemark2(packageVo.getCode1());
-            importLogicContent.setRemark3(packageVo.getCode2());
-            importLogicContent.setRemark4(packageVo.getBackOrder());
-            importLogicContent.setRemark5(packageVo.getOldWaybill());
+            ImportLogicContent importLogicContent = getImportLogicContent(batchTaskHistory, userId, documents, packageVo, addressReceiver, pac, list);
             pac.setImportLogicContent(importLogicContent);
             packages.add(pac);
 
@@ -1137,37 +1055,7 @@ public class PackageServiceImpl implements IPackageService {
             returnStrBuf.append("面单导入成功，成功")
                     .append(batchTaskHistory.getSuccessNum()).append("条，失败")
                     .append(batchTaskHistory.getFailNum()).append("条。\n");
-            boolean errFlag = false;
-            Map<String, String> fileNameMap = getFileNameMap("PL");
-            List<String> errorMsgList = new ArrayList<>();
-            for (int i = 0; i < returnResponses.size(); i++) {
-                //错误信息处理
-                if (!"OK".equals(returnResponses.get(i).getPkgStatus())){
-                    errFlag = true;
-                    StringBuilder errorStrBuf = new StringBuilder();
-                    errorStrBuf.append("第").append(i+1).append("条失败，失败原因：");
-                    List<ValidationInfoPGRV2> validationInfoPGRV2s = returnResponses.get(i).getValidationInfoPGRV2List();
-                    for (int validNum = 0; validNum < validationInfoPGRV2s.size(); validNum++) {
-                        ValidationInfoPGRV2 valid = validationInfoPGRV2s.get(validNum);
-                        if (StringUtils.isNotEmpty(valid.getInfo())){
-                            errorStrBuf.append(validNum+1);
-                            if (StringUtils.isNotEmpty(valid.getFieldNames()) && fileNameMap.containsKey(valid.getFieldNames())){
-                                errorStrBuf.append("字段：").append(fileNameMap.get(valid.getFieldNames())).append("。");
-                            }
-                            if (!errorStrBuf.toString().contains(valid.getInfo())){
-                                errorStrBuf.append("原因：").append(valid.getInfo());
-                            }
-                        }
-                    }
-                    errorMsgList.add(errorStrBuf.toString());
-                }
-            }
-            if (errFlag){
-//                returnStrBuf.append(errorStrBuf);
-//                下载文件前端也需要处理
-                returnStrBuf.append("失败原因请去批量任务历史页面查看：").append(batchTaskHistory.getId());
-                FileUtils.createTxtFile(errorMsgList, frontPath + "/error/", batchTaskHistory.getId().toString());
-            }
+            dealErrorMsg(batchTaskHistory, returnResponses, returnStrBuf);
             return returnStrBuf.toString();
         }catch (Exception e){
             batchTaskHistory.setStatus("上传失败");
@@ -1176,6 +1064,161 @@ public class PackageServiceImpl implements IPackageService {
         }finally {
             batchTaskHistoryMapper.insertBatchTaskHistoryWithId(batchTaskHistory);
         }
+    }
+
+    private BatchTaskHistory getBatchTaskHistory(BatchTaskHistory batchTaskHistory, String userId, Documents documents) {
+        if (Objects.isNull(batchTaskHistory)){
+            batchTaskHistory = new BatchTaskHistory();
+        }
+        batchTaskHistory.setType("面单导入");
+        batchTaskHistory.setStatus("上传成功");
+        batchTaskHistory.setExcelUrl(documents.getId().toString());
+        batchTaskHistory.setFileName(documents.getDisplayName());
+        batchTaskHistory.setCreateUser(userId);
+        batchTaskHistory.setUpdateUser(userId);
+        batchTaskHistory.setId(sequenceMapper.selectNextvalByName("bat_task_seq"));
+        return batchTaskHistory;
+    }
+
+    private void dealErrorMsg(BatchTaskHistory batchTaskHistory, List<PackagesGenerationResponse> returnResponses, StringBuilder returnStrBuf) {
+        boolean errFlag = false;
+        Map<String, String> fileNameMap = getFileNameMap("PL");
+        List<String> errorMsgList = new ArrayList<>();
+        for (int i = 0; i < returnResponses.size(); i++) {
+            //错误信息处理
+            if (!"OK".equals(returnResponses.get(i).getPkgStatus())){
+                errFlag = true;
+                StringBuilder errorStrBuf = new StringBuilder();
+                errorStrBuf.append("第").append(i+1).append("条失败，失败原因：");
+                List<ValidationInfoPGRV2> validationInfoPGRV2s = returnResponses.get(i).getValidationInfoPGRV2List();
+                for (int validNum = 0; validNum < validationInfoPGRV2s.size(); validNum++) {
+                    ValidationInfoPGRV2 valid = validationInfoPGRV2s.get(validNum);
+                    if (StringUtils.isNotEmpty(valid.getInfo())){
+                        errorStrBuf.append(validNum+1);
+                        if (StringUtils.isNotEmpty(valid.getFieldNames()) && fileNameMap.containsKey(valid.getFieldNames())){
+                            errorStrBuf.append("字段：").append(fileNameMap.get(valid.getFieldNames())).append("。");
+                        }
+                        if (!errorStrBuf.toString().contains(valid.getInfo())){
+                            errorStrBuf.append("原因：").append(valid.getInfo());
+                        }
+                    }
+                }
+                errorMsgList.add(errorStrBuf.toString());
+            }
+        }
+        if (errFlag){
+//                returnStrBuf.append(errorStrBuf);
+//                下载文件前端也需要处理
+            returnStrBuf.append("失败原因请去批量任务历史页面查看：").append(batchTaskHistory.getId());
+            FileUtils.createTxtFile(errorMsgList, frontPath + "/error/", batchTaskHistory.getId().toString());
+        }
+    }
+
+    private Package getaPackage(BatchTaskHistory batchTaskHistory,
+                                String userId,
+                                Map<String, Sequence> nameMap,
+                                AddressSender addressSender,
+                                PackageVo packageVo,
+                                AddressReceiver addressReceiver,
+                                Services services) {
+        Package pac = new Package();
+        BeanUtils.copyProperties(packageVo, pac);
+        pac.setReceiverId(addressReceiver.getId());
+        pac.setSenderId(addressSender.getId());
+        pac.setServicesId(services.getId());
+        pac.setBatchId(batchTaskHistory.getId());
+        pac.setId(getId(nameMap, "package_seq"));
+        pac.setCreateUser(userId);
+        pac.setUpdateUser(userId);
+        pac.setMasterId(SecurityUtils.getLoginUser().getUser().getMasterId());
+        pac.setMasterPwd(SecurityUtils.getLoginUser().getUser().getMasterPwd());
+        Parcel parcel = new Parcel();
+        BeanUtils.copyProperties(packageVo, parcel);
+        parcel.setPackId(pac.getId());
+        parcel.setCreateUser(userId);
+        parcel.setUpdateUser(userId);
+
+        pac.setService(services);
+        pac.setReceiver(addressReceiver);
+        List<Parcel> parcels1 = new ArrayList<>();
+        parcels1.add(parcel);
+        pac.setParcels(parcels1);
+        pac.setSender(addressSender);
+        return pac;
+    }
+
+    private void extractedRef(String userId, List<RedirectPackage> redirectPackages, Map<Long, RedirectRel> idRedirectRelMap, PackageVo packageVo, AddressReceiver addressReceiver, Package pac) {
+        RedirectPackage redirectPackage = new RedirectPackage();
+        redirectPackage.setCreateUser(userId);
+        redirectPackage.setUpdateUser(userId);
+//                redirectPackage.setOriginalId(packageVo.getOriginalId());
+        redirectPackage.setId(pac.getId());
+        redirectPackages.add(redirectPackage);
+
+        RedirectRel redirectRel = new RedirectRel();
+        BeanUtils.copyProperties(packageVo, redirectRel);
+        redirectRel.setCreateUser(userId);
+        redirectRel.setUpdateUser(userId);
+        redirectRel.setNewPackageId(pac.getId());
+        redirectRel.setCountryCode(addressReceiver.getCountryCode());
+        idRedirectRelMap.put(pac.getId(), redirectRel);
+    }
+
+    private void extractedLocal(String userId,
+                                List<PackRelLocal> packRelLocals,
+                                PackageVo packageVo,
+                                AddressReceiver addressReceiver,
+                                Package pac) {
+        PackRelLocal packRelLocal = new PackRelLocal();
+        BeanUtils.copyProperties(packageVo, packRelLocal);
+        packRelLocal.setCreateUser(userId);
+        packRelLocal.setUpdateUser(userId);
+        packRelLocal.setId(pac.getId());
+        packRelLocal.setOldPackageId(pac.getId());
+        packRelLocal.setCountryCode(addressReceiver.getCountryCode());
+        packRelLocals.add(packRelLocal);
+    }
+
+    private ImportLogicContent getImportLogicContent(BatchTaskHistory batchTaskHistory,
+                                                     String userId,
+                                                     Documents documents,
+                                                     PackageVo packageVo,
+                                                     AddressReceiver addressReceiver,
+                                                     Package pac,
+                                                     List<String> list) {
+        ImportLogicContent importLogicContent = new ImportLogicContent();
+//            BeanUtils.copyProperties(packageVo, importLogicContent, "id");
+        importLogicContent.setBatchId(batchTaskHistory.getId());
+        importLogicContent.setDocumentFileId(documents.getId());
+        importLogicContent.setPackId(pac.getId());
+        importLogicContent.setRecipientName(addressReceiver.getName());
+        importLogicContent.setRecipientEmail(addressReceiver.getEmail());
+        importLogicContent.setRecipientPhone(addressReceiver.getPhone());
+        importLogicContent.setValuePlnCod(packageVo.getPln().toString());
+        importLogicContent.setWeightKg(packageVo.getWeight().toString());
+//            importLogicContent.setClient(addressSender.getName());
+//            importLogicContent.setCountry(addressSender.getCountryCode());
+        importLogicContent.setClient(list.get(2));
+        String type =  getType(list.get(1));
+        importLogicContent.setCountry(type.equals("本地")? list.get(4): list.get(3));
+        importLogicContent.setImportType(type);
+        String box = type.equals("本地")? list.get(6): list.get(5);
+        importLogicContent.setNeedBox(box.contains("box") ? "Y" : "N");
+        importLogicContent.setBoxRemarkOne(packageVo.getBoxRemarkOne());
+        importLogicContent.setBoxRemarkTwo(packageVo.getBoxRemarkTwo());
+        importLogicContent.setBoxRemarkThree(packageVo.getBoxRemarkThree());
+        importLogicContent.setCreateBy(userId);
+        importLogicContent.setUpdateBy(userId);
+        importLogicContent.setStatus(SysWaybill.WJH.getCode());
+        importLogicContent.setLoginid(SecurityUtils.getLoginUser().getUsername());
+        importLogicContent.setOrderNumber(packageVo.getReference());
+        importLogicContent.setDescription(packageVo.getCustomerData1());
+        importLogicContent.setCreateDate(DateUtils.getDate2());
+        importLogicContent.setRemark2(packageVo.getCode1());
+        importLogicContent.setRemark3(packageVo.getCode2());
+        importLogicContent.setRemark4(packageVo.getBackOrder());
+        importLogicContent.setRemark5(packageVo.getOldWaybill());
+        return importLogicContent;
     }
 
     @Override
