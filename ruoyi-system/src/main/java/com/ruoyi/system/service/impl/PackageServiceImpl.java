@@ -936,23 +936,6 @@ public class PackageServiceImpl implements IPackageService {
         Documents documents = getDocuments(file);
         batchTaskHistory = getBatchTaskHistory(batchTaskHistory, userId, documents);
 
-        //国家邮编校验
-//        List<String> checkCountryAndZip = checkCountryAndZip(packageVos);
-//        if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)
-//                || checkCountryAndZip.contains("NONEXISTING_POSTAL_CODE")
-//                || checkCountryAndZip.contains("NONEXISTING_COUNTRY_CODE")
-//                || checkCountryAndZip.contains("WRONG_POSTAL_PATTERN")) {
-////            if (org.springframework.util.CollectionUtils.isEmpty(checkCountryAndZip)){
-//                throw new Exception("邮编或国家代码验证失败");
-////            }
-////            StringBuilder sb = new StringBuilder();
-////            for (String key : checkCountryAndZip.keySet()) {
-////                sb.append("code: ").append(key)
-////                        .append(", 邮编或国家代码验证失败, 失败信息为: ").append(checkCountryAndZip.get(key)).append("\n");
-////            }
-////            throw new Exception(sb.toString());
-//        }
-
         Boolean checkWeight = checkWeight(packageVos);
         if (checkWeight){
             throw new Exception("重量不得大于10");
