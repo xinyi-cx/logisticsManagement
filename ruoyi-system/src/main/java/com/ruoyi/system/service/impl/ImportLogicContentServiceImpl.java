@@ -4,10 +4,23 @@ import com.ruoyi.common.enums.SysWaybill;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.*;
+import com.ruoyi.system.domain.BatchTaskHistory;
+import com.ruoyi.system.domain.Documents;
+import com.ruoyi.system.domain.ImportLogicContent;
+import com.ruoyi.system.domain.LogisticsInfo;
+import com.ruoyi.system.domain.Parcel;
 import com.ruoyi.system.domain.vo.ExportLogicContentCODVo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
-import com.ruoyi.system.mapper.*;
+import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
+import com.ruoyi.system.mapper.DocumentsMapper;
+import com.ruoyi.system.mapper.ImportLogicContentMapper;
+import com.ruoyi.system.mapper.LogisticsInfoMapper;
+import com.ruoyi.system.mapper.PackRelLocalMapper;
+import com.ruoyi.system.mapper.PackageMapper;
+import com.ruoyi.system.mapper.ParcelMapper;
+import com.ruoyi.system.mapper.RedirectRelMapper;
+import com.ruoyi.system.mapper.SequenceMapper;
+import com.ruoyi.system.mapper.WaybillLRelMapper;
 import com.ruoyi.system.service.IImportLogicContentService;
 import com.ruoyi.system.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +51,18 @@ import java.util.stream.Collectors;
 public class ImportLogicContentServiceImpl implements IImportLogicContentService {
     @Autowired
     private ImportLogicContentMapper importLogicContentMapper;
+
+    @Autowired
+    private WaybillLRelMapper waybillLRelMapper;
+
+    @Autowired
+    private PackageMapper packageMapper;
+
+    @Autowired
+    private PackRelLocalMapper packRelLocalMapper;
+
+    @Autowired
+    private RedirectRelMapper redirectRelMapper;
 
     @Autowired
     private ParcelMapper parcelMapper;
@@ -310,18 +335,17 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
      */
     @Override
     public int deleteImportLogicContentByIds(Long[] ids) {
-        return importLogicContentMapper.deleteImportLogicContentByIds(ids);
-    }
+        List<ImportLogicContent> importLogicContents = importLogicContentMapper.selectImportLogicContentByIds(ids);
+        List<Long> packIds = importLogicContents
+                .stream().map(ImportLogicContent::getPackId).collect(Collectors.toList());
+        Long[] packIdArays = packIds.toArray(new Long[0]);
 
-    /**
-     * 删除导入查询物流信息
-     *
-     * @param id 导入查询物流主键
-     * @return 结果
-     */
-    @Override
-    public int deleteImportLogicContentById(Long id) {
-        return importLogicContentMapper.deleteImportLogicContentById(id);
+        parcelMapper.deleteParcelByPackIdsReal(packIdArays);
+        waybillLRelMapper.deleteWaybillLRelByWaybillsRel(importLogicContents.stream().map(ImportLogicContent::getNewWaybill).collect(Collectors.toList()));
+        packageMapper.deletePackageByIdsReal(packIdArays);
+        packRelLocalMapper.deletePackRelLocalByOldPackageIds(packIdArays);
+        redirectRelMapper.deleteRedirectRelByNewPackageIds(packIdArays);
+        return importLogicContentMapper.deleteImportLogicContentByIds(ids);
     }
 
     /**

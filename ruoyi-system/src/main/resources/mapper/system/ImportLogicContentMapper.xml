@@ -642,6 +642,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from import_logic_content where id = #{id}
     </delete>
 
+    <select id="selectImportLogicContentByIds" resultMap="ImportLogicContentResult" parameterType="String">
+        select * from import_logic_content where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <delete id="deleteImportLogicContentByIds" parameterType="String">
         delete from import_logic_content where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">

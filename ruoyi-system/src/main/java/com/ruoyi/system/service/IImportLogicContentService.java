@@ -68,14 +68,6 @@ public interface IImportLogicContentService
      */
     public int deleteImportLogicContentByIds(Long[] ids);
 
-    /**
-     * 删除导入查询物流信息
-     * 
-     * @param id 导入查询物流主键
-     * @return 结果
-     */
-    public int deleteImportLogicContentById(Long id);
-
     public String importLogicContentForTj(MultipartFile file, List<ImportLogicContent> importLogicContents) throws Exception;
 
     public void backupImportLogicContent();

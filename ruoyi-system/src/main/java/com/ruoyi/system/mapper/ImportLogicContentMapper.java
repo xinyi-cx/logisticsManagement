@@ -26,6 +26,8 @@ public interface ImportLogicContentMapper
 
     public List<ImportLogicContent> selectImportLogicContentByBatIdsIn(List<Long> batIds);
 
+    public List<ImportLogicContent> selectImportLogicContentByIds(Long[] ids);
+
     /**
      * 查询导入查询物流列表
      * 
