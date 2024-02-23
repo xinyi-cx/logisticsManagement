@@ -3,7 +3,82 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.PackageMapper">
-    
+
+    <resultMap id="PackageVoResultMap" type="com.ruoyi.system.domain.vo.PackageVo">
+        <id property="id" column="id" />
+        <result property="exportFlag" column="export_flag" />
+        <result property="client" column="client" />
+        <result property="country" column="country" />
+        <result property="importType" column="import_type" />
+        <result property="loginid" column="loginid" />
+        <result property="orderNumber" column="order_number" />
+        <result property="valuePlnCod" column="value_pln_cod" />
+        <result property="weightKg" column="weight_kg" />
+        <result property="recipientName" column="recipient_name" />
+        <result property="recipientPhone" column="recipient_phone" />
+        <result property="recipientEmail" column="recipient_email" />
+        <result property="description" column="description" />
+        <result property="needBox" column="need_box" />
+        <result property="createDate" column="create_date" />
+        <result property="boxRemarkOne" column="box_remark_one" />
+        <result property="boxRemarkTwo" column="box_remark_two" />
+        <result property="boxRemarkThree" column="box_remark_three" />
+        <result property="showSenderName" column="show_sender_name" />
+        <result property="receiverName" column="receiver_name" />
+        <result property="receiverAddress" column="receiver_address" />
+        <result property="receiverPostalCode" column="receiver_postal_code" />
+        <result property="receiverCity" column="receiver_city" />
+        <result property="receiverCountryCode" column="receiver_country_code" />
+        <result property="receiverPhone" column="receiver_phone" />
+        <result property="receiverEmail" column="receiver_email" />
+        <result property="weight" column="weight" />
+        <result property="qtyPackages" column="qty_packages" />
+        <result property="customerData1" column="customer_data1" />
+        <result property="reference" column="reference" />
+        <result property="ref1" column="ref1" />
+        <result property="ref2" column="ref2" />
+        <result property="pln" column="pln" />
+        <result property="codCurrency" column="cod_currency" />
+        <result property="oldWaybill" column="old_waybill" />
+        <result property="newOrder" column="new_order" />
+        <result property="backOrder" column="back_order" />
+        <result property="newWaybill" column="new_waybill" />
+        <result property="code1" column="code1" />
+        <result property="code2" column="code2" />
+        <result property="payerType" column="payer_type" />
+        <result property="receiverCompany" column="receiver_company" />
+        <result property="content" column="content" />
+        <result property="sizeX" column="size_x" />
+        <result property="sizeY" column="size_y" />
+        <result property="sizeZ" column="size_z" />
+        <result property="packId" column="pack_id" />
+        <result property="waybill" column="waybill" />
+        <result property="status" column="status" />
+        <result property="packageId" column="package_id" />
+        <result property="parcelId" column="parcel_id" />
+        <result property="sessionId" column="session_id" />
+        <result property="packagesGenerationResponseStatus" column="packages_generation_response_status" />
+        <result property="pkgReference" column="pkg_reference" />
+        <result property="pkgStatus" column="pkg_status" />
+        <result property="senderId" column="sender_id" />
+        <result property="receiverId" column="receiver_id" />
+        <result property="originalId" column="original_id" />
+        <result property="localId" column="local_id" />
+        <result property="mbId" column="mb_id" />
+        <result property="originalWaybill" column="original_waybill" />
+        <result property="servicesId" column="services_id" />
+        <result property="phone" column="phone" />
+        <result property="postalCode" column="postal_code" />
+        <result property="createUser" column="create_user" />
+        <result property="updateUser" column="update_user" />
+        <result property="createdTime" column="created_time" />
+        <result property="updatedTime" column="updated_time" />
+        <result property="downloadNum" column="download_num" />
+        <result property="hisParam" column="his_param" />
+        <result property="datStr" column="dat_str" />
+        <result property="source" column="source" />
+    </resultMap>
+
     <resultMap type="Package" id="PackageResult">
         <result property="id"    column="id"    />
         <result property="payerType"    column="payer_type"    />
