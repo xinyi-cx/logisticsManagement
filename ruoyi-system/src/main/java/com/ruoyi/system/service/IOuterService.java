@@ -31,6 +31,8 @@ public interface IOuterService
      */
     public void receiveMb(MbReceiveDto mbReceiveDto) throws Exception;
 
+    public void receiveMbReal(MbReceiveDto mbReceiveDto) throws Exception;
+
     public void changeAccept(MbImport mbImport);
 
     public void getPDF(String pdfUrl, HttpServletResponse response);

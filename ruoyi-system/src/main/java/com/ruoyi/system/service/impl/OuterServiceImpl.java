@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -68,6 +69,9 @@ public class OuterServiceImpl implements IOuterService {
 
     @Value("${mb.senderUserId}")
     private Long senderUserId;
+
+    @Value("${mb.dealUrl}")
+    private String dealUrl;
 
     @Autowired
     private MbReturnDtoMapper mbReturnDtoMapper;
@@ -353,6 +357,7 @@ public class OuterServiceImpl implements IOuterService {
     @Override
     public void receiveMb(MbReceiveDto mbReceiveDto) throws Exception {
         log.info("receiveMb start");
+        sendToDeal(mbReceiveDto);
         String notify = mbReceiveDto.getNotify().replace(" " , "+");
 //        SysUser user1 = getUserId(mbReceiveDto.getSign(), mbReceiveDto.getNotify(), mbReceiveDto.getTimestamp());
         String notifyJson = Base64.decryptBASE64(notify);
@@ -380,6 +385,25 @@ public class OuterServiceImpl implements IOuterService {
 //        } else {
 //            dealNotify(codes, notifyStr, null, errMsgList, postUserFlag, "马帮主动通知");
 //        }
+    }
+
+    @Async
+    public void sendToDeal(MbReceiveDto mbReceiveDto){
+        log.info("sendToDeal start");
+        String msg = HttpUtils.sendPostWithBody(dealUrl, mbReceiveDto);
+        log.info("sendToDeal end, msg: {}", msg);
+    }
+
+    @Override
+    public void receiveMbReal(MbReceiveDto mbReceiveDto) throws Exception {
+        log.info("receiveMbReal start");
+        String notify = mbReceiveDto.getNotify().replace(" " , "+");
+        String notifyJson = Base64.decryptBASE64(notify);
+        JSONObject jsonObject = JSONObject.parseObject(notifyJson);
+        String notifyStr = jsonObject.get("notify").toString();
+        List<String> codes = JSON.parseArray(JSONObject.parseObject(jsonObject.get("orderInfo").toString()).get("codes").toString(), String.class);
+        log.info("receiveMbReal notifyStr: {}, codes:{}", notifyStr, codes);
+        log.info("receiveMbReal end");
     }
 
     @Override

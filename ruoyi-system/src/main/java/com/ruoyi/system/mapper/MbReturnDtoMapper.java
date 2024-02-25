@@ -69,6 +69,8 @@ public interface MbReturnDtoMapper
      */
     public int deleteMbReturnDtoByCodes(String[] codes);
 
+    public int deleteMbReturnDtoByPackageIds(Long[] codes);
+
     /**
      * 批量更新
      * @param list

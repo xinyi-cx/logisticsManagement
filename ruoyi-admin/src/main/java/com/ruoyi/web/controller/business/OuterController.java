@@ -60,6 +60,17 @@ public class OuterController extends BaseController {
     /**
      * 接收马帮的主动通知
      *
+     * @param mbReceiveDto
+     * @throws Exception
+     */
+    @PostMapping("/real")
+    public void receiveMbReal(MbReceiveDto mbReceiveDto) throws Exception {
+        outerService.receiveMbReal(mbReceiveDto);
+    }
+
+    /**
+     * 接收马帮的主动通知
+     *
      * @return
      */
     @PostMapping("/getPDF")

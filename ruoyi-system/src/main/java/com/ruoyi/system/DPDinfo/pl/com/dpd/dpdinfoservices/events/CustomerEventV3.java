@@ -1,6 +1,8 @@
 
 package com.ruoyi.system.DPDinfo.pl.com.dpd.dpdinfoservices.events;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -52,6 +54,7 @@ import javax.xml.bind.annotation.XmlType;
     "parcelReference",
     "waybill"
 })
+@Data
 public class CustomerEventV3 {
 
     protected String businessCode;

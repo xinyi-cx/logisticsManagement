@@ -430,4 +430,12 @@
             #{code}
         </foreach>
     </delete>
+
+    <delete id="deleteMbReturnDtoByPackageIds" parameterType="String">
+        delete from mb_return_dto where package_id in
+        <foreach item="code" collection="array" open="(" separator="," close=")">
+            #{code}
+        </foreach>
+    </delete>
+
 </mapper>

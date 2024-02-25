@@ -11,22 +11,14 @@ import com.ruoyi.system.domain.LogisticsInfo;
 import com.ruoyi.system.domain.Parcel;
 import com.ruoyi.system.domain.vo.ExportLogicContentCODVo;
 import com.ruoyi.system.domain.vo.ExportLogicContentVo;
-import com.ruoyi.system.mapper.BatchTaskHistoryMapper;
-import com.ruoyi.system.mapper.DocumentsMapper;
-import com.ruoyi.system.mapper.ImportLogicContentMapper;
-import com.ruoyi.system.mapper.LogisticsInfoMapper;
-import com.ruoyi.system.mapper.PackRelLocalMapper;
-import com.ruoyi.system.mapper.PackageMapper;
-import com.ruoyi.system.mapper.ParcelMapper;
-import com.ruoyi.system.mapper.RedirectRelMapper;
-import com.ruoyi.system.mapper.SequenceMapper;
-import com.ruoyi.system.mapper.WaybillLRelMapper;
+import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IImportLogicContentService;
 import com.ruoyi.system.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -59,6 +51,15 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
     private PackageMapper packageMapper;
 
     @Autowired
+    private MbPackageMapper mbPackageMapper;
+
+    @Autowired
+    private MbParcelMapper mbParcelMapper;
+
+    @Autowired
+    private MbImportLogicContentMapper mbImportLogicContentMapper;
+
+    @Autowired
     private PackRelLocalMapper packRelLocalMapper;
 
     @Autowired
@@ -66,6 +67,9 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
 
     @Autowired
     private ParcelMapper parcelMapper;
+
+    @Autowired
+    private MbReturnDtoMapper mbReturnDtoMapper;
 
     @Autowired
     private LogisticsInfoMapper logisticsInfoMapper;
@@ -345,7 +349,18 @@ public class ImportLogicContentServiceImpl implements IImportLogicContentService
         packageMapper.deletePackageByIdsReal(packIdArays);
         packRelLocalMapper.deletePackRelLocalByOldPackageIds(packIdArays);
         redirectRelMapper.deleteRedirectRelByNewPackageIds(packIdArays);
+        deleteMbReturnDtoByPackageIds(ids, packIdArays);
+        log.info("end deleteMbReturnDtoByPackageIds");
         return importLogicContentMapper.deleteImportLogicContentByIds(ids);
+    }
+
+    @Async
+    int deleteMbReturnDtoByPackageIds(Long[] ids, Long[] packIdArays){
+        log.info("start deleteMbReturnDtoByPackageIds");
+        mbParcelMapper.deleteParcelByPackIdsReal(packIdArays);
+        mbPackageMapper.deletePackageByIdsReal(packIdArays);
+        mbImportLogicContentMapper.deleteImportLogicContentByIds(ids);
+        return mbReturnDtoMapper.deleteMbReturnDtoByPackageIds(packIdArays);
     }
 
     /**
