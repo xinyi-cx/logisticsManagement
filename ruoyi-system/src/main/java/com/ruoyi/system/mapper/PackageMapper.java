@@ -1,6 +1,7 @@
 package com.ruoyi.system.mapper;
 
 import com.ruoyi.system.domain.Package;
+import com.ruoyi.system.domain.vo.PackageVo;
 
 import java.util.List;
 
@@ -44,6 +45,34 @@ public interface PackageMapper {
      * @return
      */
     public List<Package> selectPackageListForZf(Package pkg);
+
+    /**
+     * 直发
+     * @param pkg
+     * @return
+     */
+    public List<PackageVo> selectPackageListForZfNew(Package pkg);
+
+    /**
+     * 转寄
+     * @param pkg
+     * @return
+     */
+    public List<PackageVo> selectPackageListForRelNew(Package pkg);
+
+    /**
+     * 本地
+     * @param pkg
+     * @return
+     */
+    public List<PackageVo> selectPackageListForLocalNew(Package pkg);
+
+    /**
+     * 马帮
+     * @param pkg
+     * @return
+     */
+    public List<PackageVo> selectPackageListForMbNew(Package pkg);
 
     /**
      * 转寄
