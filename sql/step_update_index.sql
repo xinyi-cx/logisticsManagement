@@ -30,6 +30,6 @@ CREATE INDEX index_mb_return_dto_platform_trade_code ON mb_return_dto (platform_
 
 -- 20230803
 
-
-
+CREATE INDEX index_packages_generation_response_pack_id ON packages_generation_response (pack_id);
+CREATE INDEX index_package_sender_id ON package (sender_id);
 
