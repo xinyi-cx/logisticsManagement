@@ -110,7 +110,7 @@ public class PackRelLocalController extends BaseController {
         List<PackageVo> packageVos = localPackageVos.stream().map(item ->
                 {
                     PackageVo packageVo = new PackageVo();
-                    BeanUtils.copyProperties(item, packageVo);
+                    BeanUtils.copyProperties(item, packageVo, "code2");
                     return packageVo;
                 }
         ).collect(toList());
