@@ -178,6 +178,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where pac.parcel_reference = mrd.platform_trade_code
         )
         and
+        pac.id > (select min_id from select_pac_min_num) and
         pac.is_delete = 0
         <choose>
             <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
@@ -263,6 +264,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join parcel p on pac.id = p.package_id
 
         <where>
+            pac.id > (select min_id from select_pac_min_num) and
             pac.is_delete = 0
             <choose>
                 <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
@@ -350,6 +352,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join parcel p on pac.id = p.package_id
 
         <where>
+            pac.id > (select min_id from select_pac_min_num) and
             pac.is_delete = 0
             <choose>
                 <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
@@ -443,6 +446,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join parcel p on pac.id = p.package_id
 
         <where>
+            pac.id > (select min_id from select_pac_min_num) and
             pac.is_delete = 0
             <choose>
                 <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
@@ -480,6 +484,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPackageList" parameterType="Package" resultMap="PackageResult">
         <include refid="selectPackageVo"/>
         <where>
+            pac.id > (select min_id from select_pac_min_num) and
             is_delete = 0
             <choose>
             <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
@@ -550,7 +555,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where pac.parcel_reference = mrd.platform_trade_code
         )
         and
-            pac.is_delete = 0
+        pac.id > (select min_id from select_pac_min_num) and
+        pac.is_delete = 0
             <choose>
                 <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
                     AND pac.id in
@@ -603,6 +609,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         inner join redirect_rel rel
         on pac.id = rel.new_package_id
         <where>
+            pac.id > (select min_id from select_pac_min_num) and
             pac.is_delete = 0
             <choose>
                 <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
@@ -658,6 +665,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         inner join pack_rel_local rel
         on pac.id = rel.old_package_id
         <where>
+            pac.id > (select min_id from select_pac_min_num) and
             pac.is_delete = 0
             <choose>
                 <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >
@@ -719,6 +727,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from package pac
         inner join mb_return_dto mrd on pac.mb_code = mrd.code
         <where>
+            pac.id > (select min_id from select_pac_min_num) and
             pac.is_delete = 0
             <choose>
                 <when  test="exportFlag != null and exportFlag ==1 and ids!= null and ids.size()>0" >

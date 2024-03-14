@@ -22,3 +22,16 @@ insert into sys_config values(14, '同步DPD信息路径-转寄-cz',         'sy
 insert into sys_config values(15, '同步DPD信息路径-面单-pl',         'sys.sync.dpd.original.pl.path',       'C:/ruoyi/uploadPath/original/pl',         'Y', 'admin', sysdate(), '', null, '同步DPD信息路径 面单-pl' );
 insert into sys_config values(16, '同步DPD信息路径-面单-cz',         'sys.sync.dpd.original.cz.path',         'C:/ruoyi/uploadPath/original/cz',         'Y', 'admin', sysdate(), '', null, '同步DPD信息路径 面单-cz' );
 
+
+-- 20240314
+
+CREATE TABLE `select_pac_min_num`
+(
+    `min_id`            bigint(20) unsigned NOT NULL comment 'package最小id'
+) engine = innodb
+  CHARSET = utf8 comment = '查询package表的最小id';
+
+insert into select_pac_min_num
+values (10000);
+
+
